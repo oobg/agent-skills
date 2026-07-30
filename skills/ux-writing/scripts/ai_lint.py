@@ -135,7 +135,7 @@ def lint(text, patterns):
     for p in patterns:
         (hard if p["layer"] == "hard" else advisory).setdefault(p["label"], [])
     # 코드로만 되는 검사 (정규식 하나로 안 되는 것들)
-    hard.setdefault("가운뎃점 사슬", [])
+    advisory.setdefault("가운뎃점 사슬", [])
     advisory.setdefault("가운뎃점(둘 묶기)", [])
     advisory.setdefault("숫자 괄호 인덱싱", [])
 
@@ -147,12 +147,12 @@ def lint(text, patterns):
             for m in p["_rx"].finditer(line):
                 bucket[p["label"]].append(f"  L{n}: {snippet(line, m.start())}")
 
-        # 가운뎃점 — 한 토큰에 2개 이상(=셋 이상 엮기)이면 사슬로 HARD.
+        # 가운뎃점 — 한 토큰에 2개 이상(=셋 이상 엮기)이면 사슬 신호.
         # 둘 묶기(`보기·숨기기`)는 본문에서 허용하므로 ADVISORY.
         for m in re.finditer(r"\S*[" + MIDDLE_DOTS + r"]\S*", line):
             token = m.group()
             if sum(c in MIDDLE_DOTS for c in token) >= 2:
-                hard["가운뎃점 사슬"].append(f"  L{n}: {token}")
+                advisory["가운뎃점 사슬"].append(f"  L{n}: {token}")
             else:
                 advisory["가운뎃점(둘 묶기)"].append(f"  L{n}: {token}")
 
@@ -244,7 +244,7 @@ def report(hard, advisory, used=None, thresholds=None, streaks=None):
         print("    → 리듬이 균일하다는 신호. 일부를 다른 끝맺음으로 바꾼다.")
 
     if used is not None:
-        print("\n[어체 일관성 — 목표 어체가 없어도 '혼용'은 잡는다]")
+        print("\n[어체 일관성 — ADVISORY, 의도된 혼용인지 확인]")
         if not used:
             print("  · 판정할 문장 부족 — 생략")
         elif not mixed:
@@ -252,20 +252,15 @@ def report(hard, advisory, used=None, thresholds=None, streaks=None):
             print(f"  ○ {only}로 일관됨 ({len(used[only])}문장)")
         else:
             names = ", ".join(f"{k} {len(v)}문장" for k, v in used.items())
-            print(f"  ✗ 혼용: {names}")
+            print(f"  · 혼용: {names}")
             for k, v in used.items():
                 print(f"    [{k}] 예: {v[0]}")
-            print("    → 하나로 통일한다. 어느 쪽인지는 references/register.md,")
-            print("       판단 기준은 ai-tells.md의 '경어법 일관성 손실'.")
+            print("    → 프로젝트 register와 장르를 확인한다. 의도하지 않은 혼용만 고친다.")
 
-    blocking = hard_total + (1 if mixed else 0)
+    blocking = hard_total
     print("\n" + "-" * 52)
     if blocking == 0:
         print(f"  통과 (HARD 0건). ADVISORY {adv_total}건은 밀도만 확인.")
-    elif hard_total and mixed:
-        print(f"  보류 (HARD {hard_total}건 + 어체 혼용). 고치고 다시 돌린다.")
-    elif mixed:
-        print("  보류 (어체 혼용). 하나로 통일하고 다시 돌린다.")
     else:
         print(f"  보류 (HARD {hard_total}건). 고치고 다시 돌린다.")
     print("-" * 52)
