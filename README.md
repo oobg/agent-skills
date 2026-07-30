@@ -90,6 +90,24 @@ agent-skills/
 - `references/`: 조건에 따라 불러오는 상세 지침과 예시
 - `scripts/`: 자동 검사 도구
 
+## 스킬 생명주기
+
+`lifecycle.json`은 이 저장소를 스킬 정본으로 두고, 온톨로지의 최근 세션·스킬
+관측치를 이용해 승격 후보와 주차 후보를 보여줍니다. 프로바이더 폴더에는 정본을
+복사하지 않고 심볼릭 링크만 둡니다.
+
+```bash
+python3 scripts/skill_lifecycle.py report
+python3 scripts/skill_lifecycle.py doctor
+python3 scripts/skill_lifecycle.py sync          # dry-run
+python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
+```
+
+자동으로 스킬을 생성하거나 상태를 바꾸지는 않습니다. `report`의 후보를 사람이
+검토해 `candidate → active/pinned → parked/retired`로 바꾸고, `sync --apply`로
+배포 상태를 맞춥니다. `parked`와 `retired`도 정본은 보존하며, 이 도구가 관리하지
+않는 파일이나 외부 심링크는 삭제하지 않습니다.
+
 ## 요구 사항
 
 스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트를
