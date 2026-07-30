@@ -1,6 +1,7 @@
 import importlib.util
 import io
 import json
+import os
 import sqlite3
 import tempfile
 import unittest
@@ -14,6 +15,24 @@ SPEC.loader.exec_module(MODULE)
 
 
 class LifecycleTests(unittest.TestCase):
+    def test_ontology_db_expands_home_directory(self):
+        original_query_rows = MODULE.query_rows
+        try:
+            seen = []
+            MODULE.query_rows = lambda path, *_args: seen.append(path) or []
+            MODULE.skill_usage(
+                {
+                    "ontology_db": "~/.ontology/ontology.db",
+                    "thresholds": {"park_after_days": 90},
+                }
+            )
+            self.assertEqual(
+                seen,
+                [Path(os.path.expanduser("~/.ontology/ontology.db"))],
+            )
+        finally:
+            MODULE.query_rows = original_query_rows
+
     def test_invalid_status_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "config.json"

@@ -46,7 +46,7 @@ def query_rows(db_path: Path, sql: str, params: tuple = ()) -> list[sqlite3.Row]
 
 
 def skill_usage(config: dict) -> dict[str, dict[str, int]]:
-    db = Path(config["ontology_db"])
+    db = Path(config["ontology_db"]).expanduser()
     days = config["thresholds"]["park_after_days"]
     rows = query_rows(
         db,
@@ -66,7 +66,7 @@ def skill_usage(config: dict) -> dict[str, dict[str, int]]:
 
 
 def concept_candidates(config: dict) -> list[dict]:
-    db = Path(config["ontology_db"])
+    db = Path(config["ontology_db"]).expanduser()
     threshold = config["thresholds"]["candidate_min_sessions"]
     days = config["thresholds"]["candidate_window_days"]
     excluded = set(config.get("candidate_exclusions", []))
@@ -181,7 +181,7 @@ def report(config: dict) -> None:
 
 def doctor(config: dict) -> int:
     errors = sync(config, apply=False)
-    db = Path(config["ontology_db"])
+    db = Path(config["ontology_db"]).expanduser()
     if not db.is_file():
         print(f"ERROR ontology DB not found: {db}", file=sys.stderr)
         errors += 1

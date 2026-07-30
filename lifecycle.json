@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "ontology_db": "/Users/forspacelab/.ontology/ontology.db",
+  "ontology_db": "~/.ontology/ontology.db",
   "thresholds": {
     "candidate_min_sessions": 8,
     "candidate_window_days": 90,
@@ -8,10 +8,10 @@
     "park_max_recent_uses": 0
   },
   "providers": {
-    "claude": "/Users/forspacelab/.claude/skills",
-    "codex": "/Users/forspacelab/.codex/skills",
-    "gemini": "/Users/forspacelab/.gemini/skills",
-    "grok": "/Users/forspacelab/.grok/skills"
+    "claude": "~/.claude/skills",
+    "codex": "~/.codex/skills",
+    "gemini": "~/.gemini/skills",
+    "grok": "~/.grok/skills"
   },
   "skills": {
     "domain-ontology": {
