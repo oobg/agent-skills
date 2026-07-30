@@ -8,7 +8,7 @@ description: Read the personal ontology before answering when accumulated compan
 ## Overview
 Durable domain knowledge should **compound**, not be re-derived per question. When it arrives, route it through the persistent SQLite knowledge ontology **before proceeding**: ingest → connect it to the graph → then answer grounded in accumulated knowledge (Memex / LLM-Wiki pattern).
 
-**One database, two tenants.** Root `~/.ontology/`, DB at `~/.ontology/ontology.db`.
+**One database, three tenants.** Root `~/.ontology/`, DB at `~/.ontology/ontology.db`.
 
 | | company (회사) | personal (개인) | shared (공용) |
 |---|---|---|---|
@@ -24,7 +24,10 @@ Durable domain knowledge should **compound**, not be re-derived per question. Wh
 
 `concepts`, `topics`, `concept_topics` are **shared across tenants** — that shared layer is the point: the same concept node links what company work actually built to what personal material says about it. Only `sessions` and `documents` carry `tenant_id`.
 
-`~/.ontology/AGENTS.md` is the authoritative schema + exact commands (`CLAUDE.md` and `GEMINI.md` are symlinks to it). **REQUIRED: read it before ingesting** — do not guess commands from here.
+`~/.ontology/AGENTS.md` is the authoritative map and common-command reference
+(`CLAUDE.md` and `GEMINI.md` are symlinks to it). **REQUIRED: read it before
+ingesting**. Follow the routed workflow and conventions in the files it points to; do not
+guess schema, paths, or commands from this skill.
 
 ## When to use
 - Substantial domain material: reports, research output, market/competitor intel, strategy/legal/product/planning docs, uploaded files (pdf/docx/html/md).
@@ -41,6 +44,21 @@ Use read-only queries without asking first when accumulated knowledge could mate
 answer: strategy, product, competition, legal context, personal priorities, prior decisions, or
 cross-session history. Prefer the graph views and cite what was found.
 
+Before every read query, set an **active tenant/output scope** from the user's request:
+
+- Company work defaults to `company + shared`; personal work defaults to `personal + shared`;
+  working-method questions default to `shared`. If the relevant tenant is genuinely unclear and
+  the choice would change the answer, ask; otherwise state the narrow assumption and proceed.
+- Apply that scope both to SQL predicates and to the response. Shared concept/topic nodes do not
+  authorize exposing documents, claims, evidence, counts, gaps, or even the existence of material
+  from an out-of-scope tenant.
+- Never disclose company-derived claims or counts in a personal answer, or personal-derived claims
+  or counts in a company answer, unless the user explicitly requests cross-tenant comparison or
+  cross-session history. For that explicit request, name the expanded scope before querying.
+- Prefer tenant-filterable document/claim evidence over unscoped aggregate views. If a bridge view
+  mixes tenants and cannot be safely filtered, query the underlying tenant-bearing tables or omit
+  the aggregate rather than infer or reveal the other tenant.
+
 Do not query for code tasks, simple editing, general facts, casual questions, or requests fully
 answerable from the current files. A forced lookup is not useful evidence and would distort
 knowledge-demand counts.
@@ -56,7 +74,7 @@ knowledge-demand counts.
 3. **Ingest** (on yes) — follow `AGENTS.md`, all paths under the chosen tenant:
    - Save raw source → `tenants/<tenant>/sources/` (immutable provenance).
    - Extract → `tenants/<tenant>/extractions/docs/<name>.json`. The JSON's `path` must point at that tenant's `sources/`. **Query `concepts` first and reuse existing names** so it merges into the graph instead of fragmenting.
-   - Load: `python3 bin/docs.py load <json> --tenant <company|personal>`. **`--tenant` is required** — it is the only boundary left now that both tenants share one DB.
+   - Load: `python3 bin/docs.py load <json> --tenant <company|personal|shared>`. **`--tenant` is required** — it is the boundary for all three tenants in the shared DB.
    - After load and lint pass for this ingestion, commit the exact raw source path immediately:
      `git add -- tenants/<tenant>/sources/<file>` and commit it separately. Do not stage
      extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; those remain in
@@ -133,6 +151,8 @@ claim을 예쁘게 구조화하기 전에 도메인 사실·용어·최신성·�
 - **Never run `bin/build.py` full rebuild** — breaks Phase-2 file-id links. Incremental only.
 - **Never move a document between tenants by re-loading it** — `docs.py` errors out on tenant change. Company work stays company; personal material stays personal.
 - **Honesty:** only claims the source actually states; mark weak/unverified sources as low-confidence in the doc and its claims. Don't fabricate.
+- **Read scope:** every query and answer must stay inside the active tenant/output scope. Shared
+  graph nodes are not permission to reveal out-of-scope tenant claims or counts.
 
 ## Common mistakes
 - Ingesting silently, or not asking which tenant.

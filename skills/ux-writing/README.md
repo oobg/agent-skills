@@ -61,7 +61,8 @@ python3 scripts/register_check.py <파일>
 
 - `ai_lint.py`: 결정적인 문법 오류와 스타일 신호 검사
 - `glossary_check.py`: 프로젝트 고정 표기 검사
-- `register_check.py`: 목표 어체 일관성 검사
+- `register_check.py`: 목표 어체 일관성 검사. 음슴체는 명사 종결 오탐을 피하려
+  제한적으로만 잡으므로 수동·best-effort 확인이 필요합니다.
 
 HARD 항목은 출력을 막지만 ADVISORY는 문맥을 확인하라는 신호입니다.
 

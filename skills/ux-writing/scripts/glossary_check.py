@@ -5,7 +5,7 @@ glossary_check.py — 프로젝트 고정 표기 검사.
 references/glossary.md의 두 표를 읽어, 대상 글에서 '일반 표현'(쓰면 안 되는 쪽)을
 그대로 쓴 곳을 찾는다.
   - 전역 표기: 모든 글에 적용
-  - 프로젝트별 표기: 대상 파일이 그 경로 밑일 때만 적용 (전역과 함께)
+  - 프로젝트별 표기: 대상 파일에 가장 깊게 맞는 프로젝트 범위만 적용 (전역과 함께)
 둘 다 비어 있으면 검사를 생략하고 통과한다.
 
 ai_lint.py가 보편적 기계 티를 본다면, 이건 이 프로젝트에서만 통하는 표기를 본다.
@@ -72,16 +72,21 @@ def parse_glossary(path):
 
 
 def resolve_pairs(resolve_path, global_pairs, project_pairs):
-    """전역 + (경로가 맞는 프로젝트) 표기 쌍과, 매칭된 프로젝트 이름을 합친다."""
+    """전역 + 가장 깊게 맞는 프로젝트 범위의 표기 쌍을 반환한다."""
     tgt = os.path.abspath(os.path.expanduser(resolve_path))
     pairs = list(global_pairs)
-    matched = []
+    matches = []
     for name, ppath, general, term in project_pairs:
         root = ppath.rstrip(os.sep)
         if tgt == ppath or tgt.startswith(root + os.sep):
-            pairs.append((general, term))
-            matched.append(name)
-    return pairs, matched
+            matches.append((len(root), name, general, term))
+    if not matches:
+        return pairs, []
+    deepest = max(item[0] for item in matches)
+    matched = [item for item in matches if item[0] == deepest]
+    pairs.extend((general, term) for _, _, general, term in matched)
+    names = list(dict.fromkeys(name for _, name, _, _ in matched))
+    return pairs, names
 
 
 def spans(text, term):
