@@ -57,6 +57,10 @@ knowledge-demand counts.
    - Save raw source → `tenants/<tenant>/sources/` (immutable provenance).
    - Extract → `tenants/<tenant>/extractions/docs/<name>.json`. The JSON's `path` must point at that tenant's `sources/`. **Query `concepts` first and reuse existing names** so it merges into the graph instead of fragmenting.
    - Load: `python3 bin/docs.py load <json> --tenant <company|personal>`. **`--tenant` is required** — it is the only boundary left now that both tenants share one DB.
+   - After load and lint pass for this ingestion, commit the exact raw source path immediately:
+     `git add -- tenants/<tenant>/sources/<file>` and commit it separately. Do not stage
+     extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; those remain in
+     the repository's normal daily commit flow.
 4. **Surface connections.** Query the views — `v_concept_bridge` (coverage/gaps, per-tenant doc counts), `v_topic_bridge` (topic-level rollup), `v_claim_concept` (evidence). What does this connect to, reinforce, contradict, or reveal as a gap?
 5. **Proceed.** Continue with the user's actual task, grounded in the KB and citing the graph. Ingesting is the setup, not the whole task.
 
@@ -124,6 +128,8 @@ claim을 예쁘게 구조화하기 전에 도메인 사실·용어·최신성·�
 - **Ask before ingesting** — tenant + consent. Never silent.
 - **`--tenant` on every `docs.py load`.** Omitting it aborts by design; do not work around it.
 - **`sources/` is immutable** raw provenance; DB and extractions are generated.
+- **Commit each successfully ingested raw source immediately and separately.** Use exact paths;
+  never `git add -A` or `git commit -a` in a dirty ontology worktree.
 - **Never run `bin/build.py` full rebuild** — breaks Phase-2 file-id links. Incremental only.
 - **Never move a document between tenants by re-loading it** — `docs.py` errors out on tenant change. Company work stays company; personal material stays personal.
 - **Honesty:** only claims the source actually states; mark weak/unverified sources as low-confidence in the doc and its claims. Don't fabricate.
@@ -132,5 +138,6 @@ claim을 예쁘게 구조화하기 전에 도메인 사실·용어·최신성·�
 - Ingesting silently, or not asking which tenant.
 - Inventing new concept names for ones that exist → fragments the graph. Reuse.
 - Writing the extraction JSON's `path` under the wrong tenant's `sources/` (load warns — don't ignore it).
+- Leaving a successfully ingested raw source uncommitted, or mixing generated/unrelated files into its provenance commit.
 - Answering a domain question cold without querying the ontology first.
 - Stopping after ingest — after loading, proceed with the user's real request.
