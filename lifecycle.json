@@ -14,6 +14,10 @@
     "grok": "/Users/forspacelab/.grok/skills"
   },
   "skills": {
+    "domain-ontology": {
+      "status": "pinned",
+      "providers": ["claude", "codex", "gemini", "grok"]
+    },
     "question-design": {
       "status": "active",
       "providers": ["claude", "codex", "gemini", "grok"]
