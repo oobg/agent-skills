@@ -1,0 +1,157 @@
+{
+  "version": "1.0",
+  "note": "ai_lint.py가 읽는 패턴 정의. 코드를 안 고치고 여기만 고쳐서 패턴을 넣고 뺀다. about.md의 '가지치기 원칙'과 '아직 실전 검증이 안 된 것'을 데이터로 옮긴 것.",
+  "layers": {
+    "hard": "0이어야 통과. 본문 `AI가 쓴 티 빼기` 표와 같은 기준만 넣는다. 스크립트가 본문보다 엄격하면 통과 못 하는 게이트가 되고, 그러면 습관적으로 무시하게 된다.",
+    "advisory": "밀도로만 본다. 0일 필요 없다."
+  },
+  "status_values": {
+    "verified": "실전에서 실제로 걸린 적 있음. 함부로 빼지 않는다.",
+    "experimental": "출처는 있으나 실전 재현을 아직 못 봄. 가지치기 1순위 후보."
+  },
+  "patterns": [
+    {
+      "id": "double-passive",
+      "label": "이중 피동",
+      "regex": "되어[지진졌질져]",
+      "layer": "hard",
+      "status": "verified",
+      "why": "'되어지다'는 피동을 두 번 겹친 것. 문법적으로 거의 항상 틀리다.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "curly-quotes",
+      "label": "곱슬따옴표",
+      "regex": "[“”‘’]",
+      "layer": "hard",
+      "status": "verified",
+      "why": "워드프로세서 자동 변환 흔적. 코드·터미널에서 깨진다."
+    },
+    {
+      "id": "emoji",
+      "label": "이모지",
+      "regex": "[🌀-🗿😀-🙏🚀-🛿🤀-🫿☀-⛿✀-➿🇦-🇿⬀-⯿️]",
+      "layer": "hard",
+      "status": "verified",
+      "why": "장식용 이모지는 사무적 톤에서 튀고, 스크린리더에서 소음이 된다."
+    },
+    {
+      "id": "bold",
+      "label": "볼드",
+      "regex": "\\*\\*[^*\\n]+\\*\\*",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "문단마다 볼드 라벨을 달고 설명을 붙이는 구조가 대표적인 AI 티.",
+      "ref": "ai-tells.md 15번"
+    },
+    {
+      "id": "dash",
+      "label": "대시",
+      "regex": "[—–]",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "em/en dash 남발은 영어 조판 습관. 한국어에선 쉼표나 마침표로 충분할 때가 많다. 리스트 라벨 구분(-> 콜론)과 뜻풀이 감싸기(-> 괄호)는 별도 항목으로 센다."
+    },
+    {
+      "id": "sentence-end-colon",
+      "label": "문장 끝 콜론",
+      "regex": "(?<!\\d)[:：]\\s*$",
+      "flags": "M",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "'...적용하지는 않는다:'처럼 문장을 끝내고 콜론으로 목록을 여는 패턴. 사람은 잘 안 쓴다. 마침표로 끝내면 된다. 단 리스트 항목 안의 콜론('개발 문서: 정확성이 먼저다')은 자연스러우니 이 검사에 안 걸린다(줄 끝만 본다)."
+    },
+    {
+      "id": "connector-comma",
+      "label": "연결어미+쉼표",
+      "regex": "(고|며|지만|아서|어서),",
+      "layer": "advisory",
+      "threshold": 6,
+      "status": "verified",
+      "why": "KatFish(ACL 2025) 실측: 한국어 에세이에서 AI는 인간보다 쉼표를 약 2.3배 많이 쓴다(문장 포함률 26.31% 대 61.03%). 다만 그 수치는 에세이 기준이라 임계값은 그대로 못 쓴다. 여기 6은 실측이 아니라 경험적 기준이다.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "translationese-through",
+      "label": "~를 통해",
+      "regex": "[를을] 통[해하](?![가-훃])",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "영어 through/via 직역.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "translationese-about",
+      "label": "~에 대해",
+      "regex": "에 대[해한](?![가-훃])",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "영어 about/regarding 직역.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "translationese-by",
+      "label": "~에 의해",
+      "regex": "에 의[해한](?![가-훃])",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "영어 수동태 by 직역. 행위자를 주어로 끌어와 능동으로 바꾼다.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "translationese-inregard",
+      "label": "~에 있어서",
+      "regex": "에 있어서",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "영어 in terms of 직역."
+    },
+    {
+      "id": "double-josa",
+      "label": "이중 조사",
+      "regex": "(에서|으로|로|에)의(?=\\s)",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "'~에서의', '~으로의'처럼 조사를 겹쳐 붙인 것. 영어 전치사구를 명사구로 직역할 때 나온다.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "have-literal",
+      "label": "가지고 있다",
+      "regex": "가지고 있",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "영어 have 직역. 대개 '있다'나 해당 동사 하나로 충분하다.",
+      "ref": "translation-ese.md"
+    },
+    {
+      "id": "inanimate-subject",
+      "label": "의인화 주어",
+      "regex": "(연구|데이터|분석|결과|시스템|기술|사례|현상|이론|정책|보고서|AI|인공지능|모델|알고리즘|변화|위기|혁신)[은는이가]\\s*[^.!?\\n]{0,30}(보여준|시사한|드러낸|제시한|나타낸|증명한|말해준|의미한|가져온)",
+      "layer": "advisory",
+      "status": "experimental",
+      "why": "무생물·추상 주어가 사람처럼 '말해주고 시사하는' 구조. 영어 논문투 직역이다. 단어 목록 기반이라 놓치는 게 많다 — 참고 신호로만 본다.",
+      "ref": "ai-tells.md"
+    },
+    {
+      "id": "list-label-dash",
+      "label": "리스트 라벨 대시",
+      "regex": "^[ \\t]*(?:[-*+]|\\[[ x]\\])[ \\t]+\\S.*?\\s—\\s",
+      "flags": "M",
+      "layer": "advisory",
+      "threshold": 3,
+      "status": "verified",
+      "why": "'- 항목 — 설명' 구조. 한국어에서 리스트 항목의 라벨과 설명을 가르는 자연스러운 구분자는 콜론이다. 대시는 영어 조판 습관이라 티가 난다. 고칠 때: '- 항목: 설명'.",
+      "ref": "ai-tells.md 15-1"
+    },
+    {
+      "id": "dash-gloss",
+      "label": "대시로 뜻 감싸기",
+      "regex": "—\\s[^—\\n]{1,20}\\s—",
+      "layer": "advisory",
+      "status": "verified",
+      "why": "'사고 — 생각하다 — 한다'처럼 대시로 뜻풀이를 감싸는 구조. 한국어는 괄호를 쓴다. 고칠 때: '사고(생각하다)한다'.",
+      "ref": "ai-tells.md 15-1"
+    }
+  ]
+}
