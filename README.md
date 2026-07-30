@@ -120,4 +120,4 @@ python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
 
 ## 라이선스
 
-현재 별도 라이선스가 명시되어 있지 않습니다.
+이 프로젝트는 [Apache License 2.0](LICENSE)에 따라 배포됩니다.
