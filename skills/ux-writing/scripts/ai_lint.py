@@ -39,7 +39,20 @@ INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 # 확장자로 마크업 파일임이 분명할 때만 적용한다. 마크다운은 **볼드**·리스트가
 # 검사 대상 자체라서 제외 대상이 아니고, stdin(-)은 확장자가 없어 판단 근거가 없다.
 MARKUP_EXTS = {".html", ".htm", ".jsx", ".tsx", ".vue"}
-TAG_RE = re.compile(r"<[^<>]*>", re.S)
+# 주석은 태그보다 먼저 지운다. `<!-- 1 > 2 -->`의 부등호를 태그 규칙에 맡기면
+# 앞부분만 잘려 나가고 `2 -->`가 검사 입력에 남는다.
+COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
+# 태그 시작을 엄격히 본다. '<' 다음에 태그명 시작 문자(영문자, /, !, ?)가 와야
+# 태그로 인정한다. 그래야 산문의 부등호 쌍을 태그로 오인해 문장을 지우지 않는다 —
+# `재고가 10 < 20 이고 판매가 30 > 5`의 '< 20'은 공백이 뒤따라 매칭되지 않는다.
+# 산문을 마스킹하면 그 안의 진짜 티를 놓친다. 과다 마스킹이 과소 마스킹보다 나쁘다.
+# 따옴표로 감싼 속성값 안의 부등호는 태그를 끝내지 않는다 — `<div title="1 > 0">`.
+# 각 대안이 첫 글자로 갈리므로(따옴표냐 아니냐) 위치마다 선택이 하나뿐이고,
+# 백트래킹이 폭발하지 않는다.
+# 알려진 한계: JSX 중괄호 표현식(`<Component value={a > b}>`)은 첫 부등호에서
+# 잘린다. 중괄호 중첩은 정규식으로 온전히 못 가른다. 파서를 들이지 않기로 한
+# 결정에 따라 의도된 경계로 둔다 — 잔여물이 남을 뿐 줄·열 위치는 보존된다.
+TAG_RE = re.compile(r"""</?[A-Za-z!?](?:[^<>"']|"[^"]*"|'[^']*')*>""", re.S)
 
 
 def load_patterns():
@@ -64,27 +77,52 @@ def load_patterns():
             # 필수 필드가 없으면 이후 검증이 성립하지 않는다. 이 패턴만 건너뛴다.
             errors.append(f"pattern #{index} 필수 필드 누락: {', '.join(sorted(missing))}")
             continue
+
+        # 한 패턴의 오류는 problems에 모아 errors로 넘긴 뒤 그 패턴을 건너뛴다.
+        # 오류를 담기만 하고 계속 진행하면 잘못된 값이 뒤 코드로 흘러가
+        # TypeError로 터진다 — 설정 오류는 exit 2로 끝나야 하므로 반드시 건너뛴다.
+        problems = []
+
+        # 타입을 가장 먼저 본다. id/label이 리스트 같은 비해시 값이면
+        # 중복 검사의 집합 조회 자체가 TypeError를 낸다.
+        for key in ("id", "label", "regex", "layer", "status"):
+            if not isinstance(p[key], str):
+                problems.append(f"pattern #{index}의 {key}는 문자열이어야 합니다: {p[key]!r}")
+        if problems:
+            errors.extend(problems)
+            continue
+
+        # 여기부터 다섯 필수 필드가 모두 문자열이라 집합 조회·비교가 안전하다.
         if p["id"] in seen_ids or p["label"] in seen_labels:
-            errors.append(f"pattern #{index}의 id 또는 label이 중복됩니다: {p['id']}")
+            problems.append(f"pattern #{index}의 id 또는 label이 중복됩니다: {p['id']}")
         if p["layer"] not in allowed_layers:
-            errors.append(f"pattern {p['id']}의 layer가 잘못됐습니다: {p['layer']}")
+            problems.append(f"pattern {p['id']}의 layer가 잘못됐습니다: {p['layer']}")
         if p["status"] not in allowed_statuses:
-            errors.append(f"pattern {p['id']}의 status가 잘못됐습니다: {p['status']}")
-        if p.get("flags", "") not in ("", "M"):
-            errors.append(f"pattern {p['id']}의 flags가 잘못됐습니다: {p['flags']}")
+            problems.append(f"pattern {p['id']}의 status가 잘못됐습니다: {p['status']}")
+        raw_flags = p.get("flags", "")
+        if not isinstance(raw_flags, str) or raw_flags not in ("", "M"):
+            problems.append(f"pattern {p['id']}의 flags가 잘못됐습니다: {raw_flags!r}")
         threshold = p.get("threshold")
         if threshold is not None and (not isinstance(threshold, int) or threshold < 1):
-            errors.append(f"pattern {p['id']}의 threshold는 양의 정수여야 합니다")
+            problems.append(f"pattern {p['id']}의 threshold는 양의 정수여야 합니다")
+        if problems:
+            errors.extend(problems)
+            continue
+
         # ref는 사람이 읽을 참조 문서 링크다. 없어도 린트는 돈다 — 경고로만 남긴다.
+        # 타입이 틀려도 경고에 그친다. 치명이 아닌 항목이 린트를 멈추면 안 된다.
         ref = p.get("ref")
-        if ref:
+        if isinstance(ref, str) and ref.strip():
             ref_name = ref.split()[0]
             ref_path = os.path.join(os.path.dirname(PATTERNS_PATH), "..", "references", ref_name)
             if not os.path.isfile(ref_path):
                 warnings.append(f"pattern {p['id']}의 ref 문서가 없습니다: {ref_name}")
+        elif ref is not None:
+            warnings.append(f"pattern {p['id']}의 ref가 문서 이름이 아닙니다: {ref!r}")
+
         seen_ids.add(p["id"])
         seen_labels.add(p["label"])
-        flags = re.M if "M" in p.get("flags", "") else 0
+        flags = re.M if "M" in raw_flags else 0
         try:
             compiled = re.compile(p["regex"], flags)
         except re.error as exc:
@@ -169,6 +207,8 @@ def mask_markup(text):
         masked += sum(1 for c in s if c != "\n")
         return "".join("\n" if c == "\n" else " " for c in s)
 
+    # 주석 → 태그 순서. 주석 안의 부등호가 태그 규칙에 먼저 걸리면 안 된다.
+    text = COMMENT_RE.sub(blank, text)
     return TAG_RE.sub(blank, text), masked
 
 
@@ -365,7 +405,9 @@ def main():
     try:
         text = sys.stdin.read() if arg == "-" else open(arg, encoding="utf-8").read()
         patterns = load_patterns()
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+    # TypeError까지 잡는다. patterns.json의 값 타입이 틀려 어떤 경로로든 터지더라도
+    # 설정 문제는 traceback이 아니라 exit 2로 끝나야 한다.
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError, TypeError) as exc:
         print(f"UX lint 입력 또는 설정 오류: {exc}", file=sys.stderr)
         sys.exit(2)
     # 순서가 중요하다. 코드블록을 먼저 비워야 코드블록 안의 `<div>` 예시가
