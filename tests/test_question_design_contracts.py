@@ -13,6 +13,8 @@ class QuestionDesignResidualContractTests(unittest.TestCase):
         self.assertIn("사이클 수준 `STATUS: RESIDUAL`", text)
         self.assertIn("모든 RESIDUAL → AGENT 4", text)
         self.assertIn("RESIDUAL 사용자 결정 게이트", text)
+        self.assertNotIn("잔여 위험`으로 명시해 다음 단계에 전달할 수 있다", text)
+        self.assertIn("동일 구조적 이슈가\n  2회 연속 남거나 반복 상한에 닿으면", text)
 
     def test_agent4_fallback_preserves_latest_coordinator_draft_and_risks(self):
         text = (ROOT / "references" / "mode-b.md").read_text(encoding="utf-8")
@@ -28,6 +30,13 @@ class QuestionDesignResidualContractTests(unittest.TestCase):
             text = (ROOT / "agents" / filename).read_text(encoding="utf-8")
             self.assertIn("`ISSUES | CLEAN`", text)
             self.assertIn("`RESIDUAL`을 직접 출력하거나 보완본을", text)
+
+    def test_lite_clean_and_ambiguity_have_deterministic_routes(self):
+        text = (ROOT / "references" / "mode-b.md").read_text(encoding="utf-8")
+
+        self.assertIn("Lite에서 AGENT 1이 첫 회차에 CLEAN이면", text)
+        self.assertIn("`AMBIGUITY: outcome-changing`을 반환하면", text)
+        self.assertIn("사용자에게는 `NO_BLOCKERS_IN_SCOPE`로 표현한다", text)
 
 
 if __name__ == "__main__":
