@@ -79,6 +79,9 @@ npx skills remove --global
 agent-skills/
 ├── README.md
 └── skills/
+    ├── domain-ontology/
+    │   ├── SKILL.md
+    │   └── README.md
     ├── question-design/
     │   ├── SKILL.md
     │   ├── agents/
@@ -117,6 +120,15 @@ python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
 
 스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트를
 실행하려면 Python 3.8 이상이 필요합니다.
+
+## 검증
+
+스킬 frontmatter, 로컬 참조, README 자산 목록과 전체 회귀 테스트를 실행합니다.
+
+```bash
+python3 scripts/validate_skills.py
+python3 -m unittest discover -s tests -v
+```
 
 ## 라이선스
 
