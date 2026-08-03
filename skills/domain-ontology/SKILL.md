@@ -38,38 +38,24 @@ guess schema, paths, or commands from this skill.
 
 ## Routing
 
-### Read path — automatic when relevant
+### Read path — 회수 없이 답하지 않는다
 
-Use read-only queries without asking first when accumulated knowledge could materially change the
-answer: strategy, product, competition, legal context, personal priorities, prior decisions, or
-cross-session history. Prefer the graph views and cite what was found.
+도메인 질문이면 순서는 **스코프 → 조회 → 근거 인용 → 답**이다. 사용자에게 먼저 묻지 않고
+조회한다. 이 순서를 건너뛴 답은 이 스킬을 쓰지 않은 것과 같다 — 조회를 빼면 축적된 지식 대신
+모델의 일반론이 나간다.
 
-Before querying, verify that both `~/.ontology/AGENTS.md` and
-`~/.ontology/ontology.db` are readable, then follow the read contract in `AGENTS.md`. If either is
-missing, do not invent SQL or treat the failure as "no accumulated knowledge". State that the
-ontology is not configured, then answer from the current conversation and files only.
+조회 전에 **활성 tenant/출력 스코프**를 고정한다. 회사 업무 → `company + shared` · 개인 →
+`personal + shared` · 일하는 방식(방법론·도구론·에이전트 하네스) → `shared`. 정말 갈리고 그
+선택이 답을 바꾸면 묻고, 아니면 좁은 쪽을 가정하되 밝히고 진행한다.
 
-Before every read query, set an **active tenant/output scope** from the user's request:
+**절차의 정본은 `~/.ontology/docs/recall.md`다. 조회 전에 읽고 그대로 따른다** — 단계별 SQL,
+스코프 누수 금지, 근거 표기 형식이 거기 있다. 여기 복제하지 않는 이유는 한 규칙이 두 곳에 각자
+적히면 갈라지기 때문이다. `~/.ontology/AGENTS.md`와 `~/.ontology/ontology.db`가 읽히는지도 함께
+확인한다. 둘 중 하나가 없으면 SQL을 지어내지 말고 "온톨로지가 구성되어 있지 않다"고 밝힌 뒤
+지금 대화·파일만으로 답한다.
 
-- Company work defaults to `company + shared`; personal work defaults to `personal + shared`;
-  working-method questions default to `shared`. If the relevant tenant is genuinely unclear and
-  the choice would change the answer, ask; otherwise state the narrow assumption and proceed.
-- Apply that scope both to SQL predicates and to the response. Shared concept/topic nodes do not
-  authorize exposing documents, claims, evidence, counts, gaps, or even the existence of material
-  from an out-of-scope tenant.
-- Never disclose company-derived claims or counts in a personal answer, or personal-derived claims
-  or counts in a company answer, unless the user explicitly requests cross-tenant comparison or
-  cross-session history. For that explicit request, name the expanded scope before querying.
-- Prefer tenant-filterable document/claim evidence over unscoped aggregate views. If a bridge view
-  mixes tenants and cannot be safely filtered, query the underlying tenant-bearing tables or omit
-  the aggregate rather than infer or reveal the other tenant.
-- Every bridge or aggregate query must carry an active-tenant predicate in the same SQL statement
-  or use an authoritative tenant-scoped wrapper from `AGENTS.md`. Never run an unfiltered bridge
-  query first and discard out-of-scope rows afterward.
-
-Do not query for code tasks, simple editing, general facts, casual questions, or requests fully
-answerable from the current files. A forced lookup is not useful evidence and would distort
-knowledge-demand counts.
+회수가 0건이면 `KB에 없음`이라고 쓰고 일반론임을 밝힌다. 조회 실패를 "축적된 지식 없음"으로
+바꿔 말하지 않는다 — 둘은 다른 사실이고, 섞으면 KB의 빈 곳이 영영 안 보인다.
 
 ### Write path — explicit consent only
 
@@ -89,10 +75,8 @@ knowledge-demand counts.
      required on the commit command. Do not stage
      extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; those remain in
      the repository's normal daily commit flow.
-4. **Surface connections.** Within the active tenant/output scope, query tenant-filtered evidence
-   from `v_claim_concept` or the tenant-bearing tables. Use `v_concept_bridge` and
-   `v_topic_bridge` only through an authoritative tenant-scoped query; otherwise omit them. What
-   does this connect to, reinforce, contradict, or reveal as a gap?
+4. **Surface connections.** Read path의 스코프 규칙과 `recall.md` 절차를 그대로 적용해 조회한다.
+   무엇에 연결되고, 무엇을 강화·모순시키고, 무엇이 갭으로 드러나는가?
 5. **Proceed.** Continue with the user's actual task, grounded in the KB and citing the graph. Ingesting is the setup, not the whole task.
 
 **적재 거절 시:** 새로 넣지 말고 기존 온톨로지만 읽기전용으로 조회(Step 4의 뷰)한 뒤 Step 5로 바로 — 답은 기존 KB에 근거해 준다.
@@ -166,13 +150,12 @@ claim을 예쁘게 구조화하기 전에 도메인 사실·용어·최신성·�
 - **Never run `bin/build.py` full rebuild** — breaks Phase-2 file-id links. Incremental only.
 - **Never move a document between tenants by re-loading it** — `docs.py` errors out on tenant change. Company work stays company; personal material stays personal.
 - **Honesty:** only claims the source actually states; mark weak/unverified sources as low-confidence in the doc and its claims. Don't fabricate.
-- **Read scope:** every query and answer must stay inside the active tenant/output scope. Shared
-  graph nodes are not permission to reveal out-of-scope tenant claims or counts.
+- **Read scope:** 조회도 답변도 활성 스코프 안에 머문다 — 공유 노드는 스코프 밖 노출 권한이 아니다.
 
 ## Common mistakes
 - Ingesting silently, or not asking which tenant.
 - Inventing new concept names for ones that exist → fragments the graph. Reuse.
 - Writing the extraction JSON's `path` under the wrong tenant's `sources/` (load warns — don't ignore it).
 - Leaving a successfully ingested raw source uncommitted, or mixing generated/unrelated files into its provenance commit.
-- Answering a domain question cold without querying the ontology first.
+- Answering a domain question cold without querying, or answering with no 근거 줄(형식은 `recall.md`).
 - Stopping after ingest — after loading, proceed with the user's real request.
