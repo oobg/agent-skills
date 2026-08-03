@@ -26,7 +26,7 @@ Durable domain knowledge should **compound**, not be re-derived per question. Wh
 
 `~/.ontology/AGENTS.md` is the authoritative map and common-command reference
 (`CLAUDE.md` and `GEMINI.md` are symlinks to it). **REQUIRED: read it before
-ingesting**. Follow the routed workflow and conventions in the files it points to; do not
+querying or ingesting**. Follow the routed workflow and conventions in the files it points to; do not
 guess schema, paths, or commands from this skill.
 
 ## When to use
@@ -44,6 +44,11 @@ Use read-only queries without asking first when accumulated knowledge could mate
 answer: strategy, product, competition, legal context, personal priorities, prior decisions, or
 cross-session history. Prefer the graph views and cite what was found.
 
+Before querying, verify that both `~/.ontology/AGENTS.md` and
+`~/.ontology/ontology.db` are readable, then follow the read contract in `AGENTS.md`. If either is
+missing, do not invent SQL or treat the failure as "no accumulated knowledge". State that the
+ontology is not configured, then answer from the current conversation and files only.
+
 Before every read query, set an **active tenant/output scope** from the user's request:
 
 - Company work defaults to `company + shared`; personal work defaults to `personal + shared`;
@@ -58,6 +63,9 @@ Before every read query, set an **active tenant/output scope** from the user's r
 - Prefer tenant-filterable document/claim evidence over unscoped aggregate views. If a bridge view
   mixes tenants and cannot be safely filtered, query the underlying tenant-bearing tables or omit
   the aggregate rather than infer or reveal the other tenant.
+- Every bridge or aggregate query must carry an active-tenant predicate in the same SQL statement
+  or use an authoritative tenant-scoped wrapper from `AGENTS.md`. Never run an unfiltered bridge
+  query first and discard out-of-scope rows afterward.
 
 Do not query for code tasks, simple editing, general facts, casual questions, or requests fully
 answerable from the current files. A forced lookup is not useful evidence and would distort
@@ -76,10 +84,15 @@ knowledge-demand counts.
    - Extract → `tenants/<tenant>/extractions/docs/<name>.json`. The JSON's `path` must point at that tenant's `sources/`. **Query `concepts` first and reuse existing names** so it merges into the graph instead of fragmenting.
    - Load: `python3 bin/docs.py load <json> --tenant <company|personal|shared>`. **`--tenant` is required** — it is the boundary for all three tenants in the shared DB.
    - After load and lint pass for this ingestion, commit the exact raw source path immediately:
-     `git add -- tenants/<tenant>/sources/<file>` and commit it separately. Do not stage
+     `git add -- tenants/<tenant>/sources/<file>` followed by
+     `git commit -m "ingest: add <file>" -- tenants/<tenant>/sources/<file>`. The pathspec is
+     required on the commit command. Do not stage
      extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; those remain in
      the repository's normal daily commit flow.
-4. **Surface connections.** Query the views — `v_concept_bridge` (coverage/gaps, per-tenant doc counts), `v_topic_bridge` (topic-level rollup), `v_claim_concept` (evidence). What does this connect to, reinforce, contradict, or reveal as a gap?
+4. **Surface connections.** Within the active tenant/output scope, query tenant-filtered evidence
+   from `v_claim_concept` or the tenant-bearing tables. Use `v_concept_bridge` and
+   `v_topic_bridge` only through an authoritative tenant-scoped query; otherwise omit them. What
+   does this connect to, reinforce, contradict, or reveal as a gap?
 5. **Proceed.** Continue with the user's actual task, grounded in the KB and citing the graph. Ingesting is the setup, not the whole task.
 
 **적재 거절 시:** 새로 넣지 말고 기존 온톨로지만 읽기전용으로 조회(Step 4의 뷰)한 뒤 Step 5로 바로 — 답은 기존 KB에 근거해 준다.
@@ -97,8 +110,9 @@ knowledge-demand counts.
   사용자 직접 진술과 제3자 평가가 섞여 있음 / 회사·개인 경계가 실질적으로 갈림.
 - **질문하지 않음:** 앞선 대화에서 이미 답이 나옴 / 사용자가 tenant와 적재를 명시함 /
   파일명·형식 같은 가역적 세부사항.
-- 침묵을 동의로 간주하지 않는다. 다만 이미 승인된 적재 작업에 사용자가 같은 목적의
-  자료를 이어서 추가하면 그 범위 안에서 진행하고, commentary에 해석을 밝힌다.
+- 침묵을 동의로 간주하지 않는다. 이미 승인된 적재 작업에 사용자가 같은 목적의
+  자료를 이어서 추가하면 적재 의도는 승인 범위 안에서 이어갈 수 있지만,
+  **tenant는 문서마다 다시 확정한다. tenant 승계는 이 예외에 포함되지 않는다.**
 
 ### 2. Domain-first gate — 구조보다 실체가 먼저
 
@@ -143,11 +157,12 @@ claim을 예쁘게 구조화하기 전에 도메인 사실·용어·최신성·�
 문구 취향이나 추가 해석만 남았다면 종료한다. 미해결 구조 위험은 숨기지 말고 사용자에게 알린다.
 
 ## Guards
-- **Ask before ingesting** — tenant + consent. Never silent.
+- **Ask before ingesting** — tenant + consent. Never silent. Tenant confirmation is per document
+  and is never inherited from a previous ingestion.
 - **`--tenant` on every `docs.py load`.** Omitting it aborts by design; do not work around it.
 - **`sources/` is immutable** raw provenance; DB and extractions are generated.
 - **Commit each successfully ingested raw source immediately and separately.** Use exact paths;
-  never `git add -A` or `git commit -a` in a dirty ontology worktree.
+  never `git add -A`, `git commit -a`, or a pathspec-free `git commit` in a dirty ontology worktree.
 - **Never run `bin/build.py` full rebuild** — breaks Phase-2 file-id links. Incremental only.
 - **Never move a document between tenants by re-loading it** — `docs.py` errors out on tenant change. Company work stays company; personal material stays personal.
 - **Honesty:** only claims the source actually states; mark weak/unverified sources as low-confidence in the doc and its claims. Don't fabricate.
