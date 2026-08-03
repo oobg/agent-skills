@@ -34,6 +34,13 @@ MIDDLE_DOTS = "·・ㆍ‧"
 FENCE_RE = re.compile(r"```.*?```", re.S)
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 
+# 마크업 태그 — 문장이 아니라 구조라서 검사에서 제외한다.
+# `</td>` 같은 줄은 마지막 글자가 '>'라서 종결어미 검사가 '>'를 어미로 오인한다.
+# 확장자로 마크업 파일임이 분명할 때만 적용한다. 마크다운은 **볼드**·리스트가
+# 검사 대상 자체라서 제외 대상이 아니고, stdin(-)은 확장자가 없어 판단 근거가 없다.
+MARKUP_EXTS = {".html", ".htm", ".jsx", ".tsx", ".vue"}
+TAG_RE = re.compile(r"<[^<>]*>", re.S)
+
 
 def load_patterns():
     with open(PATTERNS_PATH, encoding="utf-8") as f:
@@ -44,37 +51,53 @@ def load_patterns():
     allowed_statuses = {"verified", "experimental"}
     seen_ids, seen_labels = set(), set()
     out = []
+    # 패턴 하나에서 바로 멈추면 뒤 패턴의 오류가 영영 안 보인다.
+    # patterns[0]의 문제 때문에 patterns[1]의 id 중복을 못 보는 식이다.
+    # 그래서 치명 오류는 모아 두고 루프가 끝난 뒤 한 번에 보고한다.
+    errors, warnings = [], []
     for index, p in enumerate(data["patterns"], 1):
         if not isinstance(p, dict):
-            raise ValueError(f"pattern #{index}는 객체여야 합니다")
+            errors.append(f"pattern #{index}는 객체여야 합니다")
+            continue
         missing = {"id", "label", "regex", "layer", "status"} - set(p)
         if missing:
-            raise ValueError(f"pattern #{index} 필수 필드 누락: {', '.join(sorted(missing))}")
+            # 필수 필드가 없으면 이후 검증이 성립하지 않는다. 이 패턴만 건너뛴다.
+            errors.append(f"pattern #{index} 필수 필드 누락: {', '.join(sorted(missing))}")
+            continue
         if p["id"] in seen_ids or p["label"] in seen_labels:
-            raise ValueError(f"pattern #{index}의 id 또는 label이 중복됩니다")
+            errors.append(f"pattern #{index}의 id 또는 label이 중복됩니다: {p['id']}")
         if p["layer"] not in allowed_layers:
-            raise ValueError(f"pattern {p['id']}의 layer가 잘못됐습니다: {p['layer']}")
+            errors.append(f"pattern {p['id']}의 layer가 잘못됐습니다: {p['layer']}")
         if p["status"] not in allowed_statuses:
-            raise ValueError(f"pattern {p['id']}의 status가 잘못됐습니다: {p['status']}")
+            errors.append(f"pattern {p['id']}의 status가 잘못됐습니다: {p['status']}")
         if p.get("flags", "") not in ("", "M"):
-            raise ValueError(f"pattern {p['id']}의 flags가 잘못됐습니다: {p['flags']}")
+            errors.append(f"pattern {p['id']}의 flags가 잘못됐습니다: {p['flags']}")
         threshold = p.get("threshold")
         if threshold is not None and (not isinstance(threshold, int) or threshold < 1):
-            raise ValueError(f"pattern {p['id']}의 threshold는 양의 정수여야 합니다")
+            errors.append(f"pattern {p['id']}의 threshold는 양의 정수여야 합니다")
+        # ref는 사람이 읽을 참조 문서 링크다. 없어도 린트는 돈다 — 경고로만 남긴다.
         ref = p.get("ref")
         if ref:
             ref_name = ref.split()[0]
             ref_path = os.path.join(os.path.dirname(PATTERNS_PATH), "..", "references", ref_name)
             if not os.path.isfile(ref_path):
-                raise ValueError(f"pattern {p['id']}의 ref가 없습니다: {ref_name}")
+                warnings.append(f"pattern {p['id']}의 ref 문서가 없습니다: {ref_name}")
         seen_ids.add(p["id"])
         seen_labels.add(p["label"])
         flags = re.M if "M" in p.get("flags", "") else 0
         try:
             compiled = re.compile(p["regex"], flags)
         except re.error as exc:
-            raise ValueError(f"pattern {p['id']}의 regex가 잘못됐습니다: {exc}") from exc
+            errors.append(f"pattern {p['id']}의 regex가 잘못됐습니다: {exc}")
+            continue
         out.append({**p, "_rx": compiled})
+
+    for w in warnings:
+        print(f"UX lint 경고: {w}", file=sys.stderr)
+    if errors:
+        raise ValueError(
+            f"patterns.json 오류 {len(errors)}건:\n" + "\n".join(f"  - {e}" for e in errors)
+        )
     return out
 
 
@@ -120,6 +143,33 @@ def mask_code(text):
         else:
             out.append(line)
     return "\n".join(out), skipped
+
+
+def is_markup_path(arg):
+    """대상이 마크업 파일인지 확장자로 판단한다. stdin(-)은 판단 근거가 없어 False."""
+    if arg == "-":
+        return False
+    return os.path.splitext(arg)[1].lower() in MARKUP_EXTS
+
+
+def mask_markup(text):
+    """마크업 태그를 같은 길이의 공백으로 바꾼다.
+
+    지우지 않고 공백으로 채우는 이유: 줄 번호와 열 위치가 그대로 남아야
+    snippet 출력이 실제 파일 위치를 가리킨다.
+    `&lt;a href&gt;` 같은 인라인 엔티티는 '<' 문자가 아니라서 마스킹되지 않는다 —
+    화면에 보이는 글자이므로 검사 대상으로 남는 게 맞다.
+    반환: (마스킹된 텍스트, 마스킹한 글자 수)
+    """
+    masked = 0
+
+    def blank(m):
+        nonlocal masked
+        s = m.group()
+        masked += sum(1 for c in s if c != "\n")
+        return "".join("\n" if c == "\n" else " " for c in s)
+
+    return TAG_RE.sub(blank, text), masked
 
 
 def snippet(line, idx, width=18):
@@ -318,14 +368,21 @@ def main():
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         print(f"UX lint 입력 또는 설정 오류: {exc}", file=sys.stderr)
         sys.exit(2)
+    # 순서가 중요하다. 코드블록을 먼저 비워야 코드블록 안의 `<div>` 예시가
+    # 태그 마스킹에 걸리지 않는다 — '코드블록 안은 검사 제외' 계약을 지키는 순서다.
     body, skipped = mask_code(text)
+    masked_chars = 0
+    if is_markup_path(arg):
+        body, masked_chars = mask_markup(body)
     hard, advisory = lint(body, patterns)
     _, used = check_register_mix(body)
-    streaks = check_ending_streak(text)
+    streaks = check_ending_streak(body)
     thresholds = {p["label"]: p["threshold"] for p in patterns if p.get("threshold")}
     blocking = report(hard, advisory, used, thresholds, streaks)
     if skipped:
         print(f"  (코드블록 {skipped}줄은 검사 제외 — 예시·명령어는 의도된 것으로 본다)")
+    if masked_chars:
+        print(f"  (마크업 태그 {masked_chars}자는 검사 제외 — 문장이 아니라 구조로 본다)")
     sys.exit(1 if blocking else 0)
 
 
