@@ -25,6 +25,7 @@ references/register.md의 표를 읽어, 대상 파일의 경로로 적용할 �
 종료 코드: 어긋난 문장이 있으면 1, 없으면 0.
 """
 
+import argparse
 import sys
 import os
 import re
@@ -151,31 +152,28 @@ def check(text, target):
 
 def parse_args(argv):
     """(대상파일, 해석경로, register경로) 반환. --as 플래그 처리."""
-    as_path, rest, i = None, [], 0
-    while i < len(argv):
-        a = argv[i]
-        if a == "--as":
-            i += 1
-            as_path = argv[i] if i < len(argv) else None
-        elif a.startswith("--as="):
-            as_path = a[len("--as="):]
-        else:
-            rest.append(a)
-        i += 1
-    if not rest:
-        return None, None, None
-    target = rest[0]
-    reg_path = rest[1] if len(rest) > 1 else find_default_register()
-    return target, (as_path or target), reg_path
+    parser = argparse.ArgumentParser(
+        description="문장 끝맺음(어체) 검사",
+    )
+    parser.add_argument("target", help="검사할 파일")
+    parser.add_argument("register", nargs="?", default=find_default_register())
+    parser.add_argument("--as", dest="as_path", metavar="PATH")
+    args = parser.parse_args(argv)
+    return args.target, (args.as_path or args.target), args.register
 
 
 def main():
     target_file, resolve_path, reg_path = parse_args(sys.argv[1:])
-    if target_file is None:
-        print("사용법: python register_check.py <대상파일> [--as <실제적용경로>] [register.md 경로]")
+    try:
+        text = open(target_file, encoding="utf-8").read()
+    except (OSError, UnicodeError) as exc:
+        print(f"검사 대상을 읽을 수 없습니다: {target_file}: {exc}", file=sys.stderr)
         sys.exit(2)
-
-    global_reg, projects = parse_register(reg_path)
+    try:
+        global_reg, projects = parse_register(reg_path)
+    except (OSError, UnicodeError) as exc:
+        print(f"register 설정을 읽을 수 없습니다: {reg_path}: {exc}", file=sys.stderr)
+        sys.exit(2)
     target, source, unmatched = resolve(resolve_path, global_reg, projects)
 
     print("=" * 52)
@@ -197,7 +195,6 @@ def main():
 
     print(f"\n  적용 어체: {LABEL[target]}  ({source})")
 
-    text = open(target_file, encoding="utf-8").read()
     hits = check(text, target)
 
     print("\n" + "-" * 52)

@@ -9,8 +9,8 @@ ai_lint.py — UX 라이팅 스킬의 '기계적 AI 티' 린트 게이트.
 때문이다. 그래서 내보내기 직전에 무조건 돌리는 게이트로 만든다.
 
 사용법:
-    python ai_lint.py <파일경로>
-    echo "...텍스트..." | python ai_lint.py -
+    python3 ai_lint.py <파일경로>
+    echo "...텍스트..." | python3 ai_lint.py -
 
 종료 코드: HARD 항목이 하나라도 있으면 1 (출력 보류), 없으면 0 (통과).
 ADVISORY 항목은 종료 코드에 영향을 주지 않고 참고용으로만 보고한다.
@@ -38,10 +38,43 @@ INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 def load_patterns():
     with open(PATTERNS_PATH, encoding="utf-8") as f:
         data = json.load(f)
+    if data.get("version") != "1.0" or not isinstance(data.get("patterns"), list):
+        raise ValueError("patterns.json은 version 1.0과 patterns 배열이 필요합니다")
+    allowed_layers = {"hard", "advisory"}
+    allowed_statuses = {"verified", "experimental"}
+    seen_ids, seen_labels = set(), set()
     out = []
-    for p in data["patterns"]:
+    for index, p in enumerate(data["patterns"], 1):
+        if not isinstance(p, dict):
+            raise ValueError(f"pattern #{index}는 객체여야 합니다")
+        missing = {"id", "label", "regex", "layer", "status"} - set(p)
+        if missing:
+            raise ValueError(f"pattern #{index} 필수 필드 누락: {', '.join(sorted(missing))}")
+        if p["id"] in seen_ids or p["label"] in seen_labels:
+            raise ValueError(f"pattern #{index}의 id 또는 label이 중복됩니다")
+        if p["layer"] not in allowed_layers:
+            raise ValueError(f"pattern {p['id']}의 layer가 잘못됐습니다: {p['layer']}")
+        if p["status"] not in allowed_statuses:
+            raise ValueError(f"pattern {p['id']}의 status가 잘못됐습니다: {p['status']}")
+        if p.get("flags", "") not in ("", "M"):
+            raise ValueError(f"pattern {p['id']}의 flags가 잘못됐습니다: {p['flags']}")
+        threshold = p.get("threshold")
+        if threshold is not None and (not isinstance(threshold, int) or threshold < 1):
+            raise ValueError(f"pattern {p['id']}의 threshold는 양의 정수여야 합니다")
+        ref = p.get("ref")
+        if ref:
+            ref_name = ref.split()[0]
+            ref_path = os.path.join(os.path.dirname(PATTERNS_PATH), "..", "references", ref_name)
+            if not os.path.isfile(ref_path):
+                raise ValueError(f"pattern {p['id']}의 ref가 없습니다: {ref_name}")
+        seen_ids.add(p["id"])
+        seen_labels.add(p["label"])
         flags = re.M if "M" in p.get("flags", "") else 0
-        out.append({**p, "_rx": re.compile(p["regex"], flags)})
+        try:
+            compiled = re.compile(p["regex"], flags)
+        except re.error as exc:
+            raise ValueError(f"pattern {p['id']}의 regex가 잘못됐습니다: {exc}") from exc
+        out.append({**p, "_rx": compiled})
     return out
 
 
@@ -275,12 +308,16 @@ def main():
     except (ImportError, AttributeError, ValueError):
         pass  # Windows에는 SIGPIPE가 없다
 
-    if len(sys.argv) < 2:
-        print("사용법: python ai_lint.py <파일경로>  또는  ... | python ai_lint.py -")
+    if len(sys.argv) != 2:
+        print("사용법: python3 ai_lint.py <파일경로>  또는  ... | python3 ai_lint.py -")
         sys.exit(2)
     arg = sys.argv[1]
-    text = sys.stdin.read() if arg == "-" else open(arg, encoding="utf-8").read()
-    patterns = load_patterns()
+    try:
+        text = sys.stdin.read() if arg == "-" else open(arg, encoding="utf-8").read()
+        patterns = load_patterns()
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        print(f"UX lint 입력 또는 설정 오류: {exc}", file=sys.stderr)
+        sys.exit(2)
     body, skipped = mask_code(text)
     hard, advisory = lint(body, patterns)
     _, used = check_register_mix(body)

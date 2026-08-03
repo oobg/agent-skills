@@ -25,6 +25,7 @@ ai_lint.py가 보편적 기계 티를 본다면, 이건 이 프로젝트에서�
 종료 코드: 위반이 있으면 1, 없으면 0.
 """
 
+import argparse
 import sys
 import os
 import re
@@ -120,31 +121,28 @@ def check(text, pairs):
 
 def parse_args(argv):
     """(대상파일, 해석경로, glossary경로) 반환. --as 플래그 처리."""
-    as_path, rest, i = None, [], 0
-    while i < len(argv):
-        a = argv[i]
-        if a == "--as":
-            i += 1
-            as_path = argv[i] if i < len(argv) else None
-        elif a.startswith("--as="):
-            as_path = a[len("--as="):]
-        else:
-            rest.append(a)
-        i += 1
-    if not rest:
-        return None, None, None
-    target = rest[0]
-    glossary_path = rest[1] if len(rest) > 1 else find_default_glossary()
-    return target, (as_path or target), glossary_path
+    parser = argparse.ArgumentParser(
+        description="프로젝트 고정 표기 검사",
+    )
+    parser.add_argument("target", help="검사할 파일")
+    parser.add_argument("glossary", nargs="?", default=find_default_glossary())
+    parser.add_argument("--as", dest="as_path", metavar="PATH")
+    args = parser.parse_args(argv)
+    return args.target, (args.as_path or args.target), args.glossary
 
 
 def main():
     target, resolve_path, glossary_path = parse_args(sys.argv[1:])
-    if target is None:
-        print("사용법: python glossary_check.py <대상파일> [--as <실제적용경로>] [glossary.md 경로]")
+    try:
+        text = open(target, encoding="utf-8").read()
+    except (OSError, UnicodeError) as exc:
+        print(f"검사 대상을 읽을 수 없습니다: {target}: {exc}", file=sys.stderr)
         sys.exit(2)
-
-    global_pairs, project_pairs = parse_glossary(glossary_path)
+    try:
+        global_pairs, project_pairs = parse_glossary(glossary_path)
+    except (OSError, UnicodeError) as exc:
+        print(f"glossary 설정을 읽을 수 없습니다: {glossary_path}: {exc}", file=sys.stderr)
+        sys.exit(2)
     pairs, matched = resolve_pairs(resolve_path, global_pairs, project_pairs)
 
     print("=" * 52)
@@ -169,7 +167,6 @@ def main():
           ", ".join(f"{g}→{p}" for g, p in pairs[:8]) +
           (" …" if len(pairs) > 8 else ""))
 
-    text = open(target, encoding="utf-8").read()
     hits = check(text, pairs)
 
     print("\n" + "-" * 52)

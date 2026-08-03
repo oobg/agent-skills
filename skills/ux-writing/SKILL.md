@@ -291,8 +291,13 @@ Claude가 직접 쓴 제품 UI·외부 README·가이드·산문은 내보내기
 
 **표준·고위험 산출물 필수 (HARD 0이어야 통과)**
 
-- 파일·긴 글이면: `python scripts/ai_lint.py <파일>` → HARD 0 확인. 아니면 고치고 재실행.
-- 글로서리가 차 있으면: `python scripts/glossary_check.py <파일>`도. 비면 자동 생략.
+- 파일·긴 글이면: 먼저 이 `SKILL.md`가 있는 폴더를 확인하고
+  `python3 <ux-writing 스킬 폴더>/scripts/ai_lint.py <파일>`을 실행한다. 채팅 출력은
+  `printf '%s' "<텍스트>" | python3 <ux-writing 스킬 폴더>/scripts/ai_lint.py -`로
+  검사한다. HARD 0이 아니면 고치고 재실행한다.
+- 글로서리가 차 있으면
+  `python3 <ux-writing 스킬 폴더>/scripts/glossary_check.py <파일>`도 실행한다. 비면
+  자동 생략한다.
 
 **ai_lint가 보는 것** (패턴은 `scripts/patterns.json`)
 
@@ -314,11 +319,15 @@ Claude가 직접 쓴 제품 UI·외부 README·가이드·산문은 내보내기
 프로젝트를 찾는다. claude.ai처럼 출력을 임시 폴더에 만들면 실제 경로와 안 맞아
 **프로젝트 규칙이 조용히 안 걸린다.** 적용처를 알면 `--as <실제경로>`, 모르면 묻는다.
 
-**권장** — 어체가 지정돼 있으면 `python scripts/register_check.py <파일>`. 미지정이면 자동 생략.
+**권장** — 어체가 지정돼 있으면
+`python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>`을 실행한다.
+미지정이면 자동 생략한다.
 
 HARD 0은 스크립트가 보는 기계적 축에 차단 항목이 없다는 뜻일 뿐, 좋은 문장이나
 의미 보존을 보증하지 않는다. 의미 과장·장르·보이스·인과 같은 판단형은 체크리스트와
 필요 시 `agents/copy-auditor.md`로 본다.
+현재 HARD 자동 검사는 이중 피동 같은 결정적 기계 오류를 잡는 **smoke check**이며,
+문장 전체의 품질 인증이 아니다.
 
 ### 문구 유형별 먼저 보는 원칙
 
