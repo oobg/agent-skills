@@ -1,9 +1,18 @@
 # Agent Skills
 
-AI 에이전트가 질문을 더 잘 설계하고, 사용자에게 보이는 문장을 더 자연스럽게
-쓰도록 돕는 스킬 모음입니다.
+AI 에이전트가 질문을 더 잘 설계하고, 사용자에게 보이는 문장과 변경 이력을 더
+정확하게 쓰도록 돕는 스킬 모음입니다.
 
 ## 포함된 스킬
+
+### Conventional Commits
+
+실제 diff를 근거로 Conventional Commits 1.0.0 형식의 한국어 커밋 메시지와 커밋
+분할안을 만듭니다. 명시적으로 요청받은 경우에만 커밋하며 push 권한은 분리합니다.
+
+자세한 내용은
+[`skills/conventional-commits/SKILL.md`](skills/conventional-commits/SKILL.md)에서
+확인할 수 있습니다.
 
 ### Domain Ontology
 
@@ -79,6 +88,9 @@ npx skills remove --global
 agent-skills/
 ├── README.md
 └── skills/
+    ├── conventional-commits/
+    │   ├── SKILL.md
+    │   └── README.md
     ├── domain-ontology/
     │   ├── SKILL.md
     │   └── README.md
