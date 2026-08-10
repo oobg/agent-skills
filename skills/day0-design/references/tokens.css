@@ -1,0 +1,67 @@
+/* @day0/ui 디자인 토큰 — 모든 컴포넌트 CSS는 이 변수만 참조한다.
+ *
+ * source: day0-work/packages/ui/src/tokens.css (live SSOT snapshot)
+ * note: docs/DESIGN-REFRESH.md §2 (radius 16/12, old greys) is superseded draft.
+ * identity: borderless default (Card plain); outlined + shadow-card are exceptions.
+ * density: 6:3:1 bg:text:point · tight CJK tracking · minimal shadow
+ */
+:root {
+  /* color — 브랜드 (톤다운: 채도·명도 살짝 누름) */
+  --d0-blue: #3d7de5;
+  --d0-blue-dark: #2f66c4;
+  --d0-blue-light: #eef3fb;
+
+  /* color — 뉴트럴 (배경 60% 층) */
+  --d0-grey-50: #f7f8fa;
+  --d0-grey-100: #eef0f3;
+  --d0-grey-200: #e2e5ea;
+  --d0-grey-300: #c9ced6;
+  --d0-grey-400: #a8b0bb;
+  --d0-grey-500: #87919e;
+  --d0-grey-600: #68707c;
+  --d0-grey-700: #4c5460;
+  --d0-grey-800: #323942;
+  --d0-grey-900: #1a1f26;
+
+  /* color — 시맨틱 (파스텔 배경 + 톤다운 전경) */
+  --d0-green: #1f9d61;
+  --d0-green-bg: #edf7f1;
+  --d0-red: #e15b66;
+  --d0-red-bg: #fdf0f1;
+  --d0-orange: #e09530;
+  --d0-orange-bg: #fdf6ea;
+
+  /* radius — 절제 */
+  --d0-radius-card: 14px;
+  --d0-radius-control: 10px;
+  --d0-radius-sm: 8px;
+
+  /* shadow — 보더 중심, 그림자는 흔적만 */
+  --d0-shadow-card: 0 1px 2px rgba(26, 31, 38, 0.04);
+  --d0-shadow-overlay: 0 10px 28px rgba(26, 31, 38, 0.1);
+
+  /* motion */
+  --d0-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --d0-dur-fast: 140ms;
+  --d0-dur: 220ms;
+
+  /* typography */
+  --d0-font:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  /* 한글 기본 자간이 넓어 보이므로 본문 -2%, 제목 -2.5~3% */
+  --d0-tracking-body: -0.02em;
+  --d0-tracking-title: -0.028em;
+  --d0-tracking-display: -0.032em;
+  --d0-leading-body: 1.55;
+  --d0-leading-title: 1.22;
+  --d0-leading-display: 1.15;
+
+  /* density — 관리자 고밀도(B2B) 스케일 */
+  --d0-density-row: 38px;
+  --d0-text-compact: 13px;
+  --d0-meta: 12px;
+  --d0-label: 11px;
+  --d0-label-tracking: 0.02em; /* 라벨은 살짝만 벌림 (과한 uppercase 자간 지양) */
+  --d0-stat-value: 18px;
+}

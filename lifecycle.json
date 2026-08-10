@@ -16,19 +16,48 @@
   "skills": {
     "conventional-commits": {
       "status": "active",
-      "providers": ["claude", "codex", "gemini", "grok"]
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     },
     "domain-ontology": {
       "status": "pinned",
-      "providers": ["claude", "codex", "gemini", "grok"]
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     },
     "question-design": {
       "status": "active",
-      "providers": ["claude", "codex", "gemini", "grok"]
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     },
     "ux-writing": {
       "status": "active",
-      "providers": ["claude", "codex", "gemini", "grok"]
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
+    },
+    "day0-design": {
+      "status": "active",
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     }
   },
   "candidate_exclusions": []

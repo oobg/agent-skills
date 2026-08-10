@@ -46,6 +46,15 @@ AI 에이전트가 질문을 더 잘 설계하고, 사용자에게 보이는 문
 자세한 내용은 [`skills/ux-writing/SKILL.md`](skills/ux-writing/SKILL.md)에서
 확인할 수 있습니다.
 
+
+### Day0 Design
+
+Day0 제품 UI(토스형 B2B)와 같은 시각 언어로 화면을 구현합니다. Pretendard,
+톤다운 블루, 보더리스(plain 기본), `data-*` 상태 패턴, 바닐라 CSS 토큰을 강제합니다.
+
+자세한 내용은 [`skills/day0-design/SKILL.md`](skills/day0-design/SKILL.md)에서
+확인할 수 있습니다.
+
 ## 설치
 
 Node.js가 설치된 환경에서 `skills` CLI를 사용합니다. 다음 명령을 실행하면
