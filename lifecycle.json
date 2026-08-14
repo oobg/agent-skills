@@ -32,6 +32,12 @@
         "grok"
       ]
     },
+    "gpt-image-gen": {
+      "status": "active",
+      "providers": [
+        "claude"
+      ]
+    },
     "question-design": {
       "status": "active",
       "providers": [
