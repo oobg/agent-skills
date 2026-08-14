@@ -22,6 +22,11 @@ class ConventionalCommitsContractTests(unittest.TestCase):
         self.assertIn("사람 이름과 이메일", self.text)
         self.assertIn("Co-Authored-By", self.text)
 
+    def test_subject_ends_with_noun(self):
+        self.assertIn("subject 설명은 명사로 끝낸다", self.text)
+        self.assertIn("`~하다`, `~한다`, `~했다`, `~함`, `~하기` 같은 용언 종결을 쓰지 않는다", self.text)
+        self.assertIn("본문 서술은 완결된 문장으로 쓴다", self.text)
+
     def test_commit_execution_has_shared_worktree_guards(self):
         self.assertIn("공유 워킹트리에서 다른 에이전트가 작업 중이거나", self.text)
         self.assertIn("pathspec 오류의 stderr를 숨기지 않는다", self.text)
