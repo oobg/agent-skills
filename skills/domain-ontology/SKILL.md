@@ -58,6 +58,28 @@ guess schema, paths, or commands from this skill.
 회수가 0건이면 `KB에 없음`이라고 쓰고 일반론임을 밝힌다. 조회 실패를 "축적된 지식 없음"으로
 바꿔 말하지 않는다 — 둘은 다른 사실이고, 섞으면 KB의 빈 곳이 영영 안 보인다.
 
+### 회수 결과를 검증 없이 조치 근거로 올리지 않는다
+
+**회수는 무엇을 봐야 하는가를 알려주는 것이고, 지금 어떤 상태인가의 증거가 아니다.**
+claim에는 시제가 없다. `kind`는 claim의 성격이지 현재 유효성이 아니고, 문서 날짜는 그 시점에
+관측됐다만 말할 뿐 이후 조치되지 않았다를 말하지 않는다.
+
+가변 산출물(코드·화면·스키마·설정·문구)의 결함을 지목하는 claim을 근거로 조치를 제안하기
+전에, 현재 상태에서 그 결함이 살아 있는지 확인한다. 확인 비용은 대개 `grep` 한 번이라
+이미 고친 것을 다시 제안하는 비용보다 훨씬 낮다. 이 실수의 구조는 회수 결과가 검증 대상으로
+보이지 않는다는 데 있다 — 보고된 증상을 원인 진단으로 승격하지 않는다는 규율은 사람의 보고만
+아니라 자기 KB의 회수 결과에도 적용된다.
+
+**결함을 발견한 세션이 그것을 고쳤으면 조치 사실도 claim으로 남긴다.** 발견만 적히고 조치가
+안 적히면 그 결함은 그래프에서 영구히 미해결로 보인다. 적재 자체는 아래 write path를 따른다.
+
+### 다른 스킬이 이 온톨로지를 쓸 때
+
+이 스킬은 다른 스킬을 대체하지 않는다. `ux-writing`·`question-design`·`conventional-commits`·
+`gpt-image-gen`은 각자 온톨로지 보강 모듈을 선택 모듈로 두고, 온톨로지가 없으면
+자기 기본값으로 완결된다. 그 모듈들이 지키는 공통 규약은 여기 read path와 `recall.md`이며,
+회수는 각 스킬의 **입력**을 바꿀 뿐 그 스킬의 게이트·판정 기준·실행 권한을 넓히지 않는다.
+
 ### Write path — explicit consent only
 
 1. **Detect.** Is this durable, reusable domain knowledge (not code/chatter/instructions)? If borderline, propose it as a candidate; do not ingest yet.

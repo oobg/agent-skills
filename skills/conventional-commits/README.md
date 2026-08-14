@@ -9,9 +9,13 @@
 ```text
 conventional-commits/
 ├── SKILL.md
-└── README.md
+├── README.md
+└── references/
+    └── ontology-boost.md
 ```
 
 - [`SKILL.md`](SKILL.md): 메시지 규칙, 실행 경계와 커밋 안전 가드
+- [`references/ontology-boost.md`](references/ontology-boost.md): 온톨로지가 있을 때만 여는
+  선택 모듈. scope 표기와 `왜`의 근거를 회수합니다.
 
 설치와 검증 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.

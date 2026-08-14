@@ -16,6 +16,12 @@ description: "실제 변경사항을 확인해 Conventional Commits 1.0.0 형식
   이를 Conventional Commits 규격의 필수 범위라고 표현하지 않는다.
 - **push**: 커밋 권한에 포함되지 않는다. 별도 명시가 있을 때만 실행한다.
 
+## 선택 모듈
+
+`~/.ontology/ontology.db`가 있고 scope 표기가 갈릴 만하거나 본문에 쓸 `왜`가 과거 결정에
+있을 때만 `references/ontology-boost.md`를 편다. 온톨로지가 없어도 메시지는 diff만으로
+완결되며, 이 모듈은 실행 권한과 메시지 형식 규칙을 바꾸지 않는다.
+
 ## 변경을 근거로 메시지를 만든다
 
 1. 저장소 지침과 `git status`를 확인한다.

@@ -28,6 +28,11 @@ description: "제품 UI 문구와 사용자에게 공개되는 문서에 위험�
 | 배치, 고위험 문구, "검증 돌려줘"                          | `agents/copy-auditor.md`      |
 | 이 스킬이 왜 이렇게 생겼는지, 근거·검증 상태             | `references/about.md`         |
 
+온톨로지 보강은 별도 조건이다. `~/.ontology/ontology.db`가 있고 글로서리가 비었거나,
+임시 경로라 프로젝트 규칙이 안 걸리거나, 배치·고위험 작업이면 `references/ontology-boost.md`를
+편다. 온톨로지가 없어도 이 스킬은 그대로 동작하며, 보강 모듈은 표기 후보와 판단형 근거만
+보태고 HARD 0 기준과 `고치지 않는 것`, 멈춤 규칙은 바꾸지 않는다.
+
 스크립트 3개(`ai_lint.py`, `glossary_check.py`, `register_check.py`)는 **Python
 3.8+** 필요. 실행법은 `작업 방식 > 출력 게이트`. 검사 패턴은 `scripts/patterns.json`에
 데이터로 있다(코드 안 고치고 거기서 넣고 뺀다).

@@ -94,3 +94,7 @@ Q1. [애매한 부분]
 - `agents/adversarial-reviewer.md` — AGENT 1·3 공용 (적대적 리뷰)
 - `agents/genius-thinker.md` — AGENT 2 (구조적 난국 재프레이밍, 명시적 선택 또는 조건 충족 시만)
 - `agents/flow-synthesizer.md` — AGENT 4 (전체 흐름 정리 + 최종 통합 + 모호어 스캔)
+- `references/ontology-boost.md` — 선택 모듈. `~/.ontology/ontology.db`가 있을 때
+  MODE A 상황 파악 전이나 MODE B 도메인·적대적 리뷰 착수 전에 편다. 온톨로지가 없어도
+  두 모드는 그대로 동작하며, 이 모듈은 리뷰의 입력만 바꾸고 확인 정책과 판정 책임 분리는
+  그대로 둔다.

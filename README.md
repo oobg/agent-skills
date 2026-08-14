@@ -19,6 +19,14 @@ AI 에이전트가 질문을 더 잘 설계하고, 사용자에게 보이는 문
 회사·개인·공용 지식이나 과거 결정이 답을 바꿀 수 있을 때 온톨로지를 읽기 전용으로
 조회합니다. 적재와 수정은 사용자 동의와 tenant 확인이 있을 때만 수행합니다.
 
+### GPT Image Gen
+
+Codex CLI의 gpt-image 플러그인으로 이미지를 생성합니다. 이미지 1장마다 사용량이
+차감되므로 사용자가 `/gpt-image-gen`을 직접 입력했을 때만 동작합니다.
+
+자세한 내용은
+[`skills/gpt-image-gen/SKILL.md`](skills/gpt-image-gen/SKILL.md)에서 확인할 수 있습니다.
+
 ### Question Design
 
 질문과 프롬프트를 다듬거나, 기획안, 전략, 분석 같은 결과물을 여러 관점에서
@@ -99,16 +107,28 @@ agent-skills/
 └── skills/
     ├── conventional-commits/
     │   ├── SKILL.md
-    │   └── README.md
+    │   ├── README.md
+    │   └── references/
+    ├── day0-design/
+    │   ├── SKILL.md
+    │   ├── README.md
+    │   └── references/
     ├── domain-ontology/
     │   ├── SKILL.md
     │   └── README.md
+    ├── gpt-image-gen/
+    │   ├── SKILL.md
+    │   ├── README.md
+    │   ├── references/
+    │   └── scripts/
     ├── question-design/
     │   ├── SKILL.md
+    │   ├── README.md
     │   ├── agents/
     │   └── references/
     └── ux-writing/
         ├── SKILL.md
+        ├── README.md
         ├── agents/
         ├── references/
         └── scripts/
@@ -118,6 +138,22 @@ agent-skills/
 - `agents/`: 역할별 에이전트 지침
 - `references/`: 조건에 따라 불러오는 상세 지침과 예시
 - `scripts/`: 자동 검사 도구
+
+## 온톨로지 보강 (선택)
+
+각 스킬은 온톨로지 없이 완결됩니다. `~/.ontology/ontology.db`가 있으면
+`references/ontology-boost.md`가 열려 축적된 지식을 그 스킬의 입력으로 씁니다.
+
+| 스킬 | 온톨로지가 있을 때 달라지는 것 |
+| --- | --- |
+| Conventional Commits | scope 표기를 개념 이름에 맞추고, 본문의 `왜`를 과거 결정에서 가져옵니다 |
+| GPT Image Gen | 프롬프트를 층으로 나누고 브랜드 자산을 회수합니다 |
+| Question Design | 이미 판정된 제안을 리뷰가 다시 올리지 않고, 도메인 검토가 KB부터 봅니다 |
+| UX Writing | 글로서리가 비었거나 임시 경로일 때 표기와 규칙을 회수합니다 |
+
+보강 모듈은 입력만 바꿉니다. 각 스킬의 게이트, 판정 기준, 실행 권한은 그대로입니다.
+회수 결과는 무엇을 봐야 하는지 알려줄 뿐 지금 상태의 증거가 아니므로, 회수한 내용을
+근거로 고치기 전에 현재 상태를 확인합니다.
 
 ## 스킬 생명주기
 

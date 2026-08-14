@@ -80,6 +80,7 @@ ux-writing/
 │   ├── ai-tells.md
 │   ├── deep-mode.md
 │   ├── glossary.md
+│   ├── ontology-boost.md
 │   ├── register.md
 │   ├── setup.md
 │   ├── translation-ese.md

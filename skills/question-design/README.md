@@ -55,7 +55,8 @@ question-design/
 │   └── flow-synthesizer.md
 └── references/
     ├── mode-a.md
-    └── mode-b.md
+    ├── mode-b.md
+    └── ontology-boost.md
 ```
 
 - [`SKILL.md`](SKILL.md): 트리거, 공통 원칙, 모드 라우팅
