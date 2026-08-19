@@ -1,6 +1,6 @@
 ---
 name: domain-ontology
-description: Read the personal ontology before answering when accumulated company, personal, shared, or novel knowledge could materially change the answer, or when the user asks to consult prior knowledge or decisions. Also use when substantial durable knowledge arrives and ontology ingestion may be appropriate. Do not trigger for code tasks, simple editing, general facts, casual questions, or requests answerable from the current files alone. Reading is automatic when relevant; ingestion or mutation always requires explicit user consent and tenant confirmation.
+description: Read the personal ontology before answering when accumulated company, personal, shared, novel, or blog knowledge could materially change the answer, or when the user asks to consult prior knowledge or decisions. Also use when substantial durable knowledge arrives and ontology ingestion may be appropriate. Do not trigger for code tasks, simple editing, general facts, casual questions, or requests answerable from the current files alone. Reading is automatic when relevant; ingestion or mutation always requires explicit user consent and tenant confirmation.
 ---
 
 # Domain Ontology Routing
@@ -8,19 +8,22 @@ description: Read the personal ontology before answering when accumulated compan
 ## Overview
 Durable domain knowledge should **compound**, not be re-derived per question. When it arrives, route it through the persistent SQLite knowledge ontology **before proceeding**: ingest → connect it to the graph → then answer grounded in accumulated knowledge (Memex / LLM-Wiki pattern).
 
-**One database, four tenants.** Root `~/.ontology/`, DB at `~/.ontology/ontology.db`.
+**One database, five tenants.** Root `~/.ontology/`, DB at `~/.ontology/ontology.db`.
 
-| | company (회사) | personal (개인) | shared (공용) | novel (소설) |
-|---|---|---|---|---|
-| tenant key | `company` (1) | `personal` (2) | `shared` (3) | `novel` (4) |
-| 담는 것 | 제품·전략·경쟁·법무 | 삶·자기계발 | **일하는 방식** — 방법론·도구론·에이전트 하네스 | 작품 세계·인물·설정·플롯·원고 |
-| raw sources | `tenants/company/sources/` | `tenants/personal/sources/` | `tenants/shared/sources/` | `tenants/novel/sources/` |
-| session feed | SessionEnd hook + daily distill | 수동(Grok 등) | 없음 | 수동 |
+| | company (회사) | personal (개인) | shared (공용) | novel (소설) | blog (블로그) |
+|---|---|---|---|---|---|
+| tenant key | `company` (1) | `personal` (2) | `shared` (3) | `novel` (4) | `blog` (5) |
+| 담는 것 | 제품·전략·경쟁·법무 | 삶·자기계발 | **일하는 방식** — 방법론·도구론·에이전트 하네스 | 작품 세계·인물·설정·플롯·원고 | 외부 발행용 연재 원고·퇴고본·발행본 |
+| raw sources | `tenants/company/sources/` | `tenants/personal/sources/` | `tenants/shared/sources/` | `tenants/novel/sources/` | `tenants/blog/sources/` |
+| session feed | SessionEnd hook + daily distill | 수동(Grok 등) | 없음 | 수동 | 수동 |
 
 `shared`는 "회사냐 개인이냐"로 갈리지 않는 문서를 위한 자리다. 루프 엔지니어링,
 에이전트 하네스 설계, 검증자 패턴 같은 것 — 회사 업무에도 개인 프로젝트에도 적용되므로
 한쪽에 넣으면 반대쪽에서 조회할 때 안 보인다. **주제가 "무엇을 만드는가"가 아니라
 "어떻게 일하는가"면 `shared`를 먼저 의심해라.**
+
+`novel`과 `blog`는 창작물의 목적과 공개 맥락이 다르다. 작품 세계·플롯·원고는 `novel`,
+외부 발행을 전제로 한 연재 원고·퇴고본·발행본은 `blog`에 둔다.
 
 `concepts`, `topics`, `concept_topics` are **shared across tenants** — that shared layer is the point: the same concept node links what company work actually built to what personal material says about it. Only `sessions` and `documents` carry `tenant_id`.
 
@@ -46,7 +49,7 @@ guess schema, paths, or commands from this skill.
 
 조회 전에 **활성 tenant/출력 스코프**를 고정한다. 회사 업무 → `company + shared` · 개인 →
 `personal + shared` · 일하는 방식(방법론·도구론·에이전트 하네스) → `shared` · 소설 창작 →
-`novel + shared`. 정말 갈리고 그
+`novel + shared` · 블로그 연재와 기존 원고 → `blog + shared`. 정말 갈리고 그
 선택이 답을 바꾸면 묻고, 아니면 좁은 쪽을 가정하되 밝히고 진행한다.
 
 **절차의 정본은 `~/.ontology/docs/recall.md`다. 조회 전에 읽고 그대로 따른다** — 단계별 SQL,
@@ -85,15 +88,17 @@ claim에는 시제가 없다. `kind`는 claim의 성격이지 현재 유효성�
 1. **Detect.** Is this durable, reusable domain knowledge (not code/chatter/instructions)? If borderline, propose it as a candidate; do not ingest yet.
 2. **Ask before ingesting or mutating (never write silently).** Propose, then confirm:
    - 온톨로지에 적재할까요? (거절 시 → "적재 거절 시" 분기)
-   - **회사 / 개인 / 공용 / 소설** 어느 테넌트? — 성격이 명백하면 근거와 함께 추천하되 사용자가 확정한다. 사용자에게만 떠넘기지 말 것.
+   - **회사 / 개인 / 공용 / 소설 / 블로그** 어느 테넌트? — 성격이 명백하면 근거와 함께 추천하되 사용자가 확정한다. 사용자에게만 떠넘기지 말 것.
      회사 사업·제품·경쟁 → `company` / 개인 삶·자기계발 → `personal` /
      **일하는 방식(방법론·도구론·에이전트 하네스) → `shared`** /
-     작품 세계·인물·설정·플롯·원고 → `novel`.
+     작품 세계·인물·설정·플롯·원고 → `novel` / 외부 발행용 연재 원고·퇴고본·발행본 → `blog`.
 3. **Ingest** (on yes) — follow `AGENTS.md`, all paths under the chosen tenant:
    - Save raw source → `tenants/<tenant>/sources/` (immutable provenance). For `novel`, require
      `tenants/novel/sources/works/<work-slug>/<file>` so works stay separated without creating a tenant per work.
+     For `blog`, require `tenants/blog/sources/series/<series-slug>/<file>` so series stay separated
+     without creating a tenant per installment.
    - Extract → `tenants/<tenant>/extractions/docs/<name>.json`. The JSON's `path` must point at that tenant's `sources/`. **Query `concepts` first and reuse existing names** so it merges into the graph instead of fragmenting.
-   - Load: `python3 bin/docs.py load <json> --tenant <company|personal|shared|novel>`. **`--tenant` is required** — it is the boundary for all four tenants in the shared DB.
+   - Load: `python3 bin/docs.py load <json> --tenant <company|personal|shared|novel|blog>`. **`--tenant` is required** — it is the boundary for all five tenants in the shared DB.
    - After load and lint pass for this ingestion, commit the exact raw source path immediately:
      `git add -- tenants/<tenant>/sources/<file>` followed by
      `git commit -m "ingest: add <file>" -- tenants/<tenant>/sources/<file>`. The pathspec is

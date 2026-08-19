@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import unittest
 
 
@@ -26,6 +27,33 @@ class DomainOntologyContractTests(unittest.TestCase):
     def test_provenance_commit_uses_pathspec(self):
         self.assertIn('git commit -m "ingest: add <file>" -- tenants/', self.text)
         self.assertIn("pathspec-free `git commit`", self.text)
+
+    def test_all_authoritative_tenants_are_routable_for_ingestion(self):
+        expected = {"company", "personal", "shared", "novel", "blog"}
+
+        tenant_row = next(
+            line for line in self.text.splitlines() if line.startswith("| tenant key |")
+        )
+        table_tenants = set(re.findall(r"`([a-z]+)`", tenant_row))
+
+        load_command = re.search(
+            r"docs\.py load <json> --tenant <([^>]+)>", self.text
+        )
+        self.assertIsNotNone(load_command)
+        cli_tenants = set(load_command.group(1).split("|"))
+
+        self.assertEqual(expected, table_tenants)
+        self.assertEqual(expected, cli_tenants)
+
+    def test_creative_tenants_keep_scope_and_source_boundaries(self):
+        contracts = {
+            "novel": ("novel + shared", "tenants/novel/sources/works/<work-slug>/<file>"),
+            "blog": ("blog + shared", "tenants/blog/sources/series/<series-slug>/<file>"),
+        }
+        for tenant, (scope, source_path) in contracts.items():
+            with self.subTest(tenant=tenant):
+                self.assertIn(scope, self.text)
+                self.assertIn(source_path, self.text)
 
 
 if __name__ == "__main__":

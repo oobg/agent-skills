@@ -173,6 +173,12 @@ python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
 배포 상태를 맞춥니다. `parked`와 `retired`도 정본은 보존하며, 이 도구가 관리하지
 않는 파일이나 외부 심링크는 삭제하지 않습니다.
 
+반복 concept는 그 자체로 스킬 후보가 아닙니다. 업무 대상이나 제품명도 자주 등장할 수
+있으므로 `report`는 이를 관측 신호로만 분리해 보여줍니다. 스킬 후보로 올리려면
+`lifecycle.json`의 `candidate_classifications`에서 해당 concept를 `kind: procedure`,
+`reusable: true`로 명시하고, 입력→행동→검증→종료 절차가 여러 프로젝트에 재사용되는
+이유를 `rationale`에 남겨야 합니다.
+
 ## 요구 사항
 
 스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트를
@@ -180,10 +186,15 @@ python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
 
 ## 검증
 
-스킬 frontmatter, 로컬 참조, README 자산 목록과 전체 회귀 테스트를 실행합니다.
+스킬 frontmatter, 로컬 참조, README 자산 목록, 정적 계약과 전체 회귀 테스트를 실행합니다.
+
+정적 계약은 `evals/static-contracts.json`에 선언합니다. `positive`는 필수 문구,
+`negative`는 역트리거·금지 경계, `execution`은 실행 권한과 절차를 이진 판정합니다.
+이 검사는 문서의 회귀를 찾을 뿐 모델을 실행하거나 실제 트리거 품질을 측정하지 않습니다.
 
 ```bash
 python3 scripts/validate_skills.py
+python3 scripts/eval_skill_contracts.py
 python3 -m unittest discover -s tests -v
 ```
 

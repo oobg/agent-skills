@@ -66,5 +66,6 @@
       ]
     }
   },
-  "candidate_exclusions": []
+  "candidate_exclusions": [],
+  "candidate_classifications": {}
 }

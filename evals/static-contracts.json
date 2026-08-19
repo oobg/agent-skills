@@ -1,0 +1,42 @@
+{
+  "description": "Binary static documentation contracts. These cases do not execute a model or measure trigger quality.",
+  "cases": [
+    {
+      "id": "conventional-commits-positive-trigger-terms",
+      "kind": "positive",
+      "target": "skills/conventional-commits/SKILL.md",
+      "all": ["커밋 메시지", "PR 제목", "changelog"]
+    },
+    {
+      "id": "question-design-negative-triggers",
+      "kind": "negative",
+      "target": "skills/question-design/SKILL.md",
+      "all": ["이 스킬을 사용하지 않는 경우", "코드 디버깅·구현 요청", "번역·교정"]
+    },
+    {
+      "id": "day0-explicit-signal-boundary",
+      "kind": "negative",
+      "target": "skills/day0-design/SKILL.md",
+      "all": ["범용 온보딩·관리자·토스 느낌 요청만으로는 자동 호출하지 않는다"]
+    },
+    {
+      "id": "image-generation-execution-gate",
+      "kind": "execution",
+      "target": "skills/gpt-image-gen/SKILL.md",
+      "all": ["명시적 호출 전용", "/gpt-image-gen <이미지 설명>", "프롬프트가 비어 있으면"],
+      "none": ["일반 요청에도 자동으로 생성"]
+    },
+    {
+      "id": "commit-execution-authority",
+      "kind": "execution",
+      "target": "skills/conventional-commits/SKILL.md",
+      "all": ["현재 요청에서 명시적으로 커밋을 지시한 경우에만 실행", "커밋 권한에 포함되지 않는다", "별도 명시가 있을 때만 실행"]
+    },
+    {
+      "id": "ux-writing-deep-mode-opt-in",
+      "kind": "execution",
+      "target": "skills/ux-writing/SKILL.md",
+      "all": ["/ux-writing:deep", "기본 꺼짐", "프로젝트 glossary/register/브랜드 규칙"]
+    }
+  ]
+}

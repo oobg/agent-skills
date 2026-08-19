@@ -31,6 +31,16 @@ def load_config(path: Path) -> dict:
     }
     if unknown:
         raise ValueError(f"invalid skill status: {sorted(unknown)}")
+    for name, classification in config.get("candidate_classifications", {}).items():
+        if not isinstance(classification, dict):
+            raise ValueError(f"invalid candidate classification for {name!r}")
+        if classification.get("kind") != "procedure":
+            raise ValueError(f"candidate {name!r} must have kind 'procedure'")
+        if classification.get("reusable") is not True:
+            raise ValueError(f"candidate {name!r} must be explicitly reusable")
+        rationale = classification.get("rationale")
+        if not isinstance(rationale, str) or not rationale.strip():
+            raise ValueError(f"candidate {name!r} must include a rationale")
     return config
 
 
@@ -65,7 +75,8 @@ def skill_usage(config: dict) -> dict[str, dict[str, int]]:
     return {row["name"]: dict(row) for row in rows}
 
 
-def concept_candidates(config: dict) -> list[dict]:
+def repeated_concepts(config: dict) -> list[dict]:
+    """Return frequent concepts as observations, not inferred skill candidates."""
     db = Path(config["ontology_db"]).expanduser()
     threshold = config["thresholds"]["candidate_min_sessions"]
     days = config["thresholds"]["candidate_window_days"]
@@ -90,6 +101,32 @@ def concept_candidates(config: dict) -> list[dict]:
         for row in rows
         if row["name"] not in excluded and row["name"] not in existing
     ]
+
+
+def concept_candidates(config: dict) -> list[dict]:
+    """Return only concepts explicitly reviewed as procedural and reusable.
+
+    Frequency alone says that a subject recurs; it does not establish an
+    input/action/check/stop procedure that can be packaged as a skill.  Keep
+    that distinction conservative by requiring a human-maintained
+    classification in lifecycle.json.
+    """
+    classifications = config.get("candidate_classifications", {})
+    candidates = []
+    for item in repeated_concepts(config):
+        classification = classifications.get(item["name"], {})
+        if (
+            classification.get("kind") != "procedure"
+            or classification.get("reusable") is not True
+        ):
+            continue
+        candidates.append(
+            {
+                **item,
+                "rationale": classification["rationale"],
+            }
+        )
+    return candidates
 
 
 def expected_links(config: dict) -> list[tuple[str, Path, Path]]:
@@ -168,11 +205,23 @@ def report(config: dict) -> None:
             f"recent={recent:4}{suggestion}"
         )
 
-    print("\nCONCEPT CANDIDATES")
+    print("\nSKILL CANDIDATES (explicit procedure + reusable)")
     candidates = concept_candidates(config)
     if not candidates:
         print("(none)")
     for item in candidates:
+        print(
+            f"{item['name']:28} sessions={item['recent_sessions']} "
+            f"rationale={item['rationale']}"
+        )
+
+    print("\nREPEATED CONCEPTS (signals only; not skill candidates)")
+    observations = repeated_concepts(config)
+    if not observations:
+        print("(none)")
+    for item in observations:
+        if any(candidate["name"] == item["name"] for candidate in candidates):
+            continue
         print(f"{item['name']:28} sessions={item['recent_sessions']}")
 
     print("\nLINK PLAN")

@@ -42,7 +42,19 @@ class LifecycleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.load_config(path)
 
-    def test_queries_concept_candidates(self):
+    def test_candidate_classification_requires_human_rationale(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "config.json"
+            path.write_text(json.dumps({
+                "version": 1,
+                "candidate_classifications": {
+                    "계층적 검증": {"kind": "procedure", "reusable": True}
+                },
+            }))
+            with self.assertRaisesRegex(ValueError, "must include a rationale"):
+                MODULE.load_config(path)
+
+    def test_frequency_alone_is_not_a_skill_candidate(self):
         with tempfile.TemporaryDirectory() as tmp:
             db = Path(tmp) / "ontology.db"
             with sqlite3.connect(db) as conn:
@@ -67,10 +79,54 @@ class LifecycleTests(unittest.TestCase):
                 "skills": {},
                 "candidate_exclusions": []
             }
+            self.assertEqual(MODULE.concept_candidates(config), [])
             self.assertEqual(
-                MODULE.concept_candidates(config),
+                MODULE.repeated_concepts(config),
                 [{"name": "반복 지식", "recent_sessions": 2}],
             )
+
+    def test_explicit_reusable_procedure_is_a_skill_candidate(self):
+        original_repeated = MODULE.repeated_concepts
+        try:
+            MODULE.repeated_concepts = lambda _: [
+                {"name": "계층적 검증", "recent_sessions": 12}
+            ]
+            config = {
+                "candidate_classifications": {
+                    "계층적 검증": {
+                        "kind": "procedure",
+                        "reusable": True,
+                        "rationale": "입력-검사-종료 절차가 여러 프로젝트에서 반복됨",
+                    }
+                }
+            }
+            self.assertEqual(
+                MODULE.concept_candidates(config),
+                [
+                    {
+                        "name": "계층적 검증",
+                        "recent_sessions": 12,
+                        "rationale": "입력-검사-종료 절차가 여러 프로젝트에서 반복됨",
+                    }
+                ],
+            )
+        finally:
+            MODULE.repeated_concepts = original_repeated
+
+    def test_domain_concept_classification_does_not_promote(self):
+        original_repeated = MODULE.repeated_concepts
+        try:
+            MODULE.repeated_concepts = lambda _: [
+                {"name": "점주앱", "recent_sessions": 30}
+            ]
+            config = {
+                "candidate_classifications": {
+                    "점주앱": {"kind": "domain", "reusable": True}
+                }
+            }
+            self.assertEqual(MODULE.concept_candidates(config), [])
+        finally:
+            MODULE.repeated_concepts = original_repeated
 
     def test_unmeasured_skill_is_not_parking_candidate(self):
         config = {
@@ -79,10 +135,12 @@ class LifecycleTests(unittest.TestCase):
         }
         original_usage = MODULE.skill_usage
         original_candidates = MODULE.concept_candidates
+        original_repeated = MODULE.repeated_concepts
         original_sync = MODULE.sync
         try:
             MODULE.skill_usage = lambda _: {}
             MODULE.concept_candidates = lambda _: []
+            MODULE.repeated_concepts = lambda _: []
             MODULE.sync = lambda *_args, **_kwargs: 0
             output = io.StringIO()
             with redirect_stdout(output):
@@ -92,6 +150,7 @@ class LifecycleTests(unittest.TestCase):
         finally:
             MODULE.skill_usage = original_usage
             MODULE.concept_candidates = original_candidates
+            MODULE.repeated_concepts = original_repeated
             MODULE.sync = original_sync
 
 
