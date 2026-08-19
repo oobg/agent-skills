@@ -64,6 +64,15 @@
         "gemini",
         "grok"
       ]
+    },
+    "engineering-shorts": {
+      "status": "active",
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     }
   },
   "candidate_exclusions": [],

@@ -45,6 +45,18 @@
       "all": ["/ux-writing:deep", "기본 꺼짐", "프로젝트 glossary/register/브랜드 규칙"]
     },
     {
+      "id": "engineering-shorts-approval-gates",
+      "kind": "execution",
+      "target": "skills/engineering-shorts/SKILL.md",
+      "all": ["사용자가 승인하기 전에는 다음 게이트를 넘지 않는다", "기존에 승인되거나 완료된 산출물은 다시 만들지 않는다", "다음 게이트의 산출물을 미리 만들지 않는다"]
+    },
+    {
+      "id": "engineering-shorts-clean-info-contract",
+      "kind": "execution",
+      "target": "skills/engineering-shorts/references/workflow.md",
+      "all": ["INFO는 새 장면이 아니라 같은 CLEAN을 편집하는 두 번째 패스다", "INFO를 첫 프레임이나 평면 이미지판으로 쓰지", "실제 화면으로 비교한다"]
+    },
+    {
       "id": "question-design-cross-model-session-consent",
       "kind": "execution",
       "target": "skills/question-design/references/cross-model-review.md",

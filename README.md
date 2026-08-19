@@ -63,6 +63,16 @@ Day0 제품 UI(토스형 B2B)와 같은 시각 언어로 화면을 구현합니�
 자세한 내용은 [`skills/day0-design/SKILL.md`](skills/day0-design/SKILL.md)에서
 확인할 수 있습니다.
 
+### Engineering Shorts
+
+건축·도시·기계·항공·밀리터리 엔지니어링과 유체역학 주제의 세로형 공학 설명
+쇼츠를 `대본 → CLEAN → INFO → 4초 영상` 순서로 제작하고 검수합니다. 단계별 승인,
+실제 화면 검수와 일관된 장면 ID로 자산 대응을 유지합니다.
+
+자세한 내용은
+[`skills/engineering-shorts/SKILL.md`](skills/engineering-shorts/SKILL.md)에서
+확인할 수 있습니다.
+
 ## 설치
 
 Node.js가 설치된 환경에서 `skills` CLI를 사용합니다. 다음 명령을 실행하면
@@ -116,6 +126,10 @@ agent-skills/
     ├── domain-ontology/
     │   ├── SKILL.md
     │   └── README.md
+    ├── engineering-shorts/
+    │   ├── SKILL.md
+    │   ├── README.md
+    │   └── references/
     ├── gpt-image-gen/
     │   ├── SKILL.md
     │   ├── README.md
