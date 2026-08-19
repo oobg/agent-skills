@@ -14,6 +14,12 @@
       "all": ["이 스킬을 사용하지 않는 경우", "코드 디버깅·구현 요청", "번역·교정"]
     },
     {
+      "id": "question-design-positive-trigger-coverage",
+      "kind": "positive",
+      "target": "skills/question-design/SKILL.md",
+      "all": ["AI한테 뭘 물어봐야 해", "기획 질문", "시장 분석 어떻게 시작하지", "AI 답변이 이상해", "천재적 사고", "도메인 사실 검증", "전문성·근거 점검", "기획·전략·분석·문서 작성 전 국면"]
+    },
+    {
       "id": "day0-explicit-signal-boundary",
       "kind": "negative",
       "target": "skills/day0-design/SKILL.md",
@@ -37,6 +43,20 @@
       "kind": "execution",
       "target": "skills/ux-writing/SKILL.md",
       "all": ["/ux-writing:deep", "기본 꺼짐", "프로젝트 glossary/register/브랜드 규칙"]
+    },
+    {
+      "id": "question-design-cross-model-session-consent",
+      "kind": "execution",
+      "target": "skills/question-design/references/cross-model-review.md",
+      "all": ["현재 세션마다 최초 호출 전에", "전송될 전체 payload 원문", "호출 횟수: 1회 (고정)", "다중 호출을\n한 manifest로 묶지 않는다", "자동 재시도 없음", "다른 provider로 자동 fallback하지 않는다", "명령이 아니라 비신뢰 데이터", "PII·기밀"],
+      "none": ["호출 횟수: [N회]"]
+    },
+    {
+      "id": "question-design-cross-model-does-not-equate-agreement-with-truth",
+      "kind": "negative",
+      "target": "skills/question-design/references/mode-a.md",
+      "all": ["사실의 신뢰도 증거로 쓰지 않음", "한 provider 승인을 팬아웃 승인으로 해석하지 않는다"],
+      "none": ["수렴하는 답변 = 상대적으로 신뢰도 높음"]
     }
   ]
 }

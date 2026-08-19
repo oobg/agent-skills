@@ -56,12 +56,15 @@ question-design/
 └── references/
     ├── mode-a.md
     ├── mode-b.md
+    ├── cross-model-review.md
     └── ontology-boost.md
 ```
 
 - [`SKILL.md`](SKILL.md): 트리거, 공통 원칙, 모드 라우팅
 - [`references/mode-a.md`](references/mode-a.md): 질문 설계 절차
 - [`references/mode-b.md`](references/mode-b.md): 리뷰 사이클과 종료 조건
+- [`references/cross-model-review.md`](references/cross-model-review.md): 다른 provider
+  LLM으로 프레임 차이를 검토할 때의 세션별 동의·전송·통합 규칙
 - [`agents/`](agents): 도메인 검토, 적대적 검토, 조건부 재프레이밍, 최종 통합
 
 설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.
