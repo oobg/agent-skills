@@ -62,6 +62,21 @@ class UxWritingCliTests(unittest.TestCase):
             finally:
                 module.PATTERNS_PATH = original
 
+    def test_ai_lint_treats_middle_dot_chain_as_hard(self):
+        module = load_module("ai_lint")
+        hard, advisory = module.lint("이름·이메일·연락처\n보기·숨기기", [])
+        self.assertEqual(len(hard["가운뎃점 사슬"]), 1)
+        self.assertEqual(len(advisory["가운뎃점(둘 묶기)"]), 1)
+
+    def test_register_check_supports_noun_ending_register(self):
+        module = load_module("register_check")
+        self.assertEqual(module.to_register("명사형"), "명사")
+        self.assertEqual(module.to_register("명사 종결"), "명사")
+        self.assertEqual(module.check("저장 완료\n검토 필요\n문서 개요", "명사"), [])
+
+        hits = module.check("저장해요\n검토합니다\n작업을 마친다", "명사")
+        self.assertEqual([hit[1] for hit in hits], ["해요", "합니다", "한다"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -61,11 +61,13 @@ python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>
 
 - `ai_lint.py`: 결정적인 문법 오류와 스타일 신호 검사
 - `glossary_check.py`: 프로젝트 고정 표기 검사
-- `register_check.py`: 목표 어체 일관성 검사. 음슴체는 명사 종결 오탐을 피하려
-  제한적으로만 잡으므로 수동·best-effort 확인이 필요합니다.
+- `register_check.py`: 해요체, 합니다체, 한다체, 음슴체, 명사형의 목표 어체
+  일관성 검사. 음슴체와 명사형은 서로 안전하게 자동 구분하기 어려워 명확한 다른
+  어체의 혼용만 잡으므로 수동·best-effort 확인이 필요합니다.
 
 HARD 항목은 출력을 막지만 ADVISORY는 문맥을 확인하라는 신호입니다. 현재 HARD
-검사는 결정적 기계 오류를 잡는 smoke check이며 전체 문장 품질을 인증하지 않습니다.
+검사는 결정적 기계 오류와 가운뎃점 사슬을 잡는 smoke check이며 전체 문장 품질을
+인증하지 않습니다.
 `<ux-writing 스킬 폴더>`는 현재 로드한 `SKILL.md`의 상위 폴더로 바꿉니다.
 
 ## 구성

@@ -258,7 +258,7 @@ def lint(text, patterns):
     for p in patterns:
         (hard if p["layer"] == "hard" else advisory).setdefault(p["label"], [])
     # 코드로만 되는 검사 (정규식 하나로 안 되는 것들)
-    advisory.setdefault("가운뎃점 사슬", [])
+    hard.setdefault("가운뎃점 사슬", [])
     advisory.setdefault("가운뎃점(둘 묶기)", [])
     advisory.setdefault("숫자 괄호 인덱싱", [])
 
@@ -270,12 +270,12 @@ def lint(text, patterns):
             for m in p["_rx"].finditer(line):
                 bucket[p["label"]].append(f"  L{n}: {snippet(line, m.start())}")
 
-        # 가운뎃점 — 한 토큰에 2개 이상(=셋 이상 엮기)이면 사슬 신호.
+        # 가운뎃점 — 한 토큰에 2개 이상(=셋 이상 엮기)이면 반드시 제거할 사슬.
         # 둘 묶기(`보기·숨기기`)는 본문에서 허용하므로 ADVISORY.
         for m in re.finditer(r"\S*[" + MIDDLE_DOTS + r"]\S*", line):
             token = m.group()
             if sum(c in MIDDLE_DOTS for c in token) >= 2:
-                advisory["가운뎃점 사슬"].append(f"  L{n}: {token}")
+                hard["가운뎃점 사슬"].append(f"  L{n}: {token}")
             else:
                 advisory["가운뎃점(둘 묶기)"].append(f"  L{n}: {token}")
 
