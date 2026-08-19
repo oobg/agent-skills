@@ -247,7 +247,7 @@ def check_register_mix(text):
 
 
 def lint(text, patterns):
-    """patterns.json의 정규식 패턴 + 코드로만 되는 검사(가운뎃점 체인, 인덱싱 런)."""
+    """patterns.json의 정규식 패턴 + 코드로만 되는 검사(가운뎃점, 인덱싱 런)."""
     # 인라인 코드는 검사 대상이 아니다. 공백 대신 'x'로 채운다 —
     # 공백으로 지우면 "- Debian/Ubuntu: `apt install`" 이 "- Debian/Ubuntu:   "가 돼서
     # 멀쩡한 리스트 항목 콜론이 '문장 끝 콜론'으로 잘못 잡힌다.
@@ -258,8 +258,7 @@ def lint(text, patterns):
     for p in patterns:
         (hard if p["layer"] == "hard" else advisory).setdefault(p["label"], [])
     # 코드로만 되는 검사 (정규식 하나로 안 되는 것들)
-    hard.setdefault("가운뎃점 사슬", [])
-    advisory.setdefault("가운뎃점(둘 묶기)", [])
+    hard.setdefault("가운뎃점", [])
     advisory.setdefault("숫자 괄호 인덱싱", [])
 
     for n, line in enumerate(lines, 1):
@@ -270,14 +269,10 @@ def lint(text, patterns):
             for m in p["_rx"].finditer(line):
                 bucket[p["label"]].append(f"  L{n}: {snippet(line, m.start())}")
 
-        # 가운뎃점 — 한 토큰에 2개 이상(=셋 이상 엮기)이면 반드시 제거할 사슬.
-        # 둘 묶기(`보기·숨기기`)는 본문에서 허용하므로 ADVISORY.
+        # 가운뎃점은 개수나 용도와 관계없이 반드시 제거한다.
         for m in re.finditer(r"\S*[" + MIDDLE_DOTS + r"]\S*", line):
             token = m.group()
-            if sum(c in MIDDLE_DOTS for c in token) >= 2:
-                hard["가운뎃점 사슬"].append(f"  L{n}: {token}")
-            else:
-                advisory["가운뎃점(둘 묶기)"].append(f"  L{n}: {token}")
+            hard["가운뎃점"].append(f"  L{n}: {token}")
 
     # 멀티라인 플래그가 붙은 패턴은 전체 텍스트에 한 번
     for p in patterns:

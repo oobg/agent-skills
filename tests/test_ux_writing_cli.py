@@ -62,11 +62,11 @@ class UxWritingCliTests(unittest.TestCase):
             finally:
                 module.PATTERNS_PATH = original
 
-    def test_ai_lint_treats_middle_dot_chain_as_hard(self):
+    def test_ai_lint_treats_every_middle_dot_as_hard(self):
         module = load_module("ai_lint")
         hard, advisory = module.lint("이름·이메일·연락처\n보기·숨기기", [])
-        self.assertEqual(len(hard["가운뎃점 사슬"]), 1)
-        self.assertEqual(len(advisory["가운뎃점(둘 묶기)"]), 1)
+        self.assertEqual(len(hard["가운뎃점"]), 2)
+        self.assertNotIn("가운뎃점(둘 묶기)", advisory)
 
     def test_register_check_supports_noun_ending_register(self):
         module = load_module("register_check")

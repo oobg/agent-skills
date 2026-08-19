@@ -66,7 +66,7 @@ python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>
   어체의 혼용만 잡으므로 수동·best-effort 확인이 필요합니다.
 
 HARD 항목은 출력을 막지만 ADVISORY는 문맥을 확인하라는 신호입니다. 현재 HARD
-검사는 결정적 기계 오류와 가운뎃점 사슬을 잡는 smoke check이며 전체 문장 품질을
+검사는 결정적 기계 오류와 모든 가운뎃점을 잡는 smoke check이며 전체 문장 품질을
 인증하지 않습니다.
 `<ux-writing 스킬 폴더>`는 현재 로드한 `SKILL.md`의 상위 폴더로 바꿉니다.
 
