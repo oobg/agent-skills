@@ -69,6 +69,56 @@
       "target": "skills/question-design/references/mode-a.md",
       "all": ["사실의 신뢰도 증거로 쓰지 않음", "한 provider 승인을 팬아웃 승인으로 해석하지 않는다"],
       "none": ["수렴하는 답변 = 상대적으로 신뢰도 높음"]
+    },
+    {
+      "id": "search-visibility-positive-trigger-coverage",
+      "kind": "positive",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["검색 노출 늘려줘", "llms.txt 만들어줘", "구조화 데이터 붙여줘", "네이버 검색 최적화"]
+    },
+    {
+      "id": "search-visibility-negative-triggers",
+      "kind": "negative",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["이 스킬을 사용하지 않는 경우", "광고 집행, SNS 운영", "문구와 어체만 다듬는 작업"]
+    },
+    {
+      "id": "search-visibility-refuses-guideline-violations",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["사용자가 요청해도 수행하지 않는다", "거절 사실과\n   이유를 보고에 남기고", "계정 접속이 필요한 작업"]
+    },
+    {
+      "id": "search-visibility-observation-over-recall",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["자바스크립트 없이\n   받은 HTML에 있다", "`curl` 증빙 없이 완료로 보고하지 않는다", "회수는 사이트의 현재 상태가 아니다", "확인하지 못한 항목을 양호로 적지 않는다"]
+    },
+    {
+      "id": "search-visibility-ontology-boost-stays-optional-and-read-only",
+      "kind": "execution",
+      "target": "skills/search-visibility/references/ontology-boost.md",
+      "all": ["없으면 이 파일을 무시하고 본문대로", "`recall.md`가 없으면 SQL을 지어내지 말고 이 모듈을 닫는다", "이 스킬은 온톨로지에 쓰지 않는다", "회수는 사이트의 현재 상태가 아니다", "정공법 원칙은 온톨로지에 무엇이 있든 그대로다"],
+      "none": ["회수 결과를 진단 근거로 적는다"]
+    },
+    {
+      "id": "search-visibility-audit-script-observes-without-grading",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["python3 scripts/crawl_audit.py", "관측만 하고 레인 점수를 판정하지 않는다", "CHECK를 양호로 올리지 않는다"]
+    },
+    {
+      "id": "search-visibility-baseline-is-persisted-not-remembered",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["프로젝트에 파일로 남긴다", "다음 세션이 기준선을\n처음부터 다시 찍는다", "채울 수 없는 칸은 지우거나"]
+    },
+    {
+      "id": "search-visibility-auditor-scores-results-only",
+      "kind": "execution",
+      "target": "skills/search-visibility/agents/visibility-auditor.md",
+      "all": ["결과만 보고**", "기대 판정은 넘기지 않는다", "STATUS: HOLD — 관측 로그 없음", "새 기준을 만들지 않는다"],
+      "none": ["직접 다시 쓴다"]
     }
   ]
 }

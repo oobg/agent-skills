@@ -73,6 +73,17 @@ Day0 제품 UI(토스형 B2B)와 같은 시각 언어로 화면을 구현합니�
 [`skills/engineering-shorts/SKILL.md`](skills/engineering-shorts/SKILL.md)에서
 확인할 수 있습니다.
 
+### Search Visibility
+
+사이트가 검색엔진, 답변엔진, 생성 AI, 네이버 AI 브리핑에 인용되도록 SEO, AEO, GEO,
+LLMO, NEO 다섯 레인을 진단하고 고칩니다. 판정은 자바스크립트 없이 받은 HTML을 기준으로
+하고, 재측정 일정을 잡는 것까지를 완료 조건으로 둡니다. 검색 가이드라인을 위반하는
+요청은 수행하지 않습니다.
+
+자세한 내용은
+[`skills/search-visibility/SKILL.md`](skills/search-visibility/SKILL.md)에서
+확인할 수 있습니다.
+
 ## 설치
 
 Node.js가 설치된 환경에서 `skills` CLI를 사용합니다. 다음 명령을 실행하면
@@ -140,6 +151,12 @@ agent-skills/
     │   ├── README.md
     │   ├── agents/
     │   └── references/
+    ├── search-visibility/
+    │   ├── SKILL.md
+    │   ├── README.md
+    │   ├── agents/
+    │   ├── references/
+    │   └── scripts/
     └── ux-writing/
         ├── SKILL.md
         ├── README.md
@@ -163,6 +180,7 @@ agent-skills/
 | Conventional Commits | scope 표기를 개념 이름에 맞추고, 본문의 `왜`를 과거 결정에서 가져옵니다 |
 | GPT Image Gen | 프롬프트를 층으로 나누고 브랜드 자산을 회수합니다 |
 | Question Design | 이미 판정된 제안을 리뷰가 다시 올리지 않고, 도메인 검토가 KB부터 봅니다 |
+| Search Visibility | 질문 목록, 1차 소스 정의, 서비스명 표기, 과거 결정을 회수합니다 |
 | UX Writing | 글로서리가 비었거나 임시 경로일 때 표기와 규칙을 회수합니다 |
 
 보강 모듈은 입력만 바꿉니다. 각 스킬의 게이트, 판정 기준, 실행 권한은 그대로입니다.
@@ -195,8 +213,9 @@ python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
 
 ## 요구 사항
 
-스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트를
-실행하려면 Python 3.8 이상이 필요합니다.
+스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트와
+Search Visibility의 진단 스크립트를 실행하려면 Python 3.8 이상이 필요합니다.
+둘 다 표준 라이브러리만 사용합니다.
 
 ## 검증
 

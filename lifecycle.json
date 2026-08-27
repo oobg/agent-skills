@@ -73,6 +73,15 @@
         "gemini",
         "grok"
       ]
+    },
+    "search-visibility": {
+      "status": "active",
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     }
   },
   "candidate_exclusions": [],
