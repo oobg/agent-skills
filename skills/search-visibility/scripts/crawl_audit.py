@@ -160,7 +160,9 @@ def audit_page(url, ua, timeout):
     add = page["checks"].append
     add(("OK" if hops <= 1 else "CHECK", "리다이렉트", "{}홉".format(hops)))
     if page["noindex"]:
-        add(("FAIL", "색인", "meta robots에 noindex"))
+        # 스테이징·파라미터 변형·중복 억제는 의도된 제외다. 스크립트는 의도를 모르므로
+        # 사실만 적고 판정은 사람에게 넘긴다.
+        add(("CHECK", "색인", "meta robots에 noindex — 의도된 제외인지 확인한다"))
     add(
         ("CHECK" if page["text_chars"] < 500 else "OK", "본문 노출",
          "가시 텍스트 {}자 — 500자 미만이면 CSR 여부를 직접 확인한다".format(page["text_chars"])
@@ -173,7 +175,7 @@ def audit_page(url, ua, timeout):
         add((
             "OK" if 15 <= page["title_len"] <= 60 else "CHECK",
             "title",
-            "{}자".format(page["title_len"]),
+            "{}자 (권장 50~60, 짧은 브랜드 홈을 감안해 15자부터 통과)".format(page["title_len"]),
         ))
     if not desc:
         add(("FAIL", "description", "없음"))
@@ -229,11 +231,17 @@ def robots_verdict(groups, bot):
     명시 그룹이 없을 때 비로소 `*`가 적용되므로, 명시가 없다고 무정책인 것은 아니다.
     부분 경로 차단은 루트 접근을 막지 않으므로 여기서는 허용으로 읽는다.
     """
-    entries, source = groups.get(bot.lower()), "명시"
+    named = groups.get(bot.lower())
+    wildcard = groups.get("*")
+    entries, source = named, "명시"
     if entries is None:
-        entries, source = groups.get("*"), "*"
+        entries, source = wildcard, "*"
     if entries is None:
         return "규칙 없음"
+    # 이름을 적어 두었어도 규칙이 와일드카드와 같으면 수집 권한은 달라지지 않는다.
+    # 선언 의도와 접근 차이를 같은 말로 적으면 진단이 없는 차이를 보고한다.
+    if named is not None and wildcard is not None and sorted(named) == sorted(wildcard):
+        source = "명시=*"
     if any(rule == "disallow" and value == "/" for rule, value in entries):
         return "차단({})".format(source)
     return "허용({})".format(source)
@@ -258,7 +266,8 @@ def audit_robots(base, ua, timeout):
         "Sitemap 지시자",
         ", ".join(out["sitemaps"]) if out["sitemaps"] else "없음",
     ))
-    unnamed = [b for b, v in out["bots"].items() if not v.endswith("(명시)")]
+    unnamed = [b for b, v in out["bots"].items() if "명시" not in v]
+    same_as_wildcard = [b for b, v in out["bots"].items() if "명시=*" in v]
     blocked = [b for b, v in out["bots"].items() if v.startswith("차단")]
     out["checks"].append((
         "OK" if not unnamed else "CHECK",
@@ -267,6 +276,13 @@ def audit_robots(base, ua, timeout):
             len(unnamed), ", ".join(unnamed)
         ),
     ))
+    if same_as_wildcard:
+        out["checks"].append((
+            "CHECK", "명시=와일드카드",
+            "{}: {} — 이름은 적혀 있으나 규칙이 User-agent: * 와 같아 수집 권한 차이는 없다".format(
+                len(same_as_wildcard), ", ".join(same_as_wildcard)
+            ),
+        ))
     if blocked:
         out["checks"].append((
             "CHECK", "차단된 봇",

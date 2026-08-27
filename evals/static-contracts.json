@@ -111,7 +111,7 @@
       "id": "search-visibility-baseline-is-persisted-not-remembered",
       "kind": "execution",
       "target": "skills/search-visibility/SKILL.md",
-      "all": ["프로젝트에 파일로 남긴다", "다음 세션이 기준선을\n처음부터 다시 찍는다", "채울 수 없는 칸은 지우거나"]
+      "all": ["프로젝트에 파일로 남긴다", "완료는 두 단계이고 이름이 다르다", "효과는 측정 완료 전까지 주장하지 않는다", "채울 수 없는 칸은 지우거나"]
     },
     {
       "id": "search-visibility-auditor-scores-results-only",
@@ -138,6 +138,32 @@
       "kind": "execution",
       "target": "skills/search-visibility/SKILL.md",
       "all": ["유료 도구 없이 완결한다", "치명 항목은 다른 항목으로 상쇄되지 않는다", "좋은 항목을 세어 평균을 내지 않는다"]
+    },
+    {
+      "id": "search-visibility-intended-noindex-is-not-a-defect",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["의도된 색인 제외는 결함이 아니다", "확인 전에는 `확인 불가`로 두고 `미흡`으로 내리지 않는다"]
+    },
+    {
+      "id": "search-visibility-no-citation-is-tested-not-assumed",
+      "kind": "execution",
+      "target": "skills/search-visibility/references/citation-competition.md",
+      "all": ["아직 공급이 없는 자리", "최소 실험 페이지를 만들고 잰다", "재검토 주기를 함께 적는다", "그 한 곳이 실제 점유자라면"],
+      "none": ["**랜딩을 만들어도 인용이 생기지 않는다.**"]
+    },
+    {
+      "id": "search-visibility-faq-source-is-verified",
+      "kind": "execution",
+      "target": "skills/search-visibility/references/citation-competition.md",
+      "all": ["검색 노출용으로 심은 질문", "출처 미상", "검색 콘솔 검색어가 1순위이고"],
+      "none": ["추론이 아니라 관측이다"]
+    },
+    {
+      "id": "search-visibility-unbacked-prescriptions-are-labeled",
+      "kind": "execution",
+      "target": "skills/search-visibility/references/neo-naver.md",
+      "all": ["공식 문서로 확정된 요건이", "검증 전에는 처방이 아니라 시험 대상으로 다룬다"]
     }
   ]
 }

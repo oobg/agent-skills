@@ -55,14 +55,21 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertIn("`curl` 증빙 없이 완료로 보고하지 않는다", self.skill)
         self.assertIn("확인하지 못한 항목을 양호로 적지 않는다", self.skill)
 
-    def test_completion_requires_a_scheduled_remeasurement(self):
+    def test_completion_is_defined_once_in_two_named_stages(self):
+        # 완료 정의가 두 개면 이 스킬이 막으려는 주장(관측 없는 완료)이 그대로 통과한다.
         self.assertIn("측정 계획 없이 완료를 주장하지 않는다", self.skill)
-        self.assertIn("재측정 날짜를 보고에 명시하는 것까지가 완료 조건이다", self.skill)
-        self.assertIn("재측정 결과 줄이 채워지기 전까지는 완료가 아니다", self.measure)
+        self.assertIn("완료는 두 단계이고 이름이 다르다", self.skill)
+        self.assertIn("| 작업 완료 |", self.skill)
+        self.assertIn("| 측정 완료 |", self.skill)
+        self.assertIn("효과는 측정 완료 전까지 주장하지 않는다", self.skill)
+        # measure.md는 같은 두 이름을 쓰고 SKILL.md를 정본으로 가리킨다.
+        self.assertIn("**작업 완료**", self.measure)
+        self.assertIn("**측정 완료**", self.measure)
+        self.assertIn("두 단계의 구분은 SKILL.md의", self.measure)
 
     def test_effect_is_never_reported_as_a_prediction(self):
         self.assertIn("효과를 예측 수치로 적지 않는다", self.skill)
-        self.assertIn("예상 수치로 그 줄을 미리 채우지 않는다", self.measure)
+        self.assertIn("예상 수치로 미리 채우지도 않는다", self.measure)
 
     def test_account_bound_work_is_handed_back_not_performed(self):
         self.assertIn("계정 접속이 필요한 작업", self.skill)
@@ -239,6 +246,59 @@ class SearchVisibilityContractTests(unittest.TestCase):
             "# comment\nUser-agent: GPTBot  # inline\nDisallow: /  # blocked\n"
         )
         self.assertEqual(groups["gptbot"], [("disallow", "/")])
+
+    def test_intended_noindex_is_not_scored_as_a_defect(self):
+        # 스테이징·파라미터 URL이 정상 사이트를 미흡으로 떨어뜨리면 판정이 못 쓰게 된다.
+        self.assertIn("의도된 색인 제외는 결함이 아니다", self.skill)
+        self.assertIn("확인 전에는 `확인 불가`로 두고 `미흡`으로 내리지 않는다", self.skill)
+        self.assertIn("의도된 제외인지 확인한다", self.script)
+        self.assertNotIn('("FAIL", "색인"', self.script)
+
+    def test_no_citation_splits_into_two_causes_with_a_test(self):
+        # "랜딩을 만들어도 인용이 생기지 않는다"는 measure.md의 O/X로 닫을 수 있는 명제다.
+        # 관측 전에 단정하면 문서가 스스로 금지한 짐작이 된다.
+        self.assertIn("아직 공급이 없는 자리", self.competition)
+        self.assertIn("최소 실험 페이지를 만들고 잰다", self.competition)
+        self.assertIn("시험 전에 \"랜딩을 만들어도 인용이 생기지 않는다\"고 단정하지 않는다",
+                      self.competition)
+        self.assertIn("재검토 주기를 함께 적는다", self.competition)
+
+    def test_minority_column_is_not_discarded_when_it_is_the_occupant(self):
+        # 표본을 "실제 인용되는 페이지"로 정의해 놓고 소수파를 버리면
+        # 승자를 이기게 한 차별 요소를 정확히 골라서 버리게 된다.
+        self.assertIn("그 한 곳이 실제 점유자라면", self.competition)
+        self.assertIn("소수라는 이유로 버리기 전에", self.competition)
+        self.assertIn("전수가 비었다고 채우면 이긴다는 뜻은 아니다", self.competition)
+
+    def test_faq_source_is_verified_before_being_read_as_demand(self):
+        self.assertIn("검색 노출용으로 심은 질문", self.competition)
+        self.assertIn("출처 미상", self.competition)
+        # 검색 콘솔은 fallback이 아니라 1순위다 (SKILL.md Phase 2와 일치해야 한다).
+        self.assertIn("검색 콘솔 검색어가 1순위이고", self.competition)
+        self.assertNotIn("그때는 검색 콘솔 검색어와 고객 문의로 돌아간다", self.competition)
+
+    def test_prescriptions_without_official_backing_are_labeled(self):
+        neo = (SKILL_DIR / "references" / "neo-naver.md").read_text(encoding="utf-8")
+        self.assertIn("공식 문서로 확정된 요건이", neo)
+        self.assertIn("검증 전에는 처방이 아니라 시험 대상으로 다룬다", neo)
+        self.assertIn("어떤 소비자가 이 파일을 실제로 읽고 인용에 쓰는지는 확정되지 않았다", self.geo)
+
+    def test_named_bot_rule_identical_to_wildcard_is_reported_as_no_difference(self):
+        # 이름만 적고 규칙이 같으면 수집 권한은 그대로다. 선언 의도와 접근 차이를
+        # 같은 말로 적으면 진단이 없는 차이를 보고한다.
+        groups = self.audit.parse_robots_groups(
+            "User-agent: *\nAllow: /\nDisallow: /private/\n\n"
+            "User-agent: GPTBot\nAllow: /\nDisallow: /private/\n"
+        )
+        self.assertEqual(self.audit.robots_verdict(groups, "GPTBot"), "허용(명시=*)")
+        self.assertIn("수집 권한 차이는 없다", self.script)
+
+    def test_title_threshold_names_the_documented_range(self):
+        # seo.md는 50~60자를 권장하는데 스크립트는 15자부터 통과시킨다.
+        # 두 기준이 다르다는 사실이 출력과 문서 양쪽에 보여야 한다.
+        seo = (SKILL_DIR / "references" / "seo.md").read_text(encoding="utf-8")
+        self.assertIn("15자부터 통과시킨다", seo)
+        self.assertIn("권장 50~60", self.script)
 
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))
