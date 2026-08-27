@@ -14,6 +14,7 @@ MEASURE = SKILL_DIR / "references" / "measure.md"
 TEMPLATES = SKILL_DIR / "references" / "templates.md"
 AUDITOR = SKILL_DIR / "agents" / "visibility-auditor.md"
 AUDIT_SCRIPT = SKILL_DIR / "scripts" / "crawl_audit.py"
+COMPETITION = SKILL_DIR / "references" / "citation-competition.md"
 NEO = SKILL_DIR / "references" / "neo-naver.md"
 GEO = SKILL_DIR / "references" / "geo.md"
 
@@ -29,9 +30,11 @@ class SearchVisibilityContractTests(unittest.TestCase):
         cls.templates = TEMPLATES.read_text(encoding="utf-8")
         cls.auditor = AUDITOR.read_text(encoding="utf-8")
         cls.script = AUDIT_SCRIPT.read_text(encoding="utf-8")
+        cls.competition = COMPETITION.read_text(encoding="utf-8")
 
     def test_every_lane_reference_exists(self):
-        for name in ("seo", "aeo", "geo", "llmo", "neo-naver", "measure", "ontology-boost"):
+        for name in ("seo", "aeo", "geo", "llmo", "neo-naver", "measure",
+                     "citation-competition", "templates", "ontology-boost"):
             self.assertTrue((SKILL_DIR / "references" / f"{name}.md").is_file(), name)
 
     def test_guideline_violations_are_refused_even_when_requested(self):
@@ -113,7 +116,8 @@ class SearchVisibilityContractTests(unittest.TestCase):
     def test_audit_script_does_not_impersonate_a_crawler_by_default(self):
         self.assertIn("search-visibility-audit/1.0", self.script)
         self.assertNotIn('DEFAULT_UA = "Googlebot', self.script)
-        self.assertIn("허가받은 사이트에만 쓴다", self.script)
+        self.assertIn("공개 페이지에만 쓴다", self.script)
+        self.assertIn("남의 사이트를 대량으로 훑는 용도가 아니다", self.script)
 
     def test_audit_script_reports_unset_ai_bot_policy_as_undecided(self):
         # robots.txt 부재를 중립으로 읽으면 GEO 진단이 통째로 조용히 통과한다.
@@ -141,6 +145,52 @@ class SearchVisibilityContractTests(unittest.TestCase):
 
     def test_auditor_escalates_guideline_and_authority_breaches(self):
         self.assertIn("가이드라인 위반과 권한 경계는 에이전트가 판단으로 넘길 문제가 아니다", self.auditor)
+
+    def test_competition_pass_stays_scoped_to_citation(self):
+        # 제품·시장 경쟁 분석까지 번지면 스킬 경계가 무너지고 ux-writing·기획 영역과 겹친다.
+        self.assertIn("범위는 인용 경쟁으로 한정한다", self.competition)
+        self.assertIn("제품 비교, 가격 포지셔닝, 시장 규모, SWOT은 이 스킬 밖이다", self.competition)
+        self.assertIn("제품 비교, 가격 포지셔닝, 시장 규모 분석은 이 스킬 밖이다", self.skill)
+
+    def test_competition_requires_enough_samples_to_tell_structure_from_choice(self):
+        self.assertIn("4~5개를 같은 축으로 세워야", self.competition)
+        self.assertIn("전수가 비운 칸", self.competition)
+        self.assertIn("개별 선택", self.competition)
+
+    def test_competition_turns_the_same_checks_on_our_own_pages(self):
+        self.assertIn("같은 검산을 우리 페이지에 먼저 한다", self.competition)
+        self.assertIn("이 대조도 우리 사이트에 먼저 적용한다", self.competition)
+
+    def test_competition_records_counterexamples_not_just_defects(self):
+        self.assertIn("반례를 같이 기록한다", self.competition)
+        self.assertIn("성질", self.competition)
+
+    def test_competition_separates_target_change_from_own_misreading(self):
+        self.assertIn("관측 오류가 아니라 대상의 변화다", self.competition)
+        self.assertIn("없는 비교를 추정으로 채우지 않는다", self.competition)
+
+    def test_competition_allows_giving_up_a_question(self):
+        # 점유자가 없다 = 빈자리가 아니라 인용이 일어나지 않는 질문일 수 있다.
+        self.assertIn("포기도 결과다", self.competition)
+        self.assertIn("인용 없음", self.competition)
+
+    def test_competition_forbids_scraping_and_copying(self):
+        self.assertIn("대량 스크래핑을 하지 않는다", self.competition)
+        self.assertIn("복제하지 않는다", self.competition)
+        self.assertIn("로그인, 결제, 접근 제한 뒤의 콘텐츠에 접근하지 않는다", self.competition)
+        self.assertIn("판독 결과를 공개 산출물에 그대로 옮기지 않는다", self.competition)
+
+    def test_skill_completes_without_paid_tooling(self):
+        self.assertIn("유료 도구 없이 완결한다", self.skill)
+        self.assertIn("구독을 전제로 계획을 세우지 않는다", self.skill)
+
+    def test_fatal_findings_are_not_averaged_away(self):
+        self.assertIn("치명 항목은 다른 항목으로 상쇄되지 않는다", self.skill)
+        self.assertIn("좋은 항목을 세어 평균을 내지 않는다", self.skill)
+
+    def test_questions_are_chosen_before_pages_are_built(self):
+        self.assertIn("먼저 질문을 고르고, 그다음 페이지를 만든다", self.skill)
+        self.assertIn("이길 수 없는 질문에 페이지를 쌓는다", self.skill)
 
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))

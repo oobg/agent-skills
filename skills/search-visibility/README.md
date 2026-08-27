@@ -12,8 +12,14 @@
 - 네이버 검색과 AI 브리핑 노출을 다룰 때
 - 작업 후 효과를 숫자로 확인하는 측정 루프를 세팅할 때
 
+- 어떤 질문의 답 자리를 누가 점유했는지 판독하고 우선순위를 정할 때
+
 광고 집행이나 SNS 운영, 문구만 다듬는 작업은 다루지 않습니다. 문구는
-[UX Writing](../ux-writing/README.md) 스킬을 사용합니다.
+[UX Writing](../ux-writing/README.md) 스킬을 사용합니다. 경쟁 판독도 **인용 경쟁만**
+다루며 제품 비교, 가격 포지셔닝, 시장 규모 분석은 이 스킬 밖입니다.
+
+유료 SEO 도구는 필요 없습니다. 공개 응답, 검색 결과 화면, 사용자의 검색 콘솔, 무료 관측
+소스만으로 진단과 구현이 끝납니다.
 
 ## 다섯 레인
 
@@ -65,8 +71,8 @@ robots.txt, 사이트맵, `llms.txt`, 404 처리, AI 크롤러 정책, 페이지
 자바스크립트 없이 관측합니다. 결과는 `OK / CHECK / FAIL` 셋으로 나오는데, **CHECK는 판정이
 아니라 사람이 확인할 항목입니다.** 스크립트는 관측만 하고 레인 점수를 매기지 않습니다.
 
-허가받은 사이트에만 사용합니다. 요청 수를 제한하고 요청 사이에 지연을 두며, 크롤러 UA를
-사칭하지 않습니다.
+자기 사이트와 판독 대상의 공개 페이지에만 사용합니다. 로그인이나 결제 뒤의 콘텐츠는 대상이
+아니며, 요청 수를 제한하고 요청 사이에 지연을 두고, 크롤러 UA를 사칭하지 않습니다.
 
 ## 구성
 
@@ -82,6 +88,7 @@ search-visibility/
 │   ├── geo.md
 │   ├── llmo.md
 │   ├── neo-naver.md
+│   ├── citation-competition.md
 │   ├── measure.md
 │   ├── templates.md
 │   └── ontology-boost.md
@@ -95,6 +102,8 @@ search-visibility/
 - [`references/geo.md`](references/geo.md): `llms.txt`, AI 크롤러 정책, 1차 소스 되기
 - [`references/llmo.md`](references/llmo.md): 엔티티 일관성과 학습 표면 관리
 - [`references/neo-naver.md`](references/neo-naver.md): 서치어드바이저, AI 브리핑 인용 요건, 투트랙
+- [`references/citation-competition.md`](references/citation-competition.md): 인용 경쟁 판독 —
+  대상 3분류, 표본 규칙, 판독 축, 산술 검산, FAQ 역산, 재관측, 판정
 - [`references/measure.md`](references/measure.md): 기준선, 재측정 일정, 지표 읽는 법
 - [`references/templates.md`](references/templates.md): 진단 리포트, 측정 로그, 인용 프로브 시트,
   `llms.txt`, robots.txt, JSON-LD, 의도 랜딩 골격

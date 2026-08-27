@@ -119,6 +119,25 @@
       "target": "skills/search-visibility/agents/visibility-auditor.md",
       "all": ["결과만 보고**", "기대 판정은 넘기지 않는다", "STATUS: HOLD — 관측 로그 없음", "새 기준을 만들지 않는다"],
       "none": ["직접 다시 쓴다"]
+    },
+    {
+      "id": "search-visibility-citation-competition-scope",
+      "kind": "negative",
+      "target": "skills/search-visibility/references/citation-competition.md",
+      "all": ["범위는 인용 경쟁으로 한정한다", "제품 비교, 가격 포지셔닝, 시장 규모, SWOT은 이 스킬 밖이다"],
+      "none": ["경쟁사를 이기는 것이 목표다"]
+    },
+    {
+      "id": "search-visibility-citation-competition-evidence-rules",
+      "kind": "execution",
+      "target": "skills/search-visibility/references/citation-competition.md",
+      "all": ["4~5개를 같은 축으로 세워야", "같은 검산을 우리 페이지에 먼저 한다", "포기도 결과다", "대량 스크래핑을 하지 않는다", "없는 비교를 추정으로 채우지 않는다"]
+    },
+    {
+      "id": "search-visibility-veto-and-keyless-principles",
+      "kind": "execution",
+      "target": "skills/search-visibility/SKILL.md",
+      "all": ["유료 도구 없이 완결한다", "치명 항목은 다른 항목으로 상쇄되지 않는다", "좋은 항목을 세어 평균을 내지 않는다"]
     }
   ]
 }
