@@ -84,6 +84,16 @@ python3 scripts/crawl_audit.py https://example.com --pages /pricing,/faq
 OK/FAIL로 찍고 나머지는 CHECK로 남기므로, CHECK를 양호로 올리지 않는다. 스크립트가 없는
 환경이거나 개별 항목을 확인할 때는 직접 요청한다.
 
+**무엇이 자동이고 무엇이 사람 몫인지는 스크립트에게 묻는다.**
+
+```bash
+python3 scripts/crawl_audit.py --coverage
+```
+
+이 목록을 문서에 옮겨 적지 않는다. 두 곳에 적으면 스크립트가 바뀔 때 문서가 남아
+거짓말을 한다. 자동 항목을 손으로 다시 확인하느라 시간을 쓰지 말고, `--coverage`가
+사람 몫이라고 표시한 것에 시간을 쓴다.
+
 ```bash
 curl -sL https://example.com | grep -c "<h1"                          # 본문이 SSR로 나오는가
 curl -sL https://example.com/robots.txt                                # 크롤러 정책

@@ -65,11 +65,19 @@ Python 3.8 이상에서 실행합니다. 표준 라이브러리만 사용하므�
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com --pages /pricing,/faq
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com --json > audit.json
+python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py --coverage
 ```
 
 robots.txt, 사이트맵, `llms.txt`, 404 처리, AI 크롤러 정책, 페이지별 메타와 구조화 데이터를
 자바스크립트 없이 관측합니다. 결과는 `OK / CHECK / FAIL` 셋으로 나오는데, **CHECK는 판정이
 아니라 사람이 확인할 항목입니다.** 스크립트는 관측만 하고 레인 점수를 매기지 않습니다.
+
+가장 값이 큰 검사는 **구조화 데이터 대조**입니다. JSON-LD가 선언한 문답이 가시 텍스트에
+실제로 있는지 확인합니다 — 화면에 없는 답변을 구조화 데이터가 말하고 있으면 렌더링하지
+않는 소비자에게 그 답변은 존재하지 않습니다.
+
+무엇이 자동이고 무엇이 사람 몫인지는 `--coverage`가 알려줍니다. 이 목록은 스크립트가
+정본이며 문서에 복제하지 않습니다.
 
 자기 사이트와 판독 대상의 공개 페이지에만 사용합니다. 로그인이나 결제 뒤의 콘텐츠는 대상이
 아니며, 요청 수를 제한하고 요청 사이에 지연을 두고, 크롤러 UA를 사칭하지 않습니다.
@@ -93,7 +101,12 @@ search-visibility/
 │   ├── templates.md
 │   └── ontology-boost.md
 └── scripts/
-    └── crawl_audit.py
+    ├── crawl_audit.py
+    ├── fetch.py
+    ├── parse.py
+    ├── checks_site.py
+    ├── checks_page.py
+    └── checks_cross.py
 ```
 
 - [`SKILL.md`](SKILL.md): 진단 절차, 불변 원칙, 승인 게이트, 보고 형식
@@ -109,7 +122,12 @@ search-visibility/
   `llms.txt`, robots.txt, JSON-LD, 의도 랜딩 골격
 - [`agents/visibility-auditor.md`](agents/visibility-auditor.md): 결과만 보고 채점하는
   fresh-eyes 검증 패스
-- [`scripts/crawl_audit.py`](scripts/crawl_audit.py): 크롤러의 눈으로 표면을 관측
+- [`scripts/crawl_audit.py`](scripts/crawl_audit.py): CLI 진입점, 관측 순서와 출력, `--coverage`
+- [`scripts/fetch.py`](scripts/fetch.py): HTTP 회수. 자바스크립트를 실행하지 않습니다
+- [`scripts/parse.py`](scripts/parse.py): HTML·JSON-LD 파싱 유틸
+- [`scripts/checks_site.py`](scripts/checks_site.py): robots.txt, 사이트맵, `llms.txt`, 404 처리
+- [`scripts/checks_page.py`](scripts/checks_page.py): 페이지 단위 관측과 구조화 데이터 대조
+- [`scripts/checks_cross.py`](scripts/checks_cross.py): 페이지 간 대조(메타 중복, 엔티티 표기, 사이트맵 포함)
 - [`references/ontology-boost.md`](references/ontology-boost.md): 온톨로지가 있을 때만 여는
   선택 모듈. 질문 목록, 1차 소스 정의, 서비스명 표기, 과거 결정을 회수합니다.
 

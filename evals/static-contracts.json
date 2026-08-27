@@ -105,7 +105,7 @@
       "id": "search-visibility-audit-script-observes-without-grading",
       "kind": "execution",
       "target": "skills/search-visibility/SKILL.md",
-      "all": ["python3 scripts/crawl_audit.py", "관측만 하고 레인 점수를 판정하지 않는다", "CHECK를 양호로 올리지 않는다"]
+      "all": ["python3 scripts/crawl_audit.py", "관측만 하고 레인 점수를 판정하지 않는다", "CHECK를 양호로 올리지 않는다", "이 목록을 문서에 옮겨 적지 않는다"]
     },
     {
       "id": "search-visibility-baseline-is-persisted-not-remembered",
@@ -164,6 +164,12 @@
       "kind": "execution",
       "target": "skills/search-visibility/references/neo-naver.md",
       "all": ["공식 문서로 확정된 요건이", "검증 전에는 처방이 아니라 시험 대상으로 다룬다"]
+    },
+    {
+      "id": "search-visibility-coverage-is-owned-by-the-script",
+      "kind": "execution",
+      "target": "skills/search-visibility/README.md",
+      "all": ["--coverage", "구조화 데이터 대조", "이 목록은 스크립트가\n정본이며 문서에 복제하지 않습니다"]
     }
   ]
 }

@@ -1,5 +1,7 @@
 import ast
+import importlib
 import importlib.util
+import sys
 import json
 import os
 import stat
@@ -30,11 +32,13 @@ class SearchVisibilityContractTests(unittest.TestCase):
         cls.geo = GEO.read_text(encoding="utf-8")
         cls.templates = TEMPLATES.read_text(encoding="utf-8")
         cls.auditor = AUDITOR.read_text(encoding="utf-8")
-        cls.script = AUDIT_SCRIPT.read_text(encoding="utf-8")
         cls.competition = COMPETITION.read_text(encoding="utf-8")
-        spec = importlib.util.spec_from_file_location("crawl_audit", AUDIT_SCRIPT)
-        cls.audit = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(cls.audit)
+        sys.path.insert(0, str(AUDIT_SCRIPT.parent))
+        cls.audit = importlib.import_module("checks_site")
+        cls.page_mod = importlib.import_module("checks_page")
+        cls.entry = importlib.import_module("crawl_audit")
+        cls.script = "\n".join(f.read_text(encoding="utf-8")
+                                for f in sorted(AUDIT_SCRIPT.parent.glob("*.py")))
 
     def test_every_lane_reference_exists(self):
         for name in ("seo", "aeo", "geo", "llmo", "neo-naver", "measure",
@@ -106,17 +110,16 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertTrue(os.stat(AUDIT_SCRIPT).st_mode & stat.S_IXUSR)
         # 저장소 요구사항은 Python 3.8 + 표준 라이브러리다. 서드파티 import가 들어오면
         # 스킬을 설치한 곳에서 진단이 그냥 실패한다.
-        allowed = {
-            "argparse", "gzip", "json", "re", "ssl", "sys", "time", "urllib",
-        }
-        tree = ast.parse(self.script)
-        imported = set()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                imported.update(a.name.split(".")[0] for a in node.names)
-            elif isinstance(node, ast.ImportFrom) and node.module:
-                imported.add(node.module.split(".")[0])
-        self.assertEqual(imported - allowed, set())
+        stdlib = {"argparse", "gzip", "json", "re", "ssl", "sys", "time", "urllib"}
+        local = {f.stem for f in AUDIT_SCRIPT.parent.glob("*.py")}
+        for f in sorted(AUDIT_SCRIPT.parent.glob("*.py")):
+            imported = set()
+            for node in ast.walk(ast.parse(f.read_text(encoding="utf-8"))):
+                if isinstance(node, ast.Import):
+                    imported.update(a.name.split(".")[0] for a in node.names)
+                elif isinstance(node, ast.ImportFrom) and node.module:
+                    imported.add(node.module.split(".")[0])
+            self.assertEqual(imported - stdlib - local, set(), f.name)
 
     def test_audit_script_observes_and_refuses_to_grade_lanes(self):
         self.assertIn("관측만 하고 레인 점수를 판정하지 않는다", self.script)
@@ -299,6 +302,61 @@ class SearchVisibilityContractTests(unittest.TestCase):
         seo = (SKILL_DIR / "references" / "seo.md").read_text(encoding="utf-8")
         self.assertIn("15자부터 통과시킨다", seo)
         self.assertIn("권장 50~60", self.script)
+
+    def test_structured_data_is_compared_against_visible_text(self):
+        # 이 스킬 원칙 2가 기계로 판정되는 유일한 자리다. 화면에 없는 문답을 구조화
+        # 데이터가 선언하면 렌더링하지 않는 소비자에게 그 답변은 존재하지 않는다.
+        html = """<html><body><h2>배송은 얼마나 걸리나요?</h2>
+        <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage",
+        "mainEntity":[{"@type":"Question","name":"배송은 얼마나 걸리나요?",
+        "acceptedAnswer":{"@type":"Answer","text":"주문 후 영업일 기준 2일 안에 도착합니다."}}]}
+        </script></body></html>"""
+        nodes, _ = importlib.import_module("parse").jsonld_nodes(html)
+        text = importlib.import_module("parse").visible_text(html)
+        missing, soft, checked = self.page_mod._structured_vs_visible(nodes, text)
+        self.assertEqual(checked, 2)
+        self.assertEqual(soft, [])
+        # 질문은 화면에 있고 답변은 없다 — datapuree에서 실제로 관측된 형태다.
+        self.assertEqual(len(missing), 1)
+        self.assertIn("답변", missing[0])
+
+    def test_entity_name_mismatch_is_softer_than_missing_answers(self):
+        # 다국어 사이트에서 name 표기 차이는 흔하다. 문답 누락과 같은 등급으로 매기면
+        # 진짜 문제가 묻힌다.
+        html = """<html><body><p>퓨레 HQ 소개</p>
+        <script type="application/ld+json">{"@type":"SoftwareApplication","name":"Puree HQ"}
+        </script></body></html>"""
+        parse_mod = importlib.import_module("parse")
+        nodes, _ = parse_mod.jsonld_nodes(html)
+        missing, soft, _ = self.page_mod._structured_vs_visible(nodes, parse_mod.visible_text(html))
+        self.assertEqual(missing, [])
+        self.assertEqual(len(soft), 1)
+
+    def test_numbers_without_a_basis_are_surfaced(self):
+        loose = self.page_mod._numbers_without_basis("관리 지점 10,000+ 곳이고 유지율은 98%입니다")
+        self.assertTrue(any("10,000" in n for n in loose))
+        self.assertTrue(any("98" in n for n in loose))
+        # 기준이 붙으면 잡지 않는다.
+        self.assertEqual(
+            self.page_mod._numbers_without_basis("2026년 8월 기준 관리 지점 10,000+ 곳"), [])
+
+    def test_coverage_lists_what_the_script_does_not_do(self):
+        # 문서가 자동 항목을 복제하면 스크립트가 바뀔 때 문서가 남아 거짓말을 한다.
+        self.assertTrue(self.entry.COVERAGE)
+        self.assertTrue(self.entry.MANUAL)
+        self.assertIn("--coverage", self.skill)
+        self.assertIn("이 목록을 문서에 옮겨 적지 않는다", self.skill)
+        for _, item in self.entry.COVERAGE:
+            self.assertNotIn(item, self.skill)
+
+    def test_cross_page_checks_fold_redirect_duplicates(self):
+        # base가 /ko로 리다이렉트되면 같은 페이지를 두 번 세어 없는 중복을 보고한다.
+        pages = [
+            {"status": 200, "title": "같은 제목", "url": "https://e.io", "final_url": "https://e.io/ko"},
+            {"status": 200, "title": "같은 제목", "url": "https://e.io/ko", "final_url": "https://e.io/ko"},
+        ]
+        result = importlib.import_module("checks_cross").audit_cross(pages, [])
+        self.assertEqual(result["checks"], [])
 
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))
