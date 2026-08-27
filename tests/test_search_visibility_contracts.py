@@ -56,12 +56,12 @@ class SearchVisibilityContractTests(unittest.TestCase):
 
     def test_completion_requires_crawler_observation_not_source_code(self):
         self.assertIn("자바스크립트 없이", self.skill)
-        self.assertIn("`curl` 증빙 없이 완료로 보고하지 않는다", self.skill)
+        self.assertIn("`curl` 증빙 없이 작업 완료로 보고하지 않는다", self.skill)
         self.assertIn("확인하지 못한 항목을 양호로 적지 않는다", self.skill)
 
     def test_completion_is_defined_once_in_two_named_stages(self):
         # 완료 정의가 두 개면 이 스킬이 막으려는 주장(관측 없는 완료)이 그대로 통과한다.
-        self.assertIn("측정 계획 없이 완료를 주장하지 않는다", self.skill)
+        self.assertIn("측정 계획 없이 작업 완료를 주장하지 않는다", self.skill)
         self.assertIn("완료는 두 단계이고 이름이 다르다", self.skill)
         self.assertIn("| 작업 완료 |", self.skill)
         self.assertIn("| 측정 완료 |", self.skill)
@@ -188,10 +188,36 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertIn("관측 오류가 아니라 대상의 변화다", self.competition)
         self.assertIn("없는 비교를 추정으로 채우지 않는다", self.competition)
 
-    def test_competition_allows_giving_up_a_question(self):
-        # 점유자가 없다 = 빈자리가 아니라 인용이 일어나지 않는 질문일 수 있다.
-        self.assertIn("포기도 결과다", self.competition)
-        self.assertIn("인용 없음", self.competition)
+    def test_giving_up_requires_a_test_first(self):
+        # 점유자 없음의 두 원인은 관측으로 구분되지 않는다. 시험 전 판정은 보류여야 하고,
+        # 정본(SKILL.md)과 참조 문서가 같은 규칙을 써야 한다.
+        self.assertIn("보류도 결과다", self.competition)
+        self.assertIn("포기는 시험 뒤에만 내린다", self.competition)
+        self.assertIn("보류도 결과다", self.skill)
+        self.assertNotIn("페이지를 만들어도 인용이 생기지 않으므로", self.skill)
+
+    def test_minority_exception_has_a_firing_condition(self):
+        # 조건 없이 항상 발동하는 예외는 규칙을 삼킨다.
+        self.assertIn("인용이 실제로 관측된 페이지에만 걸린다", self.competition)
+        self.assertIn("조건 없이 항상 발동하는 예외는 규칙을 삼킨다", self.competition)
+
+    def test_question_source_ranking_lives_in_one_place(self):
+        # 참조 문서가 "SKILL.md가 정한 순위"를 인용하는데 정작 순위가 없던 자리다.
+        self.assertIn("출처의 순위는 다음과 같고, 이 순위가 정본이다", self.skill)
+        self.assertIn("순위표는 SKILL.md Phase 2에 있다", self.competition)
+        self.assertIn("FAQ 역산 불가", self.competition)
+
+    def test_aeo_carries_an_evidence_grade_like_the_other_lanes(self):
+        # 세 인용 레인 중 aeo.md만 근거 등급이 없었다.
+        aeo = (SKILL_DIR / "references" / "aeo.md").read_text(encoding="utf-8")
+        self.assertIn("공식 문서로 확정된 것이 아니라 관측에서 추린 가설이다", aeo)
+        self.assertIn("검증 전에는 처방이 아니라 시험 대상으로 다룬다", aeo)
+
+    def test_auditor_gates_qualitative_effect_claims(self):
+        # "숫자로 주장했는가"만 보면 "인용이 붙기 시작했다" 같은 정성 주장이 통과한다.
+        self.assertIn("숫자만이 아니라", self.auditor)
+        self.assertIn("정성 표현도 포함한다", self.auditor)
+        self.assertIn("시험 없이 `포기`로 닫았는가", self.auditor)
 
     def test_competition_forbids_scraping_and_copying(self):
         self.assertIn("대량 스크래핑을 하지 않는다", self.competition)
@@ -264,20 +290,19 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertIn("최소 실험 페이지를 만들고 잰다", self.competition)
         self.assertIn("시험 전에 \"랜딩을 만들어도 인용이 생기지 않는다\"고 단정하지 않는다",
                       self.competition)
-        self.assertIn("재검토 주기를 함께 적는다", self.competition)
+        self.assertIn("13절의 `보류`", self.competition)
 
     def test_minority_column_is_not_discarded_when_it_is_the_occupant(self):
         # 표본을 "실제 인용되는 페이지"로 정의해 놓고 소수파를 버리면
         # 승자를 이기게 한 차별 요소를 정확히 골라서 버리게 된다.
-        self.assertIn("그 한 곳이 실제 점유자라면", self.competition)
-        self.assertIn("소수라는 이유로 버리기 전에", self.competition)
+        self.assertIn("그 한 곳이 인용된 것으로 확인된 페이지라면", self.competition)
         self.assertIn("전수가 비었다고 채우면 이긴다는 뜻은 아니다", self.competition)
 
     def test_faq_source_is_verified_before_being_read_as_demand(self):
         self.assertIn("검색 노출용으로 심은 질문", self.competition)
         self.assertIn("출처 미상", self.competition)
         # 검색 콘솔은 fallback이 아니라 1순위다 (SKILL.md Phase 2와 일치해야 한다).
-        self.assertIn("검색 콘솔 검색어가 1순위이고", self.competition)
+        self.assertIn("순위표는 SKILL.md Phase 2에 있다", self.competition)
         self.assertNotIn("그때는 검색 콘솔 검색어와 고객 문의로 돌아간다", self.competition)
 
     def test_prescriptions_without_official_backing_are_labeled(self):

@@ -92,7 +92,7 @@
       "id": "search-visibility-observation-over-recall",
       "kind": "execution",
       "target": "skills/search-visibility/SKILL.md",
-      "all": ["자바스크립트 없이\n   받은 HTML에 있다", "`curl` 증빙 없이 완료로 보고하지 않는다", "회수는 사이트의 현재 상태가 아니다", "확인하지 못한 항목을 양호로 적지 않는다"]
+      "all": ["자바스크립트 없이\n   받은 HTML에 있다", "`curl` 증빙 없이 작업 완료로 보고하지 않는다", "회수는 사이트의 현재 상태가 아니다", "확인하지 못한 항목을 양호로 적지 않는다"]
     },
     {
       "id": "search-visibility-ontology-boost-stays-optional-and-read-only",
@@ -131,7 +131,7 @@
       "id": "search-visibility-citation-competition-evidence-rules",
       "kind": "execution",
       "target": "skills/search-visibility/references/citation-competition.md",
-      "all": ["4~5개를 같은 축으로 세워야", "같은 검산을 우리 페이지에 먼저 한다", "포기도 결과다", "대량 스크래핑을 하지 않는다", "없는 비교를 추정으로 채우지 않는다"]
+      "all": ["4~5개를 같은 축으로 세워야", "같은 검산을 우리 페이지에 먼저 한다", "보류도 결과다", "대량 스크래핑을 하지 않는다", "없는 비교를 추정으로 채우지 않는다"]
     },
     {
       "id": "search-visibility-veto-and-keyless-principles",
@@ -149,14 +149,14 @@
       "id": "search-visibility-no-citation-is-tested-not-assumed",
       "kind": "execution",
       "target": "skills/search-visibility/references/citation-competition.md",
-      "all": ["아직 공급이 없는 자리", "최소 실험 페이지를 만들고 잰다", "재검토 주기를 함께 적는다", "그 한 곳이 실제 점유자라면"],
+      "all": ["아직 공급이 없는 자리", "최소 실험 페이지를 만들고 잰다", "포기는 시험 뒤에만 내린다", "인용이 실제로 관측된 페이지에만 걸린다"],
       "none": ["**랜딩을 만들어도 인용이 생기지 않는다.**"]
     },
     {
       "id": "search-visibility-faq-source-is-verified",
       "kind": "execution",
       "target": "skills/search-visibility/references/citation-competition.md",
-      "all": ["검색 노출용으로 심은 질문", "출처 미상", "검색 콘솔 검색어가 1순위이고"],
+      "all": ["검색 노출용으로 심은 질문", "출처 미상", "순위표는 SKILL.md Phase 2에 있다"],
       "none": ["추론이 아니라 관측이다"]
     },
     {
