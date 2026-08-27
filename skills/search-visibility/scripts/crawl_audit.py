@@ -31,6 +31,7 @@ import time
 
 import checks_cross
 import checks_page
+import checks_passage
 import checks_site
 import fetch
 
@@ -43,6 +44,8 @@ COVERAGE = [
     ("SEO", "og:image 실제 응답 확인, 페이지 간 제목 중복, 사이트맵 포함 여부"),
     ("AEO", "JSON-LD가 선언한 문답·제목이 가시 텍스트에 실제로 있는지 대조"),
     ("AEO", "표·목록·h2·h3 개수(인용 단위 구조), 기준 표기 없는 수치"),
+    ("AEO", "문단 단위 관측 — 자체 완결 문단 수, 맥락 지시어에 기댄 문단, 첫 문단 길이"),
+    ("SEO", "프레임워크 루트 안의 본문 길이(헤더·푸터만 SSR인 경우 탐지)"),
     ("GEO", "llms.txt·llms-full.txt 존재와 타입, 데이터 정책 문구, 상대 경로 링크"),
     ("GEO", "AI 크롤러 9종의 루트 접근 정책과 와일드카드 동일 여부"),
     ("LLMO", "Organization sameAs 건수, 페이지 간 Organization 이름 분열"),

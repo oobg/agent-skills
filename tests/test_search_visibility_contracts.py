@@ -358,6 +358,35 @@ class SearchVisibilityContractTests(unittest.TestCase):
         result = importlib.import_module("checks_cross").audit_cross(pages, [])
         self.assertEqual(result["checks"], [])
 
+    def test_passage_checks_measure_the_unit_that_gets_cited(self):
+        # geo.md가 "문단이 인용 단위가 된다"고 말하므로 측정 단위도 문단이어야 한다.
+        mod = importlib.import_module("checks_passage")
+        bound = mod.classify("위에서 말한 그 수치는 계속 오르고 있습니다. 이러한 흐름이 이어집니다.")
+        self.assertGreater(bound["deixis"], 0)
+        self.assertFalse(bound["self_contained"])
+        free = mod.classify("국내 상장사 실적 발표는 2026년 8월 26일 기준 분기마다 집계됩니다.")
+        self.assertEqual(free["deixis"], 0)
+        self.assertTrue(free["self_contained"])
+        # 수치가 있는데 기준이 없으면 자체 완결로 세지 않는다.
+        loose = mod.classify("관리 지점은 10,000곳이고 고객 유지율은 98퍼센트에 이릅니다.")
+        self.assertTrue(loose["has_number"])
+        self.assertFalse(loose["self_contained"])
+
+    def test_passage_checks_do_not_produce_a_weighted_score(self):
+        # 가중치를 둔 종합 점수는 근거가 없다. 이 스킬은 점수를 매기지 않는다.
+        src = (AUDIT_SCRIPT.parent / "checks_passage.py").read_text(encoding="utf-8")
+        self.assertIn("점수를 매기지 않는다", src)
+        for banned in ("WEIGHT", "score", "grade", "0.30", "0.25"):
+            self.assertNotIn(banned, src)
+
+    def test_framework_root_catches_shell_only_ssr(self):
+        # 헤더·푸터만 SSR이면 전체 가시 텍스트만 보는 판정은 통과해 버린다.
+        mod = importlib.import_module("parse")
+        html = "<body><nav>" + "메뉴 " * 200 + '</nav><div id="__next"></div></body>'
+        rid, inner = mod.framework_root_text(html)
+        self.assertEqual(rid, "__next")
+        self.assertEqual(inner, 0)
+
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))
         entry = config["skills"]["search-visibility"]

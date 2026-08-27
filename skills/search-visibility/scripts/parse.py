@@ -85,3 +85,19 @@ def normalize(text):
     """대조용 정규화 — 공백과 따옴표 변형을 지운다."""
     text = re.sub(r"[‘’“”]", "'", text or "")
     return re.sub(r"\s+", "", text)
+
+
+FRAMEWORK_ROOTS = ("root", "__next", "app", "__nuxt", "___gatsby", "svelte")
+
+
+def framework_root_text(html):
+    """프레임워크 루트 컨테이너 안의 텍스트 길이. 못 찾으면 None.
+
+    전체 가시 텍스트만 보면 헤더·푸터가 SSR인 사이트가 통과한다. 반대로 프리렌더를
+    쓰는 사이트를 CSR로 오인하기도 한다. 루트 안을 따로 재면 둘 다 줄어든다.
+    """
+    for rid in FRAMEWORK_ROOTS:
+        m = re.search(r'<div[^>]+id=["\']{}["\'][^>]*>(.*)'.format(re.escape(rid)), html, re.S | re.I)
+        if m:
+            return rid, len(visible_text(m.group(1)))
+    return None

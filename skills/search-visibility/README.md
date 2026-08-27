@@ -106,6 +106,7 @@ search-visibility/
     ├── parse.py
     ├── checks_site.py
     ├── checks_page.py
+    ├── checks_passage.py
     └── checks_cross.py
 ```
 
@@ -127,6 +128,8 @@ search-visibility/
 - [`scripts/parse.py`](scripts/parse.py): HTML·JSON-LD 파싱 유틸
 - [`scripts/checks_site.py`](scripts/checks_site.py): robots.txt, 사이트맵, `llms.txt`, 404 처리
 - [`scripts/checks_page.py`](scripts/checks_page.py): 페이지 단위 관측과 구조화 데이터 대조
+- [`scripts/checks_passage.py`](scripts/checks_passage.py): 문단 단위 관측. 인용은 페이지가 아니라
+  문단째로 잘려 나가므로 자체 완결 여부를 문단마다 봅니다
 - [`scripts/checks_cross.py`](scripts/checks_cross.py): 페이지 간 대조(메타 중복, 엔티티 표기, 사이트맵 포함)
 - [`references/ontology-boost.md`](references/ontology-boost.md): 온톨로지가 있을 때만 여는
   선택 모듈. 질문 목록, 1차 소스 정의, 서비스명 표기, 과거 결정을 회수합니다.

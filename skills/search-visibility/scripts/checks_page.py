@@ -7,6 +7,7 @@
 
 import re
 
+import checks_passage
 import fetch
 import parse
 
@@ -116,10 +117,20 @@ def audit_page(url, ua, timeout, verify_assets=True):
     if page["noindex"]:
         # 스테이징·파라미터 변형·중복 억제는 의도된 제외다. 스크립트는 의도를 모른다.
         add(("CHECK", "색인", "meta robots에 noindex — 의도된 제외인지 확인한다"))
-    add(("CHECK" if page["text_chars"] < TEXT_THIN else "OK", "본문 노출",
-         "가시 텍스트 {}자{}".format(page["text_chars"],
-                                " — 500자 미만이면 CSR 여부를 직접 확인한다"
-                                if page["text_chars"] < TEXT_THIN else "")))
+    root = parse.framework_root_text(html)
+    page["framework_root"] = root
+    if root and root[1] < TEXT_THIN <= page["text_chars"]:
+        # 헤더·푸터만 SSR이고 본문이 클라이언트 렌더인 경우다. 전체 길이만 보면 통과한다.
+        add(("FAIL", "본문 노출",
+             "가시 텍스트 {}자이나 #{} 안은 {}자 — 본문이 클라이언트 렌더일 수 있다".format(
+                 page["text_chars"], root[0], root[1])))
+    else:
+        add(("CHECK" if page["text_chars"] < TEXT_THIN else "OK", "본문 노출",
+             "가시 텍스트 {}자{}{}".format(
+                 page["text_chars"],
+                 " (#{} 안 {}자)".format(root[0], root[1]) if root else "",
+                 " — 500자 미만이면 CSR 여부를 직접 확인한다"
+                 if page["text_chars"] < TEXT_THIN else "")))
     add(("OK" if page["h1_count"] == 1 else "CHECK", "h1", "{}개".format(page["h1_count"])))
     if not title:
         add(("FAIL", "title", "없음"))
@@ -188,4 +199,9 @@ def audit_page(url, ua, timeout, verify_assets=True):
 
     if same_as:
         add(("OK", "sameAs", "{}건".format(len(same_as))))
+
+    # 인용은 문단째로 잘려 나간다. 페이지 단위 관측만으로는 그 단위가 보이지 않는다.
+    passage = checks_passage.audit_passages(parse.SCRIPTISH.sub(" ", html))
+    page.update({k: v for k, v in passage.items() if k != "checks"})
+    page["checks"].extend(passage["checks"])
     return page
