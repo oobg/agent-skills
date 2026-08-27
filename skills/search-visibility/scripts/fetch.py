@@ -55,7 +55,7 @@ def header(headers, name):
 
 
 def head_status(url, ua=DEFAULT_UA, timeout=10.0):
-    """본문을 받지 않고 상태 코드만 확인한다(자산 실존 확인용)."""
+    """상태 코드와 타입만 확인한다(자산 실존 확인용). 본문은 앞부분만 받는다."""
     status, _, headers, _, _, error = fetch(url, ua, timeout, max_bytes=2048)
     return status, header(headers, "Content-Type").split(";")[0], error
 

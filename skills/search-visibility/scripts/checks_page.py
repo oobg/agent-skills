@@ -85,6 +85,8 @@ def audit_page(url, ua, timeout, verify_assets=True):
         add(("FAIL", "응답", "HTTP {}".format(status)))
         return page
 
+    # 스크립트·noscript를 텍스트에서 빼면 구조 카운트에서도 빼야 같은 전제를 쓴다.
+    visible_html = parse.SCRIPTISH.sub(" ", html)
     text = parse.visible_text(html)
     title = parse.title_of(html)
     desc = parse.meta_content(html, "description")
@@ -94,8 +96,13 @@ def audit_page(url, ua, timeout, verify_assets=True):
     nodes, ld_errors = parse.jsonld_nodes(html)
     ld_types = sorted({t for n in nodes for t in parse.node_types(n)})
     langs = parse.hreflangs(html)
-    same_as = sorted({s for n in nodes for s in (n.get("sameAs") or [])
-                      if isinstance(n.get("sameAs"), list) and isinstance(s, str)})
+    same_as = set()
+    for n in nodes:
+        raw = n.get("sameAs")
+        for s in ([raw] if isinstance(raw, str) else raw or []):
+            if isinstance(s, str) and s.strip():
+                same_as.add(s.strip())
+    same_as = sorted(same_as)
     org_names = sorted({n.get("name") for n in nodes
                         if "Organization" in parse.node_types(n) and isinstance(n.get("name"), str)})
 
@@ -103,9 +110,9 @@ def audit_page(url, ua, timeout, verify_assets=True):
         "bytes": len(html), "text_chars": len(text), "title": title,
         "title_len": len(title) if title else 0,
         "description_len": len(desc) if desc else 0,
-        "h1_count": parse.tag_count(html, "h1"), "h2_count": parse.tag_count(html, "h2"),
-        "h3_count": parse.tag_count(html, "h3"), "table_count": parse.tag_count(html, "table"),
-        "list_count": parse.tag_count(html, "ul") + parse.tag_count(html, "ol"),
+        "h1_count": parse.tag_count(visible_html, "h1"), "h2_count": parse.tag_count(visible_html, "h2"),
+        "h3_count": parse.tag_count(visible_html, "h3"), "table_count": parse.tag_count(visible_html, "table"),
+        "list_count": parse.tag_count(visible_html, "ul") + parse.tag_count(visible_html, "ol"),
         "canonical": canonical, "og_image": og_image,
         "hreflang": langs, "jsonld_types": ld_types, "same_as": same_as,
         "org_names": org_names,
@@ -181,7 +188,9 @@ def audit_page(url, ua, timeout, verify_assets=True):
                  "문답 {}건이 가시 텍스트에 없음: {}".format(
                      len(missing), ", ".join(missing[:3]) + ("…" if len(missing) > 3 else ""))))
         else:
-            add(("OK", "구조화 데이터 대조", "문답 대조 통과 (검사 {}건)".format(checked)))
+            faq = any("FAQPage" in parse.node_types(n) for n in nodes)
+            add(("OK", "구조화 데이터 대조",
+                 "{} 대조 통과 (검사 {}건)".format("문답" if faq else "제목", checked)))
         if soft_missing:
             add(("CHECK", "엔티티 표기 대조",
                  "{}건이 화면 표기와 다름: {}".format(
@@ -197,11 +206,11 @@ def audit_page(url, ua, timeout, verify_assets=True):
         add(("CHECK", "수치 기준 표기",
              "기준 없는 수치 {}건: {}".format(len(loose), ", ".join(loose[:5]))))
 
-    if same_as:
-        add(("OK", "sameAs", "{}건".format(len(same_as))))
+    add(("OK" if same_as else "CHECK", "sameAs",
+         "{}건".format(len(same_as)) if same_as else "없음 — 공식 표면 연결이 선언되지 않았다"))
 
     # 인용은 문단째로 잘려 나간다. 페이지 단위 관측만으로는 그 단위가 보이지 않는다.
-    passage = checks_passage.audit_passages(parse.SCRIPTISH.sub(" ", html))
+    passage = checks_passage.audit_passages(visible_html)
     page.update({k: v for k, v in passage.items() if k != "checks"})
     page["checks"].extend(passage["checks"])
     return page

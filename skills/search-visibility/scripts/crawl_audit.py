@@ -134,7 +134,8 @@ def main(argv=None):
         pages.append(page)
         sections.append(("페이지: {}".format(url), page))
 
-    cross = checks_cross.audit_cross(pages, sitemap.get("locs") or [])
+    page_locs = [] if sitemap.get("is_index") else (sitemap.get("locs") or [])
+    cross = checks_cross.audit_cross(pages, page_locs)
     if cross.get("checks"):
         sections.append(("페이지 간 대조", cross))
 

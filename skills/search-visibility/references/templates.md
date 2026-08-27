@@ -168,6 +168,54 @@ Sitemap: https://example.com/sitemap.xml
 </script>
 ```
 
+`crawl_audit.py`는 아래 타입의 `name`·`headline`이 가시 텍스트에 있는지도 대조한다.
+화면에 없는 이름을 선언하면 엔티티 표기가 갈라진다.
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "화면의 h1과 같은 제목",
+  "datePublished": "2026-08-27",
+  "dateModified": "2026-08-27",
+  "author": {"@type": "Person", "name": "저자 이름", "sameAs": ["https://..."]},
+  "publisher": {"@id": "https://example.com/#org"}
+}
+</script>
+```
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "화면에 쓰는 제품명과 같은 표기",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "화면 설명과 같은 내용",
+  "offers": {"@type": "Offer", "category": "B2B"}
+}
+</script>
+```
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "화면에 쓰는 제품명",
+  "description": "화면 설명과 같은 내용",
+  "brand": {"@id": "https://example.com/#org"},
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW",
+             "availability": "https://schema.org/InStock"}
+}
+</script>
+```
+
+다국어 사이트에서 화면은 한글, `name`은 영문으로 쓰면 대조에서 걸린다. 스팸은 아니지만
+모델 안에서 엔티티가 갈라지므로 `alternateName`으로 함께 선언한다.
+
 ## 8. 의도 랜딩 페이지의 골격
 
 ```markdown

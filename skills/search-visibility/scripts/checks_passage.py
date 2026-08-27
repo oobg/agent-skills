@@ -11,13 +11,18 @@ import re
 BLOCK_RE = re.compile(r"<(p|li|blockquote)\b[^>]*>(.*?)</\1>", re.S | re.I)
 TAG_RE = re.compile(r"<[^>]+>")
 # 맥락 의존 신호. "위에서 말한 그 수치"처럼 앞 문단에 기대는 문장은 추출되면 무의미해진다.
-DEIXIS = ("이것", "그것", "저것", "이는", "그는", "이러한", "그러한", "해당", "위에서",
-          "앞서", "아래에서", "다음과 같", "이때", "그때", "여기서",
-          "this ", "that ", "these ", "those ", "it ", "above", "below")
+DEIXIS_KO = ("이것", "그것", "저것", "이는", "그는", "이러한", "그러한", "해당", "위에서",
+             "앞서", "아래에서", "다음과 같", "이때", "그때", "여기서")
+# 영어는 단어 경계를 걸지 않으면 profit·limit 같은 단어가 걸린다.
+DEIXIS_EN = re.compile(r"\b(this|that|these|those|it|above|below)\b", re.I)
 BASIS = re.compile(r"(20\d{2}|기준|현재|누적|집계|출처|according to|as of|source)", re.I)
 NUMBER = re.compile(r"[0-9][0-9,\.]*\s*(?:%|퍼센트|배|만|억|원|건|개|명|시간|분|일|년)?")
-SHORT, LONG = 40, 700          # 인용 단위로 서기에 너무 짧거나 긴 문단의 경계
-LEAD_ANSWER = 150              # 첫 문단이 직답이라면 이 정도 안에서 끝난다
+# aeo.md가 "첫 문단이 직답이다. 40자 내외 한 문장"이라고 규정한다. 그 40자가 이 파일의
+# 유일한 문서 근거이며, 아래 값들은 판정선이 아니라 목록에서 잡음을 걷어내는 하한이다.
+# 근거 없는 상한으로 OK/CHECK를 가르지 않는다 — 남의 매직넘버를 버리면서 내 매직넘버를
+# 만들면 같은 잘못이다.
+LEAD_IDEAL = 40                # aeo.md의 직답 권장 길이. 관측치를 이 값과 나란히 보여 준다.
+NOISE_FLOOR = 15               # 버튼·라벨 같은 조각을 문단으로 세지 않기 위한 하한
 
 
 def _text(chunk):
@@ -25,14 +30,18 @@ def _text(chunk):
 
 
 def passages(html):
-    """본문 블록을 순서대로 뽑는다. 스크립트 안은 이미 제거된 HTML을 받는다."""
-    return [t for t in (_text(m.group(2)) for m in BLOCK_RE.finditer(html)) if len(t) >= SHORT]
+    """본문 블록을 순서대로 뽑는다. 스크립트 안은 이미 제거된 HTML을 받는다.
+
+    짧다고 버리지 않는다. aeo.md가 이상형으로 규정한 40자 내외 직답이 바로 짧은 문단이라,
+    길이로 거르면 문서가 쓰라고 한 형태를 도구가 문단으로 세지 않게 된다.
+    """
+    return [t for t in (_text(m.group(2)) for m in BLOCK_RE.finditer(html))
+            if len(t) >= NOISE_FLOOR]
 
 
 def classify(text):
     """문단 하나의 관측치. 판정이 아니라 사실만 담는다."""
-    lowered = text.lower()
-    deixis = sum(1 for d in DEIXIS if d in lowered)
+    deixis = sum(1 for d in DEIXIS_KO if d in text) + len(DEIXIS_EN.findall(text))
     numbers = NUMBER.findall(text)
     numeric = [n for n in numbers if len(re.sub(r"[^0-9]", "", n)) >= 2]
     return {
@@ -42,7 +51,6 @@ def classify(text):
         "has_basis": bool(BASIS.search(text)),
         # 자체 완결: 맥락 지시어가 없고, 수치가 있으면 그 근거·시점도 함께 있다.
         "self_contained": deixis == 0 and (not numeric or bool(BASIS.search(text))),
-        "citable_length": SHORT <= len(text) <= LONG,
     }
 
 
@@ -54,12 +62,13 @@ def audit_passages(html):
         return out
 
     marks = [classify(b) for b in blocks]
-    citable = [m for m in marks if m["self_contained"] and m["citable_length"]]
+    citable = [m for m in marks if m["self_contained"]]
     context_bound = [m for m in marks if m["deixis"]]
     loose_numbers = [m for m in marks if m["has_number"] and not m["has_basis"]]
-    too_long = [m for m in marks if m["chars"] > LONG]
+    longest = max(m["chars"] for m in marks)
 
     out.update({"passage_count": len(blocks), "citable_count": len(citable),
+                "longest_passage": longest,
                 "context_bound": len(context_bound), "loose_number_passages": len(loose_numbers)})
     out["checks"].append((
         "OK" if citable else "CHECK", "인용 가능 문단",
@@ -72,14 +81,12 @@ def audit_passages(html):
         out["checks"].append((
             "CHECK", "근거 없는 수치 문단",
             "{}개 문단이 수치를 말하면서 기준·출처를 함께 적지 않는다".format(len(loose_numbers))))
-    if too_long:
-        out["checks"].append((
-            "CHECK", "긴 문단",
-            "{}개가 {}자를 넘는다 — 문단째 인용되기 어렵다".format(len(too_long), LONG)))
+    out["checks"].append(("OK", "문단 길이", "가장 긴 문단 {}자".format(longest)))
 
+    # 첫 문단이 직답인지는 의미 판정이라 기계가 가르지 못한다. 관측치와 문서 권장값을
+    # 나란히 놓고 판단은 사람에게 넘긴다.
     lead = blocks[0]
     out["checks"].append((
-        "OK" if len(lead) <= LEAD_ANSWER else "CHECK", "첫 문단",
-        "{}자{}".format(len(lead), "" if len(lead) <= LEAD_ANSWER
-                        else " — 직답이 맨 앞에 있는지 직접 확인한다")))
+        "CHECK", "첫 문단",
+        "{}자 (aeo.md 권장 {}자 내외) — 직답인지 직접 확인한다".format(len(lead), LEAD_IDEAL)))
     return out

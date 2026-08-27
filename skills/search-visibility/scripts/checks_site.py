@@ -74,6 +74,8 @@ def audit_robots(base, ua, timeout):
     out["sitemaps"] = [m.strip() for m in parse.find_all(r"^\s*Sitemap:\s*(\S+)", body, re.I | re.M)]
     rules = parse_robots_groups(body)
     out["bots"] = {bot: robots_verdict(rules, bot) for bot in AI_BOTS}
+    out["disallow_paths"] = sorted({v for entries in rules.values()
+                                    for k, v in entries if k == "disallow" and v not in ("", "/")})
     unnamed = [b for b, v in out["bots"].items() if "명시" not in v]
     same = [b for b, v in out["bots"].items() if "명시=*" in v]
     blocked = [b for b, v in out["bots"].items() if v.startswith("차단")]
@@ -88,6 +90,10 @@ def audit_robots(base, ua, timeout):
         out["checks"].append(("CHECK", "명시=와일드카드",
                               "{}: {} — 이름은 적혀 있으나 규칙이 User-agent: * 와 같아 "
                               "수집 권한 차이는 없다".format(len(same), ", ".join(same))))
+    if out["disallow_paths"]:
+        # 루트는 열려 있어도 일부 경로가 막혀 있으면 "다 가져갈 수 있다"로 읽힌다.
+        out["checks"].append(("CHECK", "차단된 경로",
+                              "{} — 루트 판정과 별개다".format(", ".join(out["disallow_paths"][:6]))))
     if blocked:
         out["checks"].append(("CHECK", "차단된 봇",
                               "{}: {} — 의도한 차단인지 확인한다".format(len(blocked), ", ".join(blocked))))
@@ -108,12 +114,14 @@ def audit_sitemap(base, ua, timeout, sitemaps):
     out.update({"is_index": is_index, "locs": locs, "loc_count": len(locs),
                 "bytes": len(body.encode("utf-8")), "lastmod_count": len(lastmods)})
     near_limit = len(locs) >= SITEMAP_URL_LIMIT * 0.8 or out["bytes"] >= SITEMAP_BYTE_LIMIT * 0.8
-    out["checks"] += [
-        ("OK", "sitemap", "{} ({})".format(target, "index" if is_index else "urlset")),
-        ("CHECK" if near_limit else "OK", "규모",
-         "URL {}개 / {:.1f}MB — 한도(5만·50MB)에 근접하면 미리 샤딩한다".format(
-             len(locs), out["bytes"] / 1024 / 1024)),
-    ]
+    out["checks"].append(("OK", "sitemap", "{} ({})".format(target, "index" if is_index else "urlset")))
+    if is_index:
+        out["checks"].append(("CHECK", "규모",
+                              "하위 사이트맵 {}개 — 이 도구는 하위를 따라가지 않는다".format(len(locs))))
+    else:
+        out["checks"].append(("CHECK" if near_limit else "OK", "규모",
+                              "URL {}개 / {:.1f}MB — 한도(5만·50MB)에 근접하면 미리 샤딩한다".format(
+                                  len(locs), out["bytes"] / 1024 / 1024)))
     if not is_index:
         out["checks"].append(("OK" if len(lastmods) == len(locs) else "CHECK", "lastmod",
                               "{}/{} URL".format(len(lastmods), len(locs))))
@@ -128,7 +136,7 @@ def audit_llms(base, ua, timeout):
         ok = status == 200 and body.strip() and "<html" not in body[:400].lower()
         out[path] = {"status": status, "bytes": len(body), "content_type": ctype}
         out["checks"].append((
-            "OK" if ok else ("FAIL" if path == "/llms.txt" else "CHECK"), path,
+            "OK" if ok else "CHECK", path,
             "{}바이트 ({})".format(len(body), ctype or "타입 미상") if ok
             else "없음 또는 HTML 응답 (HTTP {})".format(status)))
         if ok and path == "/llms.txt":

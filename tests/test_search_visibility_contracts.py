@@ -356,7 +356,10 @@ class SearchVisibilityContractTests(unittest.TestCase):
             {"status": 200, "title": "같은 제목", "url": "https://e.io/ko", "final_url": "https://e.io/ko"},
         ]
         result = importlib.import_module("checks_cross").audit_cross(pages, [])
-        self.assertEqual(result["checks"], [])
+        labels = [label for _, label, _ in result["checks"]]
+        self.assertNotIn("메타 중복", labels)
+        # 접힌 뒤 1장이 되면 침묵이 아니라 미실행을 알린다.
+        self.assertIn("페이지 간 대조", labels)
 
     def test_passage_checks_measure_the_unit_that_gets_cited(self):
         # geo.md가 "문단이 인용 단위가 된다"고 말하므로 측정 단위도 문단이어야 한다.
@@ -386,6 +389,69 @@ class SearchVisibilityContractTests(unittest.TestCase):
         rid, inner = mod.framework_root_text(html)
         self.assertEqual(rid, "__next")
         self.assertEqual(inner, 0)
+
+    def test_framework_root_stops_at_its_own_closing_tag(self):
+        # 루트 뒤에 SSR 푸터가 오는 형태가 이 기능이 잡아야 할 케이스다. 그리디 캡처는
+        # 그 푸터를 루트 안으로 세어, 본문이 빈 CSR 페이지에 OK를 준다.
+        mod = importlib.import_module("parse")
+        html = ('<body><div id="__next"><span>짧음</span></div>'
+                "<footer>" + "푸터 " * 300 + "</footer></body>")
+        rid, inner = mod.framework_root_text(html)
+        self.assertEqual(rid, "__next")
+        self.assertLess(inner, 10)
+        self.assertGreater(len(mod.visible_text(html)), 500)
+        # data-id 같은 유사 속성에 걸리지 않는다.
+        self.assertIsNone(mod.framework_root_text('<div data-id="root">x</div>'))
+
+    def test_index_sitemap_is_not_compared_as_page_urls(self):
+        # 인덱스의 loc는 하위 사이트맵이다. 페이지 집합으로 비교하면 홈까지 누락으로 찍힌다.
+        cross = importlib.import_module("checks_cross")
+        pages = [{"status": 200, "title": "홈", "url": "https://e.io/", "final_url": "https://e.io/"}]
+        result = cross.audit_cross(pages, [])
+        self.assertNotIn("사이트맵 포함", [label for _, label, _ in result["checks"]])
+
+    def test_blocked_paths_survive_the_root_only_verdict(self):
+        # 루트만 보면 "/docs만 막는" 정책이 통째로 사라져 다 가져갈 수 있다고 읽힌다.
+        groups = self.audit.parse_robots_groups(
+            "User-agent: *\nAllow: /\nDisallow: /docs/\nDisallow: /private/\n")
+        self.assertEqual(self.audit.robots_verdict(groups, "GPTBot"), "허용(*)")
+        src = (AUDIT_SCRIPT.parent / "checks_site.py").read_text(encoding="utf-8")
+        self.assertIn("차단된 경로", src)
+        self.assertIn("루트 판정과 별개다", src)
+
+    def test_same_as_accepts_a_bare_string(self):
+        # schema.org는 단일 문자열을 허용한다. 리스트만 받으면 LLMO 자동 항목이 사라진다.
+        html = ('<html><body><script type="application/ld+json">'
+                '{"@type":"Organization","name":"A","sameAs":"https://example.com/a"}'
+                "</script></body></html>")
+        page = self.page_mod.audit_page.__globals__["parse"].jsonld_nodes(html)[0]
+        found = set()
+        for n in page:
+            raw = n.get("sameAs")
+            for s in ([raw] if isinstance(raw, str) else raw or []):
+                found.add(s)
+        self.assertEqual(found, {"https://example.com/a"})
+        self.assertIn("없음 — 공식 표면 연결이 선언되지 않았다",
+                      (AUDIT_SCRIPT.parent / "checks_page.py").read_text(encoding="utf-8"))
+
+    def test_passage_thresholds_cite_the_document_instead_of_inventing_numbers(self):
+        # 남의 매직넘버를 버리면서 내 매직넘버로 판정하면 같은 잘못이다.
+        src = (AUDIT_SCRIPT.parent / "checks_passage.py").read_text(encoding="utf-8")
+        self.assertIn("LEAD_IDEAL = 40", src)
+        self.assertNotIn("LONG =", src)
+        self.assertNotIn("LEAD_ANSWER", src)
+        # aeo.md가 이상형으로 규정한 40자 직답이 문단 목록에서 탈락하면 안 된다.
+        mod = importlib.import_module("checks_passage")
+        blocks = mod.passages("<p>다음 실적 발표는 2026년 11월 14일입니다.</p><p>" + "본문 " * 200 + "</p>")
+        self.assertEqual(len(blocks), 2)
+        self.assertLess(len(blocks[0]), 40)
+
+    def test_deixis_detection_respects_word_boundaries(self):
+        mod = importlib.import_module("checks_passage")
+        self.assertEqual(
+            mod.classify("Operating profit reached 13.8 billion won as of 2026-08-26")["deixis"], 0)
+        self.assertGreater(mod.classify("This number keeps rising.")["deixis"], 0)
+
 
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))

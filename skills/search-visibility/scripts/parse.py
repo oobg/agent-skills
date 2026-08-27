@@ -88,6 +88,22 @@ def normalize(text):
 
 
 FRAMEWORK_ROOTS = ("root", "__next", "app", "__nuxt", "___gatsby", "svelte")
+ROOT_OPEN = r'<div[^>]*\sid=["\']{}["\'][^>]*>'
+DIV_EDGE = re.compile(r"<div\b[^>]*>|</div\s*>", re.I)
+
+
+def _subtree(html, start):
+    """여는 div 바로 뒤부터 짝이 맞는 </div>까지를 돌려준다.
+
+    그리디 캡처로 문서 끝까지 가져오면 루트 뒤의 푸터가 루트 안으로 계산돼,
+    본문이 비어 있는 CSR 페이지가 통과한다. 과대 측정은 한 방향으로만 틀린다.
+    """
+    depth = 1
+    for m in DIV_EDGE.finditer(html, start):
+        depth += 1 if m.group(0).lower().startswith("<div") else -1
+        if depth == 0:
+            return html[start:m.start()]
+    return html[start:]          # 닫히지 않은 마크업. 있는 만큼만 본다.
 
 
 def framework_root_text(html):
@@ -97,7 +113,7 @@ def framework_root_text(html):
     쓰는 사이트를 CSR로 오인하기도 한다. 루트 안을 따로 재면 둘 다 줄어든다.
     """
     for rid in FRAMEWORK_ROOTS:
-        m = re.search(r'<div[^>]+id=["\']{}["\'][^>]*>(.*)'.format(re.escape(rid)), html, re.S | re.I)
+        m = re.search(ROOT_OPEN.format(re.escape(rid)), html, re.I)
         if m:
-            return rid, len(visible_text(m.group(1)))
+            return rid, len(visible_text(_subtree(html, m.end())))
     return None
