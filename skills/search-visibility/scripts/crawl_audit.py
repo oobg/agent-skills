@@ -195,49 +195,83 @@ def audit_page(url, ua, timeout):
     return page
 
 
-def audit_robots(base, ua, timeout):
-    status, _, _, body, _, error = fetch(urllib.parse.urljoin(base, "/robots.txt"), ua, timeout)
-    out = {"status": status, "error": error, "sitemaps": [], "bots": {}, "checks": []}
-    if status != 200 or not body:
-        # robots.txt가 없으면 모든 봇이 무정책이다. 무정책은 중립이 아니라 미지정이므로
-        # 봇 표를 비우지 않고 그대로 보여준다.
-        out["bots"] = {bot: "미지정" for bot in AI_BOTS}
-        out["checks"].append(("FAIL", "robots.txt", "없음 또는 HTTP {}".format(status)))
-        out["checks"].append(("CHECK", "AI 크롤러 정책", "robots.txt가 없어 전부 미지정"))
-        return out
-    out["sitemaps"] = [m.strip() for m in find_all(r"^\s*Sitemap:\s*(\S+)", body, re.I | re.M)]
-    agent, rules = None, {}
+def parse_robots_groups(body):
+    """robots.txt를 그룹 단위로 읽는다.
+
+    연속된 User-agent 줄은 하나의 그룹을 공유한다. 이걸 무시하고 마지막 이름에만
+    규칙을 붙이면 함께 선언된 봇들의 정책이 통째로 사라진다.
+    """
+    groups = {}
+    current, after_agent = [], False
     for line in body.splitlines():
         line = line.split("#", 1)[0].strip()
         if not line or ":" not in line:
             continue
-        key, value = (p.strip() for p in line.split(":", 1))
+        key, value = (part.strip() for part in line.split(":", 1))
         low = key.lower()
         if low == "user-agent":
-            agent = value
-            rules.setdefault(agent.lower(), [])
-        elif low in ("allow", "disallow") and agent is not None:
-            rules[agent.lower()].append((low, value))
-    for bot in AI_BOTS:
-        entries = rules.get(bot.lower())
-        if entries is None:
-            out["bots"][bot] = "미지정"
-        elif any(k == "disallow" and v == "/" for k, v in entries):
-            out["bots"][bot] = "차단"
-        else:
-            out["bots"][bot] = "허용"
+            if not after_agent:
+                current = []
+            current.append(value.lower())
+            groups.setdefault(value.lower(), [])
+            after_agent = True
+        elif low in ("allow", "disallow"):
+            after_agent = False
+            for agent in current:
+                groups[agent].append((low, value))
+    return groups
+
+
+def robots_verdict(groups, bot):
+    """봇 하나의 루트(/) 접근 정책을 판정한다.
+
+    이름이 명시된 그룹이 있으면 그것만 적용되고 와일드카드는 무시된다(robots.txt 규약).
+    명시 그룹이 없을 때 비로소 `*`가 적용되므로, 명시가 없다고 무정책인 것은 아니다.
+    부분 경로 차단은 루트 접근을 막지 않으므로 여기서는 허용으로 읽는다.
+    """
+    entries, source = groups.get(bot.lower()), "명시"
+    if entries is None:
+        entries, source = groups.get("*"), "*"
+    if entries is None:
+        return "규칙 없음"
+    if any(rule == "disallow" and value == "/" for rule, value in entries):
+        return "차단({})".format(source)
+    return "허용({})".format(source)
+
+
+def audit_robots(base, ua, timeout):
+    status, _, _, body, _, error = fetch(urllib.parse.urljoin(base, "/robots.txt"), ua, timeout)
+    out = {"status": status, "error": error, "sitemaps": [], "bots": {}, "checks": []}
+    if status != 200 or not body:
+        # robots.txt가 없으면 어떤 봇에도 규칙이 없다. 무정책은 중립이 아니므로
+        # 봇 표를 비우지 않고 그대로 보여준다.
+        out["bots"] = {bot: "규칙 없음" for bot in AI_BOTS}
+        out["checks"].append(("FAIL", "robots.txt", "없음 또는 HTTP {}".format(status)))
+        out["checks"].append(("CHECK", "AI 크롤러 정책", "robots.txt가 없어 전부 규칙 없음"))
+        return out
+    out["sitemaps"] = [m.strip() for m in find_all(r"^\s*Sitemap:\s*(\S+)", body, re.I | re.M)]
+    rules = parse_robots_groups(body)
+    out["bots"] = {bot: robots_verdict(rules, bot) for bot in AI_BOTS}
     out["checks"].append(("OK", "robots.txt", "HTTP 200"))
     out["checks"].append((
         "OK" if out["sitemaps"] else "FAIL",
         "Sitemap 지시자",
         ", ".join(out["sitemaps"]) if out["sitemaps"] else "없음",
     ))
-    undecided = [b for b, v in out["bots"].items() if v == "미지정"]
+    unnamed = [b for b, v in out["bots"].items() if not v.endswith("(명시)")]
+    blocked = [b for b, v in out["bots"].items() if v.startswith("차단")]
     out["checks"].append((
-        "OK" if not undecided else "CHECK",
+        "OK" if not unnamed else "CHECK",
         "AI 크롤러 정책",
-        "전부 명시" if not undecided else "미지정 {}: {}".format(len(undecided), ", ".join(undecided)),
+        "전부 명시" if not unnamed else "명시 안 됨 {}: {} — 와일드카드나 기본값이 적용 중이다".format(
+            len(unnamed), ", ".join(unnamed)
+        ),
     ))
+    if blocked:
+        out["checks"].append((
+            "CHECK", "차단된 봇",
+            "{}: {} — 의도한 차단인지 확인한다".format(len(blocked), ", ".join(blocked)),
+        ))
     return out
 
 
@@ -311,7 +345,7 @@ def render(result):
             bots = data.get("bots") or {}
             break
     if bots:
-        lines.append("\n[AI 크롤러 정책]")
+        lines.append("\n[AI 크롤러 정책] — 루트(/) 접근 기준")
         for bot, verdict in bots.items():
             lines.append("  {:<20} {}".format(bot, verdict))
     counts = result["summary"]

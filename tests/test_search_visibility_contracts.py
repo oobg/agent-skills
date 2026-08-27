@@ -1,4 +1,5 @@
 import ast
+import importlib.util
 import json
 import os
 import stat
@@ -31,6 +32,9 @@ class SearchVisibilityContractTests(unittest.TestCase):
         cls.auditor = AUDITOR.read_text(encoding="utf-8")
         cls.script = AUDIT_SCRIPT.read_text(encoding="utf-8")
         cls.competition = COMPETITION.read_text(encoding="utf-8")
+        spec = importlib.util.spec_from_file_location("crawl_audit", AUDIT_SCRIPT)
+        cls.audit = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.audit)
 
     def test_every_lane_reference_exists(self):
         for name in ("seo", "aeo", "geo", "llmo", "neo-naver", "measure",
@@ -119,10 +123,15 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertIn("공개 페이지에만 쓴다", self.script)
         self.assertIn("남의 사이트를 대량으로 훑는 용도가 아니다", self.script)
 
-    def test_audit_script_reports_unset_ai_bot_policy_as_undecided(self):
+    def test_audit_script_reports_unset_ai_bot_policy_as_no_rule(self):
         # robots.txt 부재를 중립으로 읽으면 GEO 진단이 통째로 조용히 통과한다.
-        self.assertIn('"미지정"', self.script)
-        self.assertIn("무정책은 중립이 아니라 미지정이므로", self.script)
+        self.assertIn('"규칙 없음"', self.script)
+        self.assertIn("무정책은 중립이 아니므로", self.script)
+
+    def test_audit_script_labels_where_a_bot_verdict_came_from(self):
+        # 명시와 와일드카드를 같은 말로 적으면 "정책을 정했다"와 "덮인 것"이 섞인다.
+        self.assertIn("루트(/) 접근 기준", self.script)
+        self.assertIn("와일드카드나 기본값이 적용 중이다", self.script)
 
     def test_baseline_is_written_to_a_file(self):
         self.assertIn("프로젝트에 파일로 남긴다", self.skill)
@@ -191,6 +200,45 @@ class SearchVisibilityContractTests(unittest.TestCase):
     def test_questions_are_chosen_before_pages_are_built(self):
         self.assertIn("먼저 질문을 고르고, 그다음 페이지를 만든다", self.skill)
         self.assertIn("이길 수 없는 질문에 페이지를 쌓는다", self.skill)
+
+    def test_robots_parser_shares_a_group_across_stacked_user_agents(self):
+        # 연속된 User-agent 줄은 한 그룹을 공유한다. 마지막 이름에만 규칙을 붙이면
+        # 함께 선언된 봇들의 정책이 통째로 사라진다.
+        groups = self.audit.parse_robots_groups(
+            "User-agent: GPTBot\nUser-agent: ClaudeBot\nDisallow: /\n"
+        )
+        self.assertEqual(groups["gptbot"], [("disallow", "/")])
+        self.assertEqual(groups["claudebot"], [("disallow", "/")])
+
+    def test_robots_verdict_falls_back_to_the_wildcard_group(self):
+        # 이름이 명시되지 않았다고 무정책이 아니다. 와일드카드를 계산하지 않으면
+        # 실제로 허용된 봇을 미지정으로 과대 경고한다.
+        groups = self.audit.parse_robots_groups("User-agent: *\nAllow: /\n")
+        self.assertEqual(self.audit.robots_verdict(groups, "GPTBot"), "허용(*)")
+        blocked = self.audit.parse_robots_groups("User-agent: *\nDisallow: /\n")
+        self.assertEqual(self.audit.robots_verdict(blocked, "GPTBot"), "차단(*)")
+
+    def test_robots_verdict_prefers_the_named_group_over_the_wildcard(self):
+        groups = self.audit.parse_robots_groups(
+            "User-agent: *\nDisallow: /\n\nUser-agent: GPTBot\nAllow: /\n"
+        )
+        self.assertEqual(self.audit.robots_verdict(groups, "GPTBot"), "허용(명시)")
+        self.assertEqual(self.audit.robots_verdict(groups, "PerplexityBot"), "차단(*)")
+
+    def test_robots_verdict_reports_absence_as_no_rule(self):
+        self.assertEqual(self.audit.robots_verdict({}, "GPTBot"), "규칙 없음")
+
+    def test_robots_verdict_reads_partial_disallow_as_root_allowed(self):
+        groups = self.audit.parse_robots_groups(
+            "User-agent: GPTBot\nAllow: /\nDisallow: /private/\n"
+        )
+        self.assertEqual(self.audit.robots_verdict(groups, "GPTBot"), "허용(명시)")
+
+    def test_robots_parser_ignores_comments(self):
+        groups = self.audit.parse_robots_groups(
+            "# comment\nUser-agent: GPTBot  # inline\nDisallow: /  # blocked\n"
+        )
+        self.assertEqual(groups["gptbot"], [("disallow", "/")])
 
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))
