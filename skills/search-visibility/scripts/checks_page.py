@@ -15,6 +15,10 @@ import parse
 TITLE_MIN, TITLE_MAX = 15, 60          # 권장은 seo.md의 50~60. 짧은 브랜드 홈을 감안한 하한이다.
 DESC_MIN, DESC_MAX = 80, 165
 TEXT_THIN = 500
+# 에이전트의 컨텍스트 창은 보통 10만~20만 토큰이고, 한 문서가 그것을 넘으면 조용히
+# 잘리거나 없는 내용으로 메워진다. 아래 값은 검증된 임계가 아니라 관측 기준선이므로
+# FAIL로 쓰지 않는다. 출처: addyosmani.com/blog/agentic-engine-optimization (2026)
+TOKEN_WATCH = 25000
 ANSWER_PROBE = 30                       # 긴 답변은 앞부분만 대조한다(마크업 중간 태그 삽입 회피).
 NUMBER_RE = re.compile(r"[0-9][0-9,\.]*\s*(?:%|퍼센트|배|만|억|천|건|개|명|시간|분|일)?\+?")
 BASIS_RE = re.compile(r"(20\d{2}|기준|현재|누적|집계|분기|월말|as of)", re.I)
@@ -139,6 +143,14 @@ def audit_page(url, ua, timeout, verify_assets=True, engines=("google", "naver")
                  " (#{} 안 {}자)".format(root[0], root[1]) if root else "",
                  " — 500자 미만이면 CSR 여부를 직접 확인한다"
                  if page["text_chars"] < TEXT_THIN else "")))
+    # 자바스크립트를 실행하지 않는 소비자는 응답 전체를 받는다. 마크다운으로 바꿔 읽는
+    # 쪽은 본문만 보므로 둘을 함께 낸다. 어느 쪽도 정확한 토큰 수가 아니다.
+    page["tokens_response"] = parse.estimate_tokens(html)
+    page["tokens_text"] = parse.estimate_tokens(text)
+    add(("CHECK" if page["tokens_response"] > TOKEN_WATCH else "OK", "토큰 추정",
+         "응답 {:,} · 본문 {:,} (한글 분리 어림, 토크나이저마다 갈린다){}".format(
+             page["tokens_response"], page["tokens_text"],
+             " — 에이전트 컨텍스트를 크게 먹는다" if page["tokens_response"] > TOKEN_WATCH else "")))
     add(("OK" if page["h1_count"] == 1 else "CHECK", "h1", "{}개".format(page["h1_count"])))
     if not title:
         add(("FAIL", "title", "없음"))

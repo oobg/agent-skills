@@ -134,11 +134,18 @@ def audit_llms(base, ua, timeout):
         status, final, headers, body, _, _ = fetch.fetch(fetch.join(base, path), ua, timeout)
         ctype = fetch.header(headers, "Content-Type").split(";")[0]
         ok = status == 200 and body.strip() and "<html" not in body[:400].lower()
-        out[path] = {"status": status, "bytes": len(body), "content_type": ctype}
+        tokens = parse.estimate_tokens(body) if ok else 0
+        out[path] = {"status": status, "bytes": len(body), "content_type": ctype,
+                     "tokens": tokens}
         out["checks"].append((
             "OK" if ok else "CHECK", path,
-            "{}바이트 ({})".format(len(body), ctype or "타입 미상") if ok
+            "{}바이트 · 토큰 {:,} 추정 ({})".format(len(body), tokens, ctype or "타입 미상") if ok
             else "없음 또는 HTML 응답 (HTTP {})".format(status)))
+        # 안내서가 길면 그 자체가 컨텍스트를 먹어 정작 본문을 읽을 자리가 줄어든다.
+        # 5,000은 검증된 임계가 아니라 권고이므로 CHECK까지만 낸다.
+        if ok and path == "/llms.txt" and tokens > 5000:
+            out["checks"].append(("CHECK", "llms.txt 분량",
+                                  "토큰 {:,} 추정 — 안내서는 5,000 이하를 권한다".format(tokens)))
         if ok and path == "/llms.txt":
             if not any(h in body.lower() for h in LLMS_POLICY_HINTS):
                 out["checks"].append(("CHECK", "llms.txt 데이터 정책",

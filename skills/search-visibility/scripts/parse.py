@@ -139,6 +139,22 @@ def node_types(node):
     return t if isinstance(t, list) else [t] if t else []
 
 
+HANGUL = re.compile(r"[\uac00-\ud7a3\u1100-\u11ff\u3130-\u318f]")
+
+
+def estimate_tokens(text):
+    """토큰 수 추정. 정확한 수가 아니라 자릿수를 보기 위한 값이다.
+
+    널리 쓰이는 문자수÷4 어림은 **영어 기준이다.** 한글은 음절 하나가 토큰 1~2개로
+    쪼개지는 경우가 많아 같은 식을 쓰면 3~4배 과소 추정된다. 한글을 분리해 센다.
+    토크나이저마다 갈리므로 판정 근거로 쓰지 않고 관측치로만 낸다.
+    """
+    if not text:
+        return 0
+    hangul = len(HANGUL.findall(text))
+    return int(hangul / 1.5 + (len(text) - hangul) / 4)
+
+
 def normalize(text):
     """대조용 정규화 — 공백과 따옴표 변형을 지운다."""
     text = re.sub(r"[‘’“”]", "'", text or "")
