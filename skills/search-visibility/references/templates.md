@@ -137,6 +137,11 @@ Sitemap: https://example.com/sitemap.xml
 가시 텍스트에 없는 내용을 넣지 않는다. Organization은 사이트 전역에서 한 번만 선언하고
 나머지 페이지는 `@id`로 참조한다.
 
+`sameAs`는 두 레인을 동시에 상대한다. GitHub·LinkedIn·위키는 LLMO의 학습 표면이고,
+네이버 연관채널은 블로그·유튜브·인스타그램 같은 자기 인식 목록만 센다. 한쪽만 넣으면
+다른 쪽은 0건이므로 아래 예시처럼 섞는다. 네이버 쪽 요건은
+[neo-naver.md](neo-naver.md) 3절에 있다.
+
 ```html
 <script type="application/ld+json">
 {
@@ -147,11 +152,17 @@ Sitemap: https://example.com/sitemap.xml
   "url": "https://example.com",
   "sameAs": [
     "https://github.com/example",
-    "https://www.linkedin.com/company/example"
+    "https://www.linkedin.com/company/example",
+    "https://blog.naver.com/example",
+    "https://www.youtube.com/@example"
   ]
 }
 </script>
 ```
+
+FAQPage는 **두 엔진 모두 리치 결과를 내렸다**(구글 2026-05-07 중단, 네이버 미지원).
+검색 노출 목적이면 붙이지 않는다. 아래 형태는 AI 소비자를 노린 선택 항목이며, 그 효과는
+아직 검증되지 않았다. 자세한 것은 [aeo.md](aeo.md)의 FAQ 블록 절에 있다.
 
 ```html
 <script type="application/ld+json">

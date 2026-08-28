@@ -44,12 +44,32 @@ curl -sL https://example.com/page | grep -o "<h1[^>]*>[^<]*" | head
 
 ## 4. 구조화 데이터 (JSON-LD)
 
-- [ ] 페이지 유형에 맞는 스키마를 쓴다. Article, Product, FAQPage, BreadcrumbList,
-      Organization이 기본이다.
-- [ ] 가시 텍스트와 내용이 같다. 화면에 없는 내용을 JSON-LD에 넣으면 스팸으로 판정될 수 있다.
+- [ ] 페이지 유형에 맞는 스키마를 쓴다. Article, Product, BreadcrumbList, Organization이
+      기본이다. FAQPage는 두 엔진 모두 리치 결과를 내렸으므로 기본에서 뺀다([aeo.md](aeo.md)).
+- [ ] **필수 속성을 채운다.** 구글 문서의 표현은 "필수 속성이 누락된 항목은 리치 결과로
+      표시되지 않습니다"다. 필수가 빠진 마크업과 없는 마크업은 결과가 같다.
+- [ ] **엔진별로 따로 통과시킨다.** 구글과 네이버는 필수 속성표가 다르다. BreadcrumbList의
+      ListItem은 구글이 `position`을 필수로, 네이버가 필수아님으로 둔다. 한쪽만 맞추면 다른
+      쪽에서 탈락하므로 합집합을 넣는다. 네이버 표와 연관채널 규칙은
+      [neo-naver.md](neo-naver.md) 2·3절에 있다.
+
+```bash
+python3 scripts/crawl_audit.py https://example.com                    # 두 엔진 모두
+python3 scripts/crawl_audit.py https://example.com --engine google     # 한쪽만
+```
+
+- [ ] 가시 텍스트와 내용이 같다. 구글 문서의 표현은 "페이지 독자에게 표시되지 않는 콘텐츠를
+      마크업하지 않습니다"이고, 위반은 **수동 조치 대상**이다. 걸리면 리치 결과 자격을 잃는다
+      (순위 자체는 영향받지 않는다고 문서가 밝힌다).
+- [ ] 실제 사용자가 남기지 않은 리뷰나 평점을 넣지 않는다. 이것도 수동 조치 대상이다.
 - [ ] `@id` 규약을 지킨다. 같은 엔티티는 사이트 전체에서 같은 `@id`를 쓴다.
       페이지마다 Organization을 새로 선언하면 엔티티가 갈라진다.
-- [ ] 배포 후 Rich Results Test나 schema.org validator로 확인하고 결과를 보고에 남긴다.
+      **이 항목만 근거 등급이 다르다.** 구글 문서는 한 페이지에 여러 항목을 개별로 둘 때
+      `@id` 연결을 권장할 뿐 사이트 전역 규약을 정하지 않는다. 엔티티 통합 추론이지
+      공식 요건이 아니므로, 지키되 공식 요건인 것처럼 보고하지 않는다.
+- [ ] 배포 후 검증은 엔진마다 도구가 다르다. 구글은 배포 전 리치 결과 테스트, 배포 후
+      리치 결과 상태 보고서(Search Console)를 본다. 네이버는 schema.org 검증기를 지정한다.
+      셋 다 브라우저나 계정이 필요해 `crawl_audit.py`가 대신하지 않는다. 결과를 보고에 남긴다.
 
 ## 5. URL과 응답 위생
 
