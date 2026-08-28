@@ -66,6 +66,7 @@ python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com --pages /pricing,/faq
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com --json > audit.json
 python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py --coverage
+python3 <search-visibility 스킬 폴더>/scripts/crawl_audit.py https://example.com --engine naver
 ```
 
 robots.txt, 사이트맵, `llms.txt`, 404 처리, AI 크롤러 정책, 페이지별 메타와 구조화 데이터를
@@ -107,7 +108,9 @@ search-visibility/
     ├── checks_site.py
     ├── checks_page.py
     ├── checks_passage.py
-    └── checks_cross.py
+    ├── checks_cross.py
+    ├── checks_schema.py
+    └── schema_rules.py
 ```
 
 - [`SKILL.md`](SKILL.md): 진단 절차, 불변 원칙, 승인 게이트, 보고 형식
@@ -131,6 +134,10 @@ search-visibility/
 - [`scripts/checks_passage.py`](scripts/checks_passage.py): 문단 단위 관측. 인용은 페이지가 아니라
   문단째로 잘려 나가므로 자체 완결 여부를 문단마다 봅니다
 - [`scripts/checks_cross.py`](scripts/checks_cross.py): 페이지 간 대조(메타 중복, 엔티티 표기, 사이트맵 포함)
+- [`scripts/checks_schema.py`](scripts/checks_schema.py): 구조화 데이터를 구글·네이버 규칙표에
+  각각 대조. 두 엔진은 필수 속성이 다르므로 판정이 엔진별로 따로 나옵니다
+- [`scripts/schema_rules.py`](scripts/schema_rules.py): 엔진별 규칙표. 데이터만 있고 판정
+  로직은 없습니다. 엔진이 정책을 바꾸면 해당 항목만 고칩니다
 - [`references/ontology-boost.md`](references/ontology-boost.md): 온톨로지가 있을 때만 여는
   선택 모듈. 질문 목록, 1차 소스 정의, 서비스명 표기, 과거 결정을 회수합니다.
 

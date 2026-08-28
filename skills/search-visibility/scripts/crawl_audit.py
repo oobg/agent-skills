@@ -43,6 +43,13 @@ COVERAGE = [
     ("SEO", "리다이렉트 홉, 없는 경로의 404 응답(soft 404 탐지), meta noindex"),
     ("SEO", "og:image 실제 응답 확인, 페이지 간 제목 중복, 사이트맵 포함 여부"),
     ("AEO", "JSON-LD가 선언한 문답·제목이 가시 텍스트에 실제로 있는지 대조"),
+    ("SEO", "구글 규칙표 대조 — 타입별 필수 속성, 조건부 필수, 열거값(availability 등)"),
+    ("NEO", "네이버 규칙표 대조 — 타입별 필수 속성. 구글과 다른 표를 쓴다"),
+    ("SEO", "@context 존재와 schema.org 여부, 상용 목록에 없는 타입 이름(오타 탐지)"),
+    ("SEO", "날짜(ISO 8601)·기간(duration)·숫자·URL 절대경로 형식"),
+    ("SEO", "구글이 리치 결과를 내린 타입(FAQPage·HowTo) 사용 여부"),
+    ("NEO", "사이트 연관채널 — 루트의 name·url·sameAs와 네이버 인식 채널 포함 여부"),
+    ("NEO", "Microdata 선언 탐지 — 네이버가 JSON-LD와 나란히 권장하는 형식이다"),
     ("AEO", "표·목록·h2·h3 개수(인용 단위 구조), 기준 표기 없는 수치"),
     ("AEO", "문단 단위 관측 — 자체 완결 문단 수, 맥락 지시어에 기댄 문단, 첫 문단 길이"),
     ("SEO", "프레임워크 루트 안의 본문 길이(헤더·푸터만 SSR인 경우 탐지)"),
@@ -57,6 +64,9 @@ MANUAL = [
     "직답 문단이 실제로 답인지, 질문이 실수요인지 — 의미 판정이다",
     "수치의 산식이 맞는지(산술 검산) — 원자료를 알아야 한다",
     "의도된 색인 제외인지 — 사용자 확인이 필요하다",
+    "리치 결과 테스트와 배포 후 리치 결과 상태 보고서(GSC) — 브라우저와 계정이 필요하다",
+    "schema.org 검증기(네이버가 지정한 도구) — 브라우저가 필요하다",
+    "타입 선택이 페이지 실체와 맞는지, 평점·가격이 실제 운영과 같은지 — 의미 판정이다",
 ]
 
 
@@ -96,6 +106,8 @@ def main(argv=None):
     parser.add_argument("--delay", type=float, default=0.5, help="요청 사이 지연(초)")
     parser.add_argument("--user-agent", default=fetch.DEFAULT_UA)
     parser.add_argument("--no-asset-check", action="store_true", help="og:image 실응답 확인 생략")
+    parser.add_argument("--engine", choices=["google", "naver", "both"], default="both",
+                        help="구조화 데이터를 어느 엔진 규칙표로 볼지 (기본: both)")
     parser.add_argument("--json", action="store_true", help="관측 결과를 JSON으로 출력")
     parser.add_argument("--coverage", action="store_true", help="자동·수동 항목 목록만 출력")
     args = parser.parse_args(argv)
@@ -109,8 +121,9 @@ def main(argv=None):
     base = args.base if "://" in args.base else "https://" + args.base
     ua, timeout = args.user_agent, args.timeout
     assets = not args.no_asset_check
+    engines = ("google", "naver") if args.engine == "both" else (args.engine,)
 
-    home = checks_page.audit_page(base, ua, timeout, assets)
+    home = checks_page.audit_page(base, ua, timeout, assets, engines)
     if home.get("error") and home.get("status") is None:
         print("대상에 접속하지 못했다: {}".format(home["error"]), file=sys.stderr)
         return 2
@@ -130,7 +143,7 @@ def main(argv=None):
     for path in [p.strip() for p in args.pages.split(",") if p.strip()]:
         time.sleep(args.delay)
         url = fetch.join(base, path)
-        page = checks_page.audit_page(url, ua, timeout, assets)
+        page = checks_page.audit_page(url, ua, timeout, assets, engines)
         pages.append(page)
         sections.append(("페이지: {}".format(url), page))
 
@@ -144,7 +157,8 @@ def main(argv=None):
         for state, _, _ in data.get("checks", []):
             summary[state.lower()] += 1
 
-    result = {"base": base, "user_agent": ua, "sections": sections, "summary": summary}
+    result = {"base": base, "user_agent": ua, "engines": list(engines),
+              "sections": sections, "summary": summary}
     print(json.dumps(result, ensure_ascii=False, indent=2, default=str) if args.json
           else render(result))
     return 0

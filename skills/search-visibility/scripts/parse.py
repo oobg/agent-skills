@@ -54,26 +54,84 @@ def hreflangs(html):
     return out
 
 
-def jsonld_nodes(html):
-    """(nodes, parse_errors) — @graph를 펼쳐 dict 목록으로 돌려준다."""
-    nodes, errors = [], 0
+def _flatten(node, ctx, out):
+    """@context를 물려주며 노드를 펼친다.
+
+    @graph 자식은 감싼 노드의 @context를 상속한다(JSON-LD 규약). 노드만 평탄화하면
+    그 상속이 사라져, 상속받은 노드와 @context가 아예 없는 노드가 구분되지 않는다.
+    """
+    if isinstance(node, list):
+        for item in node:
+            _flatten(item, ctx, out)
+        return
+    if not isinstance(node, dict):
+        return
+    ctx = node.get("@context", ctx)
+    graph = node.get("@graph")
+    if isinstance(graph, (list, dict)):
+        _flatten(graph, ctx, out)      # @graph 컨테이너 자체는 노드가 아니다
+        return
+    out.append((ctx, node))
+
+
+def jsonld_pairs(html):
+    """([(context, node)], parse_errors) — 노드마다 유효한 @context를 붙여 돌려준다."""
+    pairs, errors = [], 0
     for block in LD_BLOCK.findall(html):
         try:
             data = json.loads(block.strip())
         except ValueError:
             errors += 1
             continue
-        stack = data if isinstance(data, list) else [data]
-        while stack:
-            node = stack.pop()
-            if isinstance(node, dict):
-                if "@graph" in node and isinstance(node["@graph"], list):
-                    stack.extend(node["@graph"])
-                    continue
-                nodes.append(node)
-            elif isinstance(node, list):
-                stack.extend(node)
-    return nodes, errors
+        _flatten(data, None, pairs)
+    return pairs, errors
+
+
+def jsonld_nodes(html):
+    """(nodes, parse_errors) — @context가 필요 없는 호출자를 위한 얇은 래퍼."""
+    pairs, errors = jsonld_pairs(html)
+    return [node for _, node in pairs], errors
+
+
+SCHEMA_CTX = re.compile(r"^https?://schema\.org/?$", re.I)
+
+
+def context_state(ctx):
+    """@context 판정 — "ok" | "other" | "none".
+
+    schema.org는 http와 https 표기가 모두 통용되고(네이버 공식 예제가 http를 쓴다)
+    끝의 슬래시도 갈린다. 객체 형태는 용어 정의를 직접 싣는 경우라 기계로 단정하지
+    않고 "other"로 넘겨 사람이 본다.
+    """
+    if ctx is None:
+        return "none"
+    if isinstance(ctx, str):
+        return "ok" if SCHEMA_CTX.match(ctx.strip()) else "other"
+    if isinstance(ctx, list):
+        return "ok" if any(context_state(c) == "ok" for c in ctx) else "other"
+    if isinstance(ctx, dict):
+        vocab = ctx.get("@vocab")
+        return "ok" if isinstance(vocab, str) and SCHEMA_CTX.match(vocab.strip()) else "other"
+    return "other"
+
+
+ITEMTYPE = re.compile(r'itemtype=["\']([^"\']+)["\']', re.I)
+SCHEMA_TYPE_URL = re.compile(r"schema\.org/(\w+)", re.I)
+
+
+def microdata_types(html):
+    """Microdata로 선언된 schema.org 타입 목록.
+
+    네이버는 Microdata와 JSON-LD를 나란히 권장한다. JSON-LD만 보면 Microdata로
+    마크업한 사이트가 '구조화 데이터 없음'으로 잘못 관측된다.
+    """
+    out = set()
+    for raw in ITEMTYPE.findall(SCRIPTISH.sub(" ", html)):
+        for url in raw.split():
+            hit = SCHEMA_TYPE_URL.search(url)
+            if hit:
+                out.add(hit.group(1))
+    return sorted(out)
 
 
 def node_types(node):

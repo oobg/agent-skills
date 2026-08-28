@@ -110,7 +110,8 @@ class SearchVisibilityContractTests(unittest.TestCase):
         self.assertTrue(os.stat(AUDIT_SCRIPT).st_mode & stat.S_IXUSR)
         # 저장소 요구사항은 Python 3.8 + 표준 라이브러리다. 서드파티 import가 들어오면
         # 스킬을 설치한 곳에서 진단이 그냥 실패한다.
-        stdlib = {"argparse", "gzip", "json", "re", "ssl", "sys", "time", "urllib"}
+        # datetime은 3.8부터 표준 라이브러리다. 목록이 불완전했을 뿐 정책은 그대로다.
+        stdlib = {"argparse", "datetime", "gzip", "json", "re", "ssl", "sys", "time", "urllib"}
         local = {f.stem for f in AUDIT_SCRIPT.parent.glob("*.py")}
         for f in sorted(AUDIT_SCRIPT.parent.glob("*.py")):
             imported = set()

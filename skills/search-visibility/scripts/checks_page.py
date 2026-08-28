@@ -8,6 +8,7 @@
 import re
 
 import checks_passage
+import checks_schema
 import fetch
 import parse
 
@@ -73,7 +74,7 @@ def _structured_vs_visible(nodes, text):
     return missing, soft_missing, checked
 
 
-def audit_page(url, ua, timeout, verify_assets=True):
+def audit_page(url, ua, timeout, verify_assets=True, engines=("google", "naver")):
     status, final, headers, html, hops, error = fetch.fetch(url, ua, timeout)
     page = {"url": url, "final_url": final, "status": status, "redirect_hops": hops,
             "error": error, "checks": []}
@@ -175,7 +176,10 @@ def audit_page(url, ua, timeout, verify_assets=True):
 
     if ld_errors:
         add(("FAIL", "JSON-LD", "파싱 실패 {}블록".format(ld_errors)))
-    add(("OK" if ld_types else "CHECK", "JSON-LD", ", ".join(ld_types) if ld_types else "없음"))
+    # 라벨이 "JSON-LD"이면 OK가 "마크업이 유효하다"로 읽힌다. 존재만 확인한 것이므로
+    # 라벨에서 그렇게 말한다. 유효성은 아래 엔진별 줄이 따로 판정한다.
+    add(("OK" if ld_types else "CHECK", "JSON-LD 존재",
+         ", ".join(ld_types) if ld_types else "없음"))
 
     missing, soft_missing, checked = _structured_vs_visible(nodes, text)
     page["ld_missing"] = missing
@@ -195,6 +199,11 @@ def audit_page(url, ua, timeout, verify_assets=True):
             add(("CHECK", "엔티티 표기 대조",
                  "{}건이 화면 표기와 다름: {}".format(
                      len(soft_missing), ", ".join(soft_missing[:3]))))
+
+    # 엔진별 규칙표 대조. 구글과 네이버는 필수 속성이 다르므로 판정도 따로 나온다.
+    schema = checks_schema.audit_schema(html, final, engines)
+    page.update({k: v for k, v in schema.items() if k != "checks"})
+    page["checks"].extend(schema["checks"])
 
     add(("OK" if page["table_count"] or page["list_count"] >= 3 else "CHECK", "인용 단위 구조",
          "표 {}개 · 목록 {}개 · h2 {} · h3 {}".format(
