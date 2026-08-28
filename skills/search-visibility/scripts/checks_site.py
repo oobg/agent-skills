@@ -6,8 +6,13 @@ import re
 import fetch
 import parse
 
-AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot",
-           "PerplexityBot", "Google-Extended", "Applebot-Extended", "Yeti"]
+# 같은 회사의 봇이라도 하는 일이 다르다. 학습용을 막는 것과 검색용을 막는 것은
+# 결과가 전혀 다른데, 이름만 나열하면 "차단 3건"이 무슨 뜻인지 읽히지 않는다.
+# 검색·인용용 — 막으면 그 표면에서 사라진다.
+SEARCH_BOTS = ["OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "PerplexityBot", "Yeti"]
+# 학습용 — 막아도 검색 노출은 그대로다. 콘텐츠 보호가 목적이면 여기를 막는다.
+TRAINING_BOTS = ["GPTBot", "ClaudeBot", "Google-Extended", "Applebot-Extended"]
+AI_BOTS = SEARCH_BOTS + TRAINING_BOTS
 SITEMAP_URL_LIMIT = 50000
 SITEMAP_BYTE_LIMIT = 50 * 1024 * 1024
 LLMS_POLICY_HINTS = ("출처", "갱신", "인용", "source", "update", "cite", "license")
@@ -79,6 +84,12 @@ def audit_robots(base, ua, timeout):
     unnamed = [b for b, v in out["bots"].items() if "명시" not in v]
     same = [b for b, v in out["bots"].items() if "명시=*" in v]
     blocked = [b for b, v in out["bots"].items() if v.startswith("차단")]
+    blocked_search = [b for b in blocked if b in SEARCH_BOTS]
+    if blocked_search:
+        out["checks"].append((
+            "FAIL", "검색용 봇 차단",
+            "{} — 학습용과 달리 이쪽을 막으면 그 표면의 인용이 사라진다".format(
+                ", ".join(blocked_search))))
     out["checks"].append(("OK", "robots.txt", "HTTP 200"))
     out["checks"].append(("OK" if out["sitemaps"] else "FAIL", "Sitemap 지시자",
                           ", ".join(out["sitemaps"]) if out["sitemaps"] else "없음"))

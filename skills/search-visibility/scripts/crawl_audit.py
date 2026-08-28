@@ -41,6 +41,7 @@ COVERAGE = [
     ("SEO", "본문 SSR 노출량, h1 개수, title·description 길이"),
     ("SEO", "canonical 존재와 self 여부, hreflang 건수와 x-default"),
     ("SEO", "리다이렉트 홉, 없는 경로의 404 응답(soft 404 탐지), meta noindex"),
+    ("AEO", "스니펫 차단 — nosnippet·max-snippet:0·data-nosnippet (robots·googlebot 양쪽)"),
     ("SEO", "og:image 실제 응답 확인, 페이지 간 제목 중복, 사이트맵 포함 여부"),
     ("AEO", "JSON-LD가 선언한 문답·제목이 가시 텍스트에 실제로 있는지 대조"),
     ("SEO", "구글 규칙표 대조 — 타입별 필수 속성, 조건부 필수, 열거값(availability 등)"),
@@ -56,6 +57,7 @@ COVERAGE = [
     ("GEO", "llms.txt·llms-full.txt 존재와 타입, 데이터 정책 문구, 상대 경로 링크, 분량"),
     ("GEO", "페이지별 토큰 규모 추정 — 에이전트 컨텍스트 창 대비 (한글을 분리해 계산)"),
     ("GEO", "AI 크롤러 9종의 루트 접근 정책과 와일드카드 동일 여부"),
+    ("GEO", "검색용 봇 차단 여부 — 학습용과 구분해 따로 판정"),
     ("LLMO", "Organization sameAs 건수, 페이지 간 Organization 이름 분열"),
     ("NEO", "Yeti 접근 정책, viewport 선언"),
 ]

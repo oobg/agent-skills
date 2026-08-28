@@ -95,7 +95,10 @@ def audit_page(url, ua, timeout, verify_assets=True, engines=("google", "naver")
     text = parse.visible_text(html)
     title = parse.title_of(html)
     desc = parse.meta_content(html, "description")
-    robots_meta = (parse.meta_content(html, "robots") or "").lower()
+    # 지시어는 robots와 googlebot 두 이름으로 갈려 들어온다. 한쪽만 보면 놓친다.
+    robots_meta = " ".join(filter(None, (
+        (parse.meta_content(html, "robots") or "").lower(),
+        (parse.meta_content(html, "googlebot") or "").lower())))
     canonical = parse.link_href(html, "canonical")
     og_image = parse.meta_content(html, "og:image", attr="property")
     nodes, ld_errors = parse.jsonld_nodes(html)
@@ -122,6 +125,9 @@ def audit_page(url, ua, timeout, verify_assets=True, engines=("google", "naver")
         "hreflang": langs, "jsonld_types": ld_types, "same_as": same_as,
         "org_names": org_names,
         "noindex": "noindex" in robots_meta,
+        "nosnippet": ("nosnippet" in robots_meta
+                      or bool(re.search(r"max-snippet\s*:\s*0", robots_meta))),
+        "data_nosnippet": len(re.findall(r"data-nosnippet", visible_html, re.I)),
         "viewport": bool(parse.meta_content(html, "viewport")),
     })
 
@@ -129,6 +135,15 @@ def audit_page(url, ua, timeout, verify_assets=True, engines=("google", "naver")
     if page["noindex"]:
         # 스테이징·파라미터 변형·중복 억제는 의도된 제외다. 스크립트는 의도를 모른다.
         add(("CHECK", "색인", "meta robots에 noindex — 의도된 제외인지 확인한다"))
+    if page["nosnippet"]:
+        # 구글 문서: AI 기능에 나오려면 "스니펫과 함께 검색에 표시될 수 있어야" 한다.
+        # 스니펫을 막으면 색인이 되어 있어도 AI 개요·AI 모드에 나올 수 없다.
+        add(("FAIL", "스니펫",
+             "nosnippet 또는 max-snippet:0 — 색인되어도 AI 기능에 나올 수 없다"))
+    elif page["data_nosnippet"]:
+        add(("CHECK", "스니펫",
+             "data-nosnippet {}곳 — 그 구간은 스니펫과 AI 답변에 인용되지 않는다".format(
+                 page["data_nosnippet"])))
     root = parse.framework_root_text(html)
     page["framework_root"] = root
     if root and root[1] < TEXT_THIN <= page["text_chars"]:
