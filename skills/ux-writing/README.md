@@ -30,7 +30,7 @@
 정확 → 명확 → 간결 → 감정
 ```
 
-- 확실성, 인과, 행위자, 수치, 긍정·부정을 바꾸지 않습니다.
+- 확실성, 인과, 행위자, 수치, 긍정과 부정을 바꾸지 않습니다.
 - 멀쩡한 문장은 고치지 않습니다.
 - 과윤문과 장르 이탈도 실패로 봅니다.
 - 관점이나 실제 경험을 지어내지 않습니다.
@@ -63,7 +63,7 @@ python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>
 - `glossary_check.py`: 프로젝트 고정 표기 검사
 - `register_check.py`: 해요체, 합니다체, 한다체, 음슴체, 명사형의 목표 어체
   일관성 검사. 음슴체와 명사형은 서로 안전하게 자동 구분하기 어려워 명확한 다른
-  어체의 혼용만 잡으므로 수동·best-effort 확인이 필요합니다.
+  어체의 혼용만 잡으므로 사람이 직접 확인해야 하고, 그 확인도 best-effort입니다.
 
 HARD 항목은 출력을 막지만 ADVISORY는 문맥을 확인하라는 신호입니다. 현재 HARD
 검사는 결정적 기계 오류와 모든 가운뎃점을 잡는 smoke check이며 전체 문장 품질을
@@ -96,7 +96,7 @@ ux-writing/
 
 - [`SKILL.md`](SKILL.md): 적용 범위, 원칙, 출력 게이트
 - [`references/`](references): 필요할 때만 여는 상세 규칙과 예시
-- [`agents/copy-auditor.md`](agents/copy-auditor.md): 배치·고위험 문구의 fresh-eyes 점검
+- [`agents/copy-auditor.md`](agents/copy-auditor.md): 배치와 고위험 문구의 fresh-eyes 점검
 - [`scripts/`](scripts): 기계적으로 판정할 수 있는 검사
 
 설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.
