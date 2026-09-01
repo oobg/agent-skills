@@ -31,6 +31,37 @@ if [ -z "$PROMPT" ]; then
   exit 1
 fi
 
+# --- 사전 점검: codex CLI 설치와 로그인 여부 ---
+if ! command -v codex >/dev/null 2>&1; then
+  echo "ERROR: codex CLI를 PATH에서 찾을 수 없습니다." >&2
+  echo "       설치 후 'codex login'으로 ChatGPT 계정 로그인이 필요합니다." >&2
+  exit 127
+fi
+
+# 로그인 여부. 미로그인 상태로 호출하면 codex가 돌다가 죽고 사용자는 로그 tail만 받는다.
+# 유료 호출 앞의 검증이므로 실패를 삼키지 않는다. 종료 코드가 유일하게 믿을 만한 신호다
+# — codex-cli 0.151.0에서 로그인 상태는 exit 0, 미로그인은 exit 1 + "Not logged in".
+# 반대로 exit 0이면 출력 문구를 따지지 않고 통과시킨다. 문구가 바뀌었을 때 정상 설정을
+# 막는 쪽이 미로그인을 통과시키는 쪽보다 나쁘다 — 사용자가 손쓸 방법이 없어진다.
+if ! codex login status >/dev/null 2>&1; then
+  echo "ERROR: codex 로그인이 확인되지 않습니다." >&2
+  echo "       'codex login'으로 ChatGPT 계정에 로그인한 뒤 다시 실행하세요." >&2
+  exit 1
+fi
+
+# image_generation 기능 플래그. 꺼져 있으면 호출이 나가도 이미지가 안 나온다.
+# 판정 불가는 통과시키고 알려진 나쁜 상태만 막는다 — 명령이 실패하거나 플래그가 목록에
+# 없으면(이름이 바뀌었거나 졸업했을 때) 스킬 전체를 죽이지 않고, 플래그가 있는데 true가 아닐 때만 막는다.
+if _FEATURES="$(codex features list 2>/dev/null)"; then
+  _IMAGE_FEATURE="$(printf '%s\n' "$_FEATURES" | grep -E '^image_generation[[:space:]]' || true)"
+  if [ -n "$_IMAGE_FEATURE" ] && ! printf '%s' "$_IMAGE_FEATURE" | grep -qE '[[:space:]]true[[:space:]]*$'; then
+    echo "ERROR: codex의 image_generation 기능이 활성 상태가 아닙니다." >&2
+    echo "       현재: ${_IMAGE_FEATURE}" >&2
+    echo "       'codex features list'로 확인하고 활성화한 뒤 다시 실행하세요." >&2
+    exit 1
+  fi
+fi
+
 # --- 출력 위치 + 호출별 고유 식별자 ---
 OUT_DIR="./generated-images"
 mkdir -p "$OUT_DIR"                       # mkdir -p는 병렬 호출에도 안전
@@ -43,15 +74,39 @@ BASENAME="img${SAFE_LABEL:+-$SAFE_LABEL}-${TS}-${UNIQ}.png"
 ABS_OUT="${ABS_OUT_DIR}/${BASENAME}"
 LOG="/tmp/gpt-image-gen-${UNIQ}.log"       # 호출별 로그 → 병렬 실행끼리 안 덮어씀
 
-# --- 사전 점검: codex CLI 설치 및 로그인 여부 ---
-if ! command -v codex >/dev/null 2>&1; then
-  echo "ERROR: codex CLI를 PATH에서 찾을 수 없습니다." >&2
-  echo "       설치 후 'codex login'으로 ChatGPT 계정 로그인이 필요합니다." >&2
-  exit 127
-fi
-
 # --- 동시성 안전 폴백용 마커: 호출 직전 기준 시각 ---
 MARKER="$(mktemp "${TMPDIR:-/tmp}/gpt-image-gen-marker.XXXXXX")"
+
+# --- 실패 원인 분류 -----------------------------------------------------------
+# 대처가 갈리는 원인만 구분한다. 원인마다 사용자가 할 일이 다르고("다시 로그인" vs
+# "한도 회복 대기"), 로그 tail 20줄만 주면 그 판단을 사용자에게 떠넘기게 된다.
+#
+# 분류는 추정이므로 결과를 대체하지 않고 덧붙인다 — 분류 문구와 로그 tail을 항상 함께
+# 낸다. 상태 코드 숫자는 로그 어디에나 나올 수 있어 문구 패턴을 먼저 보고, 틀리게 짚어도
+# 원문이 같이 있어 사용자가 바로잡을 수 있다.
+#
+# 패턴은 좁게 쓴다. codex exec는 시작 배너에 sandbox 설정을 찍으므로 `sandbox`나 `trust`
+# 같은 단어를 그대로 매칭하면 배너 한 줄 때문에 거의 모든 실패가 그 분기로 빨려 들어간다.
+# 실제 실패 문구(permission denied, not trusted 등)로만 잡는다.
+classify_failure() {
+  _hay="$(tr '[:upper:]' '[:lower:]' <"$1" 2>/dev/null || true)"
+  case "$_hay" in
+    *"not logged in"*|*"missing scopes"*|*unauthorized*|*"token expired"*|*"refresh token"*|*"re-authenticate"*|*"invalid_api_key"*)
+      echo "원인 추정: 인증이 거부됨 → 'codex login'으로 다시 로그인하세요." ;;
+    *"rate limit"*|*"too many requests"*|*"usage limit"*|*"quota"*|*"429"*)
+      echo "원인 추정: 사용량이나 호출 한도 → 한도가 회복된 뒤 다시 시도하세요." ;;
+    *"does not have access"*|*"insufficient permission"*|*"not available on your plan"*|*forbidden*)
+      echo "원인 추정: 이미지 생성 권한 없음 → ChatGPT 플랜과 'codex features list'의 image_generation을 확인하세요." ;;
+    *"timed out"*|*timeout*|*"deadline exceeded"*)
+      echo "원인 추정: 시간 초과 → 프롬프트를 짧게 하거나 잠시 후 다시 시도하세요." ;;
+    *"not trusted"*|*"permission denied"*|*"read-only file system"*|*"operation not permitted"*|*"sandbox denied"*|*seatbelt*)
+      echo "원인 추정: 샌드박스나 쓰기 권한 → 출력 경로(${ABS_OUT_DIR})가 쓰기 가능한지 확인하세요." ;;
+    *"connection"*|*"network"*|*"dns"*|*"could not resolve"*|*"tls"*)
+      echo "원인 추정: 네트워크 → 연결을 확인하고 다시 시도하세요." ;;
+    *)
+      echo "원인 추정: 분류하지 못했습니다. 아래 로그를 확인하세요." ;;
+  esac
+}
 
 # --- 이미지 생성 호출 ---------------------------------------------------------
 # Codex의 gpt-image 플러그인 스킬(@imagegen)에 위임한다. 이미지 생성 지능은
@@ -71,7 +126,10 @@ codex exec \
   --add-dir "$ABS_OUT_DIR" \
   "@imagegen ${PROMPT}. Save the generated image to exactly: ${ABS_OUT} . Print only the final saved absolute path." \
   >"$LOG" 2>&1 || {
-    echo "ERROR: codex 실행 실패 (label='${LABEL}'). 로그:" >&2
+    echo "ERROR: codex 실행 실패 (label='${LABEL}')." >&2
+    classify_failure "$LOG" >&2
+    echo "전체 로그: ${LOG}" >&2
+    echo "--- 마지막 20줄 ---" >&2
     tail -n 20 "$LOG" >&2
     rm -f "$MARKER"
     exit 1

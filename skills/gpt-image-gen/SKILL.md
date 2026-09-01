@@ -54,6 +54,20 @@ Codex CLI(사용자의 ChatGPT 구독 기반 gpt-image)를 통해 실제 이미�
 - 한 프롬프트에서 여러 장/특정 크기/투명 배경 등이 필요하면 프롬프트에 자연어로 적어 넘긴다. 매수·크기·투명도는 gpt-image 플러그인이 자연어로 해석하므로 별도 플래그를 만들지 않는다.
 - **배경**: 사용자가 배경을 명시하지 않으면 기본값은 **배경 제거(투명 배경)** 다 (위 "배경 기본값" 참고). 사용자가 배경을 명시한 경우에만 그 지시를 그대로 따른다.
 
+## 왜 REST API가 아니라 codex exec인가
+
+`~/.codex/auth.json`의 ChatGPT OAuth 액세스 토큰으로는 OpenAI REST API를 직접 부를 수 없다.
+토큰이 유효하지 않아서가 아니라 **이미지 스코프가 없어서**다 — `POST /v1/images/generations`는
+`Missing scopes: api.model.images.request`로 거부된다. 같은 토큰으로 `GET /v1/models`를 부르면
+`Missing scopes: api.model.read`가 나온다 (codex-cli 0.151.0, 2026-09-01 실측).
+
+상태 코드는 엔드포인트마다 401과 403으로 갈리므로 **코드가 아니라 스코프 부재가 사실이다.**
+코드로 분기하는 코드를 쓰지 않는다.
+
+그래서 이 스킬은 REST로 우회하지 않고 `codex exec`를 경유한다. 이미지 생성 권한은 codex가
+내부에서 처리한다. `OPENAI_API_KEY`가 있으면 REST 경로가 열리지만 그건 구독이 아니라 API
+과금이라 이 스킬의 과금 모델과 다르다 — 섞으면 사용자가 비용을 잘못 계획한다.
+
 ## 병렬 / 서브에이전트 멀티 요청
 
 한 번에 여러 이미지가 필요하면 서브에이전트를 여러 개 띄워 각자 `scripts/generate.sh` 를 병렬로 호출해도 된다. 스크립트가 동시 실행에 안전하도록 설계돼 있다:
@@ -70,10 +84,22 @@ Codex CLI(사용자의 ChatGPT 구독 기반 gpt-image)를 통해 실제 이미�
 
 ## 문제 해결
 
+스크립트는 유료 호출을 내보내기 **전에** codex 설치와 로그인, `image_generation` 기능을 점검한다.
+실패를 앞으로 당기는 이유는, 미로그인 상태로 호출하면 codex가 한참 돌다 죽고 사용자는 맥락 없는
+로그만 받기 때문이다. 점검이 막으면 아직 사용량이 차감되지 않은 상태다.
+
+기능 점검은 **알려진 나쁜 상태만** 막는다. `codex features list`가 실패하거나 목록에
+`image_generation`이 아예 없으면(이름이 바뀌었거나 목록에서 졸업했을 때) 통과시킨다 — 판정 불가로 스킬 전체를 죽이면
+사용자가 손쓸 방법이 없어진다.
+
 `ERROR` 가 나오면 메시지에 따라 다음을 점검하도록 안내한다:
 
 - codex CLI를 못 찾음 → Codex CLI 미설치. 설치 후 `codex login` 으로 ChatGPT 계정 로그인 필요.
-- codex 실행 실패 → `codex login status` 가 "Logged in using ChatGPT" 인지, `codex features list | grep image_generation` 이 `stable true` 인지 확인. 자세한 내용은 메시지에 표시된 호출별 로그(`/tmp/gpt-image-gen-<고유ID>.log`).
+- 로그인이 확인되지 않음 → `codex login` 으로 ChatGPT 계정 로그인. 아직 호출은 나가지 않았다.
+- `image_generation` 이 활성 상태가 아님 → `codex features list` 에서 `stable true` 인지 확인.
+- codex 실행 실패 → 출력에 `원인 추정` 한 줄과 호출별 로그 경로(`/tmp/gpt-image-gen-<고유ID>.log`)가
+  함께 붙는다. 인증, 사용량 한도, 권한, 시간 초과, 샌드박스, 네트워크로 갈린다. **원인 추정은 로그를
+  훑은 추측이므로 결과를 대체하지 않는다** — 추정과 로그가 어긋나면 로그가 맞다.
 - 이미지 파일을 못 찾음 → 플러그인이 다른 경로에 저장했을 수 있음. 해당 호출 로그에서 실제 저장 경로 확인.
 
 ## 프롬프트는 실행 권한을 만난다
