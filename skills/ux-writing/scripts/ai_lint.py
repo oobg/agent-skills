@@ -324,7 +324,66 @@ def check_ending_streak(text, min_run=4):
     return runs
 
 
-def report(hard, advisory, used=None, thresholds=None, streaks=None):
+# 서술형 어체에서 문장을 끝맺는 음절. 여기 없는 글자로 끝나면 명사구 종결로 본다.
+# 다 담으려 하면 오히려 다 통과시켜 검사가 무의미해지므로, 실제로 쓰이는 것만 넣는다.
+SENTENCE_ENDINGS = tuple("다요음함죠까라자니네지오군걸텐줘봐해게어아야세소")
+
+# 헤더, 표, 목록, 인용은 원래 명사구로 끝내는 자리다(register.md의 허용 조건).
+NOT_PROSE_RE = re.compile(r"^\s*(#|\||>|\d+[.)]\s|[-*+]\s)")
+
+
+# 이 비율을 넘고 건수도 최소치를 넘을 때만 신호로 본다.
+# 명사구 단문은 그 자체로 흔한 문체다 — 이 저장소 문서만 해도 12개 파일에 56건
+# 나오는데 전부 의도된 단문이었다. 건수로 보면 소음이고 밀도로 봐야 갈린다.
+# 값의 근거는 2026-09-01 모델 비교 실측이다(about.md `모델 비교 기록`). 압축 압력을
+# 건 산출물이 40%, 80%, 100%였고 규칙을 넣은 쪽은 셋 다 0%였다. 이 저장소 문서 12개는
+# worked-examples.md(50%)만 넘고 나머지는 전부 29% 이하였다. 표본이 작으니 재현이
+# 쌓이면 다시 본다.
+#
+# 넘는다고 항상 전보체는 아니다. 어체가 `명사형`이나 `음슴체`면 통째로 오탐이고,
+# worked-examples.md가 실제로 그 경우다. 그래서 ADVISORY이고 판단은 사람이 한다.
+NOUN_FINAL_RATIO = 0.35
+NOUN_FINAL_MIN = 2
+
+
+def check_noun_final(text, min_len=8):
+    """서술형 문장이 종결어미 없이 명사구로 끝난 비율을 잰다 — 전보체 신호.
+
+    SKILL.md의 `반대 방향의 실패`를 기계화한 것이다. 압축 압력이 걸리면 조사와
+    어미가 먼저 떨어져 나가는데, 그 결과가 여기 잡힌다.
+
+    ADVISORY이고 status는 experimental이다. 건수가 아니라 밀도로 판정하며,
+    어체가 `명사형`이나 `음슴체`면 검사 전체가 오탐이므로 판단은 사람이 한다.
+    해체 명령(`다듬어`)도 한 번씩 걸린다.
+
+    반환: (hits, 산문 문장 수)
+    """
+    hits, total = [], 0
+    incode = False
+    for lineno, line in enumerate(text.split("\n"), 1):
+        if line.strip().startswith("```"):
+            incode = not incode
+            continue
+        if incode or not line.strip() or NOT_PROSE_RE.match(line):
+            continue
+        clean = INLINE_CODE_RE.sub(" ", line)
+        for sent in re.split(r"(?<=[.!?])\s+", clean):
+            sent = sent.strip()
+            if len(sent) < min_len or not sent.endswith("."):
+                continue
+            tail = sent.rstrip(".").rstrip("\"'\u201d\u2019)]\uff09").rstrip()
+            # 인라인 코드를 지운 자리에 구두점만 남은 조각은 문장이 아니다.
+            if len(re.findall(r"[\uac00-\ud7a3]", tail)) < 4:
+                continue
+            if not re.search(r"[\uac00-\ud7a3]$", tail):
+                continue
+            total += 1
+            if not tail.endswith(SENTENCE_ENDINGS):
+                hits.append((lineno, sent[-40:]))
+    return hits, total
+
+
+def report(hard, advisory, used=None, thresholds=None, streaks=None, nounfinal=None):
     hard_total = sum(len(v) for v in hard.values())
     adv_total = sum(len(v) for v in advisory.values())
     mixed = used is not None and len(used) >= 2
@@ -360,6 +419,23 @@ def report(hard, advisory, used=None, thresholds=None, streaks=None):
         for end, cnt, sample in streaks:
             print(f"  · '{end}' {cnt}문장 연속  (…{sample})")
         print("    → 리듬이 균일하다는 신호. 일부를 다른 끝맺음으로 바꾼다.")
+
+    if nounfinal:
+        hits, total = nounfinal
+        ratio = len(hits) / total if total else 0
+        loud = len(hits) >= NOUN_FINAL_MIN and ratio >= NOUN_FINAL_RATIO
+        print("\n[명사구 종결 — ADVISORY, experimental. 전보체 신호]")
+        print(f"  · {len(hits)}건 / 산문 {total}문장 ({ratio:.0%})")
+        if loud:
+            for lineno, sample in hits[:15]:
+                print(f"  · L{lineno}: {sample}")
+            if len(hits) > 15:
+                print(f"    … 외 {len(hits) - 15}건")
+            print(f"    → {NOUN_FINAL_RATIO:.0%}를 넘었다. 압축하다 조사와 어미가 빠졌는지 본다"
+                  " (SKILL.md `반대 방향의 실패`).")
+            print("    → 어체가 `명사형`이나 `음슴체`면 이 항목 전체가 오탐이다.")
+        else:
+            print("    → 밀도가 낮다. 의도된 명사구 단문으로 보고 넘어간다.")
 
     if used is not None:
         print("\n[어체 일관성 — ADVISORY, 의도된 혼용인지 확인]")
@@ -415,7 +491,8 @@ def main():
     _, used = check_register_mix(body)
     streaks = check_ending_streak(body)
     thresholds = {p["label"]: p["threshold"] for p in patterns if p.get("threshold")}
-    blocking = report(hard, advisory, used, thresholds, streaks)
+    nounfinal = check_noun_final(body)
+    blocking = report(hard, advisory, used, thresholds, streaks, nounfinal)
     if skipped:
         print(f"  (코드블록 {skipped}줄은 검사 제외 — 예시·명령어는 의도된 것으로 본다)")
     if masked_chars:
