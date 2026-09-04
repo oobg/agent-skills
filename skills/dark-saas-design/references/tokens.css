@@ -1,0 +1,144 @@
+/* dark-saas-design 토큰 — 한국어 B2B SaaS 다크 랜딩 + 라이트 제품 UI
+ *
+ * 출처: 운영 중인 한국어 B2B SaaS 랜딩 한 곳을 2026-09-04에 실측.
+ * 방법: 페이지가 내보낸 CSS 변수 정의를 그대로 회수 + Chromium 1440/390 렌더링
+ *       getComputedStyle 값 + 목업 PNG 픽셀 샘플링.
+ * 값 신뢰도: [정본] = 원본 토큰/계산값 그대로. [샘플] = 이미지 픽셀 근사치.
+ *
+ * 브랜드 자산(로고·상호·카피·mp4/PNG 에셋)은 이 스킬에 포함하지 않는다.
+ * 가져오는 것은 색·간격·위계·모션 규칙뿐이다.
+ */
+
+:root {
+  /* ───────── 마케팅 면 (다크) ───────── */
+
+  /* 배경 — 검정 2단. root만 보라 기운을 섞는다 [정본] */
+  --ds-root: #060014;        /* 페이지 루트. 순검정 대신 보라끼 */
+  --ds-bg: #000;             /* body, 섹션, 카드 모두 같은 검정 */
+  --ds-surface-veil: #ffffff0d; /* 5% — 로고 스트립 같은 띠 섹션 */
+
+  /* 보더 — 면 분리는 전부 여기서 일어난다 [정본] */
+  --ds-border: #333;          /* 기본. 검정 위 카드·아코디언 */
+  --ds-border-soft: #ffffff1a; /* 10% — 띠 섹션, 은은한 구획 */
+  --ds-border-strong: #fff3;   /* 20% — 강조 구획 */
+  --ds-border-hair: #ffffff14; /* 8% — 최소 힌트 */
+
+  /* 텍스트 — 흰색 알파 사다리 [정본] */
+  --ds-text: #fff;
+  --ds-text-2: #ffffffbf;  /* 75% — 내비, 푸터 제목 */
+  --ds-text-3: #b3b3b3;    /* 본문 단락 */
+  --ds-text-4: #ffffffa6;  /* 65% — 히어로 서브 */
+  --ds-text-5: #ffffff80;  /* 50% — 저작권·법적 고지 */
+  --ds-text-dim: #666;     /* 스크롤 리빌 대기 상태 */
+
+  /* 포인트 — 보라 1개가 전부다 [정본] */
+  --ds-accent: #622eec;
+  --ds-accent-lime: #c9fd21;      /* 극소량. 배지·상승 지표에만 */
+  --ds-accent-lime-halo: #c9fd2152; /* 32% */
+
+  /* 인터랙티브 면 [정본] */
+  --ds-chip: rgba(255, 255, 255, 0.1);   /* 칩·고스트 버튼 기본 */
+  --ds-chip-hover: rgba(255, 255, 255, 0.12);
+
+  /* 뉴트럴 스케일 — 목업·배지 등에서 쓰인 회색 [정본] */
+  --ds-grey-950: #09090b;
+  --ds-grey-900: #121212;
+  --ds-grey-850: #1a1a1a;
+  --ds-grey-800: #1d1d1d;
+  --ds-grey-750: #242424;
+  --ds-grey-700: #39393d;
+  --ds-grey-600: #4e4e4e;
+  --ds-grey-300: #b3b3b3;
+  --ds-grey-100: #f5f5f5;
+  --ds-grey-50: #f7f7f7;
+  --ds-warm-50: #f4f3f1;
+
+  /* ───────── 라이트 면 (제품·가격 페이지 본문) ───────── */
+  /* 랜딩(홈)만 전부 다크다. 제품 소개와 가격 페이지는 히어로만 다크로 열고
+   * 본문은 라이트로 간다. 면 리듬은 pages.md 참고. [정본] */
+  --ds-light-bg: #fff;          /* 본문 기본 */
+  --ds-light-band: #f5f5f5;     /* 스테이트먼트 밴드 */
+  --ds-light-panel: #f7f7f7;    /* 스크린샷 패널, 후기 카드 */
+  --ds-light-tint: #f6f5ff;     /* 보라 기운 밴드 — 가격·전환 유도 */
+  --ds-light-border: #e8e8e8;   /* 스크린샷 패널 1px */
+  --ds-light-hairline: #0000001a; /* 카드 보더 10% (실측 0.7px) */
+  --ds-light-text: #000;
+  --ds-light-title: #272b27;   /* 리스트 항목 제목 — 순검정보다 살짝 눌림 */
+  --ds-light-muted: #4e4e4e;   /* 요약·메타 */
+  --ds-light-divider: rgba(0, 0, 0, 0.09);
+  --ds-radius-shot: 5px;        /* 스크린샷 패널만 예외 — 10/12/8 밖 */
+
+  /* ───────── 제품 화면 (라이트 앱) ───────── */
+  /* 마케팅은 다크, 제품 화면은 라이트다. 공유하는 건 보라 포인트뿐. */
+  --ds-app-bg: #fff;              /* [샘플] */
+  --ds-app-surface: #f6f6f6;      /* [샘플] 사이드바·표 헤더 */
+  --ds-app-text: #1e1f1f;         /* [샘플] */
+  --ds-app-text-muted: #aeafaf;   /* [샘플] */
+  --ds-app-accent: #5729b7;       /* [샘플] 다크면보다 어둡게 눌린 보라 */
+  --ds-app-teal: #4fb0ac;         /* [샘플] 차트 라인 */
+  --ds-app-rose: #d05562;         /* [샘플] 초과·감소 */
+  --ds-app-green: #599a7b;        /* [샘플] 정상·증가 */
+
+  /* ───────── 타이포 ───────── */
+  /* Pretendard Variable을 가변축으로 쓴다. font-weight가 아니라
+   * font-variation-settings로 굵기를 준다 (원본은 font-weight가 전부 400). */
+  --ds-font: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", sans-serif;
+  --ds-font-latin: "Poppins", var(--ds-font); /* 라틴 라벨·푸터 제목 전용 */
+
+  /* wght 축 [정본] — 45~930 범위 중 실제로 쓰인 5개만 */
+  --ds-wght-display: 750;  /* 히어로 h1 */
+  --ds-wght-title: 600;    /* 섹션 제목 */
+  --ds-wght-strong: 700;   /* 히어로 서브 한 줄 */
+  --ds-wght-medium: 500;   /* 본문·버튼·내비 */
+  --ds-wght-regular: 400;  /* FAQ 대제목, 리빌 텍스트, 법적 고지 */
+
+  /* 자간 — 한글은 -2%가 기본, 리빌 텍스트만 -4% [정본] */
+  --ds-tracking: -0.02em;
+  --ds-tracking-loose: 0;      /* 14~16px 컨트롤은 자간 0 */
+  --ds-tracking-reveal: -0.04em;
+
+  /* 행간 [정본] */
+  --ds-leading-display: 1.3;
+  --ds-leading-title: 1.0;   /* 데스크톱 섹션 제목은 1.0em으로 붙인다 */
+  --ds-leading-title-mobile: 1.4;
+  --ds-leading-body: 1.7;
+  --ds-leading-tight: 1.2;
+
+  /* ───────── 형태 ───────── */
+  --ds-radius-card: 10px;      /* 섹션 카드·트러스트 카드·CTA 배너 */
+  --ds-radius-accordion: 12px;
+  --ds-radius-control: 8px;    /* 버튼·칩 전부 */
+  --ds-radius-marquee: 30px;
+  /* 그림자 토큰은 없다. 원본에 box-shadow가 0회다. */
+
+  /* ───────── 레이아웃 ───────── */
+  --ds-container: 1224px;
+  --ds-gutter: 30px;           /* ≤809px에서 20px */
+  --ds-section-y: 120px;       /* ≤809px에서 60px */
+  --ds-hero-y-landing: 210px;  /* 홈 히어로 상하 여백 */
+  --ds-hero-h-page: 600px;     /* 제품 페이지 히어로 블록 높이 (가격은 640) */
+  --ds-col-gap: 60px;          /* 라이트 본문 2열 그리드 */
+  --ds-section-gap: 64px;      /* 섹션 헤더와 본문 사이 */
+  --ds-card-gap: 54px;         /* 카드 내부 좌우 컬럼 */
+  --ds-nav-h: 72px;
+  --ds-sticky-top: 40px;       /* 스택 카드가 멈추는 위치 */
+
+  /* ───────── 모션 ───────── */
+  --ds-ease: cubic-bezier(0.44, 0, 0.56, 1); /* [정본] 원본의 유일한 CSS 이징 */
+  --ds-dur: 400ms;
+  --ds-glow-blur: 10px;        /* [정본] 글로우 레이어 blur */
+}
+
+/* 브레이크포인트 [정본] — 실측된 3단 그대로 */
+/*  phone   : max-width 809px
+    tablet  : 810px ~ 1439px
+    desktop : min-width 1440px                                        */
+
+@media (max-width: 809px) {
+  :root {
+    --ds-gutter: 20px;
+    --ds-section-y: 60px;
+    --ds-leading-title: var(--ds-leading-title-mobile);
+  }
+}

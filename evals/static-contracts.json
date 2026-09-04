@@ -170,6 +170,30 @@
       "kind": "execution",
       "target": "skills/search-visibility/README.md",
       "all": ["--coverage", "구조화 데이터 대조", "이 목록은 스크립트가\n정본이며 문서에 복제하지 않습니다"]
+    },
+    {
+      "id": "dark-saas-design-negative-boundary",
+      "kind": "negative",
+      "target": "skills/dark-saas-design/SKILL.md",
+      "all": ["라이트 대시보드나 브랜드 색이 이미 정해진 작업에는 사용하지 않는다", "Day0 신호가 있으면 day0-design"]
+    },
+    {
+      "id": "dark-saas-design-measured-token-fidelity",
+      "kind": "positive",
+      "target": "skills/dark-saas-design/references/tokens.css",
+      "all": ["#622eec", "#c9fd21", "#060014", "--ds-border: #333", "cubic-bezier(0.44, 0, 0.56, 1)", "[정본]", "[샘플]"]
+    },
+    {
+      "id": "dark-saas-design-forbidden-effects",
+      "kind": "execution",
+      "target": "skills/dark-saas-design/SKILL.md",
+      "all": ["box-shadow", "backdrop-filter", "font-variation-settings", "룩얼라이크", "prefers-reduced-motion"]
+    },
+    {
+      "id": "dark-saas-design-page-archetypes",
+      "kind": "positive",
+      "target": "skills/dark-saas-design/references/pages.md",
+      "all": ["순서는 고정이 아니다", "면 리듬", "제품 허브", "기능 상세", "블록 카탈로그", "같은 면을 세 블록 넘게 연속하지 않는다"]
     }
   ]
 }

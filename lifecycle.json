@@ -82,6 +82,15 @@
         "gemini",
         "grok"
       ]
+    },
+    "dark-saas-design": {
+      "status": "active",
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     }
   },
   "candidate_exclusions": [],

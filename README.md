@@ -63,6 +63,19 @@ Day0 제품 UI(토스형 B2B)와 같은 시각 언어로 화면을 구현합니�
 자세한 내용은 [`skills/day0-design/SKILL.md`](skills/day0-design/SKILL.md)에서
 확인할 수 있습니다.
 
+### Dark SaaS Design
+
+검정 배경에 바이올렛 포인트 하나를 쓰는 한국어 B2B SaaS 시각 언어로 랜딩과 제품
+소개, 기능 상세, 가격 페이지를 구현합니다. 다크 히어로로 열고 라이트 본문으로
+읽히는 면 리듬, Pretendard Variable 가변축 위계, 검정 위 1px 보더, 그림자와 글래스
+금지를 강제합니다. 섹션 순서는 고정하지 않고 제품이 증명해야 할 것에 맞춰 블록을
+조립합니다. 실측한 사이트의 색과 간격, 위계, 모션 규칙만 가져오고 로고와 카피,
+미디어 자산은 포함하지 않습니다.
+
+자세한 내용은
+[`skills/dark-saas-design/SKILL.md`](skills/dark-saas-design/SKILL.md)에서
+확인할 수 있습니다.
+
 ### Engineering Shorts
 
 건축, 도시, 기계, 항공, 밀리터리 엔지니어링과 유체역학 주제의 세로형 공학 설명
@@ -128,6 +141,10 @@ agent-skills/
 ├── README.md
 └── skills/
     ├── conventional-commits/
+    │   ├── SKILL.md
+    │   ├── README.md
+    │   └── references/
+    ├── dark-saas-design/
     │   ├── SKILL.md
     │   ├── README.md
     │   └── references/
