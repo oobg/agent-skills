@@ -175,13 +175,19 @@
       "id": "dark-saas-design-negative-boundary",
       "kind": "negative",
       "target": "skills/dark-saas-design/SKILL.md",
-      "all": ["라이트 대시보드나 브랜드 색이 이미 정해진 작업에는 사용하지 않는다", "Day0 신호가 있으면 day0-design"]
+      "all": ["라이트 대시보드나 제품 내부 화면만 만드는 작업에는 사용하지 않는다", "Day0 신호가 있으면 day0-design"]
     },
     {
-      "id": "dark-saas-design-measured-token-fidelity",
+      "id": "dark-saas-design-derived-tokens",
       "kind": "positive",
       "target": "skills/dark-saas-design/references/tokens.css",
-      "all": ["#622eec", "#c9fd21", "#060014", "--ds-border: #333", "cubic-bezier(0.44, 0, 0.56, 1)", "[정본]", "[샘플]"]
+      "all": ["OKLCH L 0.50~0.58", "8pt 사다리", "--ds-accent: #863ad2", "--ds-line: #2b2b2b", "cubic-bezier(0.22, 1, 0.36, 1)", "radius = 컨테이너 높이 × 0.125"]
+    },
+    {
+      "id": "dark-saas-design-derivation-is-reproducible",
+      "kind": "execution",
+      "target": "skills/dark-saas-design/references/derive.md",
+      "all": ["교체 가능", "contrast(\"#863ad2\", \"#ffffff\") >= 4.5", "1.4 ~ 1.6", "12칼럼", "교체 체크리스트"]
     },
     {
       "id": "dark-saas-design-forbidden-effects",
@@ -193,7 +199,7 @@
       "id": "dark-saas-design-page-archetypes",
       "kind": "positive",
       "target": "skills/dark-saas-design/references/pages.md",
-      "all": ["순서는 고정이 아니다", "면 리듬", "제품 허브", "기능 상세", "블록 카탈로그", "같은 면을 세 블록 넘게 연속하지 않는다"]
+      "all": ["증명 축이 블록을 고른다", "면 리듬", "블록 카탈로그", "같은 면을 세 블록 넘게 연속하지 않는다", "아키타입의 블록 순서를 다른 페이지에 복제하지 않는다"]
     }
   ]
 }

@@ -1,144 +1,175 @@
-/* dark-saas-design 토큰 — 한국어 B2B SaaS 다크 랜딩 + 라이트 제품 UI
+/* dark-saas-design 토큰 — 한국어 B2B SaaS 다크 마케팅 + 라이트 제품 UI
  *
- * 출처: 운영 중인 한국어 B2B SaaS 랜딩 한 곳을 2026-09-04에 실측.
- * 방법: 페이지가 내보낸 CSS 변수 정의를 그대로 회수 + Chromium 1440/390 렌더링
- *       getComputedStyle 값 + 목업 PNG 픽셀 샘플링.
- * 값 신뢰도: [정본] = 원본 토큰/계산값 그대로. [샘플] = 이미지 픽셀 근사치.
+ * 모든 값이 파생 규칙에서 나온다. 취향으로 고른 값은 없고, 각 블록 머리에
+ * 그 값을 만든 제약을 적었다. 팔레트·컨테이너 폭·서체를 교체해도 구조는
+ * 그대로 성립한다 — 교체 지점은 `derive.md`가 정의한다.
  *
- * 브랜드 자산(로고·상호·카피·mp4/PNG 에셋)은 이 스킬에 포함하지 않는다.
- * 가져오는 것은 색·간격·위계·모션 규칙뿐이다.
+ * 파생 축 넷:
+ *   색   OKLCH 좌표 + WCAG 대비 하한
+ *   간격 8pt 사다리
+ *   형태 radius = 컨테이너 높이 × 0.125, 짝수 반올림, 상한 12px
+ *   활자 4의 배수 크기 + 행간을 px로 8pt 격자에 떨어뜨림
  */
 
 :root {
-  /* ───────── 마케팅 면 (다크) ───────── */
+  /* ───────── 포인트 ─────────
+   * 포인트는 두 가지를 동시에 해야 한다. CTA 면으로 깔렸을 때 그 위 흰 글씨가
+   * 읽히고(4.5:1), 검정 배경에서 면 자체가 도드라져야 한다(3:1).
+   * 이 둘을 함께 만족하는 구간은 OKLCH L 0.50~0.58 하나뿐이다. 더 밝으면
+   * 흰 글씨가 무너지고, 더 어두우면 검정에 잠긴다.
+   * 기본값은 L .53 / C .22 / H 302. hue만 바꾸면 전체가 따라 움직인다. */
+  --ds-accent: #863ad2;      /* 흰 글씨 5.92:1 · 검정 면 3.55:1 */
+  --ds-accent-ink: #6320a0;  /* 라이트면 텍스트·아이콘. 흰 배경 9.36:1 (L .42) */
+  --ds-accent-hi: #b58eed;   /* 다크면 링크 hover·배지 글자. 검정 8.06:1 (L .72) */
+  --ds-accent-glow: #9d4af4; /* 글로우 레이어 전용. 텍스트로 쓰지 않는다 (L .60) */
+  --ds-tint: #f6f2ff;        /* 라이트 틴트 밴드. 포인트 hue의 L .968 */
+  /* 보조 강조색을 따로 두지 않는다. 강조가 하나 더 필요하면 --ds-accent-hi를
+   * 쓴다. 두 번째 hue를 들이면 그 순간 포인트가 둘이 되고 위계가 풀린다. */
 
-  /* 배경 — 검정 2단. root만 보라 기운을 섞는다 [정본] */
-  --ds-root: #060014;        /* 페이지 루트. 순검정 대신 보라끼 */
-  --ds-bg: #000;             /* body, 섹션, 카드 모두 같은 검정 */
-  --ds-surface-veil: #ffffff0d; /* 5% — 로고 스트립 같은 띠 섹션 */
+  /* ───────── 다크면 잉크 ─────────
+   * 검정 위 대비로 정의한다. 알파를 쌓지 않는 이유는 알파가 배경에 따라
+   * 실제 대비를 바꿔 카드 위·띠 위에서 값이 달라지기 때문이다. */
+  --ds-ink: #fff;        /* 21:1 — 제목·강조 */
+  --ds-ink-2: #a4a4a4;   /* 8.42:1 — 본문 */
+  --ds-ink-3: #7a7a7a;   /* 4.89:1 — 메타·캡션. AA 하한 */
+  --ds-ink-mute: #525252;/* 2.69:1 — 스크롤 리빌 대기 상태.
+                          * 최종 상태가 아니므로 대비 하한을 적용하지 않는다 */
 
-  /* 보더 — 면 분리는 전부 여기서 일어난다 [정본] */
-  --ds-border: #333;          /* 기본. 검정 위 카드·아코디언 */
-  --ds-border-soft: #ffffff1a; /* 10% — 띠 섹션, 은은한 구획 */
-  --ds-border-strong: #fff3;   /* 20% — 강조 구획 */
-  --ds-border-hair: #ffffff14; /* 8% — 최소 힌트 */
+  /* ───────── 다크면 ─────────
+   * 카드도 배경도 같은 검정이다. 면을 띄우는 대신 선으로 나눈다.
+   * 선은 "보이되 면으로 읽히지 않는" 검정 대비 1.4~1.6 창 안에 둔다. */
+  --ds-void: #000;            /* 페이지·섹션·카드 공통 */
+  --ds-line: #2b2b2b;         /* 1.48:1 — 기본 보더 */
+  --ds-line-soft: #ffffff14;  /* 띠 섹션 안쪽 구획 */
+  --ds-veil: #ffffff08;       /* 띠 섹션 면. 3%보다 옅으면 안 보인다 */
+  --ds-chip: #ffffff1a;       /* 고스트 컨트롤 기본 */
+  --ds-chip-hover: #ffffff26;
 
-  /* 텍스트 — 흰색 알파 사다리 [정본] */
-  --ds-text: #fff;
-  --ds-text-2: #ffffffbf;  /* 75% — 내비, 푸터 제목 */
-  --ds-text-3: #b3b3b3;    /* 본문 단락 */
-  --ds-text-4: #ffffffa6;  /* 65% — 히어로 서브 */
-  --ds-text-5: #ffffff80;  /* 50% — 저작권·법적 고지 */
-  --ds-text-dim: #666;     /* 스크롤 리빌 대기 상태 */
+  /* ───────── 라이트면 ─────────
+   * 제품·요금 페이지 본문. 면 3단과 선 1개로 끝낸다. */
+  --ds-paper: #fff;
+  --ds-paper-2: #f7f7f7;   /* 패널·인용 카드 */
+  --ds-paper-3: #f0f0f0;   /* 스테이트먼트 밴드 */
+  --ds-rule: #e8e8e8;      /* 라이트 보더 */
+  --ds-graphite: #1b1b1b;  /* 제목. 17.2:1 */
+  --ds-slate: #525252;     /* 본문. 7.81:1 */
+  --ds-slate-2: #747474;   /* 메타. 4.67:1 — AA 하한 */
 
-  /* 포인트 — 보라 1개가 전부다 [정본] */
-  --ds-accent: #622eec;
-  --ds-accent-lime: #c9fd21;      /* 극소량. 배지·상승 지표에만 */
-  --ds-accent-lime-halo: #c9fd2152; /* 32% */
+  /* ───────── 제품 화면 (라이트 앱) ─────────
+   * 마케팅은 다크, 제품은 라이트다. 공유하는 것은 포인트 hue뿐. */
+  --ds-app-bg: #fff;
+  --ds-app-surface: #f7f7f7;   /* 사이드바·표 헤더 */
+  --ds-app-text: #1b1b1b;
+  --ds-app-text-muted: #747474;
+  --ds-app-accent: var(--ds-accent-ink);
+  --ds-app-up: #1f7a55;      /* 증가·정상. 흰 배경 4.9:1 */
+  --ds-app-down: #b4302f;    /* 감소·초과. 흰 배경 5.6:1 */
+  --ds-app-line: #2f7f88;    /* 차트 라인. 흰 배경 4.6:1 */
+  /* 상태색도 대비 하한을 지킨다. 차트 라인이 4.5:1을 못 넘으면 값이 아니라
+   * 장식이 되고, 색맹 사용자에게는 선이 사라진다. */
 
-  /* 인터랙티브 면 [정본] */
-  --ds-chip: rgba(255, 255, 255, 0.1);   /* 칩·고스트 버튼 기본 */
-  --ds-chip-hover: rgba(255, 255, 255, 0.12);
-
-  /* 뉴트럴 스케일 — 목업·배지 등에서 쓰인 회색 [정본] */
-  --ds-grey-950: #09090b;
-  --ds-grey-900: #121212;
-  --ds-grey-850: #1a1a1a;
-  --ds-grey-800: #1d1d1d;
-  --ds-grey-750: #242424;
-  --ds-grey-700: #39393d;
-  --ds-grey-600: #4e4e4e;
-  --ds-grey-300: #b3b3b3;
-  --ds-grey-100: #f5f5f5;
-  --ds-grey-50: #f7f7f7;
-  --ds-warm-50: #f4f3f1;
-
-  /* ───────── 라이트 면 (제품·가격 페이지 본문) ───────── */
-  /* 랜딩(홈)만 전부 다크다. 제품 소개와 가격 페이지는 히어로만 다크로 열고
-   * 본문은 라이트로 간다. 면 리듬은 pages.md 참고. [정본] */
-  --ds-light-bg: #fff;          /* 본문 기본 */
-  --ds-light-band: #f5f5f5;     /* 스테이트먼트 밴드 */
-  --ds-light-panel: #f7f7f7;    /* 스크린샷 패널, 후기 카드 */
-  --ds-light-tint: #f6f5ff;     /* 보라 기운 밴드 — 가격·전환 유도 */
-  --ds-light-border: #e8e8e8;   /* 스크린샷 패널 1px */
-  --ds-light-hairline: #0000001a; /* 카드 보더 10% (실측 0.7px) */
-  --ds-light-text: #000;
-  --ds-light-title: #272b27;   /* 리스트 항목 제목 — 순검정보다 살짝 눌림 */
-  --ds-light-muted: #4e4e4e;   /* 요약·메타 */
-  --ds-light-divider: rgba(0, 0, 0, 0.09);
-  --ds-radius-shot: 5px;        /* 스크린샷 패널만 예외 — 10/12/8 밖 */
-
-  /* ───────── 제품 화면 (라이트 앱) ───────── */
-  /* 마케팅은 다크, 제품 화면은 라이트다. 공유하는 건 보라 포인트뿐. */
-  --ds-app-bg: #fff;              /* [샘플] */
-  --ds-app-surface: #f6f6f6;      /* [샘플] 사이드바·표 헤더 */
-  --ds-app-text: #1e1f1f;         /* [샘플] */
-  --ds-app-text-muted: #aeafaf;   /* [샘플] */
-  --ds-app-accent: #5729b7;       /* [샘플] 다크면보다 어둡게 눌린 보라 */
-  --ds-app-teal: #4fb0ac;         /* [샘플] 차트 라인 */
-  --ds-app-rose: #d05562;         /* [샘플] 초과·감소 */
-  --ds-app-green: #599a7b;        /* [샘플] 정상·증가 */
-
-  /* ───────── 타이포 ───────── */
-  /* Pretendard Variable을 가변축으로 쓴다. font-weight가 아니라
-   * font-variation-settings로 굵기를 준다 (원본은 font-weight가 전부 400). */
+  /* ───────── 활자 ─────────
+   * Pretendard Variable 한 벌. 굵기는 font-weight가 아니라 가변축으로 준다.
+   * 축을 쓰면 600과 700 사이 같은 중간값을 잡을 수 있고, 한글은 그 중간이
+   * 필요하다 — 400은 얇고 500은 무겁다. 그래서 본문이 450이다. */
   --ds-font: "Pretendard Variable", Pretendard, -apple-system,
     BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", sans-serif;
-  --ds-font-latin: "Poppins", var(--ds-font); /* 라틴 라벨·푸터 제목 전용 */
+  /* 라틴 전용 서체를 두 번째로 들이지 않는다. 한 벌로 끝낸다. */
 
-  /* wght 축 [정본] — 45~930 범위 중 실제로 쓰인 5개만 */
-  --ds-wght-display: 750;  /* 히어로 h1 */
-  --ds-wght-title: 600;    /* 섹션 제목 */
-  --ds-wght-strong: 700;   /* 히어로 서브 한 줄 */
-  --ds-wght-medium: 500;   /* 본문·버튼·내비 */
-  --ds-wght-regular: 400;  /* FAQ 대제목, 리빌 텍스트, 법적 고지 */
+  --ds-wght-display: 700;  /* h1 */
+  --ds-wght-heading: 600;  /* h2·h3·카드 제목 */
+  --ds-wght-body: 450;     /* 본문·버튼·내비 */
+  --ds-wght-meta: 400;     /* 캡션·법적 고지·리빌 문장 */
 
-  /* 자간 — 한글은 -2%가 기본, 리빌 텍스트만 -4% [정본] */
-  --ds-tracking: -0.02em;
-  --ds-tracking-loose: 0;      /* 14~16px 컨트롤은 자간 0 */
-  --ds-tracking-reveal: -0.04em;
+  /* 크기 — 전부 4의 배수. 데스크톱 값이며 모바일은 아래 미디어 쿼리가 바꾼다 */
+  --ds-size-display: 64px;
+  --ds-size-h2: 48px;
+  --ds-size-h3: 36px;
+  --ds-size-h4: 24px;
+  --ds-size-lead: 20px;
+  --ds-size-body: 16px;
+  --ds-size-meta: 14px;
 
-  /* 행간 [정본] */
-  --ds-leading-display: 1.3;
-  --ds-leading-title: 1.0;   /* 데스크톱 섹션 제목은 1.0em으로 붙인다 */
-  --ds-leading-title-mobile: 1.4;
-  --ds-leading-body: 1.7;
-  --ds-leading-tight: 1.2;
+  /* 행간 — 배수가 아니라 px다. 8의 배수로 떨어뜨려야 글 덩어리 높이가
+   * 세로 격자에 맞고, 두 컬럼의 첫 줄과 마지막 줄이 나란히 선다 */
+  --ds-lh-display: 72px;
+  --ds-lh-h2: 56px;
+  --ds-lh-h3: 44px;
+  --ds-lh-h4: 32px;
+  --ds-lh-lead: 32px;
+  --ds-lh-body: 28px;
+  --ds-lh-meta: 20px;
 
-  /* ───────── 형태 ───────── */
-  --ds-radius-card: 10px;      /* 섹션 카드·트러스트 카드·CTA 배너 */
-  --ds-radius-accordion: 12px;
-  --ds-radius-control: 8px;    /* 버튼·칩 전부 */
-  --ds-radius-marquee: 30px;
-  /* 그림자 토큰은 없다. 원본에 box-shadow가 0회다. */
+  /* 자간 — 크기에 따라 달라진다. 큰 글자일수록 자간이 벌어 보이므로 더 조인다.
+   * 한 값을 전 크기에 걸면 제목이 헐겁거나 캡션이 뭉친다 */
+  --ds-track-xl: -0.03em;   /* 48px 이상 */
+  --ds-track-l: -0.02em;    /* 20~36px */
+  --ds-track-m: -0.01em;    /* 16~18px */
+  --ds-track-s: 0;          /* 14px 이하·모든 컨트롤 */
 
-  /* ───────── 레이아웃 ───────── */
-  --ds-container: 1224px;
-  --ds-gutter: 30px;           /* ≤809px에서 20px */
-  --ds-section-y: 120px;       /* ≤809px에서 60px */
-  --ds-hero-y-landing: 210px;  /* 홈 히어로 상하 여백 */
-  --ds-hero-h-page: 600px;     /* 제품 페이지 히어로 블록 높이 (가격은 640) */
-  --ds-col-gap: 60px;          /* 라이트 본문 2열 그리드 */
-  --ds-section-gap: 64px;      /* 섹션 헤더와 본문 사이 */
-  --ds-card-gap: 54px;         /* 카드 내부 좌우 컬럼 */
-  --ds-nav-h: 72px;
-  --ds-sticky-top: 40px;       /* 스택 카드가 멈추는 위치 */
+  /* ───────── 형태 ─────────
+   * radius = 컨테이너 높이 × 0.125를 짝수로 반올림, 상한 12px.
+   * 세 값밖에 나오지 않으며 그 밖의 값을 만들지 않는다.
+   * 중첩된 면은 바깥보다 한 단 작게 둔다 (카드 12 > 패널 8 > 컨트롤 6). */
+  --ds-radius-card: 12px;    /* 높이 96px 이상 — 상한에 걸린다 */
+  --ds-radius-panel: 8px;    /* 카드 안에 놓이는 면 */
+  --ds-radius-control: 6px;  /* 높이 48px → 6 */
+  /* 완전 원형(999px·50%)을 쓰지 않는다. 그림자 토큰도 없다 — 면은 선으로 나눈다 */
 
-  /* ───────── 모션 ───────── */
-  --ds-ease: cubic-bezier(0.44, 0, 0.56, 1); /* [정본] 원본의 유일한 CSS 이징 */
-  --ds-dur: 400ms;
-  --ds-glow-blur: 10px;        /* [정본] 글로우 레이어 blur */
+  /* ───────── 간격 ─────────
+   * 8pt 사다리: 8·16·24·32·40·48·56·64·80·96·128.
+   * 이 밖의 값을 만들지 않는다. 필요하면 사다리에서 이웃 칸을 고른다 */
+  --ds-space-1: 8px;
+  --ds-space-2: 16px;
+  --ds-space-3: 24px;
+  --ds-space-4: 32px;
+  --ds-space-5: 48px;
+  --ds-space-6: 64px;
+  --ds-space-7: 96px;
+  --ds-space-8: 128px;
+
+  /* ───────── 레이아웃 ─────────
+   * 컨테이너 1200 = 12칼럼 격자의 정수 분할이 전부 떨어지는 폭
+   * (1/2=600, 1/3=400, 2/3=800, 7/12=700, 5/12=500). 나누는 자리마다
+   * 소수점이 나오면 컬럼 폭이 브라우저마다 1px씩 어긋난다 */
+  --ds-container: 1200px;
+  --ds-gutter: var(--ds-space-4);      /* 32px, ≤767에서 24px */
+  --ds-section-y: var(--ds-space-8);   /* 128px, ≤767에서 64px */
+  --ds-block-gap: var(--ds-space-5);   /* 48px — 섹션 헤더와 본문 사이 */
+  --ds-col-gap: var(--ds-space-5);     /* 48px — 2열 그리드 */
+  --ds-nav-h: 64px;
+  --ds-sticky-top: 88px;               /* 내비 64 + 24. 카드가 내비에 닿지 않는다 */
+
+  /* ───────── 모션 ─────────
+   * 이징 하나. out-quint는 앞이 빠르고 끝이 길어, 요소가 도착한 자리에
+   * 얹히는 느낌을 준다. 바운스·스프링을 섞지 않는다 */
+  --ds-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ds-dur-enter: 320ms;   /* 위치가 바뀌는 움직임 */
+  --ds-dur-state: 160ms;   /* 색만 바뀌는 전환 */
+  --ds-rise: 16px;         /* 등장 시 올라오는 거리 */
 }
 
-/* 브레이크포인트 [정본] — 실측된 3단 그대로 */
-/*  phone   : max-width 809px
-    tablet  : 810px ~ 1439px
-    desktop : min-width 1440px                                        */
+/* 브레이크포인트 3단 — 그 사이에 새 단을 만들지 않는다.
+ *   phone   : ~767
+ *   tablet  : 768 ~ 1279
+ *   desktop : 1280~      (컨테이너 1200 + 거터 32×2 = 1264가 들어가는 최소 폭)
+ */
 
-@media (max-width: 809px) {
+@media (max-width: 767px) {
   :root {
-    --ds-gutter: 20px;
-    --ds-section-y: 60px;
-    --ds-leading-title: var(--ds-leading-title-mobile);
+    --ds-gutter: var(--ds-space-3);     /* 24px */
+    --ds-section-y: var(--ds-space-6);  /* 64px */
+    --ds-block-gap: var(--ds-space-4);  /* 32px */
+    --ds-col-gap: var(--ds-space-4);
+
+    --ds-size-display: 40px;
+    --ds-size-h2: 32px;
+    --ds-size-h3: 28px;
+    --ds-size-lead: 18px;
+
+    --ds-lh-display: 48px;
+    --ds-lh-h2: 40px;
+    --ds-lh-h3: 36px;
+    --ds-lh-lead: 28px;
   }
 }

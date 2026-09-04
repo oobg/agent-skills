@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 BOOST_SKILLS = (
     "conventional-commits",
+    "dark-saas-design",
     "gpt-image-gen",
     "question-design",
     "ux-writing",
@@ -89,6 +90,11 @@ class OntologyBoostContractTests(unittest.TestCase):
         question = boost_path("question-design").read_text(encoding="utf-8")
         self.assertIn("결과 경로를 바꾸는 모호성만 먼저 질문한다", question)
         self.assertIn("회수 결과는 리뷰의 **입력**이지 판정이 아니다", question)
+
+        design = boost_path("dark-saas-design").read_text(encoding="utf-8")
+        self.assertIn("이 스킬은 온톨로지에 쓰지 않는다", design)
+        self.assertIn("파생 규칙은 온톨로지에 무엇이 있든 그대로다", design)
+        self.assertIn("판독 기록은 참고 자료이지 재현 허가가 아니다", design)
 
     def test_every_boost_declares_what_it_leaves_unchanged(self):
         # Asserting only on required strings catches deletion but not contradiction.
