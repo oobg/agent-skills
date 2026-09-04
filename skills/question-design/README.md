@@ -30,7 +30,7 @@
 ### MODE B: 리뷰 사이클
 
 산출물의 도메인 사실, 논리, 구조, 흐름을 순서대로 검토합니다. 일반 업무는 Lite로
-시작하고, 법률·재무·외부 공개·비가역 결정처럼 위험이 큰 작업만 Full을 고려합니다.
+시작하고, 법률, 재무, 외부 공개, 비가역 결정처럼 위험이 큰 작업만 Full을 고려합니다.
 
 같은 모델이 역할을 바꿔 검토한 결과는 구조화된 자체 점검이며 독립 검증은 아닙니다.
 독립성이 필요하면 별도 세션, 다른 모델, 도메인 전문가를 추가합니다.
@@ -64,7 +64,7 @@ question-design/
 - [`references/mode-a.md`](references/mode-a.md): 질문 설계 절차
 - [`references/mode-b.md`](references/mode-b.md): 리뷰 사이클과 종료 조건
 - [`references/cross-model-review.md`](references/cross-model-review.md): 다른 provider
-  LLM으로 프레임 차이를 검토할 때의 세션별 동의·전송·통합 규칙
+  LLM으로 프레임 차이를 검토할 때의 세션별 동의, 전송, 통합 규칙
 - [`agents/`](agents): 도메인 검토, 적대적 검토, 조건부 재프레이밍, 최종 통합
 
 설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.

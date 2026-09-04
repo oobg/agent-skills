@@ -95,7 +95,7 @@ domain-ontology/
 └── README.md
 ```
 
-- [`SKILL.md`](SKILL.md): 트리거, 조회·적재 라우팅, 품질 게이트, 안전 규칙
+- [`SKILL.md`](SKILL.md): 트리거, 조회와 적재 라우팅, 품질 게이트, 안전 규칙
 - [`README.md`](README.md): 사람을 위한 개요와 사용 안내
 
 설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.

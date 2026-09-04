@@ -128,13 +128,13 @@ search-visibility/
   fresh-eyes 검증 패스
 - [`scripts/crawl_audit.py`](scripts/crawl_audit.py): CLI 진입점, 관측 순서와 출력, `--coverage`
 - [`scripts/fetch.py`](scripts/fetch.py): HTTP 회수. 자바스크립트를 실행하지 않습니다
-- [`scripts/parse.py`](scripts/parse.py): HTML·JSON-LD 파싱 유틸
+- [`scripts/parse.py`](scripts/parse.py): HTML과 JSON-LD 파싱 유틸
 - [`scripts/checks_site.py`](scripts/checks_site.py): robots.txt, 사이트맵, `llms.txt`, 404 처리
 - [`scripts/checks_page.py`](scripts/checks_page.py): 페이지 단위 관측과 구조화 데이터 대조
 - [`scripts/checks_passage.py`](scripts/checks_passage.py): 문단 단위 관측. 인용은 페이지가 아니라
   문단째로 잘려 나가므로 자체 완결 여부를 문단마다 봅니다
 - [`scripts/checks_cross.py`](scripts/checks_cross.py): 페이지 간 대조(메타 중복, 엔티티 표기, 사이트맵 포함)
-- [`scripts/checks_schema.py`](scripts/checks_schema.py): 구조화 데이터를 구글·네이버 규칙표에
+- [`scripts/checks_schema.py`](scripts/checks_schema.py): 구조화 데이터를 구글과 네이버 규칙표에
   각각 대조. 두 엔진은 필수 속성이 다르므로 판정이 엔진별로 따로 나옵니다
 - [`scripts/schema_rules.py`](scripts/schema_rules.py): 엔진별 규칙표. 데이터만 있고 판정
   로직은 없습니다. 엔진이 정책을 바꾸면 해당 항목만 고칩니다
