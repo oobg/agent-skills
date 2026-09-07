@@ -1,7 +1,9 @@
 import importlib.util
+import io
 import json
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 
 
@@ -19,7 +21,25 @@ class StaticSkillContractTests(unittest.TestCase):
 
     def test_current_repository_contracts_pass(self):
         root = Path(__file__).parents[1]
-        self.assertEqual(MODULE.evaluate(root, root / "evals" / "static-contracts.json"), [])
+        suite = root / "evals" / "static-contracts.json"
+        if not suite.exists():
+            self.skipTest("로컬 평가 suite는 공개 clone에 포함되지 않는다")
+        self.assertEqual(MODULE.evaluate(root, suite), [])
+
+    def test_cli_reports_a_missing_local_or_explicit_suite(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cases = [
+                (["--root", str(root)], "로컬 정적 계약 suite가 없다"),
+                (["--root", str(root), "--suite", str(root / "missing.json")], "지정한 정적 계약 suite를 찾을 수 없다"),
+            ]
+            for argv, expected in cases:
+                with self.subTest(argv=argv):
+                    stderr = io.StringIO()
+                    with redirect_stderr(stderr):
+                        code = MODULE.main(argv)
+                    self.assertNotEqual(0, code)
+                    self.assertIn(expected, stderr.getvalue())
 
     def test_reports_missing_and_forbidden_text(self):
         with tempfile.TemporaryDirectory() as tmp:

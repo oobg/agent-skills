@@ -244,6 +244,7 @@ Search Visibility의 진단 스크립트를 실행하려면 Python 3.8 이상이
 정적 계약은 `evals/static-contracts.json`에 선언합니다. `positive`는 필수 문구,
 `negative`는 역트리거와 금지 경계, `execution`은 실행 권한과 절차를 이진 판정합니다.
 이 검사는 문서의 회귀를 찾을 뿐 모델을 실행하거나 실제 트리거 품질을 측정하지 않습니다.
+평가 자료는 공개 clone에 포함되지 않습니다. 로컬 suite가 있을 때만 경로를 명시해 실행합니다.
 
 문체 게이트는 범위가 다릅니다. UX Writing `ai_lint.py`의 HARD 0 기준은 README와
 외부 공개 산문에만 적용합니다. `SKILL.md`와 `references/`는 사람이 아니라 에이전트가
@@ -252,7 +253,7 @@ Search Visibility의 진단 스크립트를 실행하려면 Python 3.8 이상이
 
 ```bash
 python3 scripts/validate_skills.py
-python3 scripts/eval_skill_contracts.py
+python3 scripts/eval_skill_contracts.py --suite evals/static-contracts.json
 python3 -m unittest discover -s tests -v
 ```
 

@@ -93,6 +93,16 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     root = args.root.resolve()
     suite = args.suite or root / "evals" / "static-contracts.json"
+    if not suite.exists():
+        if args.suite:
+            print(f"FAIL: 지정한 정적 계약 suite를 찾을 수 없다: {suite}", file=sys.stderr)
+        else:
+            print(
+                "FAIL: 로컬 정적 계약 suite가 없다. 공개 clone에는 평가 자료가 포함되지 않는다; "
+                "실행하려면 --suite <path>를 지정한다.",
+                file=sys.stderr,
+            )
+        return 2
     errors = evaluate(root, suite.resolve())
     if errors:
         for error in errors:
