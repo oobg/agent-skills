@@ -1,131 +1,52 @@
 # Agent Skills
 
-AI 에이전트가 질문을 더 잘 설계하고, 사용자에게 보이는 문장과 변경 이력을 더
-정확하게 쓰도록 돕는 스킬 모음입니다.
+반복해서 쓰는 에이전트 작업 절차를 `SKILL.md`와 조건부 참조 문서로 관리하는
+저장소다. 각 스킬은 언제 시작하고 멈출지, 어떤 근거를 확인할지, 어디까지
+실행할지를 함께 정의한다.
 
-## 포함된 스킬
+## 스킬
 
-### Conventional Commits
+| 스킬 | 하는 일 |
+| --- | --- |
+| [conventional-commits](skills/conventional-commits/SKILL.md) | 실제 변경을 확인해 한국어 Conventional Commits 메시지, 커밋 분할안, PR 제목, changelog 항목을 작성한다. |
+| [dark-saas-design](skills/dark-saas-design/SKILL.md) | 다크 히어로와 라이트 본문을 잇는 한국어 B2B SaaS 랜딩, 소개, 요금 페이지를 구현한다. |
+| [day0-design](skills/day0-design/SKILL.md) | Day0의 타이포그래피, 색, 상태, 모션 규칙으로 제품 UI를 구현한다. |
+| [domain-ontology](skills/domain-ontology/SKILL.md) | 회사, 개인, 작업 방식, 과거 결정처럼 축적된 지식이 필요한 요청에서 온톨로지를 읽고 근거를 제시한다. |
+| [engineering-shorts](skills/engineering-shorts/SKILL.md) | 공학 설명 쇼츠를 대본, CLEAN 이미지, INFO 편집, 영상, 최종 검수 순서로 설계한다. |
+| [gpt-image-gen](skills/gpt-image-gen/SKILL.md) | `/gpt-image-gen`을 직접 호출했을 때만 이미지를 생성한다. |
+| [question-design](skills/question-design/SKILL.md) | 질문과 프롬프트의 전제와 범위를 다듬고 기획, 전략, 분석 문서를 여러 관점에서 검토한다. |
+| [resume-assistant](skills/resume-assistant/SKILL.md) | 지원자가 제공한 사실을 보존하면서 이력서와 경력기술서를 작성, 수정, 재구성한다. |
+| [resume-evaluator](skills/resume-evaluator/SKILL.md) | 이력서의 근거를 JD와 대조해 정보의 충분성, 불일치, 확인할 질문을 진단한다. 채용 여부나 ATS 통과를 판정하지 않는다. |
+| [search-visibility](skills/search-visibility/SKILL.md) | SEO, AEO, GEO, LLMO, NEO 관점에서 검색과 답변 엔진 노출을 진단하고 고친다. |
+| [ux-writing](skills/ux-writing/SKILL.md) | 제품 UI와 공개 문서의 의미와 보이스를 지키면서 문구를 다듬고 문체 검사를 제공한다. |
 
-실제 diff를 근거로 Conventional Commits 1.0.0 형식의 한국어 커밋 메시지와 커밋
-분할안을 만듭니다. 명시적으로 요청받은 경우에만 커밋하며 push 권한은 분리합니다.
-
-자세한 내용은
-[`skills/conventional-commits/SKILL.md`](skills/conventional-commits/SKILL.md)에서
-확인할 수 있습니다.
-
-### Domain Ontology
-
-회사, 개인, 공용 지식이나 과거 결정이 답을 바꿀 수 있을 때 온톨로지를 읽기 전용으로
-조회합니다. 적재와 수정은 사용자 동의와 tenant 확인이 있을 때만 수행합니다.
-
-### GPT Image Gen
-
-Codex CLI의 gpt-image 플러그인으로 이미지를 생성합니다. 이미지 1장마다 사용량이
-차감되므로 사용자가 `/gpt-image-gen`을 직접 입력했을 때만 동작합니다.
-
-자세한 내용은
-[`skills/gpt-image-gen/SKILL.md`](skills/gpt-image-gen/SKILL.md)에서 확인할 수 있습니다.
-
-### Question Design
-
-질문과 프롬프트를 다듬거나, 기획안, 전략, 분석 같은 결과물을 여러 관점에서
-검토할 때 사용합니다.
-
-- **MODE A — 질문 설계:** 질문의 전제와 범위를 점검하고 더 선명한 질문으로
-  고칩니다.
-- **MODE B — 리뷰 사이클:** 도메인 검토, 적대적 리뷰, 사고 확장, 흐름 통합을
-  거쳐 결과물을 강화합니다.
-
-자세한 내용은
-[`skills/question-design/SKILL.md`](skills/question-design/SKILL.md)에서
-확인할 수 있습니다.
-
-### UX Writing
-
-제품 UI와 문서의 문구를 명확하고 간결하게 다듬습니다. 버튼, 에러 메시지,
-빈 상태, README, 코드 주석 등에 일관된 어투를 적용하고 번역투와 AI 특유의
-표현도 함께 점검합니다.
-
-- Clear, Concise, Casual, Respect, Emotional을 기본 기준으로 사용합니다.
-- 프로젝트별 용어와 어체를 설정할 수 있습니다.
-- 긴 글의 AI 문체, 번역투, 용어와 어체를 검사하는 스크립트를 제공합니다.
-
-자세한 내용은 [`skills/ux-writing/SKILL.md`](skills/ux-writing/SKILL.md)에서
-확인할 수 있습니다.
-
-
-### Day0 Design
-
-Day0 제품 UI(토스형 B2B)와 같은 시각 언어로 화면을 구현합니다. Pretendard,
-톤다운 블루, 보더리스(plain 기본), `data-*` 상태 패턴, 바닐라 CSS 토큰을 강제합니다.
-
-자세한 내용은 [`skills/day0-design/SKILL.md`](skills/day0-design/SKILL.md)에서
-확인할 수 있습니다.
-
-### Dark SaaS Design
-
-검정 배경에 포인트 하나를 쓰는 한국어 B2B SaaS 시각 언어로 랜딩과 제품 소개,
-기능 상세, 요금 페이지를 구현합니다. 다크 히어로로 열고 라이트 본문으로 읽히는
-면 리듬, Pretendard Variable 가변축 위계, 검정 위 1px 보더, 그림자와 글래스
-금지를 강제합니다. 값은 외우지 않고 계산합니다 — 색은 WCAG 대비 창과 OKLCH
-좌표에서, 간격은 8pt 사다리에서, radius는 컨테이너 높이에서, 활자는 4의 배수
-크기와 8의 배수 행간에서 나옵니다. 그래서 브랜드 색이 이미 정해져 있어도 대비
-창에 맞춰 수용합니다. 섹션 순서는 고정하지 않고 그 페이지가 증명해야 할 것에
-맞춰 블록을 조립합니다.
-
-자세한 내용은
-[`skills/dark-saas-design/SKILL.md`](skills/dark-saas-design/SKILL.md)에서
-확인할 수 있습니다.
-
-### Engineering Shorts
-
-건축, 도시, 기계, 항공, 밀리터리 엔지니어링과 유체역학 주제의 세로형 공학 설명
-쇼츠를 `대본 → CLEAN → INFO → 4초 영상` 순서로 제작하고 검수합니다. 단계별 승인,
-실제 화면 검수와 일관된 장면 ID로 자산 대응을 유지합니다.
-
-자세한 내용은
-[`skills/engineering-shorts/SKILL.md`](skills/engineering-shorts/SKILL.md)에서
-확인할 수 있습니다.
-
-### Search Visibility
-
-사이트가 검색엔진, 답변엔진, 생성 AI, 네이버 AI 브리핑에 인용되도록 SEO, AEO, GEO,
-LLMO, NEO 다섯 레인을 진단하고 고칩니다. 판정은 자바스크립트 없이 받은 HTML을 기준으로
-하고, 재측정 일정을 잡는 것까지를 완료 조건으로 둡니다. 질문의 답 자리를 누가 점유했는지
-판독해 우선순위를 정하며, 유료 SEO 도구 없이 완결합니다. 검색 가이드라인을 위반하는
-요청은 수행하지 않습니다.
-
-자세한 내용은
-[`skills/search-visibility/SKILL.md`](skills/search-visibility/SKILL.md)에서
-확인할 수 있습니다.
+`resume-assistant`는 문서를 만드는 스킬이고 `resume-evaluator`는 제공된 근거의
+충분성을 진단하는 스킬이다. 둘 다 수치나 역할을 지어내지 않으며 평가 결과를
+채용 판정으로 바꾸지 않는다. 동일 지원자의 과거 기록이 필요할 때만 각 스킬의
+`references/ontology-boost.md`를 선택해서 입력을 보강할 수 있다. 온톨로지
+조회는 판정 권한을 넓히거나 새 정보를 자동 저장하지 않는다.
 
 ## 설치
 
-Node.js가 설치된 환경에서 `skills` CLI를 사용합니다. 다음 명령을 실행하면
-로컬에 설치된 에이전트를 탐지하고, 설치할 스킬과 대상을 선택할 수 있습니다.
+Node.js 환경에서는 [공식 `skills` CLI](https://github.com/vercel-labs/skills)로
+저장소의 스킬을 선택해 설치할 수 있다.
 
 ```bash
 npx skills add oobg/agent-skills --global
 ```
 
-모든 스킬을 지원 대상에 바로 설치하려면 에이전트를 지정합니다.
+대화형 선택 없이 설치할 때는 스킬과 에이전트를 명시한다.
 
 ```bash
 npx skills add oobg/agent-skills \
   --global \
-  --skill '*' \
-  --agent claude-code \
+  --skill ux-writing \
   --agent codex \
-  --agent gemini-cli \
-  --agent grok \
   --yes
 ```
 
-기본 설치 방식은 심볼릭 링크입니다. 심볼릭 링크를 지원하지 않는 환경에서는
-`--copy` 옵션을 추가할 수 있습니다.
-
-설치 상태 확인, 업데이트, 삭제에는 다음 명령을 사용합니다.
+`--skill '*'`과 여러 `--agent`를 함께 지정할 수도 있다. 설치할 때 심볼릭
+링크를 선택하거나 `--copy`로 파일을 복사할 수 있다.
 
 ```bash
 npx skills list --global
@@ -133,130 +54,110 @@ npx skills update --global
 npx skills remove --global
 ```
 
-`skills` CLI의 익명 텔레메트리를 끄려면 `DISABLE_TELEMETRY=1` 또는
-`DO_NOT_TRACK=1` 환경 변수를 설정합니다.
+저장소를 clone한 것만으로 에이전트에 스킬이 설치되지는 않는다. 특히
+`resume-assistant`와 `resume-evaluator`는 현재 `lifecycle.json`의 프로바이더
+동기화 대상에 등록되어 있지 않으므로, 위 `skills` CLI에서 직접 선택해야 한다.
 
-## 구성
+## 저장소 구조
+
+각 `skills/<name>/SKILL.md`가 스킬의 진입점이다. 같은 디렉터리의 `README.md`는
+구성과 자산 목록을 설명한다. 스킬은 필요할 때만 아래 자료를 더 읽는다.
 
 ```text
-agent-skills/
-├── README.md
-└── skills/
-    ├── conventional-commits/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   └── references/
-    ├── dark-saas-design/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   └── references/
-    ├── day0-design/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   └── references/
-    ├── domain-ontology/
-    │   ├── SKILL.md
-    │   └── README.md
-    ├── engineering-shorts/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   └── references/
-    ├── gpt-image-gen/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   ├── references/
-    │   └── scripts/
-    ├── question-design/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   ├── agents/
-    │   └── references/
-    ├── search-visibility/
-    │   ├── SKILL.md
-    │   ├── README.md
-    │   ├── agents/
-    │   ├── references/
-    │   └── scripts/
-    └── ux-writing/
-        ├── SKILL.md
-        ├── README.md
-        ├── agents/
-        ├── references/
-        └── scripts/
+skills/<name>/
+├── SKILL.md       # 발동 조건, 절차, 경계
+├── README.md      # 공개 안내와 자산 목록
+├── agents/        # 역할별 지침
+├── references/    # 조건부 규칙과 예시
+└── scripts/       # 검사와 보조 도구
 ```
 
-- `SKILL.md`: 스킬의 진입점과 적용 규칙
-- `agents/`: 역할별 에이전트 지침
-- `references/`: 조건에 따라 불러오는 상세 지침과 예시
-- `scripts/`: 자동 검사 도구
-
-## 온톨로지 보강 (선택)
-
-각 스킬은 온톨로지 없이 완결됩니다. `~/.ontology/ontology.db`가 있으면
-`references/ontology-boost.md`가 열려 축적된 지식을 그 스킬의 입력으로 씁니다.
-
-| 스킬 | 온톨로지가 있을 때 달라지는 것 |
-| --- | --- |
-| Conventional Commits | scope 표기를 개념 이름에 맞추고, 본문의 `왜`를 과거 결정에서 가져옵니다 |
-| GPT Image Gen | 프롬프트를 층으로 나누고 브랜드 자산을 회수합니다 |
-| Question Design | 이미 판정된 제안을 리뷰가 다시 올리지 않고, 도메인 검토가 KB부터 봅니다 |
-| Search Visibility | 질문 목록, 1차 소스 정의, 서비스명 표기, 과거 판독과 결정을 회수합니다 |
-| UX Writing | 글로서리가 비었거나 임시 경로일 때 표기와 규칙을 회수합니다 |
-
-보강 모듈은 입력만 바꿉니다. 각 스킬의 게이트, 판정 기준, 실행 권한은 그대로입니다.
-회수 결과는 무엇을 봐야 하는지 알려줄 뿐 지금 상태의 증거가 아니므로, 회수한 내용을
-근거로 고치기 전에 현재 상태를 확인합니다.
+일부 스킬에는 선택형 온톨로지 보강 모듈이 있다. 온톨로지가 없어도 스킬의
+기본 절차는 동작한다. 조회한 지식은 확인할 대상을 알려 주는 입력이며, 현재
+상태를 확인한 증거로 대신 쓸 수 없다. 적재나 수정에는 별도의 사용자 동의와
+문서별 tenant 확인이 필요하다.
 
 ## 스킬 생명주기
 
-`lifecycle.json`은 이 저장소를 스킬 정본으로 두고, 온톨로지의 최근 세션과 스킬
-관측치를 이용해 승격 후보와 주차 후보를 보여줍니다. 프로바이더 폴더에는 정본을
-복사하지 않고 심볼릭 링크만 둡니다.
+`lifecycle.json`은 이 저장소의 스킬을 프로바이더 디렉터리에 심볼릭 링크로
+배치하기 위한 로컬 설정이다. 현재 등록된 스킬의 상태와 대상만 관리하며,
+등록되지 않은 스킬을 자동으로 설치하지 않는다.
 
 ```bash
 python3 scripts/skill_lifecycle.py report
 python3 scripts/skill_lifecycle.py doctor
-python3 scripts/skill_lifecycle.py sync          # dry-run
-python3 scripts/skill_lifecycle.py sync --apply  # 명시적으로 링크 반영
+python3 scripts/skill_lifecycle.py sync          # 변경 계획만 출력
+python3 scripts/skill_lifecycle.py sync --apply  # 링크를 실제 반영
 ```
 
-자동으로 스킬을 생성하거나 상태를 바꾸지는 않습니다. `report`의 후보를 사람이
-검토해 `candidate → active/pinned → parked/retired`로 바꾸고, `sync --apply`로
-배포 상태를 맞춥니다. `parked`와 `retired`도 정본은 보존하며, 이 도구가 관리하지
-않는 파일이나 외부 심링크는 삭제하지 않습니다.
-
-반복 concept는 그 자체로 스킬 후보가 아닙니다. 업무 대상이나 제품명도 자주 등장할 수
-있으므로 `report`는 이를 관측 신호로만 분리해 보여줍니다. 스킬 후보로 올리려면
-`lifecycle.json`의 `candidate_classifications`에서 해당 concept를 `kind: procedure`,
-`reusable: true`로 명시하고, 입력→행동→검증→종료 절차가 여러 프로젝트에 재사용되는
-이유를 `rationale`에 남겨야 합니다.
-
-## 요구 사항
-
-스킬 문서는 별도 런타임 없이 사용할 수 있습니다. UX Writing의 검사 스크립트와
-Search Visibility의 진단 스크립트를 실행하려면 Python 3.8 이상이 필요합니다.
-둘 다 표준 라이브러리만 사용합니다.
+`report`와 `doctor`는 상태를 확인한다. `sync`는 기본적으로 dry-run이며,
+`--apply`를 붙인 경우에만 관리 대상 링크를 바꾼다. 이 도구는 온톨로지를
+읽기 전용으로 열고, 저장소 밖의 일반 파일이나 자신이 관리하지 않는 링크를
+수정하지 않는다.
 
 ## 검증
 
-스킬 frontmatter, 로컬 참조, README 자산 목록, 정적 계약과 전체 회귀 테스트를 실행합니다.
-
-정적 계약은 `evals/static-contracts.json`에 선언합니다. `positive`는 필수 문구,
-`negative`는 역트리거와 금지 경계, `execution`은 실행 권한과 절차를 이진 판정합니다.
-이 검사는 문서의 회귀를 찾을 뿐 모델을 실행하거나 실제 트리거 품질을 측정하지 않습니다.
-평가 자료는 공개 clone에 포함되지 않습니다. 로컬 suite가 있을 때만 경로를 명시해 실행합니다.
-
-문체 게이트는 범위가 다릅니다. UX Writing `ai_lint.py`의 HARD 0 기준은 README와
-외부 공개 산문에만 적용합니다. `SKILL.md`와 `references/`는 사람이 아니라 에이전트가
-읽는 지시문이라 경량 기준을 적용하며, 표기를 압축한 가운뎃점을 결함으로 세지 않습니다.
-`skills/ux-writing/` 문서는 자기 규칙의 시연을 겸하므로 예외로 HARD 0을 유지합니다.
+공개 clone에서는 구조 검사와 전체 단위 테스트를 실행할 수 있다. 구조 검사는
+frontmatter, 로컬 참조, 각 스킬 README의 자산 목록을 확인한다. 로컬 평가 suite가
+필요한 테스트는 자료가 없으면 건너뛴다.
 
 ```bash
 python3 scripts/validate_skills.py
-python3 scripts/eval_skill_contracts.py --suite evals/static-contracts.json
 python3 -m unittest discover -s tests -v
 ```
 
+정적 계약 suite와 트리거 평가는 로컬 `evals/` 자료가 있을 때만 실행한다. 이
+디렉터리는 git에서 제외되어 있다.
+
+```bash
+python3 scripts/eval_skill_contracts.py --suite evals/static-contracts.json
+```
+
+정적 계약 검사는 규칙이 문서에 적혀 있는지 확인한다. 실제 에이전트가 그
+규칙에 맞춰 스킬을 발동했는지는 별도의 트리거 루프로 확인한다.
+
+```bash
+python3 scripts/trigger_misfire_audit.py --tenant shared \
+  --db ~/.ontology/ontology.db \
+  --cases evals/trigger-cases.json
+python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json
+python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run
+python3 scripts/trigger_revisions.py list
+python3 scripts/trigger_revisions.py add --skill domain-ontology \
+  --reason "트리거 경계를 바로잡는다" \
+  --changed "조회 조건을 명확히 한다"
+python3 scripts/trigger_revisions.py score \
+  --skill domain-ontology --score 3/5
+```
+
+- `trigger_misfire_audit.py`는 온톨로지 요청 로그를 읽기 전용으로 확인해 사용자가
+  조회를 직접 요청한 빈도를 센다. 이 수치만으로 실제 미발동을 증명하거나 전체
+  미발동의 하한을 구할 수는 없다. 제외할 케이스 파일이 없으면 중단하므로 다른 경로를 지정하거나,
+  시험 실행을 함께 세려는 경우에만 `--no-exclude`를 사용한다.
+- `eval_trigger_cases.py`는 기본 실행에서 케이스와 예상 세션 수만 보여 준다.
+  `--run`은 케이스마다 실제 에이전트 세션을 열어 사용량을 차감한다.
+- 실행기는 `--no-session-persistence`로 transcript 저장 억제를 요청한다. 외부 훅,
+  별도 로그, 온톨로지 적재 여부까지 검증하거나 보장하지는 않는다.
+- 채점은 답변의 `근거:` 줄을 조회 흔적으로 보는 대리 지표다. 실제 조회를
+  독립적으로 증명하지 않으므로 오탐과 누락이 생길 수 있다.
+- `trigger_revisions.py`의 개정 이력과 `eval_trigger_cases.py`의 실행 리포트는
+  기본적으로 ignored `evals/` 아래에 남는다. `--log`나 `--out`으로 다른 경로를
+  지정하면 해당 경로의 공개 여부를 따로 확인해야 한다.
+
+## 공개 데이터 경계
+
+이 저장소에는 재사용 가능한 지침, 코드, 합성 예시만 둔다. 실제 이력서,
+연락처, 경력, 회사나 고객 기밀, 원문 대화, 평가 입력과 로그는 저장소 밖이나
+ignored `evals/`에 보관한다. 예시는 실자료에서 이름만 바꾸지 않고, 추적 가능한
+고유명사와 수치를 제거한 합성 데이터로 작성한다. 문서의 경로 예시는 `~/...`나
+`<placeholder>`를 사용한다.
+
+## 요구 사항
+
+스킬 문서는 별도 런타임 없이 읽을 수 있다. 저장소의 Python 검사 도구는
+Python 3.8 이상과 표준 라이브러리를 사용한다. 이미지 생성처럼 외부 도구가
+필요한 스킬의 요구 사항은 해당 스킬 문서에서 확인할 수 있다.
+
 ## 라이선스
 
-이 프로젝트는 [Apache License 2.0](LICENSE)에 따라 배포됩니다.
+이 프로젝트는 [Apache License 2.0](LICENSE)에 따라 배포된다.
