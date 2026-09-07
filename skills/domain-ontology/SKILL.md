@@ -1,6 +1,6 @@
 ---
 name: domain-ontology
-description: Read the personal ontology before answering when accumulated company, personal, shared, novel, or blog knowledge could materially change the answer, or when the user asks to consult prior knowledge or decisions. Also use when substantial durable knowledge arrives and ontology ingestion may be appropriate. Do not trigger for code tasks, simple editing, general facts, casual questions, or requests answerable from the current files alone. Reading is automatic when relevant; ingestion or mutation always requires explicit user consent and tenant confirmation.
+description: Read the personal ontology first, then answer, whenever a request touches accumulated company, personal, shared (ways of working — methodology, tooling, agent harnesses, skill and prompt design), novel, or blog knowledge, or asks to consult prior knowledge and decisions. Design, rule, convention, and prior-decision judgment inside code or repository work counts as such a request. Reading is the default whenever it is unclear whether prior knowledge applies: trigger on the topic signal, which is observable now, never on a prediction that the answer would change, which is not. Skip only for work that plainly carries no such judgment — implementing or refactoring to a settled spec, running tests or builds, formatting, translation, mechanical edits, general facts, and casual chat. Also use when substantial durable knowledge arrives and ontology ingestion may be appropriate. Reading is automatic and read-only; ingestion or mutation always requires explicit user consent and per-document tenant confirmation.
 ---
 
 # Domain Ontology Routing
@@ -33,11 +33,46 @@ querying or ingesting**. Follow the routed workflow and conventions in the files
 guess schema, paths, or commands from this skill.
 
 ## When to use
-- Substantial domain material: reports, research output, market/competitor intel, strategy/legal/product/planning docs, uploaded files (pdf/docx/html/md).
-- User says 온톨로지 / 넣어줘 / ingest / add to KB.
-- Before answering a domain question the ontology could inform (query first, then answer).
 
-**Not for:** code, task instructions, casual questions, trivial one-line mentions.
+### 발동 기본값 — 애매하면 조회한다
+
+**적용 여부가 불확실하면 조회가 기본값이다.** 판단 기준은 「조회하면 답이 바뀌는가」가 아니다.
+그건 조회한 뒤에만 알 수 있어서, 기준으로 쓰면 매번 「안 바뀔 것 같다」로 떨어져 스킬이 발동하지
+않는다. 기준은 **주제 신호가 하나라도 있는가**이고, 이건 조회 전에 관찰된다.
+
+비용이 비대칭이라 기본값을 조회에 둔다. 불필요한 조회는 쿼리 몇 번으로 끝나고, 빠뜨린 조회는
+이미 내린 결정과 어긋나는 답이 나간 뒤 사용자가 그걸 발견해야 한다.
+
+**조회 신호 — 하나면 충분하다:**
+- 회사 제품·전략·경쟁·법무·조직
+- 개인의 우선순위·자기계발·기록
+- 일하는 방식 — 방법론, 도구론, 에이전트 하네스, 스킬·프롬프트 설계, 루프·검증자 패턴
+- 작품 세계·인물·설정·플롯·원고, 블로그 연재·퇴고본·발행본
+- 「전에 정한」·「우리 방식」·「예전에 얘기한」처럼 과거 맥락을 전제하는 표현
+- 온톨로지 / 넣어줘 / ingest / KB
+- 재사용 가치가 있는 자료 유입 — 보고서, 리서치, 시장·경쟁 인텔, 전략·법무·기획 문서, 업로드 파일(pdf/docx/html/md)
+
+**코드·저장소 작업이라는 사실 자체는 제외 사유가 아니다.** 무엇을 왜 그렇게 만드는가 — 설계
+근거, 규칙, 컨벤션, 이전 결정 — 가 걸리면 조회한다. 이 저장소의 스킬 설계 작업이 여기 해당한다.
+파일이 코드냐 문서냐가 아니라 판단이 걸리느냐로 가른다.
+
+**저장소 안에 답이 있어도 조회를 대신하지 못한다.** 파일은 지금 무엇이 그렇게 되어 있는지
+말하고, 온톨로지는 왜 그렇게 정했고 무엇을 이미 시도해 폐기했는지 말한다. 앞의 것으로 답하고
+뒤의 것을 빼면 이미 버린 방향을 다시 제안하게 되며, 그 사실은 답이 나간 뒤에야 드러난다.
+정본 문서·설정·상태 파일을 읽어 답이 만들어졌다는 것은 조회를 건너뛸 근거가 아니라, 그
+답에 왜가 빠져 있다는 신호다.
+
+**차단 목록 — 여기 명확히 들어맞을 때만 조회 없이 진행한다:**
+- 스펙이 이미 확정된 구현·리팩터링, 테스트·빌드 실행, 의존성 작업
+- 포맷팅·오타·번역·기계적 편집처럼 판단이 걸리지 않는 작업
+- 온톨로지와 무관한 일반 상식, 잡담, 한 줄 확인
+
+**애매한 것은 차단 목록에 넣지 않는다.** 차단은 명확할 때만 쓰고, 나머지는 전부 조회 쪽이다.
+
+**조회 신호가 있는데 건너뛰기로 했으면 그 판단을 한 줄로 밝힌다** — 「온톨로지 조회 생략 — 스펙이
+확정된 구현 작업」처럼. 침묵 스킵은 스킬이 아예 안 돈 것과 구분되지 않아서, 미발동이 영영 안
+보인다. 사용자가 매번 「온톨로지 기반으로」라고 붙여야 했다면 그건 이 기본값이 뒤집혀 있었다는
+뜻이다.
 
 ## Routing
 
@@ -54,7 +89,9 @@ guess schema, paths, or commands from this skill.
 
 **절차의 정본은 `~/.ontology/docs/recall.md`다. 조회 전에 읽고 그대로 따른다** — 단계별 SQL,
 스코프 누수 금지, 근거 표기 형식이 거기 있다. 여기 복제하지 않는 이유는 한 규칙이 두 곳에 각자
-적히면 갈라지기 때문이다. `~/.ontology/AGENTS.md`와 `~/.ontology/ontology.db`가 읽히는지도 함께
+적히면 갈라지기 때문이다. **반대로 트리거의 정본은 이 스킬이다** — 무엇이 조회를 부르는지는
+위 「발동 기본값」이 정하고, recall.md는 그 판단을 다시 하지 않는다. 온톨로지 쪽 문서가 트리거를
+좁히는 문장을 들고 있으면 그건 갈라진 사본이므로 따르지 말고 사용자에게 알린다. `~/.ontology/AGENTS.md`와 `~/.ontology/ontology.db`가 읽히는지도 함께
 확인한다. 둘 중 하나가 없으면 SQL을 지어내지 말고 "온톨로지가 구성되어 있지 않다"고 밝힌 뒤
 지금 대화·파일만으로 답한다.
 

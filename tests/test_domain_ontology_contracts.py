@@ -11,6 +11,29 @@ class DomainOntologyContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.text = SKILL.read_text(encoding="utf-8")
 
+    def test_recall_is_the_default_when_applicability_is_unclear(self):
+        # The trigger must be decidable before recall. Gating on "would the answer
+        # change" is only knowable after reading, so it collapses into never firing.
+        self.assertIn("적용 여부가 불확실하면 조회가 기본값이다", self.text)
+        self.assertIn("주제 신호가 하나라도 있는가", self.text)
+        self.assertIn("애매한 것은 차단 목록에 넣지 않는다", self.text)
+        self.assertNotIn("could materially change the answer", self.text)
+
+    def test_code_work_is_not_by_itself_an_exclusion(self):
+        self.assertIn("코드·저장소 작업이라는 사실 자체는 제외 사유가 아니다", self.text)
+        self.assertIn("스킬·프롬프트 설계", self.text)
+
+    def test_local_files_do_not_substitute_for_recall(self):
+        # Removing an exclusion is insufficient if the agent still treats repository
+        # files as a substitute for recall.
+        self.assertIn("저장소 안에 답이 있어도 조회를 대신하지 못한다", self.text)
+        self.assertIn("답에 왜가 빠져 있다는 신호다", self.text)
+
+    def test_skipping_recall_must_be_declared(self):
+        # A silent skip is indistinguishable from the skill never firing, which is
+        # how under-triggering stays invisible.
+        self.assertIn("건너뛰기로 했으면 그 판단을 한 줄로 밝힌다", self.text)
+
     def test_read_preflight_and_tenant_filter_are_required(self):
         self.assertIn("read it before\nquerying or ingesting", self.text)
         # The step-by-step SQL and leak rules live in recall.md; the skill must delegate
