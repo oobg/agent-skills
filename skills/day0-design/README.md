@@ -2,22 +2,23 @@
 
 Day0 제품 UI와 같은 시각 언어로 화면을 구현하는 에이전트 스킬입니다.
 토큰, 보더리스 문법, 컴포넌트 패턴을 고정해, 설명 없이 같은 디자인을 재현합니다.
-온톨로지와 제품 기획 문서 없이도 스킬만으로 동작한다.
+온톨로지와 제품 기획 문서 없이도 스킬만으로 동작합니다.
 
-## 언제 사용하나요?
+## 사용 시점
 
 - Day0 / `@day0/ui` / day0-work UI를 구현하거나 추가할 때
 - `/day0-design` 으로 명시 호출할 때
 - Day0 프로토타입 HTML을 토큰 문법으로 그릴 때
 
 Day0 신호가 없는 범용 “온보딩, 관리자, 토스 느낌” 요청만으로는 자동 적용하지
-않습니다. 카피만은 `ux-writing`, 진단만은 `references/anti-patterns.md` 게이트.
+않습니다. 카피만 다듬을 때는 `ux-writing`을 사용하고, 진단만 요청받으면
+`references/anti-patterns.md`의 게이트를 적용합니다.
 
 ## 핵심 요약
 
 - **브랜드:** `#3d7de5` (구 `#3182f6` 금지)
 - **폰트:** Pretendard Variable, 타이트 한글 자간
-- **면:** **보더리스 기본** (Card `plain`) — outlined 1px 박스는 예외
+- **면:** **보더리스 기본** (Card `plain`). outlined 1px 박스는 예외
 - **상태:** `data-*` + CSS 전이
 - **CSS:** 바닐라 + `--d0-*`, Tailwind 유틸 화면 금지
 - **CTA:** 주 job primary fill 1개
@@ -55,4 +56,4 @@ day0-design/
 
 `DESIGN-REFRESH.md` §2 구 토큰은 폐기 초안입니다. live `packages/ui`를 따릅니다.
 
-설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.
+설치와 검증 방법은 저장소의 [루트 README](../../README.md)에서 확인할 수 있습니다.

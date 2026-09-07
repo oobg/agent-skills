@@ -4,7 +4,7 @@
 스킬입니다. AI 티를 지우는 것보다 원문의 의미와 프로젝트 보이스를 보존하는 일을
 먼저 봅니다.
 
-## 언제 사용하나요?
+## 사용 시점
 
 - 버튼, 라벨, 에러 메시지, 빈 상태 문구를 다듬을 때
 - README, 가이드, 릴리스 노트의 어체를 정리할 때
@@ -99,4 +99,4 @@ ux-writing/
 - [`agents/copy-auditor.md`](agents/copy-auditor.md): 배치와 고위험 문구의 fresh-eyes 점검
 - [`scripts/`](scripts): 기계적으로 판정할 수 있는 검사
 
-설치 방법은 저장소의 [루트 README](../../README.md)를 참고하세요.
+설치와 검증 방법은 저장소의 [루트 README](../../README.md)에서 확인할 수 있습니다.
