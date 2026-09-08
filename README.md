@@ -11,6 +11,7 @@
 | 스킬 | 하는 일 |
 | --- | --- |
 | [conventional-commits](skills/conventional-commits/SKILL.md) | 실제 변경을 확인해 한국어 Conventional Commits 메시지, 커밋 분할안, PR 제목, changelog 항목을 작성합니다. |
+| [feature-analysis](skills/feature-analysis/SKILL.md) | 프로토타입이나 프론트엔드 구현물에서 기능 구조, 상태, 업무 규칙, 워크플로우를 증거와 함께 복원하고 구현 수준과 격차를 정리합니다. |
 | [deploy-staging](skills/deploy-staging/SKILL.md) | 저장소 정책과 설정에 따라 staging에 배포하고 결과를 검증합니다. |
 | [new-space](skills/new-space/SKILL.md) | Orca에서 새 작업 공간을 만들고 브랜치명과 기준 commit을 검증합니다. |
 
