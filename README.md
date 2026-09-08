@@ -11,9 +11,11 @@
 | [conventional-commits](skills/conventional-commits/SKILL.md) | 실제 변경을 확인해 한국어 Conventional Commits 메시지, 커밋 분할안, PR 제목, changelog 항목을 작성합니다. |
 | [dark-saas-design](skills/dark-saas-design/SKILL.md) | 다크 히어로와 라이트 본문을 잇는 한국어 B2B SaaS 랜딩, 소개, 요금 페이지를 구현합니다. |
 | [day0-design](skills/day0-design/SKILL.md) | Day0의 타이포그래피, 색, 상태, 모션 규칙으로 제품 UI를 구현합니다. |
+| [deploy-staging](skills/deploy-staging/SKILL.md) | 저장소 정책과 설정에 따라 staging에 배포하고 결과를 검증합니다. |
 | [domain-ontology](skills/domain-ontology/SKILL.md) | 회사, 개인, 작업 방식, 과거 결정처럼 축적된 지식이 필요한 요청에서 온톨로지를 읽고 근거를 제시합니다. |
 | [engineering-shorts](skills/engineering-shorts/SKILL.md) | 공학 설명 쇼츠를 대본, CLEAN 이미지, INFO 편집, 영상, 최종 검수 순서로 설계합니다. |
 | [gpt-image-gen](skills/gpt-image-gen/SKILL.md) | `/gpt-image-gen`을 직접 호출했을 때만 이미지를 생성합니다. |
+| [new-space](skills/new-space/SKILL.md) | Orca에서 새 작업 공간을 만들고 브랜치명과 기준 commit을 검증합니다. |
 | [question-design](skills/question-design/SKILL.md) | 질문과 프롬프트의 전제와 범위를 다듬고 기획, 전략, 분석 문서를 여러 관점에서 검토합니다. |
 | [resume-assistant](skills/resume-assistant/SKILL.md) | 지원자가 제공한 사실을 보존하면서 이력서와 경력기술서를 작성, 수정, 재구성합니다. |
 | [resume-evaluator](skills/resume-evaluator/SKILL.md) | 이력서의 근거를 JD와 대조해 정보의 충분성, 불일치, 확인할 질문을 진단합니다. 채용 여부나 ATS 통과를 판정하지 않습니다. |
@@ -55,8 +57,9 @@ npx skills remove --global
 ```
 
 저장소를 clone한 것만으로 에이전트에 스킬이 설치되지는 않습니다. 특히
-`resume-assistant`와 `resume-evaluator`는 현재 `lifecycle.json`의 프로바이더
-동기화 대상에 등록되어 있지 않으므로, 위 `skills` CLI에서 직접 선택해야 합니다.
+`resume-assistant`, `resume-evaluator`, `new-space`, `deploy-staging`은 현재
+`lifecycle.json`의 프로바이더 동기화 대상에 등록되어 있지 않으므로, 위 `skills`
+CLI에서 직접 선택해야 합니다.
 
 ## 저장소 구조
 
