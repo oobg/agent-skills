@@ -63,8 +63,9 @@ question-design/
 - [`SKILL.md`](SKILL.md): 트리거, 공통 원칙, 모드 라우팅
 - [`references/mode-a.md`](references/mode-a.md): 질문 설계 절차
 - [`references/mode-b.md`](references/mode-b.md): 리뷰 사이클과 종료 조건
-- [`references/cross-model-review.md`](references/cross-model-review.md): 외부 모델 호출
-  기능으로 provider 간 프레임 차이를 검토할 때의 세션별 동의, 전송, 통합 규칙
+- [`references/cross-model-review.md`](references/cross-model-review.md): 호출 어댑터(스킬 또는
+  도구)의 외부 모델 호출 기능으로 provider 간 프레임 차이를 검토할 때의 세션별 동의,
+  전송, 통합 규칙
 - [`agents/`](agents): 도메인 검토, 적대적 검토, 조건부 재프레이밍, 최종 통합
 
 설치와 검증 방법은 저장소의 [루트 README](../../README.md)에서 확인할 수 있습니다.

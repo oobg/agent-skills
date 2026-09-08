@@ -58,10 +58,11 @@ class QuestionDesignCrossModelContractTests(unittest.TestCase):
         self.assertNotIn("호출 횟수: [N회]", self.text)
 
     def test_provider_capability_is_delegated_without_hidden_fallback(self):
-        self.assertIn("CLI, API, MCP 같은 전송 방식은 해당 기능의\n어댑터가 소유", self.text)
+        self.assertIn("API, MCP 같은 전송 방식은 해당 호출 어댑터가 소유", self.text)
         self.assertIn("provider CLI/API 명령을 직접 조립하지 않는다", self.text)
         self.assertIn("다른 provider로 자동 fallback하지 않는다", self.text)
-        self.assertIn("선택된 호출 스킬", self.text)
+        self.assertIn("선택된 호출 어댑터(스킬 또는 도구)", self.text)
+        self.assertIn("호출 어댑터 식별자", self.text)
         self.assertIn("자동 재시도 없음", self.text)
 
     def test_payload_and_sensitive_data_are_bounded(self):
