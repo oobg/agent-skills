@@ -102,6 +102,7 @@ frontmatter, 설치 가능한 스킬 이름, 로컬 참조, 각 스킬 README의
 필요한 테스트는 자료가 없으면 건너뜁니다.
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
 python3 scripts/validate_skills.py
 python3 -m unittest discover -s tests -v
 ```
@@ -163,8 +164,8 @@ ignored `evals/`에 보관합니다. 예시는 실자료에서 이름만 바꾸�
 ## 요구 사항
 
 스킬 문서는 별도 런타임 없이 읽을 수 있습니다. 저장소의 Python 검사 도구는
-Python 3.8 이상과 표준 라이브러리를 사용합니다. 이미지 생성처럼 외부 도구가
-필요한 스킬의 요구 사항은 해당 스킬 문서에서 확인할 수 있습니다.
+Python 3.8 이상을 사용하며, 구조 검사는 `requirements-dev.txt`의 PyYAML이 필요합니다.
+이미지 생성처럼 외부 도구가 필요한 스킬의 요구 사항은 해당 스킬 문서에서 확인할 수 있습니다.
 
 ## 라이선스
 
