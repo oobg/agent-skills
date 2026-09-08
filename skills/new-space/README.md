@@ -20,10 +20,17 @@ ref를 확인합니다. 활성 release 우선 정책이 있는 저장소에서�
 - Orca가 Git branch에 prefix를 붙이거나 이름을 바꾼 결과를 감지합니다.
 - 생성 전 기록한 base SHA와 생성 직후 HEAD의 양방향 차이를 검사합니다.
 - 기존 branch, 경로와 작업 내용을 덮어쓰거나 강제 정리하지 않습니다.
+- 생성과 검증 뒤 같은 AI model과 effort의 agent를 시작해 현재 내용을 넘길지 묻습니다.
 
 Git 상태 확인과 검증은 Python 표준 라이브러리만 사용하는 보조 스크립트로 반복할 수 있습니다.
 스크립트는 읽기 전용이며 fetch, worktree 생성, branch rename, reset 또는 삭제를 수행하지
 않습니다. 실제 생성은 agent가 현재 Orca 가이드와 사용자 선택을 확인한 뒤 수행합니다.
+
+handoff를 선택하면 새 worktree를 다시 만들지 않고 생성된 공간의 exact full id에 terminal을
+추가합니다. 현재 model과 effort를 확인할 수 있을 때 같은 설정으로 시작하며, 알 수 없는 값은
+사용자에게 묻습니다. 준비된 agent에 필요한 작업 맥락을 한 번 전달한 뒤 원래 agent는 감시를
+하지 않고 작업을 넘긴 뒤 종료합니다. 작업 공간만 만들기를 선택하거나 응답하지 않으면 agent와
+terminal을 추가하지 않습니다.
 
 ## 사용 예
 

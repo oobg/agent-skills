@@ -51,8 +51,9 @@ stacked 작업은 `--parent-worktree active`다. 명확한 값은 재확인하�
 
 ## 생성하고 검증한다
 
-`references/orca.md`에 따라 Orca로 생성한다. 사용자가 요청하지 않은 agent를 붙이거나
-`--prompt`, `--activate`, 강제 setup 실행 옵션을 추가하지 않는다. 저장소의 기본 setup과
+`references/orca.md`에 따라 Orca로 생성한다. 이 단계에서는 `--agent`와 `--prompt`를 쓰지
+않는다. worktree를 먼저 생성하고 검증한 뒤 agent handoff 여부를 별도로 묻는다. 사용자가
+요청하지 않은 `--activate`나 강제 setup 실행 옵션도 추가하지 않는다. 저장소의 기본 setup과
 terminal 정책은 생성 과정의 일부일 수 있으므로 생성 전에 현재 repo 설정을 확인하고 알려
 준다. 자동 실행을 막아야 하고 현재 CLI가 지원하면 `--setup skip`을 사용한다.
 
@@ -79,6 +80,21 @@ branch가 달라졌다면 현재 버전 가이드에서 Orca metadata와 Git을 
 검증은 생성 직후 HEAD와 preflight에서 기록한 base SHA가 같은지 확인한다. ahead와 behind가
 모두 0이어야 한다. 어긋나면 reset으로 맞추거나 생성된 항목을 강제 삭제하지 않는다.
 
+## agent handoff를 선택하게 한다
+
+생성과 검증이 성공하면 `references/orca.md`의 handoff 절차를 읽는다. 런타임이 제공하는
+Question 또는 AskUserQuestion 같은 질문 도구로 다음 선택을 한 번 묻는다. 질문 도구가 없으면
+같은 내용을 직접 묻는다.
+
+- **시작하고 핸드오프**: 새 작업공간에서 이 스킬을 실행 중인 현재 대화와 같은 AI model과
+  effort의 agent를 시작하고 지금까지의 작업 내용을 넘긴다.
+- **작업 공간만 만들기**: agent나 terminal을 추가하지 않고 끝낸다.
+
+명시적으로 첫 번째 선택을 받기 전에는 agent를 실행하거나 내용을 전송하지 않는다. 무응답은
+승인이 아니다. 동의하면 새 worktree를 다시 만들지 않고 방금 생성한 worktree의 exact full id를
+사용한다. 전달을 마치면 full handoff로 처리해 현재 agent는 새 agent를 감시하거나 작업을 계속하지
+않는다.
+
 ## Orca를 사용할 수 없을 때
 
 Orca 관리 컨텍스트에서 선택한 실행 파일이나 runtime이 실패하면 다른 Orca 실행 파일이나 raw
@@ -89,5 +105,6 @@ Orca의 정리, terminal, browser 통합을 사용할 수 없음을 알리고 �
 
 ## 완료 보고
 
-worktree 경로, 실제 branch, base 이름과 SHA, branch rewrite 여부를 간결하게 보고한다. 생성만
-요청받았으면 commit, push, 개발 서버 실행이나 agent 시작은 하지 않는다.
+worktree 경로, 실제 branch, base 이름과 SHA, branch rewrite 여부를 간결하게 보고한다.
+handoff를 선택했다면 시작한 model과 전달 성공 여부도 알린다. commit, push와 개발 서버 실행은
+별도 요청이 있을 때만 수행한다.
