@@ -98,7 +98,7 @@ python3 scripts/skill_lifecycle.py sync --apply  # 링크를 실제 반영
 ## 검증
 
 공개 clone에서는 구조 검사와 전체 단위 테스트를 실행할 수 있습니다. 구조 검사는
-frontmatter, 로컬 참조, 각 스킬 README의 자산 목록을 확인합니다. 로컬 평가 suite가
+frontmatter, 설치 가능한 스킬 이름, 로컬 참조, 각 스킬 README의 자산 목록을 확인합니다. 로컬 평가 suite가
 필요한 테스트는 자료가 없으면 건너뜁니다.
 
 ```bash
@@ -121,7 +121,12 @@ python3 scripts/trigger_misfire_audit.py --tenant shared \
   --db ~/.ontology/ontology.db \
   --cases evals/trigger-cases.json
 python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json
-python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run
+python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run \
+  --command-json '["<agent>", "<transcript-isolation-option>", "<prompt-option>", "{request}"]'
+
+# Claude CLI 예시
+python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run \
+  --command-json '["claude", "-p", "--no-session-persistence", "{request}"]'
 python3 scripts/trigger_revisions.py list
 python3 scripts/trigger_revisions.py add --skill domain-ontology \
   --reason "트리거 경계를 바로잡는다" \
@@ -136,8 +141,11 @@ python3 scripts/trigger_revisions.py score \
   시험 실행을 함께 세려는 경우에만 `--no-exclude`를 사용합니다.
 - `eval_trigger_cases.py`는 기본 실행에서 케이스와 예상 세션 수만 보여 줍니다.
   `--run`은 케이스마다 실제 에이전트 세션을 열어 사용량을 차감합니다.
-- 실행기는 `--no-session-persistence`로 transcript 저장 억제를 요청합니다. 외부 훅,
-  별도 로그, 온톨로지 적재 여부까지 검증하거나 보장하지는 않습니다.
+- 실행기는 특정 provider CLI를 가정하지 않습니다. `--command-json`에 실행 파일과 옵션을
+  argv JSON 배열로 넘기고, 요청이 들어갈 `{request}`를 정확히 한 번 둡니다. 사용하는
+  provider가 transcript 비저장 옵션을 지원하면 같은 배열에 직접 넣습니다. 외부 훅,
+  별도 로그, 온톨로지 적재 여부까지 검증하거나 보장하지는 않습니다. JSON 리포트에는
+  응답 원문과 명령 인자를 저장하지 않습니다.
 - 채점은 답변의 `근거:` 줄을 조회 흔적으로 보는 대리 지표입니다. 실제 조회를
   독립적으로 증명하지 않으므로 오탐과 누락이 생길 수 있습니다.
 - `trigger_revisions.py`의 개정 이력과 `eval_trigger_cases.py`의 실행 리포트는

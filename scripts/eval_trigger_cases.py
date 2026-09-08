@@ -12,16 +12,16 @@ positives or false negatives; it does not independently prove that a lookup happ
 Each case costs one agent session, so a plain run only prints the plan. `--run` is the
 flag that spends usage.
 
-Runs pass `--no-session-persistence` to the configured agent to request that its session
-transcript not be saved. This runner cannot verify external hooks or logs, so the audit
-also excludes exact eval case text from its measurement.
+The runner accepts an argv template instead of assuming a particular agent CLI. Put the
+provider's transcript-isolation option in that template when one exists. This runner
+cannot verify external hooks or logs, so the audit excludes exact eval case text from
+its measurement and never copies response text or command arguments into its report.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import shlex
 import subprocess
 import sys
 import time
@@ -33,7 +33,7 @@ DEFAULT_CASES = ROOT / "evals" / "trigger-cases.json"
 DEFAULT_REPORTS = ROOT / "evals" / "reports"
 EXPECTATIONS = {"recall", "skip"}
 EVIDENCE_MARK = "근거:"
-ISOLATION_FLAG = "--no-session-persistence"
+REQUEST_PLACEHOLDER = "{request}"
 
 
 def load_cases(path: Path) -> dict:
@@ -78,7 +78,27 @@ def case_cwd(case: dict, fallback: Path) -> tuple[Path, bool]:
     return path, True
 
 
-def plan(payload: dict, cases: list[dict], fallback: Path, agent: str) -> None:
+def command_template(raw: str | None) -> list[str] | None:
+    if raw is None:
+        return None
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"--command-json must be a JSON argv array: {exc}")
+    if not isinstance(value, list) or not value or not all(isinstance(item, str) and item for item in value):
+        raise SystemExit("--command-json must be a non-empty JSON array of non-empty strings")
+    if REQUEST_PLACEHOLDER in value[0]:
+        raise SystemExit(f"--command-json executable cannot contain {REQUEST_PLACEHOLDER!r}")
+    if sum(item.count(REQUEST_PLACEHOLDER) for item in value) != 1:
+        raise SystemExit(f"--command-json must contain {REQUEST_PLACEHOLDER!r} exactly once")
+    return value
+
+
+def build_command(template: list[str], request: str) -> list[str]:
+    return [item.replace(REQUEST_PLACEHOLDER, request) for item in template]
+
+
+def plan(payload: dict, cases: list[dict], fallback: Path, template: list[str] | None) -> None:
     wanted = sum(1 for case in cases if case["expect"] == "recall")
     print(f"스킬: {payload.get('skill')} · 케이스 {len(cases)}건 (조회 기대 {wanted} · 차단 기대 {len(cases) - wanted})")
     print()
@@ -96,27 +116,32 @@ def plan(payload: dict, cases: list[dict], fallback: Path, agent: str) -> None:
         print("      관측된 저장소 밖에서 돌면 코드 저장소 안의 판단이라는 조건이 빠진다.")
         print()
     print(f"실행하면 케이스마다 에이전트 세션 하나가 뜬다 — 총 {len(cases)}회, 사용량이 차감된다.")
-    print(f"{ISOLATION_FLAG} 로 세션 transcript 저장 억제를 요청한다.")
+    print("실행 provider의 transcript 비저장 옵션은 --command-json 템플릿에 직접 넣는다.")
     print("외부 훅과 별도 로그의 동작은 이 도구가 검증하지 않으므로 실행 환경에서 확인해야 한다.")
-    print(f"예시 명령: {agent} -p {ISOLATION_FLAG} {shlex.quote(cases[0]['request'])}")
+    if template:
+        print(f"실행 파일: {template[0]} (인자는 출력하거나 리포트에 저장하지 않음)")
+    else:
+        print(f"실행할 때 --command-json '[\"<agent>\", \"...\", \"{REQUEST_PLACEHOLDER}\"]'을 지정한다.")
     print("실제로 채점하려면 --run 을 붙인다.")
 
 
-def run_case(case: dict, fallback: Path, agent: str, timeout: int) -> dict:
+def run_case(case: dict, fallback: Path, template: list[str], timeout: int) -> dict:
     started = time.time()
     cwd, found = case_cwd(case, fallback)
     try:
         completed = subprocess.run(
-            [agent, "-p", ISOLATION_FLAG, case["request"]],
+            build_command(template, case["request"]),
             cwd=cwd,
             capture_output=True,
             text=True,
             timeout=timeout,
         )
         output = completed.stdout or ""
-        error = completed.stderr.strip()[:400] if completed.returncode else ""
+        error = ""
+        if completed.returncode:
+            error = f"exit code {completed.returncode}"
     except FileNotFoundError:
-        raise SystemExit(f"에이전트 실행 파일을 찾을 수 없다: {agent}")
+        raise SystemExit(f"에이전트 실행 파일을 찾을 수 없다: {template[0]}")
     except subprocess.TimeoutExpired:
         output, error = "", f"timeout after {timeout}s"
 
@@ -132,7 +157,6 @@ def run_case(case: dict, fallback: Path, agent: str, timeout: int) -> dict:
         "passed": passed,
         "reason": reason,
         "elapsed_s": round(time.time() - started, 1),
-        "output_head": " ".join(output.split())[:400],
     }
 
 
@@ -141,7 +165,11 @@ def main(argv=None) -> int:
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     parser.add_argument("--case", action="append", help="이 id만 실행 (반복 가능)")
     parser.add_argument("--run", action="store_true", help="실제로 에이전트를 호출한다 (사용량 차감)")
-    parser.add_argument("--agent", default="claude", help="에이전트 실행 파일 (기본: claude)")
+    parser.add_argument(
+        "--command-json",
+        help=f"에이전트 argv JSON 배열. {REQUEST_PLACEHOLDER!r}를 정확히 한 번 포함한다",
+    )
+    parser.add_argument("--agent", dest="removed_agent", help=argparse.SUPPRESS)
     parser.add_argument("--cwd", type=Path, default=ROOT, help="케이스에 선언된 디렉터리가 없을 때 쓸 폴백")
     parser.add_argument(
         "--timeout",
@@ -151,6 +179,9 @@ def main(argv=None) -> int:
     )
     parser.add_argument("--out", type=Path, help="리포트 JSON 경로 (기본: evals/reports/trigger-<날짜>.json)")
     args = parser.parse_args(argv)
+    if args.removed_agent:
+        parser.error("--agent was replaced by --command-json; pass the complete provider argv template")
+    template = command_template(args.command_json)
 
     payload = load_cases(args.cases)
     cases = payload["cases"]
@@ -162,13 +193,16 @@ def main(argv=None) -> int:
             raise SystemExit(f"unknown case id(s): {', '.join(sorted(missing))}")
 
     if not args.run:
-        plan(payload, cases, args.cwd.resolve(), args.agent)
+        plan(payload, cases, args.cwd.resolve(), template)
         return 0
+
+    if template is None:
+        parser.error("--run requires --command-json; --agent was replaced by a provider-neutral argv template")
 
     results = []
     for index, case in enumerate(cases, 1):
         print(f"[{index}/{len(cases)}] {case['id']} … ", end="", flush=True)
-        result = run_case(case, args.cwd.resolve(), args.agent, args.timeout)
+        result = run_case(case, args.cwd.resolve(), template, args.timeout)
         results.append(result)
         print(f"{'PASS' if result['passed'] else 'FAIL'} — {result['reason']} ({result['elapsed_s']}s)")
 
@@ -187,7 +221,7 @@ def main(argv=None) -> int:
                 "skill": payload.get("skill"),
                 "ran_on": date.today().isoformat(),
                 "fallback_cwd": str(args.cwd.resolve()),
-                "agent": args.agent,
+                "runner": Path(template[0]).name,
                 "passed": passed,
                 "total": len(results),
                 "results": results,

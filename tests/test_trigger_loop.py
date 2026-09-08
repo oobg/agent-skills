@@ -126,9 +126,7 @@ class TriggerCaseTests(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, r"case\[0\]: must be an object"):
                 EVAL.load_cases(cases_file)
 
-    def test_runner_requests_session_persistence_disable(self):
-        # The runner must request that its configured agent avoid persisting the session.
-        # External hooks and logs remain an execution-environment responsibility.
+    def test_runner_uses_provider_neutral_argv_without_storing_output(self):
         captured = {}
 
         def fake_run(argv, **kwargs):
@@ -146,12 +144,56 @@ class TriggerCaseTests(unittest.TestCase):
         EVAL.subprocess.run = fake_run
         try:
             case = {"id": "x", "expect": "recall", "request": "질문", "origin": "authored"}
-            result = EVAL.run_case(case, ROOT, "claude", 10)
+            template = ["sample-agent", "--ephemeral", "--prompt", "{request}"]
+            result = EVAL.run_case(case, ROOT, template, 10)
         finally:
             EVAL.subprocess.run = original
 
-        self.assertIn(EVAL.ISOLATION_FLAG, captured["argv"])
+        self.assertEqual(["sample-agent", "--ephemeral", "--prompt", "질문"], captured["argv"])
         self.assertTrue(result["passed"])
+        self.assertNotIn("output_head", result)
+
+    def test_nonzero_exit_without_stderr_fails(self):
+        class Completed:
+            returncode = 7
+            stdout = "근거: sample · synthetic-note"
+            stderr = ""
+
+        original = EVAL.subprocess.run
+        EVAL.subprocess.run = lambda *_args, **_kwargs: Completed()
+        try:
+            case = {"id": "x", "expect": "recall", "request": "질문", "origin": "authored"}
+            result = EVAL.run_case(case, ROOT, ["sample-agent", "{request}"], 10)
+        finally:
+            EVAL.subprocess.run = original
+        self.assertFalse(result["passed"])
+        self.assertIn("exit code 7", result["reason"])
+
+    def test_failure_report_does_not_copy_stderr(self):
+        class Completed:
+            returncode = 2
+            stdout = ""
+            stderr = "synthetic-sensitive-command-argument"
+
+        original = EVAL.subprocess.run
+        EVAL.subprocess.run = lambda *_args, **_kwargs: Completed()
+        try:
+            case = {"id": "x", "expect": "skip", "request": "질문", "origin": "authored"}
+            result = EVAL.run_case(case, ROOT, ["sample-agent", "{request}"], 10)
+        finally:
+            EVAL.subprocess.run = original
+        self.assertNotIn("synthetic-sensitive-command-argument", str(result))
+
+    def test_command_template_requires_one_request_placeholder(self):
+        valid = EVAL.command_template('["sample-agent", "--prompt", "{request}"]')
+        self.assertEqual(["sample-agent", "--prompt", "{request}"], valid)
+        for raw in ('["sample-agent"]', '["{request}", "{request}"]', '["{request}"]', '"sample-agent"'):
+            with self.subTest(raw=raw), self.assertRaises(SystemExit):
+                EVAL.command_template(raw)
+
+    def test_removed_agent_option_explains_the_migration(self):
+        with self.assertRaises(SystemExit):
+            EVAL.main(["--agent", "claude"])
 
     def test_every_case_declares_the_repository_it_was_observed_in(self):
         for case in self.payload["cases"]:
