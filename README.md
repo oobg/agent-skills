@@ -123,7 +123,8 @@ python3 scripts/trigger_misfire_audit.py --tenant shared \
   --cases evals/trigger-cases.json
 python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json
 python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run \
-  --command-json '["<agent>", "<transcript-isolation-option>", "<prompt-option>", "{request}"]'
+  --command-json '["<agent>", "<transcript-isolation-option>", "<prompt-option>", "{request}"]' \
+  --output-format text
 
 # Claude CLI 예시
 python3 scripts/eval_trigger_cases.py --cases evals/trigger-cases.json --run \
@@ -147,6 +148,8 @@ python3 scripts/trigger_revisions.py score \
   provider가 transcript 비저장 옵션을 지원하면 같은 배열에 직접 넣습니다. 외부 훅,
   별도 로그, 온톨로지 적재 여부까지 검증하거나 보장하지는 않습니다. JSON 리포트에는
   응답 원문과 명령 인자를 저장하지 않습니다.
+- stdout이 JSON이면 `--output-format json --json-result-field <field>`로 최종 답변이 든
+  top-level 문자열 필드를 지정합니다. 지정하지 않은 JSON 객체 전체나 진단 필드는 채점하지 않습니다.
 - 채점은 답변의 `근거:` 줄을 조회 흔적으로 보는 대리 지표입니다. 실제 조회를
   독립적으로 증명하지 않으므로 오탐과 누락이 생길 수 있습니다.
 - `trigger_revisions.py`의 개정 이력과 `eval_trigger_cases.py`의 실행 리포트는

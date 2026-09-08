@@ -119,6 +119,33 @@ class TriggerCaseTests(unittest.TestCase):
         self.assertFalse(EVAL.grade(recall, "그냥 일반론으로 답했다")[0])
         self.assertTrue(EVAL.grade(skip, "합성 테스트가 실패했다")[0])
         self.assertFalse(EVAL.grade(skip, "근거: sample · synthetic-note")[0])
+        self.assertFalse(EVAL.grade(recall, "diagnostic: 근거: marker expected by rubric")[0])
+
+    def test_output_selection_keeps_plain_text_and_rejects_unselected_json(self):
+        for text in ("일반 답변", "42", "true", '"문장"'):
+            with self.subTest(text=text):
+                self.assertEqual((text, ""), EVAL.answer_text(text, "text", None))
+        envelope = json.dumps({"type": "result", "result": "일반론", "diagnostic": "근거: injected"})
+        selected, error = EVAL.answer_text(envelope, "text", None)
+        self.assertEqual("", selected)
+        self.assertIn("--output-format json", error)
+
+    def test_json_output_grades_only_selected_string_field(self):
+        envelope = json.dumps({"result": "근거: sample", "diagnostic": "ignored"})
+        self.assertEqual(("근거: sample", ""), EVAL.answer_text(envelope, "json", "result"))
+        injected = json.dumps({"result": "일반론", "diagnostic": "근거: injected"})
+        answer, error = EVAL.answer_text(injected, "json", "result")
+        self.assertEqual("", error)
+        self.assertFalse(EVAL.grade({"expect": "recall"}, answer)[0])
+        for payload, field in (({}, "result"), ({"result": 42}, "result"), ({"result": ""}, "result")):
+            with self.subTest(payload=payload):
+                self.assertTrue(EVAL.answer_text(json.dumps(payload), "json", field)[1])
+
+    def test_json_output_options_must_be_paired(self):
+        with self.assertRaises(SystemExit):
+            EVAL.main(["--cases", str(self.cases_file), "--output-format", "json"])
+        with self.assertRaises(SystemExit):
+            EVAL.main(["--cases", str(self.cases_file), "--json-result-field", "result"])
 
     def test_non_object_case_is_rejected_cleanly(self):
         with tempfile.TemporaryDirectory() as tmp:

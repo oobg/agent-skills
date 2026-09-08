@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -32,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES = ROOT / "evals" / "trigger-cases.json"
 DEFAULT_REPORTS = ROOT / "evals" / "reports"
 EXPECTATIONS = {"recall", "skip"}
-EVIDENCE_MARK = "근거:"
+EVIDENCE_LINE_RE = re.compile(r"^\s*근거:", re.MULTILINE)
 REQUEST_PLACEHOLDER = "{request}"
 
 
@@ -60,7 +61,7 @@ def load_cases(path: Path) -> dict:
 
 
 def grade(case: dict, output: str) -> tuple[bool, str]:
-    cited = EVIDENCE_MARK in output
+    cited = bool(EVIDENCE_LINE_RE.search(output))
     if case["expect"] == "recall":
         return cited, "근거 줄 있음" if cited else "근거 줄 없음 — 조회 흔적 없음"
     return not cited, "조회 없이 진행" if not cited else "차단 케이스인데 조회함"
@@ -125,7 +126,36 @@ def plan(payload: dict, cases: list[dict], fallback: Path, template: list[str] |
     print("실제로 채점하려면 --run 을 붙인다.")
 
 
-def run_case(case: dict, fallback: Path, template: list[str], timeout: int) -> dict:
+def answer_text(output: str, output_format: str, json_result_field: str | None) -> tuple[str, str]:
+    stripped = output.strip()
+    if output_format == "json":
+        try:
+            payload = json.loads(stripped)
+        except json.JSONDecodeError:
+            return "", "JSON 응답을 해석할 수 없음"
+        if not isinstance(payload, dict):
+            return "", "JSON 응답은 object여야 함"
+        value = payload.get(json_result_field)
+        if not isinstance(value, str) or not value.strip():
+            return "", f"JSON 결과 필드 {json_result_field!r}가 비어 있거나 문자열이 아님"
+        return value, ""
+    try:
+        structured = json.loads(stripped)
+    except json.JSONDecodeError:
+        structured = None
+    if isinstance(structured, (dict, list)):
+        return "", "구조화 JSON 응답에는 --output-format json과 --json-result-field가 필요함"
+    return output, ""
+
+
+def run_case(
+    case: dict,
+    fallback: Path,
+    template: list[str],
+    timeout: int,
+    output_format: str = "text",
+    json_result_field: str | None = None,
+) -> dict:
     started = time.time()
     cwd, found = case_cwd(case, fallback)
     try:
@@ -142,6 +172,8 @@ def run_case(case: dict, fallback: Path, template: list[str], timeout: int) -> d
             error = f"exit code {completed.returncode}"
         elif not output.strip():
             error = "응답 없음"
+        else:
+            output, error = answer_text(output, output_format, json_result_field)
     except FileNotFoundError:
         raise SystemExit(f"에이전트 실행 파일을 찾을 수 없다: {template[0]}")
     except subprocess.TimeoutExpired:
@@ -179,8 +211,14 @@ def main(argv=None) -> int:
         default=900,
         help="케이스당 상한. 너무 짧으면 트리거 결과 대신 타임아웃을 채점할 수 있다",
     )
+    parser.add_argument("--output-format", choices=("text", "json"), default="text", help="에이전트 stdout 형식")
+    parser.add_argument("--json-result-field", help="JSON stdout에서 최종 답변 문자열이 든 top-level 필드")
     parser.add_argument("--out", type=Path, help="리포트 JSON 경로 (기본: evals/reports/trigger-<날짜>.json)")
     args = parser.parse_args(argv)
+    if args.output_format == "json" and not args.json_result_field:
+        parser.error("--output-format json requires --json-result-field")
+    if args.output_format == "text" and args.json_result_field:
+        parser.error("--json-result-field requires --output-format json")
     if args.removed_agent:
         parser.error("--agent was replaced by --command-json; pass the complete provider argv template")
     template = command_template(args.command_json)
@@ -204,7 +242,9 @@ def main(argv=None) -> int:
     results = []
     for index, case in enumerate(cases, 1):
         print(f"[{index}/{len(cases)}] {case['id']} … ", end="", flush=True)
-        result = run_case(case, args.cwd.resolve(), template, args.timeout)
+        result = run_case(
+            case, args.cwd.resolve(), template, args.timeout, args.output_format, args.json_result_field
+        )
         results.append(result)
         print(f"{'PASS' if result['passed'] else 'FAIL'} — {result['reason']} ({result['elapsed_s']}s)")
 
