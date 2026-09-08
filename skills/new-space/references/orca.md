@@ -1,90 +1,41 @@
-# Orca worktree 생성
+# Orca 생성과 handoff
 
-이 문서는 `orca-cli` 스킬의 resolver로 실행 파일을 선택하고, 그 실행 파일의
-`skills get orca-cli` 전체 가이드를 읽은 뒤에만 사용합니다. 아래 명령 형태보다 현재 설치본의
-가이드와 `--help`가 우선합니다.
+`orca-cli` resolver로 실행 파일을 선택하고 그 실행 파일의 version-matched 전체 가이드를 읽은
+뒤 적용합니다. 현재 세션에서 확인한 명령과 JSON schema는 다시 탐색하지 않고 재사용합니다.
 
-## 대상과 부작용을 확인합니다
+## worktree 생성
 
-- `worktree current --json`과 `repo list --json`에서 현재 repo와 정확한 repo id를 확인합니다.
-  현재 Orca worktree 안에서 repo 추론이 명확하면 `--repo`를 생략할 수 있습니다.
-- repo의 setup 정책과 기본 terminal을 확인합니다. 생성 시 setup hook이나 terminal 명령이
-  실행될 수 있으면 사용자 요청과 충돌하는지 판단합니다.
-- 독립 작업에는 `--no-parent`, 현재 worktree에서 이어지는 작업에는
-  `--parent-worktree active`를 사용합니다. lineage 옵션은 Git base를 정하지 않습니다.
-- 사용자 요청이 없는 한 `--agent`, `--prompt`, `--activate`, setup 강제 실행 옵션을 쓰지
-  않습니다. setup을 억제해야 하고 현재 버전이 지원하면 `--setup skip`을 사용합니다.
+`worktree current --json` 또는 `repo list --json`에서 정확한 repo를 확인합니다. 독립 작업은
+`--no-parent`, 명시된 stacked 작업은 `--parent-worktree active`로 생성합니다. 확정한 base를
+`--base-branch`로 전달하고 `--json`을 사용합니다. agent handoff는 생성 뒤 선택받으므로
+`--agent`와 `--prompt`를 넣지 않습니다.
 
-현재 가이드가 지원하는 명령을 다음 형태로 구성하고 `--json`으로 실행합니다.
+응답 전체를 반복해서 읽지 않습니다. 성공 envelope인지 확인한 뒤 worktree의 exact full id,
+path, branch를 한 번 파싱해 `scripts/new_space.py finalize --apply`에 전달합니다.
 
-```text
-<orca-executable> worktree create \
-  --repo id:<repo-id> \
-  --name <branch-or-display-name> \
-  --base-branch <base-ref> \
-  --no-parent \
-  --json
-```
+현재 Orca에는 공식 Git branch rename 명령이 없습니다. `finalize`는 생성 결과와 일치하는 새
+linked worktree가 clean이고 base가 정확하며 target branch가 없을 때만 `git branch -m`을
+수행합니다. 디렉터리명과 Orca display name은 바꾸지 않습니다. 이후 `worktree show`의
+`branch`/`git.branch`와 `head`/`git.head`를 Git 결과와 대조합니다. 이 readback까지 통과해야
+생성이 성공한 것으로 봅니다.
 
-관련 작업이면 마지막 lineage 옵션만 확인된 parent 옵션으로 바꿉니다. 실제 값은 안전한 argv로
-전달하며 문서의 자리표시자를 그대로 실행하지 않습니다.
+## 동의 후 handoff
 
-## 결과의 실제 상태를 사용합니다
+Question에서 **시작하고 핸드오프**를 선택한 경우에만 생성된 worktree의 exact full id에 새
+terminal을 만듭니다. 새 worktree를 다시 만들지 않고 기본 terminal도 삭제하지 않습니다.
 
-JSON 전체를 로그나 답변에 복사하지 않습니다. 결과에서 worktree의 full id, path와 branch만
-읽고 필요한 후속 명령에 full id를 그대로 사용합니다. 응답 shape는 현재 가이드와 실제 결과로
-확인합니다.
+이 스킬을 실행 중인 현재 대화의 provider와 model을 session metadata에서 확인해 같은 설정의
+agent command를 사용합니다. provider가 effort를 지원하고 현재 값이 알려져 있으면 그대로
+유지합니다. effort만 알 수 없다면 첫 Question에 “effort는 확인되지 않아 새 세션 기본값을
+사용한다”는 사실을 함께 표시하고 두 선택지 중 하나를 받습니다. model 자체를 알 수 없으면
+같은 model이라고 주장하지 말고 필요한 값만 묻습니다. 동의 뒤 같은 확인을 반복하지 않습니다.
 
-Orca가 display name에서 Git branch를 만들면서 합성 예시 `dev/feat-search-filter`처럼 사용자
-prefix를 붙이거나 slash를 hyphen으로 바꿀 수 있습니다. 생성 결과의 branch를 반드시 읽고
-요청값과 비교합니다. 현재 버전이 정확 branch 지정 또는 Orca metadata를 함께 갱신하는 rename을
-지원할 때만 그 기능으로 교정합니다. raw Git rename의 metadata 일관성이 확인되지 않으면 자동
-교정하지 않습니다. branch가 달라도 디렉터리명은 그대로 둡니다.
+현재 가이드에서 확인한 `terminal create --worktree id:<full-id> --command ... --json`을 실행하고
+응답을 한 번 파싱해 정확한 새 handle을 얻습니다. `terminal wait --for tui-idle`이 성공하면
+추가 `terminal read`로 준비 상태를 반복 추측하지 않고 같은 handle에 `terminal send`를 한 번만
+실행합니다. stale handle이면 한 번 다시 조회해 교체된 handle만 사용하며 중복 전송하지 않습니다.
 
-`scripts/new_space.py verify`로 실제 branch와 HEAD를 검사합니다. base 불일치, 예상 밖 branch,
-불완전한 JSON 또는 경로가 나오면 reset, force removal, 기존 branch 삭제를 하지 않고 확인된
-상태를 보고합니다.
-
-## 생성 후 agent handoff
-
-worktree 생성과 검증이 성공한 뒤에만 다음 질문을 합니다.
-
-```text
-새 작업 공간에서 현재와 같은 AI 모델을 시작하고, 지금까지의 작업 내용을 넘길까요?
-```
-
-선택지는 `시작하고 핸드오프`와 `작업 공간만 만들기`로 둡니다. 현재 런타임의 Question,
-AskUserQuestion 등 구조화된 질문 도구를 우선하고, 사용할 수 없으면 같은 선택을 직접 묻습니다.
-사용자가 첫 번째 선택에 명시적으로 동의하기 전에는 terminal을 만들거나 내용을 보내지 않습니다.
-무응답이나 시간 경과를 동의로 취급하지 않습니다.
-
-동의하면 새 worktree를 또 만들거나 `worktree create --agent`를 호출하지 않습니다. 생성 결과에서
-얻은 exact full worktree id를 대상으로 현재 version-matched 가이드가 안내하는
-`terminal create --worktree id:<full-id> --command <agent-command> --json` 흐름을 사용합니다.
-
-- 이 스킬을 실행 중인 현재 대화의 provider와 model을 가용한 session metadata에서 각각
-  확인합니다. 해당 provider가 effort 설정을 지원하고 현재 대화에서 사용한다면 effort도
-  확인합니다. 같은 provider가 같은 model을 뜻한다고 가정하지 않습니다.
-- 필요한 model이나 지원되는 effort 값을 알 수 없으면 누락된 값을 사용자에게 묻습니다. 현재
-  CLI나 agent command가 요청한 설정을 지원하지 않으면 다른 model을 몰래 선택하지 말고 제약과
-  선택지를 알립니다.
-- repo가 만든 기본 terminal이나 setup terminal을 삭제하지 않습니다. 새 agent terminal의 정확한
-  handle만 사용합니다.
-- agent TUI에는 현재 가이드의 준비 상태 대기를 적용합니다. `tui-idle`을 지원하면 제한된 timeout과
-  함께 기다린 뒤 내용을 보냅니다.
-- handle이 stale이면 terminal 목록을 다시 읽고 교체된 handle 하나만 사용합니다. 이전 handle과
-  새 handle에 같은 내용을 중복 전송하지 않습니다.
-
-handoff 메시지는 새 agent가 대화를 다시 읽지 않아도 이어갈 수 있게 필요한 맥락만 요약합니다.
-
-- 사용자의 목표와 범위
-- 확정한 결정과 제약
-- 현재 상태와 남은 작업
-- 수행한 검증과 결과
-- 관련 worktree 경로, branch, base와 commit
-- 원래 worktree가 dirty였다면 그 변경과 파일은 새 checkout에 자동 복사되지 않았다는 사실과
-  새 agent가 확인할 주의점
-
-원문 대화를 파일로 저장하거나 저장소에 넣지 않습니다. 준비된 terminal의 정확한 handle에 위
-요약을 `terminal send`로 한 번만 전송합니다. 성공 후 full handoff로 처리하고 원래 agent는
-terminal을 감시하거나 후속 작업을 계속하지 않습니다.
+전달문에는 목표, 결정, 현재 상태, 남은 작업, 검증 결과, worktree·branch·base·commit을
+요약합니다. 원래 worktree가 dirty였다면 그 변경이 새 checkout에 자동 복사되지 않았다는 점도
+알립니다. 원문 대화를 파일로 저장하지 않습니다. 전송이 성공하면 full handoff로 처리하고 원래
+agent는 새 agent를 감시하지 않고 종료합니다.

@@ -32,6 +32,38 @@ class NewSpaceScriptTests(unittest.TestCase):
     def script(self, *args, check=True):
         return run(sys.executable, str(SCRIPT), *args, check=check)
 
+    def linked_worktree(self):
+        linked = Path(self.temp.name) / "linked"
+        run("git", "worktree", "add", "-qb", "dev-feat-search-filter", str(linked), "main", cwd=self.repo)
+        return linked
+
+    def fake_orca(self, worktree, branch="feat/search-filter", head=None, exit_code=0):
+        executable = Path(self.temp.name) / "fake-orca"
+        resolved_head = head or run("git", "rev-parse", "HEAD", cwd=worktree).stdout.strip()
+        worktree_id = f"synthetic-repo::{worktree}"
+        executable.write_text(
+            "#!/bin/sh\n"
+            + (f"exit {exit_code}\n" if exit_code else
+               "printf '%s\\n' '{\"ok\":true,\"result\":{\"worktree\":{\"id\":\""
+               + worktree_id + "\",\"path\":\"" + str(worktree) + "\",\"branch\":\"refs/heads/"
+               + branch + "\",\"head\":\"" + resolved_head + "\",\"git\":{\"branch\":\"refs/heads/"
+               + branch + "\",\"head\":\"" + resolved_head + "\"}}}}'\n"),
+            encoding="utf-8",
+        )
+        executable.chmod(0o755)
+        return executable
+
+    def finalize_args(self, worktree, base_sha, executable):
+        return (
+            "finalize",
+            "--worktree", str(worktree),
+            "--worktree-id", f"synthetic-repo::{worktree}",
+            "--created-branch", "dev-feat-search-filter",
+            "--expected-branch", "feat/search-filter",
+            "--base-sha", base_sha,
+            "--orca-executable", str(executable),
+        )
+
     def test_preflight_explicit_base(self):
         (self.repo / "draft.txt").write_text("unchanged\n", encoding="utf-8")
         before = run("git", "status", "--porcelain=v1", cwd=self.repo).stdout
@@ -133,6 +165,63 @@ class NewSpaceScriptTests(unittest.TestCase):
         self.assertFalse(payload["ok"])
         self.assertEqual(payload["ahead"], 1)
         self.assertEqual(payload["behind"], 0)
+
+    def test_finalize_dry_run_requires_repair_without_mutation(self):
+        base_sha = run("git", "rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        linked = self.linked_worktree()
+        result = self.script(*self.finalize_args(linked, base_sha, self.fake_orca(linked)), check=False)
+        self.assertEqual(result.returncode, 4)
+        self.assertEqual(run("git", "branch", "--show-current", cwd=linked).stdout.strip(),
+                         "dev-feat-search-filter")
+
+    def test_finalize_apply_repairs_and_verifies_orca(self):
+        base_sha = run("git", "rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        linked = self.linked_worktree()
+        result = self.script(
+            *self.finalize_args(linked, base_sha, self.fake_orca(linked)), "--apply", check=False
+        )
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertTrue(payload["ok"])
+        self.assertTrue(payload["branch_repaired"])
+        self.assertEqual(run("git", "branch", "--show-current", cwd=linked).stdout.strip(),
+                         "feat/search-filter")
+
+    def test_finalize_refuses_dirty_or_colliding_worktree(self):
+        base_sha = run("git", "rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        linked = self.linked_worktree()
+        (linked / "draft.txt").write_text("dirty\n", encoding="utf-8")
+        dirty = self.script(*self.finalize_args(linked, base_sha, self.fake_orca(linked)), "--apply", check=False)
+        self.assertEqual(dirty.returncode, 1)
+        (linked / "draft.txt").unlink()
+        run("git", "branch", "feat/search-filter", cwd=self.repo)
+        collision = self.script(*self.finalize_args(linked, base_sha, self.fake_orca(linked)), "--apply", check=False)
+        self.assertEqual(collision.returncode, 1)
+        self.assertEqual(run("git", "branch", "--show-current", cwd=linked).stdout.strip(),
+                         "dev-feat-search-filter")
+
+    def test_finalize_refuses_base_mismatch(self):
+        base_sha = run("git", "rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        linked = self.linked_worktree()
+        (linked / "change.txt").write_text("fixture\n", encoding="utf-8")
+        run("git", "add", "change.txt", cwd=linked)
+        run("git", "commit", "-qm", "change", cwd=linked)
+        result = self.script(*self.finalize_args(linked, base_sha, self.fake_orca(linked)), "--apply", check=False)
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(run("git", "branch", "--show-current", cwd=linked).stdout.strip(),
+                         "dev-feat-search-filter")
+
+    def test_finalize_blocks_success_when_orca_readback_fails(self):
+        base_sha = run("git", "rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        linked = self.linked_worktree()
+        result = self.script(
+            *self.finalize_args(linked, base_sha, self.fake_orca(linked, exit_code=7)), "--apply", check=False
+        )
+        self.assertEqual(result.returncode, 3)
+        payload = json.loads(result.stdout)
+        self.assertTrue(payload["branch_repaired"])
+        self.assertEqual(run("git", "branch", "--show-current", cwd=linked).stdout.strip(),
+                         "feat/search-filter")
 
 
 if __name__ == "__main__":
