@@ -12,6 +12,7 @@ from pathlib import Path
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.S)
 LINK_RE = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 ROUTED_PATH_RE = re.compile(r"`((?:references|agents|scripts)/[^`\s]+)`")
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 def frontmatter(path: Path) -> dict[str, str]:
@@ -41,6 +42,8 @@ def local_targets(path: Path):
 def validate(root: Path) -> list[str]:
     errors: list[str] = []
     skills_root = root / "skills"
+    if not skills_root.is_dir():
+        return [f"{skills_root}: missing skills directory"]
     seen_names: dict[str, Path] = {}
     for skill_dir in sorted(p for p in skills_root.iterdir() if p.is_dir()):
         skill_file = skill_dir / "SKILL.md"
@@ -56,6 +59,8 @@ def validate(root: Path) -> list[str]:
         name = meta.get("name")
         if name != skill_dir.name:
             errors.append(f"{skill_file}: name {name!r} must match directory {skill_dir.name!r}")
+        if name and (len(name) > 64 or not SKILL_NAME_RE.fullmatch(name)):
+            errors.append(f"{skill_file}: invalid skill name {name!r}")
         if not meta.get("description"):
             errors.append(f"{skill_file}: missing description")
         if name in seen_names:

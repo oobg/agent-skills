@@ -32,6 +32,28 @@ class ValidateSkillsTests(unittest.TestCase):
             self.assertTrue(any("must match directory" in item for item in errors))
             self.assertTrue(any("broken local reference" in item for item in errors))
 
+    def test_missing_skills_directory_is_reported_without_traceback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            errors = MODULE.validate(Path(tmp))
+            self.assertEqual(1, len(errors))
+            self.assertIn("missing skills directory", errors[0])
+
+    def test_invalid_discovery_name_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_skill(root, directory="Bad_Name", name="Bad_Name")
+            errors = MODULE.validate(root)
+            self.assertTrue(any("invalid skill name" in item for item in errors))
+
+    def test_discovery_name_allows_64_characters_and_rejects_65(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_skill(root, directory="a" * 64, name="a" * 64)
+            self.make_skill(root, directory="b" * 65, name="b" * 65)
+            errors = MODULE.validate(root)
+            self.assertFalse(any("a" * 64 in item and "invalid skill name" in item for item in errors))
+            self.assertTrue(any("b" * 65 in item and "invalid skill name" in item for item in errors))
+
 
 if __name__ == "__main__":
     unittest.main()
