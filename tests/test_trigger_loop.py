@@ -1,6 +1,7 @@
 import importlib.util
 import io
 import json
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -168,6 +169,49 @@ class TriggerCaseTests(unittest.TestCase):
             EVAL.subprocess.run = original
         self.assertFalse(result["passed"])
         self.assertIn("exit code 7", result["reason"])
+
+    def test_empty_or_whitespace_stdout_fails_for_both_expectations(self):
+        for expect in ("skip", "recall"):
+            for stdout in ("", " \n\t"):
+                with self.subTest(expect=expect, stdout=repr(stdout)):
+                    class Completed:
+                        returncode = 0
+                        stderr = ""
+
+                    Completed.stdout = stdout
+                    original = EVAL.subprocess.run
+                    EVAL.subprocess.run = lambda *_args, **_kwargs: Completed()
+                    try:
+                        case = {"id": "x", "expect": expect, "request": "질문", "origin": "authored"}
+                        result = EVAL.run_case(case, ROOT, ["sample-agent", "{request}"], 10)
+                    finally:
+                        EVAL.subprocess.run = original
+                    self.assertFalse(result["passed"])
+                    self.assertIn("응답 없음", result["reason"])
+
+    def test_cli_empty_stdout_fails_and_writes_zero_pass_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cases_file = Path(tmp) / "cases.json"
+            report_file = Path(tmp) / "report.json"
+            write_json(cases_file, {
+                "skill": "sample-skill",
+                "cases": [{
+                    "id": "empty-response",
+                    "expect": "skip",
+                    "request": "합성 질문",
+                    "origin": "authored synthetic case",
+                }],
+            })
+            command = json.dumps([sys.executable, "-c", "pass", "{request}"])
+            exit_code = EVAL.main([
+                "--cases", str(cases_file),
+                "--run",
+                "--command-json", command,
+                "--out", str(report_file),
+            ])
+            self.assertEqual(1, exit_code)
+            report = json.loads(report_file.read_text(encoding="utf-8"))
+            self.assertEqual(0, report["passed"])
 
     def test_failure_report_does_not_copy_stderr(self):
         class Completed:

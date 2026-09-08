@@ -140,6 +140,8 @@ def run_case(case: dict, fallback: Path, template: list[str], timeout: int) -> d
         error = ""
         if completed.returncode:
             error = f"exit code {completed.returncode}"
+        elif not output.strip():
+            error = "응답 없음"
     except FileNotFoundError:
         raise SystemExit(f"에이전트 실행 파일을 찾을 수 없다: {template[0]}")
     except subprocess.TimeoutExpired:
