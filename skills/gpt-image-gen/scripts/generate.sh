@@ -7,7 +7,7 @@
 # 직접 조립하면 $(...) 치환이 어긋날 수 있으므로, 파싱/실행은 전부 여기서 한다.
 #
 # 동시 실행 안전(concurrency-safe): 여러 서브에이전트가 병렬로 호출해도
-# 파일명/로그가 충돌하지 않고, 폴백이 남의 결과를 잘못 집지 않는다.
+# 파일명/로그가 충돌하지 않고, 각 호출이 지정한 결과만 성공으로 인정한다.
 
 set -euo pipefail
 
@@ -74,9 +74,6 @@ BASENAME="img${SAFE_LABEL:+-$SAFE_LABEL}-${TS}-${UNIQ}.png"
 ABS_OUT="${ABS_OUT_DIR}/${BASENAME}"
 LOG="/tmp/gpt-image-gen-${UNIQ}.log"       # 호출별 로그 → 병렬 실행끼리 안 덮어씀
 
-# --- 동시성 안전 폴백용 마커: 호출 직전 기준 시각 ---
-MARKER="$(mktemp "${TMPDIR:-/tmp}/gpt-image-gen-marker.XXXXXX")"
-
 # --- 실패 원인 분류 -----------------------------------------------------------
 # 대처가 갈리는 원인만 구분한다. 원인마다 사용자가 할 일이 다르고("다시 로그인" vs
 # "한도 회복 대기"), 로그 tail 20줄만 주면 그 판단을 사용자에게 떠넘기게 된다.
@@ -124,43 +121,35 @@ codex exec \
   --sandbox workspace-write \
   --cd "$(pwd)" \
   --add-dir "$ABS_OUT_DIR" \
-  "@imagegen ${PROMPT}. Save the generated image to exactly: ${ABS_OUT} . Print only the final saved absolute path." \
+  "@imagegen ${PROMPT}. Generate exactly one image. Save it to exactly: ${ABS_OUT} . Print only the final saved absolute path." \
   >"$LOG" 2>&1 || {
     echo "ERROR: codex 실행 실패 (label='${LABEL}')." >&2
     classify_failure "$LOG" >&2
     echo "전체 로그: ${LOG}" >&2
     echo "--- 마지막 20줄 ---" >&2
     tail -n 20 "$LOG" >&2
-    rm -f "$MARKER"
     exit 1
   }
 # ▲▲▲ ----------------------------------------------------------------------- ▲▲▲
 
 # --- 결과 확인 및 보고 (동시성 안전) ---
-# 1순위: 우리가 지정한 정확한 경로. 병렬이어도 호출마다 고유하므로 안전.
-if [ -f "$ABS_OUT" ]; then
+# 우리가 지정한 정확한 경로의 PNG 시그니처와 파일 데이터만 확인한다. 공유 디렉터리의
+# 새 PNG를 검색하면 병렬 호출의 결과를 이번 호출의 결과로 잘못 돌려줄 수 있다.
+has_png_signature_and_data() {
+  [ -f "$1" ] || return 1
+  [ "$(wc -c <"$1" | tr -d '[:space:]')" -gt 8 ] || return 1
+  [ "$(LC_ALL=C od -An -tx1 -N8 "$1" 2>/dev/null | tr -d '[:space:]')" = "89504e470d0a1a0a" ]
+}
+
+if has_png_signature_and_data "$ABS_OUT"; then
   echo "SAVED ${ABS_OUT}"
-  rm -f "$MARKER"
   exit 0
 fi
 
-# 폴백: 마커 이후 새로 생긴 png만 본다. 새 파일이 '정확히 1개'일 때만 채택하고,
-# 모호하면 차라리 실패한다. 다만 병렬 호출에서 이웃이 아직 저장 전이면 그 1개가
-# 남의 결과일 수 있다 — 이 경로는 최선 추정이지 오집 방지 보장이 아니다.
-# bash 4 전용 배열 읽기 내장 대신 while read를 쓴다. macOS 기본 bash는 3.2다.
-NEW_FILES=()
-while IFS= read -r found; do
-  [ -n "$found" ] && NEW_FILES+=("$found")
-done < <(find "$ABS_OUT_DIR" -maxdepth 1 -name '*.png' -newer "$MARKER" 2>/dev/null || true)
-rm -f "$MARKER"
-
-if [ "${#NEW_FILES[@]}" -eq 1 ]; then
-  echo "SAVED ${NEW_FILES[0]}"
-elif [ "${#NEW_FILES[@]}" -gt 1 ]; then
-  echo "ERROR: 지정 경로(${ABS_OUT})에 저장되지 않았고, 동시에 여러 새 이미지가 생겨" >&2
-  echo "       이번 호출의 결과를 확정할 수 없습니다. 로그 확인: ${LOG}" >&2
-  exit 1
+if [ -e "$ABS_OUT" ]; then
+  echo "ERROR: 지정 경로(${ABS_OUT})의 파일에 PNG 시그니처와 데이터가 없습니다." >&2
 else
-  echo "ERROR: codex는 실행됐지만 생성된 이미지를 찾지 못했습니다. 로그 확인: ${LOG}" >&2
-  exit 1
+  echo "ERROR: codex는 실행됐지만 지정 경로(${ABS_OUT})에 이미지를 저장하지 않았습니다." >&2
 fi
+echo "       다른 경로에 저장됐다면 이번 호출의 결과로 확정하지 않습니다. 로그 확인: ${LOG}" >&2
+exit 1
