@@ -9,6 +9,7 @@ ROOT = Path(__file__).parents[1]
 SKILL_DIR = ROOT / "skills" / "gpt-image-gen"
 SKILL = SKILL_DIR / "SKILL.md"
 GENERATE = SKILL_DIR / "scripts" / "generate.sh"
+OPENAI_YAML = SKILL_DIR / "agents" / "openai.yaml"
 
 
 class GptImageGenContractTests(unittest.TestCase):
@@ -19,15 +20,23 @@ class GptImageGenContractTests(unittest.TestCase):
 
     def test_generation_requires_an_explicit_user_invocation(self):
         self.assertIn("명시적 호출 전용", self.text)
-        self.assertIn("`/gpt-image-gen <이미지 설명>` 형태로 직접 호출한 경우", self.text)
+        self.assertIn("`/gpt-image-gen <이미지 설명>`", self.text)
+        self.assertIn("`$gpt-image-gen <이미지 설명>`", self.text)
+        self.assertIn("호스트 UI의 스킬 선택 기능", self.text)
         self.assertIn("사용량이 실제로 차감된다", self.text)
 
     def test_empty_prompt_asks_instead_of_guessing(self):
         self.assertIn("임의로 추측해 생성하지 말고", self.text)
 
-    def test_model_must_not_assemble_the_codex_command_itself(self):
-        self.assertIn("`codex exec` 명령을 본문에서 직접 조립하지 말고", self.text)
-        self.assertIn("bash scripts/generate.sh", self.text)
+    def test_any_host_agent_uses_the_script_adapter(self):
+        self.assertIn("호스트 에이전트와 관계없이", self.text)
+        self.assertIn("`codex exec` 명령을 직접 조립하지 말고", self.text)
+        self.assertIn("`scripts/generate.sh`의 절대경로", self.text)
+        self.assertIn('bash "<gpt-image-gen 스킬 절대경로>/scripts/generate.sh"', self.text)
+
+    def test_unavailable_local_adapter_never_claims_generation(self):
+        self.assertIn("스킬 파일 경로를 확인할 수 없거나 로컬 스크립트를 실행할 수 없으면", self.text)
+        self.assertIn("생성됐다고 주장하지 않는다", self.text)
 
     def test_script_is_executable_and_reports_a_single_saved_path(self):
         self.assertTrue(GENERATE.is_file())
@@ -65,11 +74,15 @@ class GptImageGenContractTests(unittest.TestCase):
     def test_multiple_images_need_a_separate_confirmation(self):
         self.assertIn("2장 이상을 만들기 전에는 몇 장을 만들지 사용자에게 확인받는다", self.text)
 
+    def test_codex_adapter_disables_implicit_invocation(self):
+        metadata = OPENAI_YAML.read_text(encoding="utf-8")
+        self.assertIn("allow_implicit_invocation: false", metadata)
+
     def test_lifecycle_registers_the_skill(self):
         config = json.loads((ROOT / "lifecycle.json").read_text(encoding="utf-8"))
         entry = config["skills"]["gpt-image-gen"]
         self.assertEqual(entry["status"], "active")
-        self.assertEqual(entry["providers"], ["claude"])
+        self.assertEqual(entry["providers"], ["claude", "codex", "gemini", "grok"])
 
 
 if __name__ == "__main__":

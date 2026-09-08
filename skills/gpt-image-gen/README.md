@@ -1,14 +1,17 @@
 # GPT Image Gen
 
-Codex CLI의 gpt-image 플러그인으로 이미지를 생성하는 얇은 래퍼 스킬입니다. 생성 지능은
-플러그인이 담당하고, 이 스킬은 호출 게이트와 저장 경로, 결과 보고만 맡습니다.
+Claude, Codex, Gemini, Grok 등 어떤 호스트 에이전트에서도 로컬 Codex CLI의 gpt-image
+플러그인을 실행 백엔드로 호출할 수 있는 얇은 래퍼 스킬입니다. 생성 지능은 플러그인이
+담당하고, 이 스킬은 호출 게이트와 저장 경로, 결과 보고만 맡습니다.
 
 ## 사용 시점
 
 이미지 1장마다 사용자의 ChatGPT/Codex 사용량이 차감됩니다. 그래서 이 스킬은 사용자가
-`/gpt-image-gen <이미지 설명>`을 직접 입력했을 때만 동작합니다.
+`/gpt-image-gen <이미지 설명>`, `$gpt-image-gen <이미지 설명>` 또는 호스트 UI에서
+`gpt-image-gen` 스킬을 직접 선택했을 때만 동작합니다.
 
 - 동작합니다: `/gpt-image-gen 프랜차이즈 대시보드 히어로 배너`
+- 동작합니다: `$gpt-image-gen 배경이 투명한 제품 아이콘`
 - 동작하지 않습니다: "이미지 만들어줘", "여기 그림 넣자", 문서 작업 중 이미지가 있으면
   좋아 보이는 경우
 
@@ -20,6 +23,10 @@ Codex CLI의 gpt-image 플러그인으로 이미지를 생성하는 얇은 래�
 - 파일명: `img[-라벨]-<타임스탬프>-<고유ID>.png`
 - 배경: 사용자가 배경을 지정하지 않으면 배경을 제거한 이미지로 생성합니다.
 - 성공하면 마지막 줄에 `SAVED <절대경로>`를 출력합니다.
+
+호출할 때는 설치된 스킬 디렉터리에서 `scripts/generate.sh`의 절대경로를 해석하고, 현재 작업
+디렉터리는 사용자 프로젝트에 유지합니다. 그래야 결과가 프로젝트의 `generated-images/`에
+저장됩니다. 호스트가 로컬 스크립트를 실행할 수 없으면 이 실행 백엔드는 사용할 수 없습니다.
 
 여러 장이 필요하면 서브에이전트가 `--label`을 다르게 주어 병렬로 호출해도 됩니다.
 호출마다 PID와 난수로 만든 고유 ID가 붙어 파일명과 로그가 겹치지 않습니다. 다만 병렬
@@ -51,7 +58,7 @@ N건이면 사용량도 약 N배이므로 대량 생성 전에 규모를 확인�
 
 ## 프롬프트가 실행 권한을 만납니다
 
-프롬프트는 codex 에이전트의 지시문에 그대로 들어갑니다. 붙여넣은 텍스트 안에 지시문처럼
+프롬프트는 실행 백엔드인 Codex CLI 에이전트의 지시문에 그대로 들어갑니다. 붙여넣은 텍스트 안에 지시문처럼
 읽히는 문장이 있으면 그것도 에이전트가 읽습니다. 쓰기 범위는 `--sandbox workspace-write`와
 `--add-dir`로 작업 폴더에 한정했지만, 출처를 모르는 텍스트를 그대로 넘기지 마세요.
 
@@ -67,6 +74,8 @@ N건이면 사용량도 약 N배이므로 대량 생성 전에 규모를 확인�
 gpt-image-gen/
 ├── SKILL.md
 ├── README.md
+├── agents/
+│   └── openai.yaml
 ├── references/
 │   └── ontology-boost.md
 └── scripts/
@@ -74,6 +83,7 @@ gpt-image-gen/
 ```
 
 - [`SKILL.md`](SKILL.md): 호출 게이트, 동작 순서, 출력 규약, 문제 해결
+- [`agents/openai.yaml`](agents/openai.yaml): Codex에서 자동 호출을 막는 명시 호출 정책
 - [`references/ontology-boost.md`](references/ontology-boost.md): 온톨로지가 있을 때만 여는
   프롬프트 계층 설계와 브랜드 자산 회수
 - [`scripts/generate.sh`](scripts/generate.sh): 프롬프트 파싱, codex 호출, 결과 확인

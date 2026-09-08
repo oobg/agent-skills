@@ -42,6 +42,25 @@ class LifecycleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.load_config(path)
 
+    def test_unknown_provider_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "config.json"
+            path.write_text(json.dumps({
+                "version": 1,
+                "providers": {"sample": "~/sample-skills"},
+                "skills": {"x": {"status": "active", "providers": ["typo"]}},
+            }))
+            with self.assertRaisesRegex(ValueError, "unknown providers"):
+                MODULE.load_config(path)
+
+    def test_registered_active_skills_target_every_declared_provider(self):
+        config = MODULE.load_config(Path(__file__).parents[1] / "lifecycle.json")
+        expected = set(config["providers"])
+        for name, meta in config["skills"].items():
+            if meta["status"] in {"active", "pinned"}:
+                with self.subTest(skill=name):
+                    self.assertEqual(expected, set(meta["providers"]))
+
     def test_candidate_classification_requires_human_rationale(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "config.json"

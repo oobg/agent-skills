@@ -35,7 +35,10 @@
     "gpt-image-gen": {
       "status": "active",
       "providers": [
-        "claude"
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
       ]
     },
     "question-design": {

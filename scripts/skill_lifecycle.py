@@ -31,6 +31,14 @@ def load_config(path: Path) -> dict:
     }
     if unknown:
         raise ValueError(f"invalid skill status: {sorted(unknown)}")
+    declared_providers = set(config.get("providers", {}))
+    for name, meta in config.get("skills", {}).items():
+        configured = meta.get("providers", [])
+        if not isinstance(configured, list) or not all(isinstance(item, str) for item in configured):
+            raise ValueError(f"skill {name!r} providers must be a list of names")
+        unknown_providers = set(configured) - declared_providers
+        if unknown_providers:
+            raise ValueError(f"skill {name!r} references unknown providers: {sorted(unknown_providers)}")
     for name, classification in config.get("candidate_classifications", {}).items():
         if not isinstance(classification, dict):
             raise ValueError(f"invalid candidate classification for {name!r}")
