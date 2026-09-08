@@ -46,17 +46,19 @@ class QuestionDesignCrossModelContractTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-    def test_external_call_requires_session_scoped_consent(self):
+    def test_external_call_reuses_only_matching_unused_consent(self):
         self.assertIn("현재 세션마다 최초 호출 전에", self.text)
+        self.assertIn("같은 세션과 목적", self.text)
         self.assertIn("전송될 전체 payload 원문", self.text)
-        self.assertIn("이전 세션의", self.text)
         self.assertIn("침묵은 동의가 아니다", self.text)
         self.assertIn("하나라도 바뀌면 기존 승인은 무효", self.text)
+        self.assertIn("동일한 manifest를 이미 승인했고 아직 그 1회를 쓰지 않았다면", self.text)
         self.assertIn("호출 횟수: 1회 (고정)", self.text)
         self.assertIn("다중 호출을\n한 manifest로 묶지 않는다", self.text)
         self.assertNotIn("호출 횟수: [N회]", self.text)
 
     def test_provider_capability_is_delegated_without_hidden_fallback(self):
+        self.assertIn("CLI, API, MCP 같은 전송 방식은 해당 기능의\n어댑터가 소유", self.text)
         self.assertIn("provider CLI/API 명령을 직접 조립하지 않는다", self.text)
         self.assertIn("다른 provider로 자동 fallback하지 않는다", self.text)
         self.assertIn("선택된 호출 스킬", self.text)
@@ -77,6 +79,9 @@ class QuestionDesignCrossModelContractTests(unittest.TestCase):
         self.assertNotIn("수렴하는 답변 = 상대적으로 신뢰도 높음", mode_a)
         self.assertIn("사실의 신뢰도 증거로 쓰지 않음", mode_a)
         self.assertIn("한 provider 승인을 팬아웃 승인으로 해석하지 않는다", mode_a)
+        self.assertIn("현재 에이전트가 먼저 제안한다", mode_a)
+        self.assertNotIn("Claude가 먼저 제안한다", mode_a)
+        self.assertIn("승인된 1회가 아직 미사용", mode_a)
 
 
 if __name__ == "__main__":

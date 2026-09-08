@@ -1,6 +1,18 @@
 ---
 name: domain-ontology
-description: Read the personal ontology first, then answer, whenever a request touches accumulated company, personal, shared (ways of working — methodology, tooling, agent harnesses, skill and prompt design), novel, or blog knowledge, or asks to consult prior knowledge and decisions. Design, rule, convention, and prior-decision judgment inside code or repository work counts as such a request. Reading is the default whenever it is unclear whether prior knowledge applies: trigger on the topic signal, which is observable now, never on a prediction that the answer would change, which is not. Skip only for work that plainly carries no such judgment — implementing or refactoring to a settled spec, running tests or builds, formatting, translation, mechanical edits, general facts, and casual chat. Also use when substantial durable knowledge arrives and ontology ingestion may be appropriate. Reading is automatic and read-only; ingestion or mutation always requires explicit user consent and per-document tenant confirmation.
+description: >-
+  Read the personal ontology first, then answer, whenever a request touches accumulated
+  company, personal, shared (ways of working — methodology, tooling, agent harnesses,
+  skill and prompt design), novel, or blog knowledge, or asks to consult prior knowledge
+  and decisions. Design, rule, convention, and prior-decision judgment inside code or
+  repository work counts as such a request. Reading is the default whenever it is unclear
+  whether prior knowledge applies: trigger on the topic signal, which is observable now,
+  never on a prediction that the answer would change, which is not. Skip only for work
+  that plainly carries no such judgment — implementing or refactoring to a settled spec,
+  running tests or builds, formatting, translation, mechanical edits, general facts, and
+  casual chat. Also use when substantial durable knowledge arrives and ontology ingestion
+  may be appropriate. Reading is automatic and read-only; ingestion or mutation always
+  requires explicit user consent and per-document tenant confirmation.
 ---
 
 # Domain Ontology Routing
@@ -27,9 +39,9 @@ Durable domain knowledge should **compound**, not be re-derived per question. Wh
 
 `concepts`, `topics`, `concept_topics` are **shared across tenants** — that shared layer is the point: the same concept node links what company work actually built to what personal material says about it. Only `sessions` and `documents` carry `tenant_id`.
 
-`~/.ontology/AGENTS.md` is the authoritative map and common-command reference
-(`CLAUDE.md` and `GEMINI.md` are symlinks to it). **REQUIRED: read it before
-querying or ingesting**. Follow the routed workflow and conventions in the files it points to; do not
+`~/.ontology/AGENTS.md` is the provider-neutral authoritative map and common-command
+reference. **REQUIRED: read it before querying or ingesting**. Provider-specific compatibility
+files may point to it, but they are not authoritative. Follow the routed workflow and conventions in the files it points to; do not
 guess schema, paths, or commands from this skill.
 
 ## When to use

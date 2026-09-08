@@ -35,7 +35,7 @@ class DomainOntologyContractTests(unittest.TestCase):
         self.assertIn("건너뛰기로 했으면 그 판단을 한 줄로 밝힌다", self.text)
 
     def test_read_preflight_and_tenant_filter_are_required(self):
-        self.assertIn("read it before\nquerying or ingesting", self.text)
+        self.assertIn("read it before querying or ingesting", self.text)
         # The step-by-step SQL and leak rules live in recall.md; the skill must delegate
         # to it and must keep the scope predicate and the no-fabrication rule visible here.
         self.assertIn("절차의 정본은 `~/.ontology/docs/recall.md`다", self.text)

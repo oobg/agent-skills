@@ -122,7 +122,7 @@ python3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3,8) else 1)"
 파일에 적었다면, 그 뒤로는 출력 게이트(`ai_lint`, `glossary_check`,
 `register_check`)가 그 설정을 자동으로 반영한다.
 
-## 스킬 파일을 못 고치는 환경이면 (예: claude.ai)
+## 스킬 파일을 못 고치는 환경이면
 
 스킬 폴더가 읽기 전용이면 `온보딩 상태`를 영구히 저장할 수 없다. 이땐 매번 물어
 사용자를 괴롭히지 말고 이렇게 한다.
