@@ -26,9 +26,16 @@ terminal을 만듭니다. 새 worktree를 다시 만들지 않고 기본 termina
 
 이 스킬을 실행 중인 현재 대화의 provider와 model을 session metadata에서 확인해 같은 설정의
 agent command를 사용합니다. provider가 effort를 지원하고 현재 값이 알려져 있으면 그대로
-유지합니다. effort만 알 수 없다면 첫 Question에 “effort는 확인되지 않아 새 세션 기본값을
-사용한다”는 사실을 함께 표시하고 두 선택지 중 하나를 받습니다. model 자체를 알 수 없으면
-같은 model이라고 주장하지 말고 필요한 값만 묻습니다. 동의 뒤 같은 확인을 반복하지 않습니다.
+유지합니다. 현재 세션의 실효 metadata에서 `approval_policy`와 `sandbox_mode`도 확인하고,
+Codex CLI가 지원하는 값이면 각각 `-a <approval_policy>`와 `-s <sandbox_mode>`로 전달합니다.
+`never`, `danger-full-access`처럼 특정 값을 고정하거나 확인되지 않은 값을 추측하지 않습니다.
+effort만 알 수 없다면 첫 Question에 “effort는 확인되지 않아 새 세션 기본값을 사용한다”는
+사실을 함께 표시하고 두 선택지 중 하나를 받습니다. approval policy 또는 sandbox mode를 알
+수 없거나 CLI가 해당 인자를 지원하지 않으면 그 사실을 handoff 확인에 함께 표시하고, 새
+세션의 기본값을 사용할지 선택받습니다. 예를 들어
+`workspace-write`만 전달할 수 있고 네트워크 허용이나 추가 쓰기 경로 같은 별도 제한을 표현할
+수 없다면 mode만으로 완전한 권한 승계를 주장하지 않습니다. model 자체를 알 수 없으면 같은
+model이라고 주장하지 말고 필요한 값만 묻습니다. 동의 뒤 같은 확인을 반복하지 않습니다.
 
 현재 가이드에서 확인한 `terminal create --worktree id:<full-id> --command ... --json`을 실행하고
 응답을 한 번 파싱해 정확한 새 handle을 얻습니다. `terminal wait --for tui-idle`이 성공하면

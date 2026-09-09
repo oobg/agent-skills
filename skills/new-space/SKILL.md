@@ -94,8 +94,10 @@ python3 <skill-directory>/scripts/new_space.py finalize \
 > 새 작업 공간에서 현재와 같은 AI 모델을 시작하고, 지금까지의 작업 내용을 넘길까요?
 
 선택지는 **시작하고 핸드오프**와 **작업 공간만 만들기**다. 무응답은 동의가 아니다. 첫 번째를
-고르면 `references/orca.md`의 handoff 절차를 따른다. worktree를 다시 만들거나 승인 질문을
-반복하지 않는다.
+고르면 `references/orca.md`의 handoff 절차를 따른다. 현재 세션에서 확인된 approval policy와
+sandbox mode도 지원되는 Codex CLI 인자로 승계하며, 알 수 없거나 일부만 표현할 수 있으면
+그 한계를 첫 handoff 확인에 함께 알리고 새 세션 기본값 사용 여부를 선택받는다. worktree를
+다시 만들거나 승인 질문을 반복하지 않는다.
 
 commit, push와 개발 서버 실행은 별도 요청이 있을 때만 한다.
 
