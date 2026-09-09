@@ -15,7 +15,9 @@ ref를 확인합니다. 활성 release 우선 정책이 있는 저장소에서�
 
 ## 핵심 동작
 
-- 현재 설치된 Orca CLI에서 version-matched `orca-cli` 가이드를 읽습니다.
+- 첫 사용과 cache 무효화 때 현재 Orca CLI의 version-matched `orca-cli` 원문을 확인합니다.
+- 실행 파일·버전·stub·스킬 계약이 같으면 검토된 Orca recipe를 사용자 cache에서 재사용합니다.
+- 사용자가 앞으로의 기본값으로 확인한 프로젝트 선호를 저장소 밖 로컬 state에 저장합니다.
 - `feat`, `fix`, `refactor`, `chore`, `ci`, `docs` 기준과 2~4단어 slug로 branch를 제안합니다.
 - 완성된 branch와 base를 Question에서 한 번에 확인합니다.
 - 독립 작업과 현재 작업에서 이어지는 lineage를 구분합니다.
@@ -30,6 +32,13 @@ Git 상태 확인과 검증은 Python 표준 라이브러리만 사용하는 보
 `preflight`와 `verify`는 읽기 전용입니다. `finalize`는 기본적으로 보정 계획만 보여 주며,
 `--apply`를 명시했을 때 새로 생성된 clean linked worktree의 branch만 보정합니다. 기존 branch,
 primary checkout, dirty worktree, base가 다른 worktree에는 적용하지 않습니다.
+
+프로젝트 메모리는 현재 요청, 현재 프로젝트 지침보다 낮은 우선순위로 적용합니다. 이번 한 번의
+base나 model 선택은 자동 저장하지 않습니다. 프로젝트 정책 파일의 내용이 바뀌면 stale로
+처리해 다시 확인합니다. worktree id, terminal handle과 현재 세션의 실효 권한은 저장하지
+않습니다. 기본 저장 위치는 `~/.local/state/new-space`와 `~/.cache/new-space`이며 각각
+`XDG_STATE_HOME`, `XDG_CACHE_HOME`으로 바꿀 수 있습니다. Orca recipe도 최초 원문을 검토해 hash로 연결한 뒤에만 재사용하며, 실행 오류가 나면
+원문을 새로 받아 갱신합니다.
 
 handoff를 선택하면 새 worktree를 다시 만들지 않고 생성된 공간의 exact full id에 terminal을
 추가합니다. 현재 model과 확인된 approval policy, sandbox mode는 같은 설정을 사용하며 알 수
@@ -64,12 +73,15 @@ new-space/
 ├── references/
 │   └── orca.md
 └── scripts/
+    ├── context_cache.py
     └── new_space.py
 ```
 
 - [`SKILL.md`](SKILL.md): 이름, base, lineage 결정과 실행 경계를 설명합니다.
 - [`references/orca.md`](references/orca.md): 현재 Orca 가이드에 맞춘 생성과 결과 처리 규칙입니다.
 - [`scripts/new_space.py`](scripts/new_space.py): preflight와 생성 결과 검증을 수행합니다.
+- [`scripts/context_cache.py`](scripts/context_cache.py): 저장소 밖 프로젝트 선호와 검증된 Orca
+  recipe cache의 유효성을 관리합니다.
 
 설치 방법은 [루트 README의 설치 안내](../../README.md#설치), 검사 방법은
 [검증 안내](../../README.md#검증)에서 확인할 수 있습니다.

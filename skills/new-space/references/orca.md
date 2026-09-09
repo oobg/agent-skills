@@ -1,7 +1,38 @@
 # Orca 생성과 handoff
 
-`orca-cli` resolver로 실행 파일을 선택하고 그 실행 파일의 version-matched 전체 가이드를 읽은
-뒤 적용합니다. 현재 세션에서 확인한 명령과 JSON schema는 다시 탐색하지 않고 재사용합니다.
+`orca-cli` resolver로 실행 파일을 선택한 뒤 다음 helper에 실행 파일, 설치된 stub, 이 스킬의
+`SKILL.md`와 이 reference를 contract file로 전달합니다.
+
+```text
+python3 <skill-directory>/scripts/context_cache.py orca-guide \
+  --orca-executable <selected-executable> \
+  --stub-file <installed-orca-cli-skill>/SKILL.md \
+  --contract-file <skill-directory>/SKILL.md \
+  --contract-file <skill-directory>/references/orca.md
+```
+
+`status: hit`이면 출력된 recipe가 실행 파일 정체성·버전, stub hash, new-space 계약 hash와
+일치하므로 이번 세션에서 재사용합니다. 사용자가 승인한 이 최적화에 따라 new-space 안에서만
+이 유효한 cache hit로 Orca 가이드 원문 재조회를 대체합니다. `status: needs-review`이면 출력된 version-matched 전체
+guide를 읽고 new-space에서 실제로 사용할 명령, flag와 JSON 경로만 별도 recipe 파일에
+정리합니다. 출력된 guide hash와 함께 다음 명령으로 연결해야 이후부터 hit가 됩니다.
+
+```text
+python3 <skill-directory>/scripts/context_cache.py orca-remember \
+  --orca-executable <selected-executable> \
+  --stub-file <installed-orca-cli-skill>/SKILL.md \
+  --contract-file <skill-directory>/SKILL.md \
+  --contract-file <skill-directory>/references/orca.md \
+  --guide-sha256 <reviewed-guide-sha256> \
+  --recipe-file <reviewed-recipe-file>
+```
+
+캐시는 저장소 밖 사용자 cache에 있으며 원문과 검토한 recipe를 함께 보관합니다. recipe를
+정리하는 임시파일도 저장소 밖에 둡니다. 기본 위치는 `~/.cache/new-space`이고
+`XDG_CACHE_HOME`으로 바꿀 수 있습니다. Orca 명령이
+실패하면 같은 `orca-guide` 명령에 `--refresh`를 붙여 원문부터 다시 검토합니다. refresh 실패는
+기존 recipe를 무효화합니다. 원인을 확인하고 현재 상태를 다시 조회하며, 생성 명령을 자동으로
+재실행하거나 worktree를 중복 생성하지 않습니다. 외부 `orca-cli` stub는 수정하지 않습니다.
 
 ## worktree 생성
 

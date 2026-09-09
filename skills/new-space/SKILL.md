@@ -15,6 +15,18 @@ branch를 요청한 이름으로 보정하고 base를 검증한 뒤에만 agent 
 
 ## 2. branch를 분류한다
 
+먼저 `scripts/context_cache.py project-get --repo <repo>`로 이 저장소에서 사용자가 기본값으로
+확인한 선호를 읽는다. 실제로 사용한 정책 파일이 더 있으면 각각 `--policy-file`로 전달한다.
+우선순위는 이번 요청의 명시적 선택, 현재 프로젝트 지침, 저장된 선호 순이다. 메모리가 없거나
+정책 hash가 달라 stale이면 필요한 항목을 기존 branch/base 확인에 함께 묻는다. 사용자가
+“앞으로 기본값으로 사용”할 뜻을 확인한 값만 `project-set --preferences-json <json>`으로 저장한다.
+한 번의 작업 선택을 자동으로 기본값으로 승격하지 않는다.
+
+저장 가능한 항목은 base 정책, branch 규칙, handoff 선호와 model 선호다. current worktree,
+worktree id, terminal handle, 현재 세션의 approval policy와 sandbox mode는 저장하거나 권한의
+근거로 재사용하지 않고 실행할 때마다 확인한다. 메모리는 저장소 밖 사용자 로컬 state에 두며
+Git common directory가 같은 linked worktree끼리 공유한다.
+
 사용자가 branch명을 지정했으면 우선한다. 그렇지 않으면 다음 기준으로 type을 고른다.
 
 | type | 적용할 때 |
@@ -55,9 +67,11 @@ preflight가 branch 충돌, 잘못된 ref 또는 모호한 base로 실패하면 
 
 ## 4. Orca worktree를 만들고 보정한다
 
-처음 Orca 명령을 쓰기 전에 `orca-cli` 스킬의 resolver로 실행 파일을 하나 선택하고 같은
-실행 파일의 `skills get orca-cli` 전체 가이드를 읽는다. 이 세션에서 이미 읽었다면 재사용한다.
-`status --json`을 확인한 뒤 `references/orca.md`의 생성 절차를 따른다.
+처음 Orca 명령을 쓰기 전에 `orca-cli` 스킬의 resolver로 실행 파일을 하나 선택하고
+`references/orca.md`의 캐시 절차를 따른다. 유효한 cache hit이면 해당 version에서 검토해 둔
+짧은 recipe를 사용한다. cache miss, 실행 파일·버전·stub·new-space 계약 변경 또는 Orca 명령
+오류가 있으면 같은 실행 파일의 `skills get orca-cli --full --json` 원문을 새로 읽고 recipe를
+갱신한다. 그 뒤 `status --json`을 확인하고 생성 절차를 따른다.
 
 독립 작업은 `--no-parent`가 기본이다. 사용자가 현재 branch에서 이어지는 stacked 작업이라고
 명시한 경우에만 `--parent-worktree active`를 사용한다. 생성 단계에서는 agent나 prompt를
