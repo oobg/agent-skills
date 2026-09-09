@@ -4,10 +4,12 @@
 
 ## Confidence
 
+Confidence는 주장한 범위 안에서 증거가 얼마나 충분한지를 나타낸다. Implementation Level은 기능이 어디까지 구현됐는지를 나타낸다. 둘은 같은 축이 아니다. 예를 들어 프론트 동작을 끝까지 확인한 주장은 CONFIRMED일 수 있지만, 그 사실만으로 persistence까지 확인했다고 주장하거나 L4를 줄 수 없다.
+
 | 값 | 기준 |
 | --- | --- |
-| CONFIRMED | 코드에서 동작을 끝까지 확인했다. handler, mutation, 조건 분기, render 결과가 위치와 함께 있다. |
-| PARTIAL | 일부는 구현됐지만 완결되지 않았다. UI와 프론트 mutation은 있으나 persistence, API, 실제 업로드가 없다. |
+| CONFIRMED | 주장한 범위의 동작을 끝까지 확인했다. 그 범위에 필요한 handler, mutation, 조건 분기, render 결과가 위치와 함께 있다. |
+| PARTIAL | 주장한 범위의 증거 체인이 일부만 확인됐다. |
 | INFERRED | 구조, 데이터 형태, 명칭, 주석으로 의도가 강하게 추론되지만 동작을 확인하지 못했다. |
 | UNKNOWN | 현재 소스만으로 판단할 수 없다. |
 
