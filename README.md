@@ -11,17 +11,22 @@
 | 스킬 | 하는 일 |
 | --- | --- |
 | [conventional-commits](skills/conventional-commits/SKILL.md) | 실제 변경을 확인해 한국어 Conventional Commits 메시지, 커밋 분할안, PR 제목, changelog 항목을 작성합니다. |
-| [feature-analysis](skills/feature-analysis/SKILL.md) | 프로토타입이나 프론트엔드 구현물에서 기능 구조, 상태, 업무 규칙, 워크플로우를 증거와 함께 복원하고 구현 수준과 격차를 정리합니다. |
 | [deploy-staging](skills/deploy-staging/SKILL.md) | 저장소 정책과 설정에 따라 staging에 배포하고 결과를 검증합니다. |
 | [new-space](skills/new-space/SKILL.md) | Orca에서 새 작업 공간을 만들고 브랜치명과 기준 commit을 검증합니다. |
 
-### 디자인과 웹 최적화
+### 분석
+
+| 스킬 | 하는 일 |
+| --- | --- |
+| [feature-analysis](skills/feature-analysis/SKILL.md) | 프로토타입이나 프론트엔드 구현물에서 기능 구조, 상태, 업무 규칙, 워크플로우를 증거와 함께 복원하고 구현 수준과 격차를 정리합니다. |
+| [search-visibility](skills/search-visibility/SKILL.md) | SEO, AEO, GEO, LLMO, NEO 관점에서 검색과 답변 엔진 노출을 진단하고 고칩니다. |
+
+### 디자인
 
 | 스킬 | 하는 일 |
 | --- | --- |
 | [dark-saas-design](skills/dark-saas-design/SKILL.md) | 다크 히어로와 라이트 본문을 잇는 한국어 B2B SaaS 랜딩, 소개, 요금 페이지를 구현합니다. |
 | [day0-design](skills/day0-design/SKILL.md) | Day0의 타이포그래피, 색, 상태, 모션 규칙으로 제품 UI를 구현합니다. |
-| [search-visibility](skills/search-visibility/SKILL.md) | SEO, AEO, GEO, LLMO, NEO 관점에서 검색과 답변 엔진 노출을 진단하고 고칩니다. |
 
 ### 미디어 제작
 
@@ -60,13 +65,13 @@ Node.js 환경에서는 [공식 `skills` CLI](https://github.com/vercel-labs/ski
 npx skills add oobg/agent-skills --global
 ```
 
-대화형 선택 없이 설치하려면 스킬과 에이전트를 명시합니다.
+대화형 선택 없이 Codex와 Claude Code에 함께 설치하려면 스킬과 에이전트를 명시합니다.
 
 ```bash
 npx skills add oobg/agent-skills \
   --global \
   --skill ux-writing \
-  --agent codex \
+  --agent codex claude-code \
   --yes
 ```
 
