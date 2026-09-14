@@ -34,15 +34,30 @@ python3 <skill-directory>/scripts/context_cache.py orca-remember \
 기존 recipe를 무효화합니다. 원인을 확인하고 현재 상태를 다시 조회하며, 생성 명령을 자동으로
 재실행하거나 worktree를 중복 생성하지 않습니다. 외부 `orca-cli` stub는 수정하지 않습니다.
 
-## worktree 생성
+## 프로젝트 종류와 repo 확인
 
-`worktree current --json` 또는 `repo list --json`에서 정확한 repo를 확인합니다. 독립 작업은
+현재 프로젝트의 Git top level 여부와 `repo list --json`의 exact absolute path 및 `kind`를 함께
+확인합니다. 기본 checkout을 포함한 Git 프로젝트는 Git worktree 흐름을 사용합니다. Git
+저장소가 아니면서 exact path가 `kind: folder`인 repo는 folder workspace 흐름을 사용합니다.
+미등록 non-Git 경로는 다음 명령으로 등록합니다.
+
+```text
+orca repo add --path <absolute-folder> --json
+```
+
+등록 응답만으로 진행하지 않습니다. `repo list --json`을 다시 읽고 exact path,
+`kind: folder`, repo id를 확인합니다. 같은 경로가 다른 kind로 나오거나 folder repo 등록을
+지원하지 않으면 중단합니다. non-Git 경로를 raw Git 저장소나 linked worktree로 바꾸지 않습니다.
+
+## Git worktree 생성
+
+`worktree current --json` 또는 `repo list --json`에서 정확한 Git repo를 확인합니다. 독립 작업은
 `--no-parent`, 명시된 stacked 작업은 `--parent-worktree active`로 생성합니다. 확정한 base를
 `--base-branch`로 전달하고 `--json`을 사용합니다. agent handoff는 생성 뒤 선택받으므로
 `--agent`와 `--prompt`를 넣지 않습니다.
 
-응답 전체를 반복해서 읽지 않습니다. 성공 envelope인지 확인한 뒤 worktree의 exact full id,
-path, branch를 한 번 파싱해 `scripts/new_space.py finalize --apply`에 전달합니다.
+성공 envelope에서 exact full id, path, branch를 한 번 파싱해
+`scripts/new_space.py finalize --apply`에 전달합니다.
 
 현재 Orca에는 공식 Git branch rename 명령이 없습니다. `finalize`는 생성 결과와 일치하는 새
 linked worktree가 clean이고 base가 정확하며 target branch가 없을 때만 `git branch -m`을
@@ -50,10 +65,48 @@ linked worktree가 clean이고 base가 정확하며 target branch가 없을 때�
 `branch`/`git.branch`와 `head`/`git.head`를 Git 결과와 대조합니다. 이 readback까지 통과해야
 생성이 성공한 것으로 봅니다.
 
+## folder workspace 생성
+
+readback한 folder repo id를 사용해 독립 workspace를 생성합니다. branch와 base 개념이 없으므로
+`--base-branch`를 붙이지 않습니다.
+
+```text
+orca worktree create --repo id:<repo-id> --name <task-name> --no-parent --json
+```
+
+stacked/parent는 사용자가 명시한 경우에만 version-matched 가이드에서 확인한 parent 옵션을
+`--no-parent` 대신 사용합니다. `--agent`와 `--prompt`는 넣지 않습니다. 성공 envelope에서 exact
+full id와 path를 한 번 파싱합니다. full id가 `<repo-id>::<path>::workspace:<id>` 형태여도 줄이거나
+재구성하지 않습니다.
+
+다음 read-only 검증을 실행합니다.
+
+```text
+python3 <skill-directory>/scripts/new_space.py workspace-verify \
+  --worktree <created-path> \
+  --repo-id <repo-id> \
+  --worktree-id <exact-full-worktree-id> \
+  --orca-executable <selected-executable>
+```
+
+helper는 같은 실행 파일로 `repo show --repo id:<repo-id> --json`과 full id의 `worktree show
+--json`을 호출합니다. 두 성공 envelope에서 exact repo id/path, `kind: folder`, worktree의 exact
+id/path와 `repoId`, `isMainWorktree: false`, 빈 `branch`/`head`와 빈 `git.branch`/`git.head`를
+확인합니다. folder workspace가 원래 folder와 같은 path를 쓰는 Orca 계약에 따라 repo와
+worktree path도 `--worktree`와 대조합니다. exit 0, `ok: true`, `workspace_kind: folder`가 모두
+확인되지 않거나 Git worktree 상태가 나오면 생성 성공으로 처리하지 않습니다. 이 검증은 Git
+명령을 호출하지 않습니다.
+
+기본값은 `--path-host local`이며 helper 실행 호스트에서 path가 실제 디렉터리여야 합니다. Orca
+실행 파일이 paired remote host를 대상으로 하고 그 path가 helper host에 보이지 않는다는 사실을
+확인한 경우에만 `--path-host remote`를 추가합니다. remote 모드는 worktree `hostId`가 문자열이고
+`local`이 아닌 경우에만 로컬 존재 검사 대신 서로 일치하는 두 Orca readback을 권위로 사용합니다.
+
 ## 동의 후 handoff
 
-Question에서 **시작하고 핸드오프**를 선택한 경우에만 생성된 worktree의 exact full id에 새
-terminal을 만듭니다. 새 worktree를 다시 만들지 않고 기본 terminal도 삭제하지 않습니다.
+Question에서 **시작하고 핸드오프**를 선택한 경우에만 생성·검증에 사용한 exact full id에 새
+terminal을 만듭니다. Git과 folder workspace 모두 id를 줄이거나 path로 대체하지 않습니다.
+새 workspace를 다시 만들지 않고 기본 terminal도 삭제하지 않습니다.
 
 이 스킬을 실행 중인 현재 대화의 provider와 model을 session metadata에서 확인해 같은 설정의
 agent command를 사용합니다. provider가 effort를 지원하고 현재 값이 알려져 있으면 그대로

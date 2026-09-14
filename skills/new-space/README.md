@@ -1,21 +1,22 @@
 # New Space
 
-Orca에서 새 작업용 Git worktree를 빠르게 만들고 요청한 branch와 base에서 정확히 시작했는지
-확인하는 스킬입니다. 작업을 6개 type 중 하나로 분류하고 영문 kebab-case slug를 만든 뒤,
-branch와 base를 한 번 확인해 기존 작업공간과 분리된 공간을 만듭니다.
+Orca에서 새 작업용 공간을 만들고 생성 결과를 정확히 검증하는 스킬입니다. Git 프로젝트에는
+요청한 branch와 base의 linked worktree를 만들고, folder 또는 non-Git 프로젝트에는 branch가
+없는 Orca folder workspace를 만듭니다.
 
 ## 사용 시점
 
 사용자가 `/new-space`를 직접 호출할 때 사용합니다. 일반적인 branch 대화, 단순 브랜치 전환이나
 기존 worktree 이동에는 자동으로 적용하지 않습니다.
 
-사용자가 지정한 base와 branch를 우선합니다. 별도 지정이 없으면 저장소의 실제 정책과 remote
-ref를 확인합니다. 활성 release 우선 정책이 있는 저장소에서는 아직 기본 branch에 merge되지
-않은 release를 찾고, 여러 개면 사용자가 선택하도록 합니다.
+먼저 현재 프로젝트가 Git 기반인지 Orca folder 기반인지 판정합니다. Git 기반에서만 사용자가
+지정한 base와 branch를 우선하고 저장소 정책과 remote ref를 확인합니다. folder 기반에서는
+branch/base를 묻거나 Git preflight를 실행하지 않습니다.
 
 ## 핵심 동작
 
 - 첫 사용과 cache 무효화 때 현재 Orca CLI의 version-matched `orca-cli` 원문을 확인합니다.
+- Git 프로젝트와 folder 또는 non-Git 프로젝트의 생성 절차를 처음부터 분리합니다.
 - 실행 파일·버전·stub·스킬 계약이 같으면 검토된 Orca recipe를 사용자 cache에서 재사용합니다.
 - 사용자가 앞으로의 기본값으로 확인한 프로젝트 선호를 저장소 밖 로컬 state에 저장합니다.
 - `feat`, `fix`, `refactor`, `chore`, `ci`, `docs` 기준과 2~4단어 slug로 branch를 제안합니다.
@@ -23,13 +24,21 @@ ref를 확인합니다. 활성 release 우선 정책이 있는 저장소에서�
 - 독립 작업과 현재 작업에서 이어지는 lineage를 구분합니다.
 - Orca가 Git branch에 붙인 prefix와 이름 변환을 안전한 조건에서 보정합니다.
 - 생성 전 기록한 base SHA와 생성 직후 HEAD의 양방향 차이를 검사합니다.
+- folder 프로젝트가 미등록이면 Orca에 등록하고 exact path, `kind: folder`, repo id를 다시
+  확인한 뒤 branch/base 없이 workspace를 생성합니다.
+- folder workspace의 repo id/path와 `kind: folder`, exact full id/path, `repoId`, non-main 상태와
+  빈 Git 필드를 `repo show`와 `worktree show` readback으로 검증합니다.
 - 기존 branch, 경로와 작업 내용을 덮어쓰거나 강제 정리하지 않습니다.
 - 생성과 검증 뒤 같은 AI model과 effort, 확인된 approval policy와 sandbox mode의 Codex CLI
   agent를 시작해 현재 내용을 넘길지 묻습니다. CLI가 일부 설정을 표현하지 못하면 그 한계를
   알리고 새 세션 기본값 사용 여부를 선택받습니다.
 
-Git 상태 확인과 검증은 Python 표준 라이브러리만 사용하는 보조 스크립트로 반복할 수 있습니다.
-`preflight`와 `verify`는 읽기 전용입니다. `finalize`는 기본적으로 보정 계획만 보여 주며,
+검증은 Python 표준 라이브러리만 사용하는 보조 스크립트로 반복할 수 있습니다. Git 전용
+`preflight`와 `verify`, folder 전용 `workspace-verify`는 읽기 전용입니다. `workspace-verify`는
+Git 명령을 호출하지 않으며 기본적으로 helper 실행 호스트의 디렉터리 존재도 확인합니다. paired
+remote 경로는 명시적 remote 모드에서 일치하는 Orca repo/worktree readback으로 확인합니다.
+이 모드는 worktree `hostId`가 문자열이고 `local`이 아닌 경우에만 허용합니다.
+`finalize`는 기본적으로 보정 계획만 보여 주며,
 `--apply`를 명시했을 때 새로 생성된 clean linked worktree의 branch만 보정합니다. 기존 branch,
 primary checkout, dirty worktree, base가 다른 worktree에는 적용하지 않습니다.
 
@@ -58,11 +67,15 @@ handoff를 선택하면 새 worktree를 다시 만들지 않고 생성된 공간
 새 Orca 작업공간을 만들어줘. base는 upstream/develop이고 독립 작업이야.
 ```
 
+```text
+/new-space 이 non-Git 폴더에서 실험용 문서 공간을 만들어줘.
+```
+
 ## 도구 요구 사항
 
-Orca 관리 작업공간 생성에는 현재 환경에 설치된 Orca CLI가 필요합니다. 검사 스크립트는 Git과
-Python 3.8 이상을 사용합니다. plain Git fallback은 Orca 비관리 저장소에서 사용자가 직접
-선택한 경우에만 적용합니다.
+작업공간 생성에는 folder workspace를 지원하는 현재 환경의 Orca CLI가 필요합니다. 검사
+스크립트는 Python 3.8 이상을 사용하며 Git 경로의 검사에만 Git이 필요합니다. Orca를 사용할 수
+없거나 folder readback이 일치하지 않으면 생성을 중단하며 raw Git으로 우회하지 않습니다.
 
 ## 구성
 
@@ -79,7 +92,8 @@ new-space/
 
 - [`SKILL.md`](SKILL.md): 이름, base, lineage 결정과 실행 경계를 설명합니다.
 - [`references/orca.md`](references/orca.md): 현재 Orca 가이드에 맞춘 생성과 결과 처리 규칙입니다.
-- [`scripts/new_space.py`](scripts/new_space.py): preflight와 생성 결과 검증을 수행합니다.
+- [`scripts/new_space.py`](scripts/new_space.py): Git preflight/finalize와 folder workspace의
+  read-only 검증을 수행합니다.
 - [`scripts/context_cache.py`](scripts/context_cache.py): 저장소 밖 프로젝트 선호와 검증된 Orca
   recipe cache의 유효성을 관리합니다.
 

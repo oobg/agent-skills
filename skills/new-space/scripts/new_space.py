@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Preflight and safely finalize a worktree created by the new-space skill."""
+"""Validate Git worktrees and Orca folder workspaces for the new-space skill."""
 
 import argparse
 import fnmatch
@@ -19,6 +19,15 @@ def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
         stderr=subprocess.PIPE,
         shell=False,
     )
+
+
+def ensure_git_repository(repo: Path) -> None:
+    result = git(repo, "rev-parse", "--is-inside-work-tree", check=False)
+    if result.returncode != 0 or result.stdout.strip() != "true":
+        raise ValueError(
+            "Git-only command requires a Git repository; "
+            "use the Orca folder workspace flow for a non-Git path"
+        )
 
 
 def resolve_commit(repo: Path, ref: str) -> str:
@@ -102,6 +111,7 @@ def active_releases(repo: Path, main_ref: str, release_glob: str) -> List[str]:
 
 def preflight(args: argparse.Namespace) -> int:
     repo = Path(args.repo).resolve()
+    ensure_git_repository(repo)
     if not branch_available(repo, args.branch):
         raise ValueError("branch already exists")
 
@@ -137,6 +147,7 @@ def preflight(args: argparse.Namespace) -> int:
 
 def verify(args: argparse.Namespace) -> int:
     repo = Path(args.worktree).resolve()
+    ensure_git_repository(repo)
     ensure_worktree(repo)
     branch = current_branch(repo)
     base = compare_base(repo, args.base_sha)
@@ -195,8 +206,109 @@ def orca_state(executable: str, worktree_id: str, repo: Path) -> Dict[str, str]:
     return {"branch": normalized[0], "head": heads[0]}
 
 
+def orca_object(
+    executable: str, command: List[str], object_name: str
+) -> Dict[str, object]:
+    result = subprocess.run(
+        [executable, *command, "--json"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=False,
+    )
+    payload = json.loads(result.stdout)
+    if not isinstance(payload, dict) or payload.get("ok") is not True:
+        raise ValueError(f"Orca {object_name} lookup did not succeed")
+    result_payload = payload.get("result")
+    if not isinstance(result_payload, dict) or not isinstance(
+        result_payload.get(object_name), dict
+    ):
+        raise ValueError(f"Orca response did not contain result.{object_name}")
+    return result_payload[object_name]
+
+
+def normalized_absolute_path(value: object, field: str) -> Path:
+    if not isinstance(value, str) or not Path(value).is_absolute():
+        raise ValueError(f"{field} must be an absolute path")
+    return Path(value).resolve()
+
+
+def workspace_verify(args: argparse.Namespace) -> int:
+    workspace_path = normalized_absolute_path(args.worktree, "--worktree")
+    if args.path_host == "local" and not workspace_path.is_dir():
+        raise ValueError("workspace path is not an existing directory on the helper host")
+
+    repo = orca_object(
+        args.orca_executable,
+        ["repo", "show", "--repo", f"id:{args.repo_id}"],
+        "repo",
+    )
+    if repo.get("id") != args.repo_id:
+        raise ValueError("Orca returned a different repo id")
+    if repo.get("kind") != "folder":
+        raise ValueError("Orca repo is not kind: folder")
+    repo_path = normalized_absolute_path(repo.get("path"), "Orca repo path")
+    if repo_path != workspace_path:
+        raise ValueError("Orca returned a different repo path")
+
+    worktree = orca_object(
+        args.orca_executable,
+        ["worktree", "show", "--worktree", f"id:{args.worktree_id}"],
+        "worktree",
+    )
+
+    if worktree.get("id") != args.worktree_id:
+        raise ValueError("Orca returned a different workspace id")
+    if worktree.get("repoId") != args.repo_id:
+        raise ValueError("Orca workspace repoId does not match --repo-id")
+    if normalized_absolute_path(worktree.get("path"), "Orca workspace path") != workspace_path:
+        raise ValueError("Orca returned a different workspace path")
+    host_id = worktree.get("hostId")
+    if args.path_host == "remote" and (
+        not isinstance(host_id, str) or not host_id or host_id == "local"
+    ):
+        raise ValueError("remote path mode requires a non-local Orca worktree hostId")
+    if worktree.get("isMainWorktree") is not False:
+        raise ValueError("Orca folder workspace must not be the main worktree")
+
+    nested = worktree.get("git")
+    if not isinstance(nested, dict):
+        raise ValueError("Orca response did not contain worktree.git")
+    empty_fields = {
+        "branch": worktree.get("branch"),
+        "head": worktree.get("head"),
+        "git.branch": nested.get("branch"),
+        "git.head": nested.get("head"),
+    }
+    nonempty = [name for name, value in empty_fields.items() if value != ""]
+    if nonempty:
+        raise ValueError(
+            "Orca readback is not a folder workspace; expected empty " + ", ".join(nonempty)
+        )
+
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "workspace_kind": "folder",
+                "repo_id": args.repo_id,
+                "worktree_id": args.worktree_id,
+                "path": str(workspace_path),
+                "path_host": args.path_host,
+                "host_id": host_id,
+                "is_main_worktree": False,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 0
+
+
 def finalize(args: argparse.Namespace) -> int:
     repo = Path(args.worktree).resolve()
+    ensure_git_repository(repo)
     ensure_worktree(repo)
     ensure_linked_worktree(repo)
     if "::" not in args.worktree_id:
@@ -281,6 +393,24 @@ def parser() -> argparse.ArgumentParser:
     finish.add_argument("--orca-executable", required=True)
     finish.add_argument("--apply", action="store_true")
     finish.set_defaults(run=finalize)
+
+    workspace = sub.add_parser(
+        "workspace-verify", help="verify an Orca folder workspace without invoking Git"
+    )
+    workspace.add_argument("--worktree", required=True)
+    workspace.add_argument("--repo-id", required=True)
+    workspace.add_argument("--worktree-id", required=True)
+    workspace.add_argument("--orca-executable", required=True)
+    workspace.add_argument(
+        "--path-host",
+        choices=("local", "remote"),
+        default="local",
+        help=(
+            "where the workspace path exists; remote skips the helper-host directory check "
+            "and relies on matching Orca repo/worktree readback"
+        ),
+    )
+    workspace.set_defaults(run=workspace_verify)
     return root
 
 
