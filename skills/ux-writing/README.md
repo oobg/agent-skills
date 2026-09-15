@@ -46,6 +46,10 @@
 - 과윤문과 장르 이탈도 실패로 봅니다.
 - 관점이나 실제 경험을 지어내지 않습니다.
 - AI 문체는 단일 표현으로 판정하지 않고 수사, 어휘 밀도, 구조 규칙성을 함께 봅니다.
+- 의심되는 패턴은 빈도보다 사용자 과업, 화면 상태, 장르와 보이스를 먼저 확인합니다.
+  확신이 낮으면 고치지 않고 보류합니다.
+- 윤문 뒤에는 원안에 없던 AI 신호나 과장이 다른 위치에 새로 생기지 않았는지 원안과
+  대조합니다. 이 역주입 점검은 판단형 절차라 자동 실패로 만들지 않습니다.
 - 정당한 대비와 불확실성, 필요한 목록, 짧은 UI 구조는 보존합니다.
 - 이모지, 곱슬따옴표, 대시 같은 스타일 신호는 문맥으로 판단합니다.
 - lint의 HARD 0은 좋은 글을 보증하지 않습니다.
@@ -88,6 +92,7 @@ Python 3.8 이상에서 실행합니다.
 python3 <ux-writing 스킬 폴더>/scripts/ai_lint.py <파일>
 python3 <ux-writing 스킬 폴더>/scripts/glossary_check.py <파일>
 python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>
+python3 <ux-writing 스킬 폴더>/scripts/markup_check.py <HTML 파일>
 ```
 
 - `ai_lint.py`: 결정적인 문법 오류와 스타일 신호 검사
@@ -95,10 +100,19 @@ python3 <ux-writing 스킬 폴더>/scripts/register_check.py <파일>
 - `register_check.py`: 해요체, 합니다체, 한다체, 음슴체, 명사형의 목표 어체
   일관성 검사. 음슴체와 명사형은 서로 안전하게 자동 구분하기 어려워 명확한 다른
   어체의 혼용만 잡으므로 사람이 직접 확인해야 하고, 그 확인도 best-effort입니다.
+- `markup_check.py`: HTML/HTM의 태그 균형과 `colspan`을 포함한 table 행의 열 폭 검사
 
 HARD 항목은 출력을 막지만 ADVISORY는 문맥을 확인하라는 신호입니다. 현재 HARD
 검사는 결정적 기계 오류와 모든 가운뎃점을 잡는 smoke check이며 전체 문장 품질을
 인증하지 않습니다.
+`ai_lint.py`는 HTML 문자 참조를 같은 길이로 정규화해 `&mdash;`, `&ldquo;`도
+리터럴 문자와 같은 패턴으로 검사합니다. 코드블록과 태그 속성은 기존처럼 제외하며,
+정규화한 수와 마스킹한 글자 수를 결과에 표시합니다.
+AI 문체를 다듬은 긴 글은 원안과 수정안을 대조해 실제로 고친 근거와 새로 생긴 신호를
+확인합니다. 단일 표현이나 빈도만으로 고치지 않으며, 대응이 불확실한 구간은 보류합니다.
+마크업 구조 검사는 HTML/HTM만 지원합니다. JSX, TSX와 Vue는 표현식과 템플릿 문법을
+HTML로 오인하지 않도록 성공 상태로 생략 사실을 알립니다. HTML의 `rowspan`, DOM 의미,
+접근성 적합성과 브라우저 복구 결과는 검사하지 않으므로 프로젝트 전용 도구를 함께 사용합니다.
 딥모드의 정서 적합성과 사실 보존, 실제 UI 동작과 접근성 연결은 원문과 제품 맥락을
 대조해 검토합니다.
 `<ux-writing 스킬 폴더>`는 현재 로드한 `SKILL.md`의 상위 폴더로 바꿉니다.
@@ -125,6 +139,7 @@ ux-writing/
 └── scripts/
     ├── ai_lint.py
     ├── glossary_check.py
+    ├── markup_check.py
     ├── patterns.json
     └── register_check.py
 ```

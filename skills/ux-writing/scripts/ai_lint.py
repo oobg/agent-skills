@@ -20,6 +20,7 @@ import sys
 import re
 import os
 import json
+import html
 
 # --- 패턴 정의는 patterns.json에서 읽는다 ---
 # 코드를 안 고치고 데이터만 고쳐서 패턴을 넣고 뺄 수 있게 분리했다.
@@ -53,6 +54,15 @@ COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 # 잘린다. 중괄호 중첩은 정규식으로 온전히 못 가른다. 파서를 들이지 않기로 한
 # 결정에 따라 의도된 경계로 둔다 — 잔여물이 남을 뿐 줄·열 위치는 보존된다.
 TAG_RE = re.compile(r"""</?[A-Za-z!?](?:[^<>"']|"[^"]*"|'[^']*')*>""", re.S)
+
+# 세미콜론까지 있는 HTML 문자 참조만 정규화한다. 세미콜론 없는 이름은 뒤 문맥에
+# 따라 해석이 달라질 수 있어 린트 입력에서 임의로 바꾸지 않는다.
+CHAR_REF_RE = re.compile(r"&(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9]+);")
+# 정규화한 값이 줄이나 열 해석을 바꾸면 뒤 패턴의 위치가 달라진다. 탭은
+# 줄을 나누지는 않지만 표시 열이 달라질 수 있어 함께 보수적으로 제외한다.
+POSITION_SENSITIVE_CHARS = frozenset(
+    "\r\n\t\v\f\x1c\x1d\x1e\x85\u2028\u2029"
+)
 
 
 def load_patterns():
@@ -210,6 +220,30 @@ def mask_markup(text):
     # 주석 → 태그 순서. 주석 안의 부등호가 태그 규칙에 먼저 걸리면 안 된다.
     text = COMMENT_RE.sub(blank, text)
     return TAG_RE.sub(blank, text), masked
+
+
+def normalize_char_refs(text):
+    """HTML 문자 참조를 표시 문자로 바꾸되 원본 길이와 줄 위치를 유지한다.
+
+    `&mdash;`는 `—      `처럼 첫 자리에 표시 문자를 놓고 나머지를 공백으로
+    채운다. 따라서 리터럴과 같은 패턴에 걸리면서 뒤 문자의 열 위치도 바뀌지 않는다.
+    줄이나 열 해석을 바꾸는 문자 참조와 알 수 없는 이름은 그대로 둔다.
+    반환: (정규화된 텍스트, 정규화한 문자 참조 수)
+    """
+    normalized = 0
+
+    def replace(match):
+        nonlocal normalized
+        raw = match.group()
+        decoded = html.unescape(raw)
+        if decoded == raw or any(ch in POSITION_SENSITIVE_CHARS for ch in decoded):
+            return raw
+        if len(decoded) > len(raw):
+            return raw
+        normalized += 1
+        return decoded + (" " * (len(raw) - len(decoded)))
+
+    return CHAR_REF_RE.sub(replace, text), normalized
 
 
 def snippet(line, idx, width=18):
@@ -487,6 +521,11 @@ def main():
     masked_chars = 0
     if is_markup_path(arg):
         body, masked_chars = mask_markup(body)
+    # 인라인 코드를 문자 참조보다 먼저 가린다. 코드 안의 `&mdash;`는 화면 문구가
+    # 아니므로 정규화 수에도, 대시 패턴에도 포함하지 않는다. x로 채우는 이유는
+    # lint()의 기존 문장 끝 콜론 오탐 방지 계약과 같다.
+    body = INLINE_CODE_RE.sub(lambda m: "x" * len(m.group()), body)
+    body, normalized_refs = normalize_char_refs(body)
     hard, advisory = lint(body, patterns)
     _, used = check_register_mix(body)
     streaks = check_ending_streak(body)
@@ -497,6 +536,8 @@ def main():
         print(f"  (코드블록 {skipped}줄은 검사 제외 — 예시·명령어는 의도된 것으로 본다)")
     if masked_chars:
         print(f"  (마크업 태그 {masked_chars}자는 검사 제외 — 문장이 아니라 구조로 본다)")
+    if normalized_refs:
+        print(f"  (HTML 문자 참조 {normalized_refs}건을 표시 문자로 정규화 — 원본 위치 유지)")
     sys.exit(1 if blocking else 0)
 
 

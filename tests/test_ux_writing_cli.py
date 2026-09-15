@@ -35,6 +35,8 @@ class UxWritingCliTests(unittest.TestCase):
             for name in ("glossary_check", "register_check"):
                 self.assertEqual(self.run_script(name, target, "--as").returncode, 2)
                 self.assertEqual(self.run_script(name, target, "one", "two").returncode, 2)
+            self.assertEqual(self.run_script("markup_check").returncode, 2)
+            self.assertEqual(self.run_script("markup_check", target, "extra").returncode, 2)
 
     def test_all_checkers_report_missing_target_without_traceback(self):
         missing = ROOT / "does-not-exist.md"
@@ -42,6 +44,11 @@ class UxWritingCliTests(unittest.TestCase):
             result = self.run_script(name, missing)
             self.assertEqual(result.returncode, 2)
             self.assertNotIn("Traceback", result.stderr)
+
+        missing_html = ROOT / "does-not-exist.html"
+        result = self.run_script("markup_check", missing_html)
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("Traceback", result.stderr)
 
     def test_ai_lint_rejects_invalid_pattern_schema(self):
         module = load_module("ai_lint")
@@ -67,6 +74,98 @@ class UxWritingCliTests(unittest.TestCase):
         hard, advisory = module.lint("이름·이메일·연락처\n보기·숨기기", [])
         self.assertEqual(len(hard["가운뎃점"]), 2)
         self.assertNotIn("가운뎃점(둘 묶기)", advisory)
+
+    def test_ai_lint_normalizes_entities_without_moving_positions(self):
+        module = load_module("ai_lint")
+        source = "앞 &mdash; 뒤 &ldquo;인용&rdquo; 끝"
+        normalized, count = module.normalize_char_refs(source)
+
+        self.assertEqual(count, 3)
+        self.assertEqual(len(normalized), len(source))
+        self.assertEqual(normalized.index("—"), source.index("&mdash;"))
+        self.assertEqual(normalized.index("“"), source.index("&ldquo;"))
+        self.assertEqual(normalized.index("”"), source.index("&rdquo;"))
+
+    def test_ai_lint_keeps_line_separator_entities_for_position_safety(self):
+        module = load_module("ai_lint")
+        source = "앞&#8232;뒤&#8233;끝"
+
+        normalized, count = module.normalize_char_refs(source)
+
+        self.assertEqual(count, 0)
+        self.assertEqual(normalized, source)
+
+    def test_ai_lint_masks_markup_and_code_before_normalizing_entities(self):
+        module = load_module("ai_lint")
+        source = '<div title="&mdash;">본문 &mdash; 설명</div>'
+        masked, _ = module.mask_markup(source)
+        normalized, count = module.normalize_char_refs(masked)
+        self.assertEqual(count, 1)
+        self.assertEqual(len(normalized), len(source))
+        self.assertEqual(normalized.index("—"), source.rindex("&mdash;"))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "copy.html"
+            target.write_text(
+                '<div title="&mdash;">본문 &mdash; 설명</div>\n'
+                '`&mdash;`\n```\n&ldquo;코드&rdquo;\n```\n',
+                encoding="utf-8",
+            )
+            result = self.run_script("ai_lint", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("대시: 1", result.stdout)
+        self.assertIn("곱슬따옴표: 0", result.stdout)
+        self.assertIn("HTML 문자 참조 1건", result.stdout)
+        self.assertIn("코드블록 1줄", result.stdout)
+        self.assertIn("마크업 태그", result.stdout)
+
+    def test_ai_lint_applies_hard_patterns_to_entities(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "copy.html"
+            target.write_text("<p>이름&middot;이메일</p>", encoding="utf-8")
+            result = self.run_script("ai_lint", target)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("가운뎃점: 1", result.stdout)
+        self.assertIn("HTML 문자 참조 1건", result.stdout)
+
+    def test_markup_check_accepts_balanced_table_with_colspan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "table.html"
+            target.write_text(
+                "<table><tr><th colspan='2'>제목</th></tr>"
+                "<tr><td>하나</td><td>둘</td></tr></table>",
+                encoding="utf-8",
+            )
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("구조 통과", result.stdout)
+
+    def test_markup_check_reports_tag_and_table_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "broken.html"
+            target.write_text(
+                "<main><span>문구</main>\n"
+                "<table><tr><td>하나</td></tr>"
+                "<tr><td>둘</td><td>셋</td></tr></table>",
+                encoding="utf-8",
+            )
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("<span>를 닫기 전에 </main>", result.stderr)
+        self.assertIn("table 행의 열 폭이 다릅니다", result.stderr)
+
+    def test_markup_check_skips_non_html_template_syntax(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "component.tsx"
+            target.write_text("export const View = () => <Widget value={a > b} />;", encoding="utf-8")
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("검사 생략", result.stdout)
 
     def test_register_check_supports_noun_ending_register(self):
         module = load_module("register_check")
