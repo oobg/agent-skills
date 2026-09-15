@@ -130,6 +130,23 @@ class UxWritingCliTests(unittest.TestCase):
         self.assertIn("가운뎃점: 1", result.stdout)
         self.assertIn("HTML 문자 참조 1건", result.stdout)
 
+    def test_ai_lint_keeps_prose_around_inline_code_in_register_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "copy.md"
+            target.write_text(
+                "이 값은 반드시 설정합니다.\n"
+                "다음 단계로 넘어갑니다.\n"
+                "기본 경로는 `config.json` 입니다.\n"
+                "캐시는 자동으로 지웁니다 `--no-cache`\n"
+                "로그는 파일로 남습니다 `app.log`\n",
+                encoding="utf-8",
+            )
+            result = self.run_script("ai_lint", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("합니다체로 일관됨 (5문장)", result.stdout)
+        self.assertNotIn("xxxx", result.stdout)
+
     def test_markup_check_accepts_balanced_table_with_colspan(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "table.html"
@@ -142,6 +159,38 @@ class UxWritingCliTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0)
         self.assertIn("구조 통과", result.stdout)
+
+    def test_markup_check_accepts_balanced_table_with_rowspan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "rowspan.html"
+            target.write_text(
+                "<table><tr><th>구분</th><th>항목</th><th>값</th></tr>"
+                "<tr><td rowspan='2'>공통</td><td>이름</td><td>서비스</td></tr>"
+                "<tr><td>버전</td><td>1.0</td></tr></table>",
+                encoding="utf-8",
+            )
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("구조 통과", result.stdout)
+
+    def test_markup_check_accepts_html5_nonvoid_self_closing_syntax(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "self-closing.html"
+            target.write_text("<div/><p>안내 문구입니다.</p></div>", encoding="utf-8")
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("구조 통과", result.stdout)
+
+    def test_markup_check_rejects_table_cells_outside_rows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "missing-row.html"
+            target.write_text("<table><td>하나</td><td>둘</td></table>", encoding="utf-8")
+            result = self.run_script("markup_check", target)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("<td>는 <tr> 안에 있어야 합니다", result.stderr)
 
     def test_markup_check_reports_tag_and_table_errors(self):
         with tempfile.TemporaryDirectory() as tmp:

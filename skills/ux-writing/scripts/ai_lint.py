@@ -521,16 +521,20 @@ def main():
     masked_chars = 0
     if is_markup_path(arg):
         body, masked_chars = mask_markup(body)
-    # 인라인 코드를 문자 참조보다 먼저 가린다. 코드 안의 `&mdash;`는 화면 문구가
-    # 아니므로 정규화 수에도, 대시 패턴에도 포함하지 않는다. x로 채우는 이유는
-    # lint()의 기존 문장 끝 콜론 오탐 방지 계약과 같다.
-    body = INLINE_CODE_RE.sub(lambda m: "x" * len(m.group()), body)
-    body, normalized_refs = normalize_char_refs(body)
-    hard, advisory = lint(body, patterns)
-    _, used = check_register_mix(body)
-    streaks = check_ending_streak(body)
+    # 검사 종류마다 인라인 코드의 마스킹 방식이 다르다. 정규식 패턴은 코드가
+    # 문장 끝 콜론을 만들지 않도록 x로 채우지만, 어체·리듬·명사구 집계는 코드
+    # 앞뒤의 실제 문장 끝을 보존해야 한다. 하나의 마스킹 결과를 재사용하면
+    # "설정합니다 `config.json`"이 "설정합니다 xxxxxxxxx"가 되어 어체 집계에서
+    # 빠지고 리포트에 x가 노출된다.
+    register_body = INLINE_CODE_RE.sub(lambda m: " " * len(m.group()), body)
+    register_body, normalized_refs = normalize_char_refs(register_body)
+    lint_body = INLINE_CODE_RE.sub(lambda m: "x" * len(m.group()), body)
+    lint_body, _ = normalize_char_refs(lint_body)
+    hard, advisory = lint(lint_body, patterns)
+    _, used = check_register_mix(register_body)
+    streaks = check_ending_streak(register_body)
     thresholds = {p["label"]: p["threshold"] for p in patterns if p.get("threshold")}
-    nounfinal = check_noun_final(body)
+    nounfinal = check_noun_final(register_body)
     blocking = report(hard, advisory, used, thresholds, streaks, nounfinal)
     if skipped:
         print(f"  (코드블록 {skipped}줄은 검사 제외 — 예시·명령어는 의도된 것으로 본다)")

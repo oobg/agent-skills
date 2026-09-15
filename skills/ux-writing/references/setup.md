@@ -45,7 +45,7 @@ Python 실행 기능이 없으면 수동 점검 폴백으로 바로 선호 설�
 
 ## 0단계 — 실행 기능이 있으면 Python 3.8+ 확인
 
-출력 게이트 스크립트(`ai_lint`, `glossary_check`, `register_check`)는 **Python 3.8
+출력 게이트 스크립트(`ai_lint`, `glossary_check`, `register_check`, `markup_check`)는 **Python 3.8
 이상**이 필요하다. 셸/명령 실행 기능이 제공될 때만 온보딩 맨 처음에 한 번
 확인한다.
 
@@ -109,7 +109,7 @@ python3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3,8) else 1)"
 지금 대화 안에서 자연스럽게 언급된 것만으로도(예: "그럼 ~해요체로 할게요") 다음에
 `conversation_search`로 찾아질 수 있다.
 
-- **스크립트 게이트(`ai_lint`/`register_check`/`glossary_check`)를 이 작업에서
+- **스크립트 게이트(`ai_lint`/`register_check`/`glossary_check`/`markup_check`)를 이 작업에서
   실제로 돌린다면** — 게이트가 파일을 읽으므로 반드시 적는다.
   - 어체를 정했으면 register.md의 전역/프로젝트 표에,
   - 도메인 단어를 정했으면 glossary.md 표에,
@@ -119,7 +119,7 @@ python3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3,8) else 1)"
   ~해요체로 진행할게요") 그걸로 충분하다. 다음에 -1단계가 대화 검색으로
   찾아 쓴다.
 
-파일에 적었다면, 그 뒤로는 출력 게이트(`ai_lint`, `glossary_check`,
+파일에 적었다면, 그 뒤로는 출력 게이트(`ai_lint`, `glossary_check`, `markup_check`,
 `register_check`)가 그 설정을 자동으로 반영한다.
 
 ## 스킬 파일을 못 고치는 환경이면

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """의존성 없는 HTML 구조 게이트.
 
-HTML/HTM 파일의 태그 균형과 표 행의 열 폭(colspan 포함)을 검사한다.
+HTML/HTM 파일의 태그 균형과 표 행의 열 폭(colspan, rowspan 포함)을 검사한다.
 JSX/TSX/Vue는 HTML과 문법이 달라 오탐을 피하기 위해 검사하지 않는다.
 
 종료 코드: 구조 오류 1, 통과 또는 안전한 미지원 형식 생략 0, 입력 오류 2.
@@ -46,6 +46,28 @@ class MarkupParser(HTMLParser):
         line, col = position or self.location()
         self.issues.append(f"L{line}:C{col}: {message}")
 
+    @staticmethod
+    def parse_span(tag, attrs, name, allow_zero=False):
+        raw = dict(attrs).get(name, "1")
+        try:
+            value = int(raw)
+            if value < 0 or (value == 0 and not allow_zero):
+                raise ValueError
+        except (TypeError, ValueError):
+            expected = "0 이상 정수" if allow_zero else "양의 정수"
+            raise ValueError(f"{tag}의 {name}은 {expected}여야 합니다: {raw!r}")
+        return value
+
+    def finish_row(self, table):
+        row = table["active_row"]
+        if row is None:
+            return
+        if row["occupied"]:
+            row["width"] = max(row["width"], max(row["occupied"]) + 1)
+        row["finished"] = True
+        table["pending_rowspans"] = row["next_rowspans"]
+        table["active_row"] = None
+
     def close_optional_for_start(self, tag):
         if not self.stack:
             return
@@ -69,38 +91,89 @@ class MarkupParser(HTMLParser):
             self.stack.append((tag, position))
 
         if tag == "table":
-            table = {"position": position, "rows": [], "active_row": None}
+            table = {
+                "position": position,
+                "rows": [],
+                "active_row": None,
+                "pending_rowspans": {},
+            }
             self.tables.append(table)
             self.table_stack.append(table)
-        elif tag == "tr" and self.table_stack:
+        elif tag == "tr":
+            if not self.table_stack:
+                self.add_issue("<tr>는 <table> 안에 있어야 합니다", position)
+                return
             table = self.table_stack[-1]
-            row = {"position": position, "width": 0}
+            self.finish_row(table)
+            pending = table["pending_rowspans"]
+            next_rowspans = {}
+            for column, remaining in pending.items():
+                if remaining is None:
+                    next_rowspans[column] = None
+                elif remaining > 1:
+                    next_rowspans[column] = remaining - 1
+            row = {
+                "position": position,
+                "width": max(pending, default=-1) + 1,
+                "occupied": set(pending),
+                "next_rowspans": next_rowspans,
+                "cursor": 0,
+            }
             table["rows"].append(row)
             table["active_row"] = row
-        elif tag in {"td", "th"} and self.table_stack:
+        elif tag in {"td", "th"}:
+            if not self.table_stack:
+                self.add_issue(f"<{tag}>는 <table> 안에 있어야 합니다", position)
+                return
             table = self.table_stack[-1]
             row = table["active_row"]
-            if row is not None:
-                raw_colspan = dict(attrs).get("colspan", "1")
-                try:
-                    colspan = int(raw_colspan)
-                    if colspan < 1:
-                        raise ValueError
-                except (TypeError, ValueError):
-                    self.add_issue(f"{tag}의 colspan은 양의 정수여야 합니다: {raw_colspan!r}")
-                    colspan = 1
-                row["width"] += colspan
+            if row is None:
+                self.add_issue(f"<{tag}>는 <tr> 안에 있어야 합니다", position)
+                return
+            try:
+                colspan = self.parse_span(tag, attrs, "colspan")
+            except ValueError as exc:
+                self.add_issue(str(exc), position)
+                colspan = 1
+            try:
+                rowspan = self.parse_span(tag, attrs, "rowspan", allow_zero=True)
+            except ValueError as exc:
+                self.add_issue(str(exc), position)
+                rowspan = 1
+
+            column = row["cursor"]
+            while any(index in row["occupied"] for index in range(column, column + colspan)):
+                column += 1
+            row["occupied"].update(range(column, column + colspan))
+            row["cursor"] = column + colspan
+            row["width"] = max(row["width"], column + colspan)
+            if rowspan == 0:
+                for index in range(column, column + colspan):
+                    row["next_rowspans"][index] = None
+            elif rowspan > 1:
+                for index in range(column, column + colspan):
+                    if index in row["next_rowspans"]:
+                        previous = row["next_rowspans"][index]
+                        if previous is None or previous >= rowspan - 1:
+                            continue
+                    row["next_rowspans"][index] = rowspan - 1
 
     def handle_startendtag(self, tag, attrs):
-        # HTML의 명시적 self-closing 태그는 균형 스택에 남기지 않는다.
-        if tag.lower() in {"td", "th", "tr", "table"}:
-            self.handle_starttag(tag, attrs)
-            self.handle_endtag(tag)
+        # HTML5에서 />는 void 요소가 아니면 시작 태그로 취급된다. XHTML처럼
+        # 모든 요소를 즉시 닫으면 <div/>본문</div> 같은 정상적인 HTML이
+        # 닫히지 않은 태그로 오인된다. void 요소는 handle_starttag가 이미
+        # 스택에 넣지 않으므로 여기서도 같은 경로를 쓴다.
+        self.handle_starttag(tag, attrs)
 
     def handle_endtag(self, tag):
         tag = tag.lower()
         if tag in VOID_ELEMENTS:
             return
+
+        if tag == "tr" and self.table_stack:
+            self.finish_row(self.table_stack[-1])
+        elif tag == "table" and self.table_stack:
+            self.finish_row(self.table_stack[-1])
 
         matching = next(
             (index for index in range(len(self.stack) - 1, -1, -1)
@@ -120,12 +193,13 @@ class MarkupParser(HTMLParser):
                 )
             del self.stack[matching:]
 
-        if tag == "tr" and self.table_stack:
-            self.table_stack[-1]["active_row"] = None
-        elif tag == "table" and self.table_stack:
+        if tag == "table" and self.table_stack:
             self.table_stack.pop()
 
     def finish(self):
+        for table in self.tables:
+            self.finish_row(table)
+
         for tag, position in self.stack:
             if tag not in OPTIONAL_END_TAGS:
                 self.add_issue(f"닫히지 않은 <{tag}> 태그입니다", position)

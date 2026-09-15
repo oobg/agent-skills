@@ -423,7 +423,7 @@ story title, 모달 헤더에서 다음 동작을 예고한다.
   자동 생략한다.
 - HTML/HTM 마크업을 수정했으면
   `python3 <ux-writing 스킬 폴더>/scripts/markup_check.py <파일>`도 실행한다. 태그 균형과
-  `colspan`을 포함한 table 행의 열 폭이 맞아야 통과한다. JSX, TSX와 Vue는 HTML과 다른
+  `colspan`, `rowspan`을 포함한 table 행의 열 폭이 맞아야 통과한다. JSX, TSX와 Vue는 HTML과 다른
   표현식을 안전하게 해석하지 못하므로 이 구조 게이트가 검사하지 않고 생략 사실을 알린다.
   해당 형식은 프로젝트의 빌드, 타입 검사나 전용 파서로 확인한다.
 
