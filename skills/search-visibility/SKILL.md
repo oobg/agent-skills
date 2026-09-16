@@ -28,8 +28,9 @@ description: 사이트가 검색엔진·답변엔진·생성 AI·네이버 AI �
 2. 한국 시장 대상인지 확인한다. 맞으면 NEO를 선택이 아니라 필수 레인으로 둔다.
 3. 코드 수정 권한이 있는지 확인한다. 없으면 고칠 위치를 파일·라인 수준으로 특정해 넘긴다.
 4. Phase 0 진단을 먼저 실행한다. 진단 없이 개별 레인 작업으로 들어가지 않는다.
-5. 축적된 도메인 지식이 필요한 국면이면 [ontology-boost.md](references/ontology-boost.md)를
-   연다. 온톨로지가 없으면 이 스킬은 관측만으로 완결된다.
+5. `~/.ontology/ontology.db`가 있고, [ontology-boost.md](references/ontology-boost.md)의
+   「언제 여는가」에 적힌 상황 중 하나에 해당할 때만 보강 모듈을 연다. DB가 없거나
+   해당 상황이 아니면 열지 않고 관측만으로 완결한다.
 
 ## 불변 원칙
 
@@ -153,8 +154,10 @@ llms.txt, robots.txt의 AI 크롤러 블록, JSON-LD, 의도 랜딩 골격, 진�
 
 질문 목록을 지어내지 않는다. 검색 콘솔의 검색어 목록, 고객 문의, 사용자 인터뷰처럼
 출처가 있는 질문에서 시작하고, 출처가 없으면 가설이라고 표시한다. 사용자가 질문 목록을
-갖고 있지 않으면 [ontology-boost.md](references/ontology-boost.md)로 후보를 회수하되,
-회수한 질문에도 근거를 붙여 관측된 질문과 구분한다.
+갖고 있지 않고 `~/.ontology/ontology.db`가 있으면 Phase 2는 보강 모듈의 사용 상황에
+해당하므로 [ontology-boost.md](references/ontology-boost.md)에서 후보를 회수한다. DB가
+없으면 사용자에게 묻거나 가설이라고 표시하고, 회수한 질문에도 근거를 붙여 관측된 질문과
+구분한다.
 
 ## Phase 3 — AEO, GEO, LLMO
 
@@ -211,9 +214,10 @@ llms.txt, robots.txt의 AI 크롤러 블록, JSON-LD, 의도 랜딩 골격, 진�
 
 ## 온톨로지 보강 (선택)
 
-`~/.ontology/ontology.db`가 있으면 [ontology-boost.md](references/ontology-boost.md)를 연다.
-질문 목록, 1차 소스 정의, 서비스명 표기, 과거 결정처럼 코드베이스에도 `curl` 응답에도
-없는 입력을 메운다. 없으면 열지 않고 본문대로 진행한다.
+`~/.ontology/ontology.db`가 **있고**, 질문 목록·1차 소스 정의·서비스명 표기·과거 결정 등
+[ontology-boost.md](references/ontology-boost.md)의 「언제 여는가」에 적힌 상황 중 하나에
+해당할 때만 연다. DB 존재만으로 열지 않는다. SEO 기술 체크리스트, `curl` 판정, 메타 글자
+수, 사이트맵 포함 여부, 구조화 데이터 문법 같은 순수 기술 검사는 열지 않고 본문대로 진행한다.
 
 **회수는 사이트의 현재 상태가 아니다.** 온톨로지에 무엇을 만들었다는 기록이 있어도
 `curl`로 확인되기 전까지는 없는 것으로 판정한다. 진단 점수표의 근거 칸에는 관측 결과만 적는다.
