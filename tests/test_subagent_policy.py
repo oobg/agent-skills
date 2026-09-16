@@ -64,6 +64,24 @@ class SubagentPolicyTests(unittest.TestCase):
 
     def test_marker_and_rule_contracts_are_strict(self):
         base = SOURCE.read_text(encoding="utf-8")
+
+        def without_rule_body(source, rule_id):
+            marker = f"- <!-- rule:{rule_id} -->"
+            marker_start = source.index(marker)
+            body_start = source.index("\n", marker_start) + 1
+            next_rule = source.find("- <!-- rule:", body_start)
+            section_end = source.index(POLICY.END, body_start)
+            body_end = next_rule if next_rule != -1 else section_end
+            return source[:body_start] + source[body_end:]
+
+        def without_rule(source, rule_id):
+            marker = f"- <!-- rule:{rule_id} -->"
+            rule_start = source.index(marker)
+            next_rule = source.find("- <!-- rule:", rule_start + len(marker))
+            section_end = source.index(POLICY.END, rule_start)
+            rule_end = next_rule if next_rule != -1 else section_end
+            return source[:rule_start] + source[rule_end:]
+
         invalid = [
             b"no markers",
             (POLICY.START + "\n- <!-- rule:ok -->\n  body\n").encode(),
@@ -72,14 +90,8 @@ class SubagentPolicyTests(unittest.TestCase):
                 "<!-- rule:min-delegation -->",
                 "<!-- rule:main-orchestrator -->",
             ).encode(),
-            base.replace(
-                "- <!-- rule:min-delegation -->\n  필요한 최소 깊이와 최소 수의 에이전트를 사용합니다. 독립 작업은 공유 상태와 통합 경계를 확인한 뒤 병렬화합니다.\n",
-                "- <!-- rule:min-delegation -->\n",
-            ).encode(),
-            base.replace(
-                "- <!-- rule:model-explicit -->\n  서브에이전트를 호출할 때 배정 모델을 명시합니다.\n",
-                "",
-            ).encode(),
+            without_rule_body(base, "min-delegation").encode(),
+            without_rule(base, "model-explicit").encode(),
         ]
         for source in invalid:
             with self.subTest(source=source[:30]):
