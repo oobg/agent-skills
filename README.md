@@ -6,6 +6,32 @@
 
 ## 스킬
 
+### 질문과 지식 관리
+
+| 스킬 | 하는 일 |
+| --- | --- |
+| [question-design](skills/question-design/SKILL.md) | 질문과 프롬프트의 전제와 범위를 다듬고 기획, 전략, 분석 문서를 여러 관점에서 검토합니다. |
+| [domain-ontology](skills/domain-ontology/SKILL.md) | 회사, 개인, 작업 방식, 과거 결정처럼 축적된 지식이 필요한 요청에서 온톨로지를 읽고 근거를 제시합니다. |
+
+### 문서와 글쓰기
+
+| 스킬 | 하는 일 |
+| --- | --- |
+| [resume-assistant](skills/resume-assistant/SKILL.md) | 지원자가 제공한 사실을 보존하면서 이력서와 경력기술서를 작성, 수정, 재구성합니다. |
+| [resume-evaluator](skills/resume-evaluator/SKILL.md) | 이력서의 근거를 JD와 대조해 정보의 충분성, 불일치, 확인할 질문을 진단합니다. 채용 여부나 ATS 통과를 판정하지 않습니다. |
+| [ux-writing](skills/ux-writing/SKILL.md) | 제품 UI와 공개 문서의 의미와 보이스를 지키면서 문구를 다듬고 문체 검사를 제공합니다. |
+
+Claude Code에서는 이 저장소의 `ux-writing` 플러그인을 설치하면 기존 독립
+`/ux-writing` 스킬을 유지하면서 `/ux-writing:deep` 명령으로 딥모드를 바로
+호출할 수 있습니다. 이 명령은 별도 스킬이 아니라 기존 스킬의
+`references/deep-mode.md`로 연결되는 얇은 진입점입니다.
+
+`resume-assistant`는 문서를 만드는 스킬이고 `resume-evaluator`는 제공된 근거의
+충분성을 진단하는 스킬입니다. 둘 다 수치나 역할을 지어내지 않으며 평가 결과를
+채용 판정으로 바꾸지 않습니다. 같은 지원자의 과거 기록이 필요할 때만 각 스킬의
+`references/ontology-boost.md`를 선택해서 입력을 보강할 수 있습니다. 온톨로지
+조회는 판정 권한을 넓히거나 새 정보를 자동 저장하지 않습니다.
+
 ### 코딩과 개발 운영
 
 | 스킬 | 하는 일 |
@@ -34,27 +60,6 @@
 | --- | --- |
 | [engineering-shorts](skills/engineering-shorts/SKILL.md) | 공학 설명 쇼츠를 대본, CLEAN 이미지, INFO 편집, 영상, 최종 검수 순서로 설계합니다. |
 | [gpt-image-gen](skills/gpt-image-gen/SKILL.md) | `/gpt-image-gen`을 직접 호출했을 때만 이미지를 생성합니다. |
-
-### 문서와 글쓰기
-
-| 스킬 | 하는 일 |
-| --- | --- |
-| [resume-assistant](skills/resume-assistant/SKILL.md) | 지원자가 제공한 사실을 보존하면서 이력서와 경력기술서를 작성, 수정, 재구성합니다. |
-| [resume-evaluator](skills/resume-evaluator/SKILL.md) | 이력서의 근거를 JD와 대조해 정보의 충분성, 불일치, 확인할 질문을 진단합니다. 채용 여부나 ATS 통과를 판정하지 않습니다. |
-| [ux-writing](skills/ux-writing/SKILL.md) | 제품 UI와 공개 문서의 의미와 보이스를 지키면서 문구를 다듬고 문체 검사를 제공합니다. |
-
-`resume-assistant`는 문서를 만드는 스킬이고 `resume-evaluator`는 제공된 근거의
-충분성을 진단하는 스킬입니다. 둘 다 수치나 역할을 지어내지 않으며 평가 결과를
-채용 판정으로 바꾸지 않습니다. 같은 지원자의 과거 기록이 필요할 때만 각 스킬의
-`references/ontology-boost.md`를 선택해서 입력을 보강할 수 있습니다. 온톨로지
-조회는 판정 권한을 넓히거나 새 정보를 자동 저장하지 않습니다.
-
-### 질문과 지식 관리
-
-| 스킬 | 하는 일 |
-| --- | --- |
-| [question-design](skills/question-design/SKILL.md) | 질문과 프롬프트의 전제와 범위를 다듬고 기획, 전략, 분석 문서를 여러 관점에서 검토합니다. |
-| [domain-ontology](skills/domain-ontology/SKILL.md) | 회사, 개인, 작업 방식, 과거 결정처럼 축적된 지식이 필요한 요청에서 온톨로지를 읽고 근거를 제시합니다. |
 
 ## 설치
 
@@ -88,6 +93,19 @@ npx skills remove --global
 `resume-assistant`, `resume-evaluator`, `new-space`, `deploy-staging`은 현재
 `lifecycle.json`의 프로바이더 동기화 대상에 등록되어 있지 않으므로, 위 `skills`
 CLI에서 직접 선택해야 합니다.
+
+Claude Code에 딥모드 명령을 사용자 범위로 등록하려면 이 저장소를 로컬
+마켓플레이스로 추가한 뒤 플러그인을 설치합니다.
+
+```bash
+claude plugin marketplace add <agent-skills 저장소 경로> --scope user
+claude plugin install ux-writing@oobg-agent-skills --scope user
+```
+
+등록 후 `/ux-writing:deep <원문 또는 현재 대상>`으로 호출합니다. Codex의 사용자
+프롬프트는 `/prompts:<이름>` 형식을 사용하므로 정확한 `/ux-writing:deep` 사용자
+명령 별칭은 등록할 수 없습니다. 기존 `ux-writing` 스킬에
+`/ux-writing:deep`을 텍스트 모드 지정으로 적는 동작은 그대로 유지합니다.
 
 ## 저장소 구조
 
