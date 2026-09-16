@@ -8,6 +8,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
+PUBLIC_CASES = ROOT / "tests" / "fixtures" / "public-evals" / "trigger-cases.json"
 
 
 def load(name: str):
@@ -96,6 +97,12 @@ class TriggerCaseTests(unittest.TestCase):
     def test_suite_loads_and_declares_both_expectations(self):
         expectations = {case["expect"] for case in self.payload["cases"]}
         self.assertEqual({"recall", "skip"}, expectations)
+
+    def test_public_fixture_loads_as_synthetic_cases(self):
+        payload = EVAL.load_cases(PUBLIC_CASES)
+        self.assertIs(payload.get("synthetic"), True)
+        self.assertEqual("domain-ontology", payload.get("skill"))
+        self.assertEqual({"recall", "skip"}, {case["expect"] for case in payload["cases"]})
 
     def test_no_case_carries_the_nudge_it_is_testing_for(self):
         # The question is whether the skill fires without being told to. A case that
@@ -295,6 +302,29 @@ class TriggerCaseTests(unittest.TestCase):
         output = buffer.getvalue()
         self.assertIn("--run", output)
         self.assertIn("사용량이 차감된다", output)
+
+    def test_public_fixture_dry_run_calls_no_agent_and_writes_no_report(self):
+        def landmine(*args, **kwargs):
+            raise AssertionError("dry-run에서 agent subprocess를 호출하지 않아야 한다")
+
+        original = EVAL.subprocess.run
+        EVAL.subprocess.run = landmine
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                report = Path(tmp) / "report.json"
+                buffer = io.StringIO()
+                with redirect_stdout(buffer):
+                    exit_code = EVAL.main([
+                        "--cases", str(PUBLIC_CASES),
+                        "--cwd", str(ROOT),
+                        "--out", str(report),
+                    ])
+                self.assertFalse(report.exists())
+        finally:
+            EVAL.subprocess.run = original
+
+        self.assertEqual(0, exit_code)
+        self.assertIn("실제로 채점하려면 --run", buffer.getvalue())
 
 
 class RevisionLogTests(unittest.TestCase):

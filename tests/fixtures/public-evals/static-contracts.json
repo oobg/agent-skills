@@ -1,0 +1,55 @@
+{
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "dark-saas-missing-external-route",
+      "kind": "positive",
+      "target": "skills/dark-saas-design/SKILL.md",
+      "all": [
+        "이 저장소에 포함되지 않은 외부 선택 경로다",
+        "진단만 요청한 작업을 이 스킬의 구현 작업으로 바꾸지 않는다"
+      ],
+      "none": []
+    },
+    {
+      "id": "feature-analysis-keeps-scope",
+      "kind": "negative",
+      "target": "skills/feature-analysis/SKILL.md",
+      "all": [
+        "기능 역기획을 코드 품질 리뷰·시각 감사·새 PRD 작성으로 바꾸어 대신 수행하지 않으며",
+        "현재 스킬의 분석 범위와 산출물 계약을 조용히 넓히지 않는다"
+      ],
+      "none": []
+    },
+    {
+      "id": "domain-ontology-requires-tenant",
+      "kind": "execution",
+      "target": "skills/domain-ontology/SKILL.md",
+      "all": [
+        "Ask before ingesting or mutating (never write silently)",
+        "`--tenant` is required"
+      ],
+      "none": []
+    },
+    {
+      "id": "question-design-gates-external-calls",
+      "kind": "execution",
+      "target": "skills/question-design/SKILL.md",
+      "all": [
+        "사용자의 구독·API를 쓰므로 현재 대화에서 호출 범위에",
+        "대한 명시적 동의를 확인"
+      ],
+      "none": []
+    },
+    {
+      "id": "new-space-does-not-bypass-orca",
+      "kind": "negative",
+      "target": "skills/new-space/SKILL.md",
+      "all": [
+        "raw Git 또는 `git worktree add`로 우회하지 않는다",
+        "중단해 원인을 보고한다"
+      ],
+      "none": []
+    }
+  ]
+}

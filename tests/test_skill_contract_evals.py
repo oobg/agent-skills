@@ -21,10 +21,20 @@ class StaticSkillContractTests(unittest.TestCase):
 
     def test_current_repository_contracts_pass(self):
         root = Path(__file__).parents[1]
-        suite = root / "evals" / "static-contracts.json"
-        if not suite.exists():
-            self.skipTest("로컬 평가 suite는 공개 clone에 포함되지 않는다")
+        suite = root / "tests" / "fixtures" / "public-evals" / "static-contracts.json"
+        self.assertTrue(suite.is_file(), "공개 정적 계약 fixture가 필요하다")
         self.assertEqual(MODULE.evaluate(root, suite), [])
+
+    def test_public_contract_fails_when_a_required_rule_is_replaced(self):
+        root = Path(__file__).parents[1]
+        public_suite = root / "tests" / "fixtures" / "public-evals" / "static-contracts.json"
+        payload = json.loads(public_suite.read_text(encoding="utf-8"))
+        payload["cases"][0]["all"][0] = "synthetic rule that is deliberately absent"
+        with tempfile.TemporaryDirectory() as tmp:
+            suite = Path(tmp) / "static-contracts.json"
+            suite.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            errors = MODULE.evaluate(root, suite)
+        self.assertTrue(any("missing required" in error for error in errors))
 
     def test_cli_reports_a_missing_local_or_explicit_suite(self):
         with tempfile.TemporaryDirectory() as tmp:
