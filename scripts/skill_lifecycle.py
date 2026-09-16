@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "lifecycle.json"
 VALID_STATES = {"candidate", "active", "pinned", "parked", "retired"}
+VALID_PROVIDER_MODES = {"managed", "external"}
 
 
 def load_config(path: Path) -> dict:
@@ -32,6 +33,21 @@ def load_config(path: Path) -> dict:
     if unknown:
         raise ValueError(f"invalid skill status: {sorted(unknown)}")
     declared_providers = set(config.get("providers", {}))
+    provider_modes = config.get("provider_modes", {})
+    if not isinstance(provider_modes, dict):
+        raise ValueError("provider_modes must be a map of provider names to modes")
+    unknown_mode_providers = set(provider_modes) - declared_providers
+    if unknown_mode_providers:
+        raise ValueError(
+            f"provider_modes references unknown providers: {sorted(unknown_mode_providers)}"
+        )
+    invalid_modes = {
+        name: mode
+        for name, mode in provider_modes.items()
+        if not isinstance(mode, str) or mode not in VALID_PROVIDER_MODES
+    }
+    if invalid_modes:
+        raise ValueError(f"invalid provider modes: {invalid_modes}")
     for name, meta in config.get("skills", {}).items():
         configured = meta.get("providers", [])
         if not isinstance(configured, list) or not all(isinstance(item, str) for item in configured):
@@ -137,6 +153,18 @@ def concept_candidates(config: dict) -> list[dict]:
     return candidates
 
 
+def provider_mode(config: dict, provider: str) -> str:
+    return config.get("provider_modes", {}).get(provider, "managed")
+
+
+def print_external_providers(config: dict) -> None:
+    for provider, folder in config.get("providers", {}).items():
+        if provider_mode(config, provider) != "external":
+            continue
+        path = Path(folder).expanduser()
+        print(f"external   {provider:7} {path} (unverified; skipped)")
+
+
 def expected_links(config: dict) -> list[tuple[str, Path, Path]]:
     result = []
     for name, meta in sorted(config.get("skills", {}).items()):
@@ -144,6 +172,8 @@ def expected_links(config: dict) -> list[tuple[str, Path, Path]]:
             continue
         source = (ROOT / "skills" / name).resolve()
         for provider in meta.get("providers", []):
+            if provider_mode(config, provider) == "external":
+                continue
             result.append(
                 (provider, Path(config["providers"][provider]).expanduser() / name, source)
             )
@@ -156,7 +186,9 @@ def owned_link(link: Path, source: Path) -> bool:
 
 def sync(config: dict, apply: bool) -> int:
     errors = 0
+    print_external_providers(config)
     expected = {(link, source) for _, link, source in expected_links(config)}
+    declared_skills = set(config.get("skills", {}))
 
     for provider, link, source in expected_links(config):
         if not (source / "SKILL.md").is_file():
@@ -177,14 +209,18 @@ def sync(config: dict, apply: bool) -> int:
 
     canonical = (ROOT / "skills").resolve()
     for provider, folder in config.get("providers", {}).items():
+        if provider_mode(config, provider) == "external":
+            continue
         base = Path(folder).expanduser()
         if not base.is_dir():
             continue
         for link in base.iterdir():
             if not link.is_symlink():
                 continue
+            if link.name not in declared_skills:
+                continue
             target = link.resolve(strict=False)
-            if canonical not in target.parents:
+            if target != canonical / link.name:
                 continue
             if (link, target) in expected:
                 continue

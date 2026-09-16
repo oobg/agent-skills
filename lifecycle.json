@@ -13,6 +13,9 @@
     "gemini": "~/.gemini/skills",
     "grok": "~/.grok/skills"
   },
+  "provider_modes": {
+    "claude": "external"
+  },
   "skills": {
     "conventional-commits": {
       "status": "active",
