@@ -36,7 +36,8 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 짧은 섹션 둘(숫자 카드 + 도식, 그림 + 목록)을 한 줄에 놓을 때 쓴다. `<div class="d0-split">` 안에 `section.d0-section` 두 개.
 
 - 960px 이상에서 2열, 그 아래는 1열. 열 사이 48px.
-- `align-items: start`라 짧은 섹션은 제 높이만 차지한다. 옆 섹션 높이에 맞춰 늘어나 아래가 비지 않는다.
+- 기본은 `align-items: start`라 짧은 섹션은 제 높이만 차지한다. 옆 섹션 높이에 맞춰 늘어나 아래가 비지 않는다.
+  두 섹션이 모두 무대 위 그림이면 아래 무대 정렬 변형(`data-align="stage"`)이 기본이다.
 - 마지막이 아닌 `.d0-split` 안 섹션은 둘 다 아래 패딩 32px(모바일 24px)을 지킨다. 오른쪽 섹션이 `:last-child`라 `padding-bottom: 0`을 받는 것을
   `.d0-split:not(:last-child) > .d0-section`이 되돌린다(이 규칙이 없으면 split 아래 여백이 왼쪽 열만큼만 남는다).
 - 각 섹션은 자기 `border-top`을 그대로 둔다. 데스크톱에서는 구분선이 열 사이에서 끊겨 보이는데, 의도한 모양이다.
@@ -54,7 +55,7 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
   `figure`는 `grid-row: span 2` + `subgrid`로 무대·캡션 행을 이어받는다. 낮은 쪽 무대가 늘어나고 SVG는 무대 세로 가운데에 놓인다.
 - 섹션 직계 자식은 섹션 머리 `header` 하나와 `figure` 하나뿐이다. 섹션 설명 `p`는 `header` 안에 둔다(섹션 직계에 두면 행이 어긋난다).
 - 섹션의 `border-top`·패딩은 그대로다. 960px 미만(1열)에서는 변형이 풀려 기본 쌓기로 돌아간다.
-- subgrid를 못 쓰는 브라우저는 `@supports` 폴백으로 섹션을 늘리고(`align-items: stretch`) 무대가 남는 높이를 채운다. 무대 높이는 맞고, 머리·캡션 줄 수가 다르면 그 줄만 조금 어긋난다.
+- subgrid를 못 쓰는 브라우저는 `@supports` 폴백으로 섹션을 늘리고(`align-items: stretch`) 무대가 남는 높이를 채운다. 무대 아래 끝과 캡션 줄은 맞고, 머리 높이가 다르면 무대 위 끝이 그 차만큼 어긋난다.
 
 ```html
 <div class="d0-split" data-align="stage">
@@ -279,6 +280,7 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
   .d0-split[data-align="stage"] > .d0-section { grid-row: span 3; grid-template-rows: subgrid; align-content: stretch; }
   .d0-split[data-align="stage"] > .d0-section > .d0-fig { grid-row: span 2; grid-template-rows: subgrid; align-content: stretch; }
   .d0-split[data-align="stage"] .d0-fig__stage { align-content: center; }
+  .d0-split[data-align="stage"] .d0-section-head { align-content: start; } /* 낮은 쪽 머리의 h2가 행 높이로 늘어나지 않게 */
   @supports not (grid-template-rows: subgrid) {
     .d0-split[data-align="stage"] { grid-template-rows: none; }
     .d0-split[data-align="stage"] > .d0-section { grid-row: auto; grid-template-rows: auto 1fr; }

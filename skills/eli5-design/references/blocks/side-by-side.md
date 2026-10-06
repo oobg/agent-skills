@@ -13,6 +13,49 @@
 
 - `data-variant="mock"`(시안): 각 열이 직접 눌러 보는 미니 프로토타입이다. 안의 버튼이 실제로 반응한다.
 - `data-variant="decision"`(결정): 같은 순서의 `장점·비용·위험` 행. 추천 열에만 추천 이유 한 줄(`.d0-option__why`)을 붙인다.
+- **와이어 카드(`.d0-option__wire`).** 옵션 카드마다 h3 바로 아래 글자 없는 와이어프레임 SVG(`role="img"` + `<title>`)를 두면 이 블록은
+  **그림 블록으로 인정된다.** 수치 없는 결정 비교(어느 구조·배치로 갈까)의 대표 도식은 이 형태다. 결정 변형의 행과 함께 쓴다.
+
+## 와이어 카드 스니펫
+
+```html
+<div class="d0-sbs" data-variant="decision">
+  <article class="d0-option">
+    <h3>A안: 순서까지 고정</h3>
+    <svg class="d0-option__wire" viewBox="0 0 240 140" role="img" aria-labelledby="oa-t">
+      <title id="oa-t">A안: 모든 페이지가 같은 칸 네 개를 같은 순서로 쓴다</title>
+      <rect class="d0-s-frame" x="1" y="1" width="238" height="138" rx="10"/>
+      <rect class="d0-s-accent" x="16" y="16" width="208" height="20" rx="5"/>
+      <rect class="d0-s-fill" x="16" y="44" width="208" height="20" rx="5"/>
+      <rect class="d0-s-fill" x="16" y="72" width="208" height="20" rx="5"/>
+      <rect class="d0-s-fill" x="16" y="100" width="208" height="20" rx="5"/>
+    </svg>
+    <dl class="d0-option__rows"><dt>장점</dt><dd>모든 페이지가 같아요.</dd><dt>위험</dt><dd>틀에 안 맞는 요청이 막혀요.</dd></dl>
+  </article>
+  <article class="d0-option" data-selected>
+    <h3>B안: 조각만 고정</h3>
+    <svg class="d0-option__wire" viewBox="0 0 240 140" role="img" aria-labelledby="ob-t">
+      <title id="ob-t">B안: 조각 모양은 같고, 고르는 조각과 순서는 페이지마다 다르다</title>
+      <rect class="d0-s-frame" x="1" y="1" width="238" height="138" rx="10"/>
+      <rect class="d0-s-accent" x="16" y="16" width="100" height="48" rx="6"/>
+      <rect class="d0-s-fill" x="124" y="16" width="100" height="48" rx="6"/>
+      <rect class="d0-s-zone" x="16" y="76" width="208" height="44" rx="6"/>
+    </svg>
+    <dl class="d0-option__rows"><dt>장점</dt><dd>요청마다 맞게 조립해요.</dd><dt>위험</dt><dd>원칙 점검이 필요해요.</dd></dl>
+    <p class="d0-option__why">정함: 조각 모양만 지키면 돼요.</p>
+  </article>
+</div>
+```
+
+```css
+/* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
+.d0-option__wire { display: block; width: 100%; height: auto; }
+.d0-option[data-selected] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
+```
+
+- SVG는 글자 없음(라벨 크기 게이트 밖). 이름과 뜻은 h3·`<title>`·행이 말한다. 카드마다 같은 viewBox·같은 프레임 크기를 쓴다.
+- 카드마다 blue 표식(`d0-s-accent`·`d0-s-zone`)은 하나씩, 두 안의 **차이 나는 자리**에 둔다. 회색만인 와이어는 금지다.
+- 결정이 이미 났으면 고른 카드에 `data-selected`, 고르기 버튼은 빼고 이유 한 줄(`.d0-option__why`)만 둔다.
 
 ## 스니펫
 
@@ -85,3 +128,4 @@ document.querySelectorAll('.d0-sbs').forEach(function (group) {
 
 - 이유 없는 추천 배지, 추천안만 크고 자세한 열, 4열 이상.
 - 차이를 문단으로만 설명, 눌러도 반응하지 않는 가짜 프로토타입.
+- 와이어 카드 SVG 안 글자, 카드마다 다른 viewBox·프레임 크기, `<title>` 없는 와이어.

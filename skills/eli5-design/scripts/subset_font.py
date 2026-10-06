@@ -200,6 +200,7 @@ def main() -> int:
             print(f"  suggest: {c} (U+{ord(c):04X}) -> {hint}", file=sys.stderr)
 
     result, removed = inline_font(source, font_block(woff2))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(result, encoding="utf-8")
     print(f"chars: {len(chars)}  woff2: {len(woff2)} bytes  links removed: {removed}  output: {out_path}")
     return 0

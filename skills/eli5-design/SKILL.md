@@ -53,7 +53,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
      디바이더는 섹션 경계 1px grey-100과 행 목록의 행 구분선만 쓴다.
    - **그림 무대.** 도식 `figure`는 `data-stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고
      figcaption은 패널 밖 아래 13px grey-600. SVG 선은 기본 1.5·강조 2.5, round cap/join, 노드 그림자 없음.
-   - **색은 6:3:1로 섞는다.** 첫 화면(1280×800) 진한 포인트(채움·선) 1.2% 이상·전체(옅은 면 포함) 3~15%, 넓은 blue-light 무대로 전체만 채우지 않는다. 회색만으로 된 도식·카드 묶음 금지.
+   - **색은 6:3:1로 섞는다.** 첫 화면(1280×800) 진한 포인트(채움·선) 1.2% 이상·전체(옅은 면 포함) 3~15%, 375×812 첫 화면 진한 포인트 0.8% 이상, 넓은 blue-light 무대로 전체만 채우지 않는다. 회색만으로 된 도식·카드 묶음 금지.
      blue는 단계(blue 선·채움 / blue-dark 글자·번호 / blue-light 옅은 면)로, 의미색(green 가능·완료, orange 주의·준비, red 위험·실패)은
      면·점·선·배지 배경으로만 쓰고 글자 색으로 쓰지 않는다. 페이지당 의미색 2가지 + blue. 정본: `references/blocks/shell.md` 색 절.
      KPI는 숫자 + 막대(`전` 행에만 값, `후` 행은 라벨만)만 두고 증감 배지를 달지 않는다.
@@ -124,7 +124,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 | --- | --- |
 | 처음 만들 때 톤 기준으로 | `references/examples/preview-compare.html` (완성 예시: 흐름+격자 카드 → 결과물 목업 → 눌러 보는 A/B 프레임) |
 | 블록을 고를 때 | `references/blocks.md` (인덱스) → 쓸 블록 파일만 (예: `references/blocks/header.md`) |
-| 페이지 골격·타이포·배지·나란히 두 섹션(`.d0-split`) | `references/blocks/shell.md` |
+| 페이지 골격·타이포·배지·나란히 두 섹션(`.d0-split`, 그림 둘이면 무대 정렬 `data-align="stage"`)·첫 화면 높이 예산 | `references/blocks/shell.md` |
 | SVG 도식을 그릴 때(항상; 비율 `data-variant="ratio"`, 폭 `data-size="wide"`) | `references/blocks/diagram.md` |
 | report·compare 전/후·incident에 결론 수치가 있을 때 | `references/blocks/hero.md` |
 | 화면을 눌러 보게 할 때 | `references/blocks/mockup-frame.md` |
@@ -179,6 +179,10 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 - 인라인 `@font-face`는 메인 `<style>` **앞**의 별도 `<style>`이다. "tokens.css는 메인 `<style>` 맨 앞" 규칙과 충돌하지 않는다.
 - **라이트 온리.** `:root { color-scheme: light; }`와 `body` 배경색을 명시해 다크 호스트에서도 깨지지 않게 한다. 다크 팔레트를 추가하지 않는다.
 - 모바일 폭에서 좌우 16px 거터, 가로 스크롤 없음.
+- **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임에 넣을 페이지는 머리(라벨~요약 행 끝)를 260px 이하, 첫 무대를 300px 이하로 잡아 첫 도식이 프레임 안에서 잘리지 않게 한다(계산: `references/blocks/shell.md` 첫 화면 높이 예산).
+- **한 artifact 안 여러 페이지.** 탭으로 고른 페이지를 iframe으로 보여 줄 때 같은 artifact의 다른 파일을 `src`로 부르지 않는다(뷰어 샌드박스에서 연결이 끊긴다).
+  각 페이지 HTML을 base64 JSON으로 내장하고, 탭을 고르면 `TextDecoder`로 풀어 `iframe.srcdoc`에 넣는다. iframe은 `sandbox="allow-scripts"`이고 `allow-same-origin`은 주지 않는다.
+  새 탭 열기는 같은 HTML로 만든 Blob URL을 쓰고, 막히면 "새 탭을 열 수 없어요. 이 화면에서 보세요" 같은 안내 문구를 보여 준다.
 - 예시 데이터는 전부 합성이다. 실제 회사·제품·사람·티켓 번호처럼 보이는 값을 쓰지 않는다.
 - 외부 사이트 링크와 레퍼런스 사이트 이름을 페이지에 넣지 않는다.
 
@@ -222,6 +226,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 - [ ] 네이티브 시맨틱과 겹치는 role이 없다(`<nav role="navigation">`, `<button role="button">` 금지)
 - [ ] `color-scheme: light`와 `body` 배경이 있다
 - [ ] tokens.css 전체가 메인 `<style>` 맨 앞에 인라인되어 있고 토큰용 외부 `<link>`가 없다
+- [ ] 한 artifact 안 여러 페이지를 iframe으로 보여 줄 때 iframe `src`로 같은 artifact 파일을 부르지 않는다(`srcdoc` + `sandbox="allow-scripts"`, `allow-same-origin` 없음)
 - [ ] artifact 발행본은 외부 요청이 0건이다(서브셋 `@font-face` 인라인, 도구가 없어 링크를 둔 경우만 예외이고 사용자에게 알렸다). 일반 HTML 파일은 외부 리소스가 Pretendard jsDelivr 링크뿐이다
 - [ ] day0-design `SKILL.md`의 HARD 게이트(토큰 변수만, 리스트는 행+디바이더, 상태는 `data-*`, focus-visible, reduced-motion)
 
@@ -244,12 +249,13 @@ WCAG 3.0은 아직 Working Draft라 방향 참고로만 보고, 판정은 WCAG 2
 - [ ] 1280×800에서 SVG 도식의 bounding box가 첫 화면 안에 전부 보인다(잘리면 FAIL), 375×812에서는 첫 그림 블록 높이의 절반 이상이 첫 화면 안이다(윗부분만 걸치면 FAIL)
 - [ ] 첫 화면(1280×800) 안에서 그림·목업 면적이 글 면적보다 크다(그림 = `figure`·`svg`·목업 프레임 box, 글 = `p`·`li`·`dd` 텍스트 블록 box의 첫 화면 안 면적 합. 그림 안 글은 그림으로 센다)
 - [ ] 그림이 컨테이너 폭의 절반만 쓰고 옆이 빈 배치가 없다(그림 폭이 부모 폭의 60% 미만이고 같은 줄 옆에 내용이 없으면 FAIL)
-- [ ] 1280×800 첫 화면에서 진한 포인트(`blue`·`blue-dark`·`green`·`orange`·`red` 채움·선)가 1.2% 이상, 전체(옅은 면 포함)가 3~15%이고 blue와 의미색 1가지 이상이 보인다. 넓은 blue-light 무대로 전체 비율만 채우지 않는다(측정: 해당 색이 `background-color`·SVG `fill`·`stroke`인 요소의 보이는 bbox 합 ÷ 뷰포트 면적, 센 요소의 자손은 제외. 정본 `references/blocks/shell.md` 색 절)
+- [ ] 1280×800 첫 화면에서 진한 포인트(`blue`·`blue-dark`·`green`·`orange`·`red` 채움·선)가 1.2% 이상, 375×812 첫 화면에서 0.8% 이상, 전체(옅은 면 포함)가 1280에서 3~15%이고 blue와 의미색 1가지 이상이 보인다. 넓은 blue-light 무대로 전체 비율만 채우지 않는다(측정: 해당 색이 `background-color`·SVG `fill`·`stroke`인 요소의 보이는 bbox 합 ÷ 뷰포트 면적, 센 요소의 자손은 제외. 정본 `references/blocks/shell.md` 색 절)
 - [ ] 회색만 있는 도식이 없다(도식 `svg`마다 blue 계열 또는 의미색 `fill`·`stroke` 요소가 1개 이상)
 - [ ] 배지가 세로로 늘어나지 않고 제목 첫 줄에 맞춰져 있다(배지 높이 = 22px 또는 20px, 배지 중심과 제목 첫 줄 중심 차 2px 이하)
 - [ ] SVG 안 글자의 렌더 크기가 11px 이상 16px 이하다(375px과 1280px 모두). 데스크톱에서 h2 18px보다 작다.
   렌더 글자 크기 = font-size × (SVG 렌더 폭 ÷ viewBox 폭)로 잰다. 글자 박스 높이는 쓰지 않는다(정본: `references/blocks/diagram.md` 라벨 절)
-- [ ] `.d0-split`으로 나란히 둔 두 섹션의 높이 비(긴 쪽 ÷ 짧은 쪽)가 1.5 이하다(1280px에서 두 `section` 높이, 정본: `references/blocks/shell.md`)
+- [ ] `.d0-split`으로 나란히 둔 두 섹션의 높이 비(긴 쪽 ÷ 짧은 쪽)가 1.5 이하다(1280px에서 두 `section` 높이. 무대 정렬 변형은 두 무대 안 SVG 높이로 잰다. 정본: `references/blocks/shell.md`)
+- [ ] 나란히 둔 두 섹션이 모두 무대 위 그림이면 `data-align="stage"`이고, 1280px에서 좌우 h2 위 끝·무대 위 끝·무대 높이·figcaption 위 끝의 차가 각각 2px 이하다. 375px에서는 1열로 쌓인다
 - [ ] 본문 텍스트 블록 한 줄이 50자 이하다(실제 줄 글자 수, 또는 텍스트 블록 폭 ÷ (15px × 0.95) 근사)
 - [ ] 히어로가 있으면 히어로 수치가 1280×800 첫 화면 상단 1/3(y ≤ 267px) 안에 있다
 - [ ] 페이지 섹션 사이 세로 간격이 64px(모바일 48px)이다(앞 섹션 마지막 블록 아래 끝 ~ 다음 섹션 `header` 위 끝, 오차 ±4px)

@@ -164,8 +164,36 @@ document.querySelectorAll('[data-demo]').forEach(function (demo) {
 - 시안 상태는 `article[data-state="idle|open|done"]`으로 노출한다. 스타일 분기가 필요하면 이 값을 쓴다.
 - 라디오는 Tab으로 그룹 하나에 한 번 머문다(네이티브 동작). Tab 순환은 보이는 입력·버튼만 돈다.
 
+## 별도 HTML 페이지를 프레임에 넣을 때
+
+이미 만든 HTML 한 장을 프레임 안에 그대로 보여 줘야 하면 `iframe`을 쓴다. **`iframe src`(파일 경로·URL)는 금지다.** artifact 샌드박스에서
+다른 파일을 불러오지 못해 빈 프레임이 된다. 페이지를 base64로 내장하고 `srcdoc`에 풀어 넣는다. `sandbox="allow-scripts"` 하나만 준다.
+
+```html
+<div class="d0-frame">
+  <iframe class="d0-frame__page" title="주문 관리 화면 시안" sandbox="allow-scripts" loading="lazy"
+    data-page64="PCFkb2N0eXBlIGh0bWw+…"></iframe>
+</div>
+<script>
+document.querySelectorAll('iframe[data-page64]').forEach(function (f) {
+  var bin = atob(f.dataset.page64);
+  var bytes = Uint8Array.from(bin, function (c) { return c.charCodeAt(0); });
+  f.srcdoc = new TextDecoder().decode(bytes); // 한글이 깨지지 않게 UTF-8로 푼다
+});
+</script>
+```
+
+```css
+.d0-frame__page { width: 100%; height: 100%; border: 0; background: #fff; }
+```
+
+- base64는 `base64 -i page.html`(macOS) 또는 `base64 -w0 page.html`로 만든다. 내장 페이지도 외부 요청 0이어야 한다(토큰·폰트 인라인).
+- `allow-same-origin`을 더하지 않는다. 내장 페이지 스크립트가 바깥 페이지에 닿지 않게 한다.
+- `title`은 필수다(프레임의 접근 이름). 프레임 높이 규칙은 위와 같다(600px, 640px 이하 최소 520px).
+
 ## 금지
 
 - 눌러도 반응하지 않는 가짜 프로토타입, 프레임 밖으로 나오는 모달·막(`showModal()` 포함).
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
+- `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.
 - 실제 파일 다운로드·외부 전송. 결과는 토스트로만 알린다. 프레임 안 `main` 요소, `div`에 `role="dialog"`(네이티브 `dialog` 우선).
