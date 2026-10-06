@@ -90,7 +90,7 @@ Deck Type은 덱의 쓰임을 부르는 문서용 이름이다. 속성으로 쓰
    이 목록만 읽고 논리가 이어지지 않으면 슬라이드보다 제목부터 고친다.
 3. **본 슬라이드.** 한 장 = 주장 하나 = 근거 하나 = 해석 한 줄. 프리셋 스토리라인 순서를 따른다.
 4. **핵심 수치**(`stat`, 선택). 결론 숫자가 있으면 숫자 하나를 크게. page의 히어로 자리를 이 장이 대신한다.
-5. **마지막 장**(`decision`). 결정·요청 한 문장을 세로 중앙에 크게 둔다. 구분선 아래 작은 `dl` 메타 2~3칸에 이미 나온 담당·기한·다음을 적는다.
+5. **마지막 장**(`closing`). 큰 마무리 한 문장을 세로 중앙에 둔다. 구분선 아래 작은 `dl` 메타 2~3칸에 이미 나온 사실만 적는다. 스토리라인에서는 `Closing:decision`처럼 `종류:세부`로 적는다.
 
 ## 슬라이드 종류 (`data-kind`)
 
@@ -105,9 +105,21 @@ Deck Type은 덱의 쓰임을 부르는 문서용 이름이다. 속성으로 쓰
 | `breakdown` | 전체 → 구성 요소 | 도식 | diagram 연결 그래프·와이어프레임 |
 | `stat` | 숫자 하나 + 라벨 + 뜻 한 줄 | 큰 숫자가 그림 | [hero](../blocks/hero.md)의 수치 해부 |
 | `summary` | 참고용 정리 목록 3행 이내 | 예외 | [checklist](../blocks/checklist.md) |
-| `decision` | 큰 결정·요청 한 문장 + 구분선 + 작은 `dl` 메타 행 | 예외 | [slide-deck](../blocks/slide-deck.md) 마지막 장 |
+| `closing` | 큰 마무리 한 문장 + 구분선 + 작은 `dl` 메타 행. `data-closing`: decision·request·action·criteria·takeaway | 예외 | [slide-deck](../blocks/slide-deck.md) 마지막 장 |
 
-그림 예외는 `toc`·`summary`·`decision`·`assertion`뿐이다. 커버에는 대표 도식을 둔다.
+그림 예외는 `toc`·`summary`·`closing`·`assertion`뿐이다. 커버에는 대표 도식을 둔다.
+
+### 마지막 장 `closing`
+
+| `data-closing` | 프리셋 기본 | 마지막 장이 하는 일 |
+| --- | --- | --- |
+| `decision` | compare, report, timeline | 결정을 받는다 |
+| `request` | (도움·승인을 구하는 덱) | 요청을 받는다 |
+| `action` | preview, flow, faq | 독자가 해 볼 행동을 정한다 |
+| `criteria` | guide | 끝났는지 볼 기준을 남긴다 |
+| `takeaway` | incident | 다시 지킬 것을 남긴다 |
+
+기본은 출발점이고 덱의 목적이 다르면 바꾼다. 모두 구도는 같다.
 
 ### 새 종류 넷
 
@@ -192,7 +204,7 @@ Audience × Purpose와 Story부터 통과한다. 마크업·크기 검사보다 
 
 ### [Ending]
 
-- [ ] 마지막 장이 요청한 결정·행동을 명확히 하고 `decision` 전용 구도다. 큰 요청·결정 한 문장 + 구분선 + 작은 `dl` 메타 2~3칸이며, 메타는 덱에 나온 담당·기한·다음 행동만 쓴다. 같은 무게의 불릿 목록이나 Impact를 두지 않는다
+- [ ] 마지막 장이 `data-kind="closing"`이고 `data-closing`(decision·request·action·criteria·takeaway)이 덱의 목적과 맞다. 요청한 결정·행동·기준을 명확히 하는 전용 구도다. 큰 요청·결정 한 문장 + 구분선 + 작은 `dl` 메타 2~3칸이며, 메타는 덱에 나온 담당·기한·다음 행동만 쓴다. 같은 무게의 불릿 목록이나 Impact를 두지 않는다
 
 마크업·타이포·키보드·인쇄 게이트는 [slide-deck](../blocks/slide-deck.md) 덱 게이트로 판정한다.
 

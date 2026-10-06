@@ -116,7 +116,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 | Display(표지 h1) | `h1.d0-slide__title` | 5.6 / 700 | 61px | 57px | 56–72 | 26px |
 | Impact·assertion 제목 | `.d0-slide__title` | 6 / 700 | 66px | 61px | 60 이상 | 28px |
 | 슬라이드 제목 | `.d0-slide__title` | 3.6 / 700 | 39px | 37px | 36–44 | 20px |
-| 결정·요청 | `decision`의 `.d0-slide__title` | 4.5 / 700 | 49px | 46px | Lead~Display 사이 | 24px |
+| 마지막 장 | `closing`의 `.d0-slide__title` | 4.5 / 700 | 49px | 46px | Lead~Display 사이 | 24px |
 | Lead | `.d0-slide__lead` | 2.4 / 400 grey-700 | 26px | 25px | 24–30 | 17px |
 | 본문·요점·보조·해석 | `.d0-slide__points` `__sub` `__note` `dd` 목차 | 2 / 400 | 22px | 20px | 20–24 | 15px(해석 13px) |
 | Meta(눈썹·출처·쪽수·`dt`) | `__eyebrow` `__src` `__num` | 1.4 / 400~600 grey-600 | 15px | 14px | 14–18 | 12px |
@@ -141,7 +141,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 | `breakdown` | 결론 제목 + 전체 → 구성 요소 도식 | 그림이 슬라이드 면의 60~80% |
 | `stat` | 숫자 하나 + 해석 한 줄 | 큰 숫자가 그림 |
 | `summary` | 참고용 정리 목록 3행 이내 | 그림 예외, 마지막 요청 장에는 쓰지 않는다 |
-| `decision` | 큰 결정·요청 한 문장 + 구분선 + 작은 `dl` 메타 행 | 그림 예외, 마지막 장 전용 |
+| `closing` | 큰 마무리 한 문장 + 구분선 + 작은 `dl` 메타 행. 상위 종류이고 `data-closing`이 세부(decision·request·action·criteria·takeaway) | 그림 예외, 마지막 장 전용 |
 
 - **screenshot.** 화면·spotlight(`span.d0-shot__spot`)·번호 주석(`p.d0-shot__note`)·dim의 마크업과 CSS는 [mockup-frame.md](mockup-frame.md)가 정본이다.
   이 파일은 슬라이드 안 자리와 크기만 정한다: `figure.d0-shot`이 몸 행(`minmax(0, 1fr)`)을 채우고, 화면 상자는 그 높이를 다 쓰며 폭은 비율(기본 16:10)로 정해진다.
@@ -180,15 +180,27 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 </section>
 ```
 
-## 마지막 장 `data-kind="decision"`
+## 마지막 장 `data-kind="closing"`
 
-결정·요청 한 문장을 세로 중앙에 크게 두고(4.5cqi, 1280 한 장에서 약 49px), 그 아래 구분선과 작은 `dl.d0-slide__meta` 행을 둔다.
+마지막 장은 상위 종류 `data-kind="closing"` 하나이고, 무엇을 마무리하는지는 `data-closing`이 말한다. 구도와 CSS는 종류와 무관하게 같다.
+
+| `data-closing` | 쓰임 | 메타 라벨 예 |
+| --- | --- | --- |
+| `decision` | 선택지·방안 중 하나를 고르게 한다 | 담당 / 기한 / 다음 |
+| `request` | 도움·자원·승인을 요청한다 | 요청 / 기한 / 다음 |
+| `action` | 독자가 직접 해 볼 행동을 정한다 | 대상 / 언제 / 다음 |
+| `criteria` | 끝났는지 확인할 기준을 남긴다 | 확인할 것 / 통과 기준 / 다음 |
+| `takeaway` | 앞으로 지킬 것을 남긴다 | 지킬 것 / 담당 / 다음 |
+
+덱마다 `data-closing` 값은 하나이고, 애매하면 마지막 장이 하는 일에 가장 가까운 종류를 고른다. 라벨은 예일 뿐이며 덱에 나온 사실에 맞게 바꾼다.
+
+큰 한 문장을 세로 중앙에 두고(4.5cqi, 1280 한 장에서 약 49px), 그 아래 구분선과 작은 `dl.d0-slide__meta` 행을 둔다.
 메타는 담당·기한·다음 행동 중 덱에 이미 나온 사실만 2~3칸으로 적는다. 없는 담당이나 날짜를 만들어 채우지 않는다.
 결정 문장과 같은 무게의 불릿 목록을 두지 않고, Impact로 색칠하지 않는다. 제목이 그 결정 문장 하나다.
 
 ```html
-<section class="d0-slide" id="decision-example" data-kind="decision" aria-labelledby="decision-example-t" tabindex="-1">
-  <header class="d0-slide__head"><h2 class="d0-slide__title" id="decision-example-t">이번 주 안에 발송 주기를 정해 주세요</h2></header>
+<section class="d0-slide" id="closing-example" data-kind="closing" data-closing="decision" aria-labelledby="closing-example-t" tabindex="-1">
+  <header class="d0-slide__head"><h2 class="d0-slide__title" id="closing-example-t">이번 주 안에 발송 주기를 정해 주세요</h2></header>
   <dl class="d0-slide__meta">
     <div><dt>담당</dt><dd>서비스 운영 팀</dd></div>
     <div><dt>기한</dt><dd>이번 주 금요일</dd></div>
@@ -369,7 +381,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>8 / 9</p></footer>
   </section>
 
-  <section class="d0-slide" id="s-09" data-kind="decision" aria-labelledby="s-09-t" tabindex="-1">
+  <section class="d0-slide" id="s-09" data-kind="closing" data-closing="decision" aria-labelledby="s-09-t" tabindex="-1">
     <header class="d0-slide__head"><h2 class="d0-slide__title" id="s-09-t">이번 주 안에 발송 주기를 정해 주세요</h2></header>
     <dl class="d0-slide__meta"><div><dt>담당</dt><dd>서비스 운영 팀</dd></div><div><dt>기한</dt><dd>이번 주 금요일</dd></div><div><dt>다음</dt><dd>다음 주에 적용한다</dd></div></dl>
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>9 / 9</p></footer>
@@ -509,10 +521,10 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide[data-kind="stat"] .d0-slide__fig { grid-template-rows: 1fr auto; align-content: center; }
 .d0-slide[data-kind="stat"] .d0-slide__note { color: var(--d0-grey-800); }
 
-/* decision: 세로 중앙의 큰 요청 하나 + 디바이더 아래 작은 사실 행 */
-.d0-slide[data-kind="decision"] { grid-template-rows: minmax(0, 1fr) auto auto; }
-.d0-slide[data-kind="decision"] .d0-slide__head { align-self: center; max-width: 88cqi; }
-.d0-slide[data-kind="decision"] .d0-slide__title { font-size: 4.5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+/* closing(decision·request·action·criteria·takeaway 공통): 세로 중앙의 큰 문장 하나 + 디바이더 아래 작은 사실 행 */
+.d0-slide[data-kind="closing"] { grid-template-rows: minmax(0, 1fr) auto auto; }
+.d0-slide[data-kind="closing"] .d0-slide__head { align-self: center; max-width: 88cqi; }
+.d0-slide[data-kind="closing"] .d0-slide__title { font-size: 4.5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
 .d0-slide__meta { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqi; padding-top: 1.4cqi; border-top: 1px solid var(--d0-grey-200); }
 .d0-slide__meta > div { display: grid; gap: 0.4cqi; align-content: start; }
 .d0-slide__meta dt { color: var(--d0-grey-600); font-size: 1.4cqi; }
@@ -620,9 +632,9 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide[data-cover="center"] .d0-slide__head { max-width: none; }
   .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 30px; }
   .d0-slide[data-kind="cover"] .d0-slide__summary dd { font-size: 12px; }
-  .d0-slide[data-kind="decision"] { min-height: min(560px, calc(100dvh - 116px)); }
-  .d0-slide[data-kind="decision"] .d0-slide__head { max-width: none; }
-  .d0-slide[data-kind="decision"] .d0-slide__title { font-size: 24px; }
+  .d0-slide[data-kind="closing"] { min-height: min(560px, calc(100dvh - 116px)); }
+  .d0-slide[data-kind="closing"] .d0-slide__head { max-width: none; }
+  .d0-slide[data-kind="closing"] .d0-slide__title { font-size: 24px; }
   .d0-slide__meta { grid-template-columns: 1fr; gap: 8px; padding-top: 12px; }
   .d0-slide__meta > div { grid-template-columns: 48px 1fr; gap: 8px; }
   .d0-slide__meta dt, .d0-slide__meta dd { font-size: 12px; }
@@ -833,11 +845,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 **HARD (코드로 확인)**
 
 - [ ] `main.d0-deck[data-preset]`이 하나이고 `data-preset`이 내용 프리셋 8개 중 하나다. 슬라이드(`.d0-slide`)는 표지·목차 포함 5~12장이다
-- [ ] 마지막 장은 `decision`이며 큰 제목 한 문장 + 구분선 + 작은 `dl.d0-slide__meta` 2~3칸을 두고 같은 무게의 불릿 목록·Impact가 없다
+- [ ] 마지막 장은 `data-kind="closing"`이고 `data-closing`이 decision·request·action·criteria·takeaway 중 하나이며 큰 제목 한 문장 + 구분선 + 작은 `dl.d0-slide__meta` 2~3칸을 두고 같은 무게의 불릿 목록·Impact가 없다
 - [ ] 첫 장이 `data-kind="cover"` + h1이고 바로 다음 장이 `nav[data-kind="toc"]`다. 목차가 `ul.d0-slide__toc`이고 `li` 수 = 표지·목차를 뺀 장 수, 항목 글자 = 각 장 제목, `href` = 그 장 `id`; 목차에는 번호·쪽수가 없다
-- [ ] `data-kind`가 정본 값(생략 | cover | toc | assertion | evidence | screenshot | breakdown | stat | summary | decision)만 쓴다
+- [ ] `data-kind`가 정본 값(생략 | cover | toc | assertion | evidence | screenshot | breakdown | stat | summary | closing)만 쓴다
 - [ ] 근거(생략)·`evidence`·`breakdown` 장마다 `figure.d0-slide__fig`가 정확히 1개이고 그 안에 `role="img"` + `<title>`을 가진 SVG가 있다.
-      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `toc`·`summary`·`decision`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
+      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `toc`·`summary`·`closing`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
 - [ ] `data-emphasis="impact"` 장에 카드·요점 목록·두 번째 그림이 없다
 - [ ] 슬라이드당 `li` 3개 이하(`toc` 제외), 본문 텍스트(`p`·`li`·`dd`, 제목·쪽수 제외)가 렌더 기준 3줄 이하다
 - [ ] 목차를 제외한 슬라이드마다 쪽수 `n / N`이 렌더 텍스트로 있고 순서가 맞다
@@ -855,7 +867,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 **VISUAL (측정으로 확인)**
 
 - [ ] 1280×800에서 보이는 `.d0-slide`가 1개이고, 높이 ÷ 폭이 0.5625(±1px), 가로 가운데(±1px), 덱 안에 다 들어온다(가로·세로 스크롤 없음). 내용이 넘치지 않는다(`scrollHeight` ≤ `clientHeight`)
-- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, decision 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
+- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, closing 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
 - [ ] SVG 글자 렌더 크기(font-size × SVG 렌더 배율)가 1280에서 28px 이하, 375에서 11px 이상이다
 - [ ] `evidence`·`breakdown`·`screenshot`의 `figure`, 근거 split의 몸이 슬라이드 면(패딩 포함)의 60~80%다
 - [ ] 375×812에서 장이 16:9를 풀고, 글자가 11px 이상, 페이지 가로 스크롤이 없으며, 좌우 스와이프(48px 초과)로 장이 넘어간다. 긴 장은 장 안에서 세로로 스크롤된다

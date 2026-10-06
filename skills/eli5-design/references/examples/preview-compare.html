@@ -4,10 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주문 내보내기 화면 시안</title>
-<!-- 일반 HTML 파일이라 jsDelivr 링크를 쓴다. artifact로 발행할 때는 이 자리에 scripts/subset_font.py 출력(@font-face <style>)을 넣는다 -->
+<!-- 일반 HTML 파일이라 jsDelivr 링크를 쓴다. artifact로 발행할 때는 이 자리에 scripts/subset_font.py 출력(@font-face CSS)을 넣는다 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* ── 생성 시 이 자리에 day0-design/references/tokens.css 전체를 수정 없이 붙인다 ── */
 /* @day0/ui 디자인 토큰 — 모든 컴포넌트 CSS는 이 변수만 참조한다.
  *
  * source: day0-work/packages/ui/src/tokens.css (live SSOT snapshot)
@@ -119,29 +118,16 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
 .d0-pill[data-tone="red"]::before { background: var(--d0-red); }
 .d0-pill[data-tone="orange"]::before { background: var(--d0-orange); }
 
-/* ① flow-line + thumb-cards + step-columns */
-.d0-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
-.d0-flow__node { display: flex; align-items: center; gap: 10px; }
-.d0-flow__node span { padding: 8px 12px; border-radius: var(--d0-radius-sm); background: var(--d0-grey-50); color: var(--d0-grey-600); font-weight: 600; }
-.d0-flow__node:not(:last-child)::after { content: "→" / ""; color: var(--d0-grey-600); }
-.d0-flow__node[data-current] span { display: inline-flex; align-items: center; gap: 6px; background: var(--d0-blue-dark); color: #fff; }
-.d0-flow__node[data-current] span::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
-.d0-thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+/* ① 합성 격자 카드 */
+.d0-thumbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .d0-thumb { display: grid; gap: 10px; align-content: start; padding: 16px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card); background: #fff; transition: border-color var(--d0-dur) var(--d0-ease), transform var(--d0-dur) var(--d0-ease); }
-.d0-thumb:hover { border-color: var(--d0-blue); transform: translateY(-2px); }
-.d0-thumb svg { width: 100%; padding: 8px; border-radius: var(--d0-radius-sm); background: var(--d0-blue-light); } /* 썸네일 판: 옅은 블루 면(thumb-cards.md) */
+.d0-thumb:hover { border-color: var(--d0-blue); transform: translateY(-1px); }
+.d0-thumb svg { width: 100%; max-width: 160px; }
 .d0-thumb strong { font-size: 15px; font-weight: 600; letter-spacing: var(--d0-tracking-title); }
-.d0-s-cell { fill: var(--d0-grey-200); }
-.d0-s-head { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 0.75; }
-.d0-s-key { fill: var(--d0-grey-400); }
+.d0-s-cell { fill: var(--d0-grey-200); stroke: var(--d0-grey-600); stroke-width: 1.5; }
+.d0-s-head { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 1.5; }
+.d0-s-key { fill: var(--d0-grey-600); }
 .d0-s-sum { fill: var(--d0-blue); }
-.d0-steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
-.d0-step { display: grid; gap: 8px; align-content: start; padding: 4px 20px; }
-.d0-step + .d0-step { border-left: 1px solid var(--d0-grey-100); }
-.d0-step:first-child { padding-left: 0; }
-.d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-meta); font-weight: 600; }
-.d0-step dt { margin-top: 4px; font-size: 14px; font-weight: 600; }
-.d0-step dd { color: var(--d0-grey-600); font-size: 14px; }
 .d0-tabprev__bar small { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
 
 /* 모션 (shell.md) */
@@ -158,11 +144,11 @@ html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: tra
 .d0-tabprev__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: var(--d0-grey-50); border-bottom: 1px solid var(--d0-grey-200); font-size: var(--d0-text-compact); }
 .d0-tabprev__bar b { font-weight: 600; overflow-wrap: anywhere; }
 .d0-tabprev__bar .d0-pill { align-self: center; }
-.d0-sheet__wrap { overflow-x: auto; }
-.d0-sheet { width: 100%; min-width: 520px; table-layout: fixed; border-collapse: collapse; font-size: var(--d0-text-compact); font-variant-numeric: tabular-nums; }
-.d0-sheet th, .d0-sheet td { height: 32px; padding: 4px 10px; border: 1px solid var(--d0-grey-100); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d0-sheet__wrap { min-width: 0; }
+.d0-sheet { width: 100%; min-width: 0; table-layout: fixed; border-collapse: collapse; font-size: var(--d0-text-compact); font-variant-numeric: tabular-nums; }
+.d0-sheet th, .d0-sheet td { height: 32px; padding: 4px 10px; border: 1px solid var(--d0-grey-100); text-align: left; overflow-wrap: anywhere; }
 .d0-sheet thead th, .d0-sheet tbody th, .d0-sheet tfoot th { background: var(--d0-grey-50); color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 500; text-align: center; }
-.d0-sheet tr > :first-child { width: 40px; }
+.d0-sheet tr > :first-child { width: 36px; padding-inline: 4px; }
 .d0-sheet td[data-cell="head"] { background: var(--d0-blue-light); color: var(--d0-grey-900); font-weight: 700; }
 .d0-sheet td[data-cell="key"] { color: var(--d0-grey-700); font-weight: 600; }
 .d0-sheet td[data-cell="num"] { text-align: right; }
@@ -177,8 +163,6 @@ html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: tra
 .d0-tabprev__notes > div { display: flex; gap: 6px; }
 .d0-tabprev__notes dt { color: var(--d0-grey-900); font-weight: 600; }
 .d0-fig { display: grid; gap: 12px; align-content: start; min-width: 0; margin: 0; }
-.d0-fig__stage { display: grid; justify-items: center; padding: 28px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
-.d0-fig__stage > :not(svg) { justify-self: stretch; }
 .d0-fig figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 .d0-tabprev { margin: 0; }
 
@@ -242,6 +226,7 @@ legend { padding: 0; }
 .d0-opt:has(input:checked) .d0-opt__dot { border-color: var(--d0-blue-dark); }
 .d0-opt:has(input:checked) .d0-opt__dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--d0-blue-dark); }
 .d0-opt b { display: block; font-size: 14px; font-weight: 600; }
+.d0-opt:has(input:checked) i { color: var(--d0-grey-700); }
 .d0-opt i { font-style: normal; font-size: var(--d0-text-compact); color: var(--d0-grey-600); }
 .d0-field { display: grid; gap: 8px; }
 .d0-field > legend { margin-bottom: 8px; }
@@ -258,6 +243,7 @@ legend { padding: 0; }
 .d0-pick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .d0-pick button { width: 100%; height: 100%; display: grid; gap: 8px; align-content: start; padding: 12px; border: 1px solid transparent; border-radius: var(--d0-radius-card); background: #fff; text-align: left; transition: border-color var(--d0-dur-fast) var(--d0-ease); }
 .d0-pick button:hover { border-color: var(--d0-blue); }
+.d0-pick svg { width: 100%; max-width: 160px; }
 .d0-pick b { font-size: 14px; font-weight: 600; }
 .d0-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--d0-text-compact); color: var(--d0-grey-600); }
 .d0-meta > div { display: flex; gap: 4px; }
@@ -277,101 +263,125 @@ legend { padding: 0; }
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
   .d0-section { padding-block: 24px; }
-  .d0-fig__stage { padding: 20px; }
-  .d0-steps { grid-auto-flow: row; }
-  .d0-step, .d0-step:first-child { padding: 16px 0; }
-  .d0-step + .d0-step { border-left: 0; border-top: 1px solid var(--d0-grey-100); }
   .d0-frame { height: auto; min-height: 520px; }
 }
-@media (max-width: 900px) and (min-width: 641px) {
-  .d0-steps { grid-auto-flow: row; grid-template-columns: 1fr 1fr; gap: 16px 0; }
-  .d0-step:nth-child(odd) { border-left: 0; padding-left: 0; }
-}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .d0-thumb:hover { transform: none; }
 }
+
+/* ①·② are one compact two-column scene; diagram sizes never fill the column. */
+.d0-split { display: grid; gap: 0 48px; }
+.d0-split > * { min-width: 0; }
+.d0-split:not(:last-child) > .d0-section { padding-bottom: 32px; }
+@media (min-width: 960px) { .d0-split { grid-template-columns: 1fr 1fr; align-items: start; } }
+.d0-fig > svg { width: 100%; max-width: 360px; }
+.d0-fig[data-size="wide"] > svg { max-width: 400px; }
+.d0-s-edge { fill: none; stroke: var(--d0-blue); stroke-width: 2.5; }
+.d0-s-edge[data-ahead] { stroke: var(--d0-grey-500); stroke-width: 1.5; stroke-dasharray: 4 5; }
+.d0-s-node { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
+.d0-s-node[data-on] { fill: var(--d0-blue); stroke: var(--d0-blue); }
+.d0-s-ring { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 1.5; }
+.d0-s-text { fill: var(--d0-grey-600); font-size: 14px; }
+.d0-s-text[data-on] { fill: var(--d0-blue-dark); font-weight: 600; }
+svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
+.d0-notes { display: grid; gap: 16px; }
+.d0-notes > div { display: grid; gap: 4px; }
+.d0-notes dt { font-size: 15px; font-weight: 600; color: var(--d0-grey-900); }
+.d0-notes dd { font-size: 15px; color: var(--d0-grey-800); }
+.d0-acc details { border-top: 1px solid var(--d0-grey-100); }
+.d0-acc summary { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; list-style: none; cursor: pointer; font-weight: 600; }
+.d0-acc summary::-webkit-details-marker { display: none; }
+.d0-acc summary::after { content: "+" / ""; color: var(--d0-grey-600); }
+.d0-acc details[open] summary::after { transform: rotate(45deg); }
+.d0-acc details > p { padding-bottom: 14px; color: var(--d0-grey-700); }
+.d0-demo__note { color: var(--d0-grey-700); font-size: 14px; }
+@media (max-width: 640px) {
+  .d0-split:not(:last-child) > .d0-section { padding-bottom: 24px; }
+  .d0-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .d0-thumb { padding: 12px; }
+  .d0-sheet th, .d0-sheet td { padding: 4px; font-size: 12px; }
+}
+
 </style>
 </head>
 <body>
-<main class="d0-page">
+<main class="d0-page" data-variant="prototype">
   <header class="d0-header">
     <div class="d0-header__meta"><span class="d0-header__label">내보내기 개편</span></div>
     <h1>주문 내보내기 화면 시안</h1>
-    <p class="d0-header__lead">‘내보내기’를 누르면 바로 받지 않고, 받을 자료 묶음부터 고르게 바꾸려 해요.</p>
+    <p class="d0-header__lead">받을 자료부터 골라요. A는 하나씩 묻고, B는 한 화면에서 골라요.</p>
   </header>
 
-  <!-- ① 고르고 받기 -->
-  <section class="d0-section" aria-labelledby="sec-pick">
-    <header class="d0-section-head">
-      <h2 id="sec-pick">내보내기는 고르고 받기</h2>
-    </header>
-    <ol class="d0-flow" aria-label="내보내기 흐름">
-      <li class="d0-flow__node"><span>내보내기 누르기</span></li>
-      <li class="d0-flow__node" data-current aria-current="step"><span>자료 묶음 고르기</span></li>
-      <li class="d0-flow__node"><span>그 파일만 받기</span></li>
-    </ol>
-    <figure class="d0-fig" data-stage>
-      <div class="d0-fig__stage"><ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"></ul></div>
-      <figcaption>묶음마다 표 모양이 달라요. 파란 칸이 합계예요.</figcaption>
-    </figure>
-    <ol class="d0-steps">
-      <li class="d0-step">
-        <span class="d0-step__label">고르기 전</span>
-        <h3>지난번처럼 받기</h3>
-        <dl><dt>최근 묶음</dt><dd>지난번 설정 그대로, 기간만 이번 주로 바꿔요.</dd></dl>
-      </li>
-      <li class="d0-step">
-        <span class="d0-step__label">고른 다음</span>
-        <h3>기간과 표 옵션</h3>
-        <dl><dt>기간</dt><dd>지난주·지난달·이번 달 중 하나를 눌러요.</dd><dt>표 옵션</dt><dd>빈칸 표기와 정렬을 골라요.</dd></dl>
-      </li>
-      <li class="d0-step">
-        <span class="d0-step__label">받기 전</span>
-        <h3>미리보기</h3>
-        <dl><dt>위 몇 줄</dt><dd>행 수와 합계를 먼저 보여 줘요.</dd><dt>빠진 자료</dt><dd>덜 모인 채널이 있으면 알려요.</dd></dl>
-      </li>
-      <li class="d0-step">
-        <span class="d0-step__label">받을 때</span>
-        <h3>파일 또는 복사</h3>
-        <dl><dt>파일 받기</dt><dd>첫 장에 안내 시트가 붙어요.</dd><dt>표 복사</dt><dd>파일 없이 바로 붙여 넣어요.</dd></dl>
-      </li>
-    </ol>
-  </section>
+  <div class="d0-split">
+    <!-- ① 순서와 표 모양: 회색 무대 없이 직접 놓는다. -->
+    <section class="d0-section" data-composition="sequence" aria-labelledby="sec-pick">
+      <header class="d0-section-head"><h2 id="sec-pick">내보내기는 고르고 받기</h2></header>
+      <figure class="d0-fig" data-genre="narrative">
+        <svg viewBox="0 0 360 100" role="img" aria-labelledby="flow-t flow-d">
+          <title id="flow-t">내보내기에서 파일 받기까지 세 단계</title>
+          <desc id="flow-d">내보내기를 눌렀고, 지금 자료 묶음을 골라요. 파일 받기는 다음 단계예요. 지난 단계는 채움, 현재는 큰 고리, 다음은 빈 원과 점선으로 구분해요.</desc>
+          <path class="d0-s-edge" d="M36 38 H180"/>
+          <path class="d0-s-edge" data-ahead d="M180 38 H324"/>
+          <circle class="d0-s-node" data-on cx="36" cy="38" r="6"/>
+          <circle class="d0-s-ring" cx="180" cy="38" r="17"/>
+          <circle class="d0-s-node" data-on cx="180" cy="38" r="11"/>
+          <circle class="d0-s-node" cx="324" cy="38" r="6"/>
+          <text class="d0-s-text" x="36" y="80" text-anchor="middle">내보내기</text>
+          <text class="d0-s-text" data-on x="180" y="80" text-anchor="middle">묶음 선택</text>
+          <text class="d0-s-text" x="324" y="80" text-anchor="middle">파일 받기</text>
+        </svg>
+        <figcaption>눌렀으면 고르고, 고른 자료만 받아요.</figcaption>
+      </figure>
+      <figure class="d0-fig">
+        <ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"><li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-0-t grid-0-d"><title id="grid-0-t">팀별 합계 표 미리보기</title><desc id="grid-0-d">9행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v8H3zM34 3h29v8H34zM65 3h29v8H65zM97 3h29v8H97zM128 3h29v8H128z"/><path class="d0-s-key" d="M3 13h29v8H3zM3 23h29v8H3zM3 34h29v8H3zM3 44h29v8H3zM3 54h29v8H3zM3 64h29v8H3zM3 75h29v8H3zM3 85h29v8H3z"/><path class="d0-s-cell" d="M34 13h29v8H34zM65 13h29v8H65zM97 13h29v8H97zM128 13h29v8H128zM34 23h29v8H34zM65 23h29v8H65zM97 23h29v8H97zM128 23h29v8H128zM34 34h29v8H34zM65 34h29v8H65zM97 34h29v8H97zM128 34h29v8H128zM34 44h29v8H34zM65 44h29v8H65zM97 44h29v8H97zM128 44h29v8H128zM34 54h29v8H34zM65 54h29v8H65zM97 54h29v8H97zM128 54h29v8H128zM34 64h29v8H34zM65 64h29v8H65zM97 64h29v8H97zM128 64h29v8H128zM34 75h29v8H34zM65 75h29v8H65zM97 75h29v8H97zM128 75h29v8H128z"/><path class="d0-s-sum" d="M34 85h29v8H34zM65 85h29v8H65zM97 85h29v8H97zM128 85h29v8H128z"/></svg><strong>팀별 합계</strong><span class="d0-pill" data-tone="green">지금 가능</span></li>
+<li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-1-t grid-1-d"><title id="grid-1-t">일자별 추이 표 미리보기</title><desc id="grid-1-d">8행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v10H3zM34 3h29v10H34zM65 3h29v10H65zM97 3h29v10H97zM128 3h29v10H128z"/><path class="d0-s-key" d="M3 14h29v10H3zM3 26h29v10H3zM3 38h29v10H3zM3 49h29v10H3zM3 60h29v10H3zM3 72h29v10H3zM3 84h29v10H3z"/><path class="d0-s-cell" d="M34 14h29v10H34zM65 14h29v10H65zM97 14h29v10H97zM128 14h29v10H128zM34 26h29v10H34zM65 26h29v10H65zM97 26h29v10H97zM128 26h29v10H128zM34 38h29v10H34zM65 38h29v10H65zM97 38h29v10H97zM128 38h29v10H128zM34 49h29v10H34zM65 49h29v10H65zM97 49h29v10H97zM128 49h29v10H128zM34 60h29v10H34zM65 60h29v10H65zM97 60h29v10H97zM128 60h29v10H128zM34 72h29v10H34zM65 72h29v10H65zM97 72h29v10H97zM128 72h29v10H128z"/><path class="d0-s-sum" d="M34 84h29v10H34zM65 84h29v10H65zM97 84h29v10H97zM128 84h29v10H128z"/></svg><strong>일자별 추이</strong><span class="d0-pill" data-tone="green">지금 가능</span></li>
+<li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-2-t grid-2-d"><title id="grid-2-t">팀 × 일자 표 미리보기</title><desc id="grid-2-d">9행과 12열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h11v8H3zM16 3h11v8H16zM29 3h11v8H29zM42 3h11v8H42zM55 3h11v8H55zM68 3h11v8H68zM81 3h11v8H81zM94 3h11v8H94zM107 3h11v8H107zM120 3h11v8H120zM133 3h11v8H133zM146 3h11v8H146z"/><path class="d0-s-key" d="M3 13h11v8H3zM3 23h11v8H3zM3 34h11v8H3zM3 44h11v8H3zM3 54h11v8H3zM3 64h11v8H3zM3 75h11v8H3zM3 85h11v8H3z"/><path class="d0-s-cell" d="M16 13h11v8H16zM29 13h11v8H29zM42 13h11v8H42zM55 13h11v8H55zM68 13h11v8H68zM94 13h11v8H94zM107 13h11v8H107zM120 13h11v8H120zM133 13h11v8H133zM16 23h11v8H16zM29 23h11v8H29zM42 23h11v8H42zM55 23h11v8H55zM81 23h11v8H81zM94 23h11v8H94zM107 23h11v8H107zM120 23h11v8H120zM133 23h11v8H133zM16 34h11v8H16zM29 34h11v8H29zM42 34h11v8H42zM68 34h11v8H68zM81 34h11v8H81zM94 34h11v8H94zM107 34h11v8H107zM120 34h11v8H120zM133 34h11v8H133zM16 44h11v8H16zM29 44h11v8H29zM55 44h11v8H55zM68 44h11v8H68zM81 44h11v8H81zM94 44h11v8H94zM107 44h11v8H107zM120 44h11v8H120zM16 54h11v8H16zM42 54h11v8H42zM55 54h11v8H55zM68 54h11v8H68zM81 54h11v8H81zM94 54h11v8H94zM107 54h11v8H107zM133 54h11v8H133zM29 64h11v8H29zM42 64h11v8H42zM55 64h11v8H55zM68 64h11v8H68zM81 64h11v8H81zM94 64h11v8H94zM120 64h11v8H120zM133 64h11v8H133zM16 75h11v8H16zM29 75h11v8H29zM42 75h11v8H42zM55 75h11v8H55zM68 75h11v8H68zM81 75h11v8H81zM107 75h11v8H107zM120 75h11v8H120zM133 75h11v8H133zM16 85h11v8H16zM29 85h11v8H29zM42 85h11v8H42zM55 85h11v8H55zM68 85h11v8H68zM94 85h11v8H94zM107 85h11v8H107zM120 85h11v8H120zM133 85h11v8H133z"/><path class="d0-s-sum" d="M146 13h11v8H146zM146 23h11v8H146zM146 34h11v8H146zM146 44h11v8H146zM146 54h11v8H146zM146 64h11v8H146zM146 75h11v8H146zM146 85h11v8H146z"/></svg><strong>팀 × 일자</strong><span class="d0-pill" data-tone="orange">오래 걸려요</span></li>
+<li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-3-t grid-3-d"><title id="grid-3-t">채널별 요약 표 미리보기</title><desc id="grid-3-d">4행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v21H3zM34 3h29v21H34zM65 3h29v21H65zM97 3h29v21H97zM128 3h29v21H128z"/><path class="d0-s-key" d="M3 26h29v21H3zM3 49h29v21H3zM3 72h29v21H3z"/><path class="d0-s-cell" d="M34 26h29v21H34zM65 26h29v21H65zM97 26h29v21H97zM34 49h29v21H34zM65 49h29v21H65zM97 49h29v21H97z"/><path class="d0-s-sum" d="M128 26h29v21H128zM128 49h29v21H128zM34 72h29v21H34zM65 72h29v21H65zM97 72h29v21H97zM128 72h29v21H128z"/></svg><strong>채널별 요약</strong><span class="d0-pill" data-tone="orange">준비 중</span></li>
+<li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-4-t grid-4-d"><title id="grid-4-t">월별 요약 표 미리보기</title><desc id="grid-4-d">6행과 4열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h37v13H3zM42 3h37v13H42zM81 3h37v13H81zM120 3h37v13H120z"/><path class="d0-s-key" d="M3 18h37v13H3zM3 34h37v13H3zM3 49h37v13H3zM3 64h37v13H3zM3 80h37v13H3z"/><path class="d0-s-cell" d="M42 18h37v13H42zM81 18h37v13H81zM120 18h37v13H120zM42 34h37v13H42zM81 34h37v13H81zM120 34h37v13H120zM42 49h37v13H42zM81 49h37v13H81zM120 49h37v13H120zM42 64h37v13H42zM81 64h37v13H81zM120 64h37v13H120z"/><path class="d0-s-sum" d="M42 80h37v13H42zM81 80h37v13H81zM120 80h37v13H120z"/></svg><strong>월별 요약</strong><span class="d0-pill" data-tone="green">지금 가능</span></li></ul>
+        <figcaption>합성 표 미리보기예요. 파란 합계 칸의 위치를 비교해요.</figcaption>
+      </figure>
+    </section>
 
-  <!-- ② 받은 파일 -->
-  <section class="d0-section" aria-labelledby="sec-file">
-    <header class="d0-section-head">
-      <h2 id="sec-file">받은 파일은 이렇게 보여요</h2>
-      <p>첫 시트는 안내, 둘째 시트는 데이터예요.</p>
-    </header>
-    <figure class="d0-tabprev">
-      <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
-      <div class="d0-tabprev__panel" role="tabpanel" id="xlPanel">
-        <div class="d0-tabprev__bar"><b id="xlFile"></b><small>예시 데이터</small></div>
-        <div class="d0-sheet__wrap" role="region" aria-label="시트 표" tabindex="0"><table class="d0-sheet" id="xlTable"></table></div>
-        <div class="d0-sheet__tabs" id="xlSheets" role="group" aria-label="시트"></div>
-      </div>
-      <figcaption><dl class="d0-tabprev__notes" id="xlNotes"></dl></figcaption>
-    </figure>
-  </section>
+    <!-- ② 표 목업과 짧은 주석: 열 안에서는 캡션을 아래에 둔다. -->
+    <section class="d0-section" data-composition="spotlight" aria-labelledby="sec-file">
+      <header class="d0-section-head"><h2 id="sec-file">받은 파일은 이렇게 보여요</h2></header>
+      <figure class="d0-tabprev">
+        <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
+        <div class="d0-tabprev__panel" role="tabpanel" id="xlPanel" tabindex="0">
+          <div class="d0-tabprev__bar"><b id="xlFile">주문내보내기.xlsx</b><small>합성 예시 데이터</small></div>
+          <div class="d0-sheet__wrap"><table class="d0-sheet" id="xlTable"><caption>팀별 합계 표 미리보기</caption><thead><tr><th scope="col">팀</th><th scope="col">주문</th><th scope="col">금액</th></tr></thead><tbody><tr><th scope="row">팀 A</th><td>34</td><td>408,000</td></tr></tbody></table></div>
+          <div class="d0-sheet__tabs" id="xlSheets" role="group" aria-label="시트"></div>
+        </div>
+        <figcaption><dl class="d0-tabprev__notes" id="xlNotes"></dl></figcaption>
+      </figure>
+      <dl class="d0-notes">
+        <div><dt>안내 시트</dt><dd>기간, 집계 기준, 빈칸 뜻이 첫 장에 붙어요.</dd></div>
+        <div><dt>데이터 시트</dt><dd>행은 묶음의 대상, 열은 주문 수와 금액이에요.</dd></div>
+        <div><dt>빈칸과 합계</dt><dd>빈칸은 주문이 없는 칸, 마지막 줄은 전체 합계예요.</dd></div>
+      </dl>
+      <div class="d0-acc"><details><summary>고른 뒤 바꿀 수 있는 것</summary><p>기간과 빈칸 표기를 골라요. 팀 묶음은 정렬도 바꿔요. 지난번처럼 받기는 기간만 바꿔 다시 써요.</p></details></div>
+    </section>
+  </div>
 
-  <!-- ③ 두 시안 -->
-  <section class="d0-section" aria-labelledby="sec-demo">
-    <header class="d0-section-head">
-      <div class="d0-section-head__title"><h2 id="sec-demo">두 가지 시안</h2><span class="d0-pill" data-tone="blue">눌러 볼 수 있어요</span></div>
-      <p>데모라서 눌러도 파일은 내려가지 않아요.</p>
-    </header>
+  <!-- ③ 같은 크기·같은 데이터의 프레임. -->
+  <section class="d0-section" data-composition="split" aria-labelledby="sec-demo">
+    <header class="d0-section-head"><h2 id="sec-demo">두 시안을 직접 눌러 보세요</h2><p>합성 데이터이며, 파일 받기는 데모로만 동작하고 설정은 저장되지 않아요.</p></header>
     <div class="d0-demos">
       <article class="d0-demo" aria-labelledby="demoA-title" data-demo data-variant="modal" data-state="idle">
-        <header class="d0-demo__head"><h3 id="demoA-title">A. 설문형</h3><button type="button" class="d0-link" id="resetA">처음부터</button></header>
+        <header class="d0-demo__head"><h3 id="demoA-title">A. 설문형</h3><button type="button" class="d0-link" id="resetA" aria-label="A 설문형 처음부터">처음부터</button></header>
+        <p class="d0-demo__note">차례로 골라 처음 쓰기 쉬워요. 설정을 함께 보려면 이전으로 돌아가요.</p>
         <div class="d0-frame" id="frameA"></div>
       </article>
       <article class="d0-demo" aria-labelledby="demoB-title" data-demo data-variant="panel" data-state="idle">
-        <header class="d0-demo__head"><h3 id="demoB-title">B. 고르기형</h3><button type="button" class="d0-link" id="resetB">처음부터</button></header>
+        <header class="d0-demo__head"><h3 id="demoB-title">B. 고르기형</h3><button type="button" class="d0-link" id="resetB" aria-label="B 고르기형 처음부터">처음부터</button></header>
+        <p class="d0-demo__note">한 화면에서 설정을 고쳐 반복하기 쉬워요. 처음에는 선택할 것이 많아요.</p>
         <div class="d0-frame" id="frameB"></div>
       </article>
     </div>
+    <p>처음 따라 고르려면 A, 설정을 한눈에 바꾸려면 B를 눌러 보세요.</p>
+    <noscript><p>눌러 보는 시안은 자바스크립트를 켜야 열려요.</p></noscript>
   </section>
 </main>
 
@@ -464,7 +474,7 @@ legend { padding: 0; }
     var NS = "http://www.w3.org/2000/svg", W = 160, H = 96, svg = document.createElementNS(NS, "svg");
     svg.setAttribute("viewBox", "0 0 " + W + " " + H);
     if (decorative) svg.setAttribute("aria-hidden", "true");
-    else { svg.setAttribute("role", "img"); var tt = document.createElementNS(NS, "title"); tt.textContent = spec.label; svg.appendChild(tt); }
+    else { svg.setAttribute("role", "img"); var tt = document.createElementNS(NS, "title"), desc = document.createElementNS(NS, "desc"); tt.textContent = spec.label; desc.textContent = "합성 표의 머리 행과 합계 칸을 파란 면으로 구분해요."; svg.appendChild(tt); svg.appendChild(desc); }
     var rnd = rng(spec.seed || 1), cw = (W - 4) / spec.cols, rh = (H - 4) / spec.rows;
     for (var r = 0; r < spec.rows; r++) for (var c = 0; c < spec.cols; c++) {
       var cls = "d0-s-cell";
@@ -481,8 +491,7 @@ legend { padding: 0; }
   }
 
   // ── ① 그림 카드 ──
-  var thumbs = document.getElementById("thumbs");
-  BUNDLES.forEach(function (b) { thumbs.appendChild(h("li", { class: "d0-thumb" }, [d0Grid(b.g), h("strong", { text: b.name }), pill(b)])); });
+  // 격자 카드는 위 HTML에 합성 도형으로 내장해 스크립트 없이도 보여요.
 
   // ── ② 엑셀형 목업 ──
   var xl = { bundle: 0, sheet: 1 }, P0 = PERIODS[0];
@@ -491,8 +500,10 @@ legend { padding: 0; }
     tabs.appendChild(h("button", { type: "button", role: "tab", class: "d0-pill", id: "xt-" + b.id, "aria-controls": "xlPanel", onclick: function () { xl.bundle = i; xl.sheet = 1; renderXl(); } , text: b.name }));
   });
   tabs.addEventListener("keydown", function (e) {
-    var d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!d) return;
-    xl.bundle = (xl.bundle + d + BUNDLES.length) % BUNDLES.length; xl.sheet = 1; renderXl(); tabs.children[xl.bundle].focus();
+    var d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+    if (!d && e.key !== "Home" && e.key !== "End") return;
+    e.preventDefault();
+    xl.bundle = e.key === "Home" ? 0 : e.key === "End" ? BUNDLES.length - 1 : (xl.bundle + d + BUNDLES.length) % BUNDLES.length; xl.sheet = 1; renderXl(); tabs.children[xl.bundle].focus();
   });
   function guideRows(b, t) {
     return [[b.name, null, "title"], ["", null],
@@ -530,8 +541,8 @@ legend { padding: 0; }
     var sh = document.getElementById("xlSheets"); sh.innerHTML = "";
     ["안내", t.sheet].forEach(function (s, i) { sh.appendChild(h("button", { type: "button", "aria-pressed": String(i === xl.sheet), text: s, onclick: function () { xl.sheet = i; renderXl(); } })); });
     var notes = document.getElementById("xlNotes"); notes.innerHTML = "";
-    var list = xl.sheet === 0 ? [["A1", "묶음 이름"], ["A3~A8", "기간·기준·빈칸 뜻"]] : [["1행", "열 이름, 스크롤해도 고정"], ["맨 아래", t.sumLabel === "누계" ? "기간 누계" : "합계"]];
-    if (t.more && xl.sheet === 1) list.push(["일자 열", t.more + "개까지 이어져요"]);
+    var list = xl.sheet === 0 ? [["A1", "묶음 이름"], ["A3~A8", "기간·기준·빈칸 뜻"]] : [["1행", "열 이름"], ["맨 아래", t.sumLabel === "누계" ? "기간 누계" : "합계"]];
+    if (t.more && xl.sheet === 1) list.push(["일자 열", "전체 " + t.more + "일 중 앞 4일 예시"]);
     if (t.warn) list.push(["알림", t.warn]);
     list.forEach(function (x) { notes.appendChild(h("div", null, [h("dt", { text: x[0] }), h("dd", { text: x[1] })])); });
   }
@@ -579,14 +590,17 @@ legend { padding: 0; }
   function app(frame, opener) {
     var top = h("header", { class: "d0-app__top" }, [h("b", { text: "주문 관리" }), h("button", { type: "button", class: "d0-btn", "data-variant": "primary", "data-size": "sm", "data-k": "open", text: "내보내기", onclick: opener })]);
     frame.appendChild(h("div", { class: "d0-app" }, [top, h("section", { class: "d0-app__body", "aria-hidden": "true" }, [h("div", { class: "d0-ghost" }), h("div", { class: "d0-ghost", "data-size": "tall" }), h("div", { class: "d0-ghost" })])]));
-    var toastEl = h("output", { class: "d0-toast", hidden: true }), timer;
+    var toastEl = h("output", { class: "d0-toast", hidden: true, "aria-live": "polite", "aria-atomic": "true" }), timer;
     frame.appendChild(toastEl);
     return function (msg) { toastEl.hidden = true; void toastEl.offsetWidth; toastEl.textContent = msg; toastEl.hidden = false; clearTimeout(timer); timer = setTimeout(function () { toastEl.hidden = true; }, 2800); };
   }
   // 프레임 안 dialog: 뒤 앱은 inert, Tab은 dialog 안에서 돈다(mockup-frame.md 방식)
   function trapTab(box, e) {
     if (e.key !== "Tab") return;
-    var f = Array.prototype.filter.call(box.querySelectorAll("input, button, [tabindex]:not([tabindex='-1'])"), function (el) { return !el.disabled && el.offsetParent && !el.closest("[inert]"); });
+    var f = Array.prototype.filter.call(box.querySelectorAll("input, button, [tabindex]:not([tabindex='-1'])"), function (el) { if (el.disabled || !el.offsetParent || el.closest("[inert]")) return false;
+      if (el.type !== "radio") return true;
+      var group = Array.prototype.filter.call(box.querySelectorAll("input[type=radio]"), function (r) { return r.name === el.name; });
+      return el === (group.filter(function (r) { return r.checked; })[0] || group[0]); });
     if (!f.length) return;
     var first = f[0], end = f[f.length - 1], a = document.activeElement;
     if (e.shiftKey && (a === first || !f.includes(a))) { e.preventDefault(); end.focus(); }
@@ -595,7 +609,7 @@ legend { padding: 0; }
   // 한 번에 시안 하나만 연다: aria-modal dialog가 둘 열리지 않게
   var shutters = [];
   function openOnly(me) { shutters.forEach(function (f) { if (f !== me) f(); }); }
-  function setState(frame, s) { frame.closest("[data-demo]").dataset.state = s.open ? "open" : "idle"; }
+  function setState(frame, s) { frame.closest("[data-demo]").dataset.state = s.open ? "open" : "idle"; frame.querySelector(".d0-toast").hidden = true; }
   // 다시 그려도 포커스가 같은 조작 요소에 남게 한다
   function keepFocus(layer, draw) {
     var a = document.activeElement, k = a && layer.contains(a) ? a.getAttribute("data-k") : null;
@@ -607,7 +621,8 @@ legend { padding: 0; }
     var b = BUNDLES[s.bundle], t = table(b, PERIODS.filter(function (x) { return x.id === s.period; })[0], s);
     var tsv = [t.head].concat(t.rows, [t.sum]).map(function (r) { return r.map(function (v, i) { return cell(v, i, t, s.blank); }).join("\t"); }).join("\n");
     var done = function () { toast("표를 복사했어요. 스프레드시트에 붙여 넣으면 돼요"); };
-    try { navigator.clipboard.writeText(tsv).then(done, done); } catch (e) { done(); }
+    var failed = function () { toast("복사하지 못했어요. 브라우저의 클립보드 권한을 확인해 주세요"); };
+    try { navigator.clipboard.writeText(tsv).then(done, failed); } catch (e) { failed(); }
   }
 
   // ── 시안 A: 설문형(모달 단계) ──
@@ -617,7 +632,7 @@ legend { padding: 0; }
     var bg = frame.querySelector(".d0-app");
     var scrim = h("div", { class: "d0-scrim", hidden: true }); frame.appendChild(scrim);
     function close(msg) { s.open = false; render(); frame.querySelector('[data-k="open"]').focus(); if (msg) { toast(msg); frame.closest("[data-demo]").dataset.state = "done"; } }
-    scrim.addEventListener("keydown", function (e) { if (e.key === "Escape") { close(); return; } trapTab(scrim, e); });
+    scrim.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); close(); return; } trapTab(scrim, e); });
     function draw() {
       scrim.hidden = !s.open; scrim.innerHTML = ""; bg.inert = s.open; setState(frame, s); if (!s.open) return;
       var body = [];
@@ -661,7 +676,7 @@ legend { padding: 0; }
     function back() { var i = s.bundle; s.bundle = null; render(); layer.querySelector('[data-k="p' + i + '"]').focus(); }
     layer.addEventListener("keydown", function (e) { if (e.key !== "Escape") { trapTab(layer.querySelector(".d0-panel") || layer, e); return; } e.preventDefault(); if (s.bundle !== null) back(); else close(); });
     function draw() {
-      layer.open = s.open; layer.innerHTML = ""; bg.inert = s.open; setState(frame, s); if (!s.open) return;
+      layer.open = s.open; layer.setAttribute("aria-labelledby", s.bundle === null ? "lB-title" : "sB-title"); layer.innerHTML = ""; bg.inert = s.open; setState(frame, s); if (!s.open) return;
       layer.appendChild(h("header", { class: "d0-app__top" }, [h("h4", { id: "lB-title", tabindex: "-1", "data-autofocus": true, text: "내보내기" }), h("button", { type: "button", class: "d0-btn", "data-variant": "ghost", "data-size": "sm", "data-k": "close", text: "닫기", onclick: function () { close(); } })]));
       layer.appendChild(h("div", { class: "d0-app__body", inert: s.bundle !== null }, [
         h("p", { class: "d0-label", text: "최근 받은 자료" }),

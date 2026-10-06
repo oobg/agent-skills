@@ -32,7 +32,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
    글자 없는 SVG·와이어프레임도 기본 360px(`data-size="wide"` 400px) 상한이다. 전체 폭 그림은 가로로 긴 타임라인·단계 줄만, 최대 720px이다.
 4. **섹션은 2~4개(기본 3개), 섹션마다 한 가지 일.** 앞쪽 핵심 섹션(header 다음 첫 1~2개 페이지 섹션)은 그림이 필수다.
    구도 다양화·Editorial·Impact는 섹션을 늘리지 않는다. 기존 섹션을 **대체**할 때만 쓴다.
-   위험·한계·할 일 같은 목록 섹션(diff-rows·checklist·accordion만 담은 섹션)은 그림 없이 둘 수 있다.
+   위험·한계·할 일 같은 목록 섹션(diff-rows·checklist·accordion·faq만 담은 섹션)은 그림 없이 둘 수 있다.
    **그림 없는 목록 섹션**은 섹션 머리 + 목록 블록 하나 + 마무리 한 줄 `p`(배운 점·다음 행동 한 줄) 1개까지다. 다른 블록이나 문단을 더하면 그림이 필요하다.
    **페이지 섹션**은 `main > section`과 `main > .d0-split > section`이다. 블록 안 `section`(mockup-frame의 `.d0-app__body` 등)은 세지 않는다. 프리셋 권장 구성을 전부 채우지 않고 독자 질문에 필요한 블록만 쓴다.
 5. **위계가 보인다.** 13px 회색 문장을 주 콘텐츠로 쓰지 않는다. 섹션 태그 pill은 기본 없음, callout은 페이지당 최대 1개.
@@ -191,7 +191,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 
 **deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 상한(2~4개)·앞쪽 핵심 섹션 그림, 원칙 2·3번 첫 화면 규칙,
 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한 대신
-`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 전달 모드별 그림 면적·본문 밀도, Impact 20~30%, 마지막 장 요청·결정·다음 행동)와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
+`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 전달 모드별 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 ## 개행 규칙
@@ -254,7 +254,7 @@ deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output
 - [ ] 개수 상한(카드 5·단계 5, guide 체크리스트만 7·옵션 3·질문 6·표 열 7 = 데이터 열 6 + 행 번호 열)을 넘지 않는다
 - [ ] `role="img"`와 `<title>`을 가진 인라인 SVG 도식(kpi-cards 막대 변형, Editorial 장르의 SVG 객체 포함)이 1개 이상 있다. Editorial의 숫자는 SVG `<text>`가 아니라 HTML이다(SVG `<text>`로 그린 큰 숫자는 FAIL)
 - [ ] Editorial(`figure.d0-fig[data-genre="editorial"]`)이 페이지당 1개 이하이고, 큰 글자가 실제 숫자이며(문구 FAIL), SVG 객체가 120px 이하다. 96px 이상 숫자는 Impact 띠 안에만 있고, Impact 띠는 0~1개이며 안에 editorial이 없다
-- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion 블록 하나(+ 마무리 한 줄 `p` 1개까지)만 담은 섹션이어야 한다. checklist linked 변형의 무대 SVG는 그림 블록으로 세고, code-block은 그림으로 세지 않는다(행 `<details>` 안 code-block은 그 목록 블록의 일부다)
+- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion·faq 블록 하나(+ 마무리 한 줄 `p` 1개까지)만 담은 섹션이어야 한다. checklist linked 변형의 무대 SVG는 그림 블록으로 세고, code-block은 그림으로 세지 않는다(행 `<details>` 안 code-block은 그 목록 블록의 일부다)
 - [ ] 도식 `figure.d0-fig`마다 안에 SVG가 있고, SVG `<text>` 하나가 4어절(공백 3개) 이상이 아니다(넘으면 텍스트 상자 도식으로 보고 FAIL)
 - [ ] 페이지 섹션(`main > section, main > .d0-split > section`)이 4개 이하, callout이 1개 이하다. mockup-frame 안 `section` 등 블록 안 `section`은 세지 않는다
 - [ ] header 요약 행에 `data-tone="decision"` 행이 있으면 결정 callout이 없다(둘 중 하나만, 라벨 문구는 `결정 필요`·`도움 필요` 등 무엇이든 같다)

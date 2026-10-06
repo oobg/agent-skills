@@ -14,8 +14,8 @@
   checklist 연동 그림 변형(`data-variant="linked"`, 무대 SVG를 diagram으로 센다)이다.
   막대 없는 kpi-cards, CSS 타임라인(가로·세로), code-block은 그림이 아니다. 앞쪽 핵심 섹션(header 다음 첫 1~2개 페이지 섹션,
   `main > section`·`main > .d0-split > section`)은 그림 블록을 먼저 고르고, 위험·한계·할 일 같은 목록 섹션은 그림 없이
-  글 블록(diff-rows, checklist, accordion) 하나 + 마무리 한 줄 `p`(배운 점·다음 한 줄) 1개까지만 써도 된다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
-  글 블록(step-columns, diff-rows, accordion)은 그림을 거들거나 목록을 담는 데만 쓴다.
+  글 블록(diff-rows, checklist, accordion, faq) 하나 + 마무리 한 줄 `p`(배운 점·다음 한 줄) 1개까지만 써도 된다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
+  글 블록(step-columns, diff-rows, accordion, faq)은 그림을 거들거나 목록을 담는 데만 쓴다.
 - 그림은 컨테이너 폭을 채우거나 옆에 짧은 설명을 붙인다. 폭 절반만 쓰고 옆을 비우지 않는다.
 - **그림 무대.** 회색 무대는 기본 없음이다. 필요할 때만 도식 `figure.d0-fig[data-stage]`의 SVG를 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
   figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
@@ -31,7 +31,7 @@
   두 섹션이 모두 무대 위 그림이면 `data-align="stage"`로 머리·무대·캡션 줄을 맞춘다. 목록 섹션이 섞이면 기본(`align-items: start`)이다.
 - 상태는 `data-*` 속성으로 표현한다(`data-status`, `data-current`, `data-open`, `data-variant`, `data-selected`).
 - Card 기본은 plain이다. 리스트는 카드 스택 대신 행 + 1px 디바이더로 나눈다. pill은 배지·탭·토글에만.
-- **색은 섞는다.** Day0 6:3:1, 첫 화면 진한 포인트(채움 면적, 선 제외) 1.2% 이상(375×812는 0.8% 이상)·전체(옅은 면 포함) 3~15%, 넓은 blue-light 무대로 전체만 채우지 않기, 회색만 있는 도식·카드 묶음 금지. blue 단계(blue·blue-dark·blue-light)와
+- **색은 섞는다.** Day0 6:3:1, 첫 화면 진한 포인트 채움 면적은 1% 미만·15% 초과일 때만 경고(Warning, [shell.md](blocks/shell.md) 색 절), 넓은 blue-light 무대로 전체만 채우지 않기, 회색만 있는 도식·카드 묶음 금지. blue 단계(blue·blue-dark·blue-light)와
   의미색 2가지까지(green·orange·red, 면·점·선·배지 배경만, 글자 색 금지). 배지는 카드·행마다 1개, 톤 종류 3가지 이하. 정본은 [shell.md](blocks/shell.md) 색 절.
 - **배지 높이 고정.** 모든 배지(`.d0-pill`)는 높이 22px(작은 변형 20px), 12px 글자, `flex: none`,
   `align-self: flex-start`, `justify-self: start`. grid·flex 행 안에서 늘어나지 않는다. 행 안 배지는 제목 첫 줄에 맞춘다
@@ -85,6 +85,7 @@
 | diff-rows | 바뀐 점만, 한계 목록 | 항목 \| 전 \| → \| 후(블루), 배지 행 변형, 위험 행 변형 `data-variant="risk"`(배지 + 위험 한 문장 + dl 영향/대응) | [diff-rows.md](blocks/diff-rows.md) |
 | checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건). 연동 그림 변형 `data-variant="linked"`(왼쪽 sticky 단계 화면이 행 호버·포커스·클릭·체크로 바뀜, 그림) | [checklist.md](blocks/checklist.md) |
 | code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
-| accordion | FAQ 질문·용어, guide 보조 정보 | FAQ는 항상 노출하는 reply(들여쓴 답 + 꺾인 연결선), guide 선택 펼침, 용어 목록 변형 | [accordion.md](blocks/accordion.md) |
+| accordion | 선택 보조 정보, 용어 목록 | `details` 선택 펼침, 용어 목록 변형 | [accordion.md](blocks/accordion.md) |
+| faq | FAQ 질문, guide 막혔을 때 | 항상 노출하는 답글형(들여쓴 답 + 꺾인 연결선 `.d0-faq`), 끝 한 줄 `.d0-faq__more` | [faq.md](blocks/faq.md) |
 | callout | 결정 요청 하나 | soft 블루 상자, **페이지당 최대 1개**, 히어로 결론을 되풀이하지 않음 | [callout.md](blocks/callout.md) |
 | slide-deck | 출력 형식이 deck일 때의 덱 골격(page의 `d0-page` 대신, 어느 내용 프리셋이든). 구성·Slide Gate는 [output/deck.md](output/deck.md) | `main.d0-deck[data-preset][data-variant]` + 16:9 `section.d0-slide`(`data-kind`로 종류, cqi 타이포)를 한 장씩 보기: 결론 제목 → 근거 그림 하나 → 해석 한 줄 → 쪽수, 표지 다음 제목 목차, 네비·←/→ 키 이동, 인쇄 한 장씩, 좁은 화면은 비율 해제 | [slide-deck.md](blocks/slide-deck.md) |

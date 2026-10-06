@@ -56,7 +56,7 @@ WCAG 2.2 AA를 지킵니다.
 하나로 냅니다. 기본은 한 장짜리 페이지(page)이고, 발표나 화면 공유 신호가 있으면 한 장씩 넘기는 덱(deck)입니다.
 덱은 페이지의 섹션 상한과 첫 화면 규칙 대신 덱 규칙을 따릅니다. 한 장에 주장 하나, 주제명이 아니라 결론 문장인
 제목, 제목만 이어 읽어도 이어지는 논리, 모드별 그림 면적, 강조 장면이 전체의 20~30%,
-표지·목차 포함 5~12장이고, 마지막 장은 요청이나 결정, 다음 행동으로 끝납니다. 프리셋마다 덱으로 낼 때의
+표지·목차 포함 5~12장이고, 마지막 장(closing)은 결정·요청·행동·기준·핵심 정리 중 하나로 끝납니다. 프리셋마다 덱으로 낼 때의
 슬라이드 순서와 장마다 쓸 슬라이드 종류(주장 한 문장, 근거 차트, 화면 캡처 강조, 구성 분해, 큰 숫자 등)를 둡니다.
 덱은 독자와 목적을 정하고 Story Gate부터 확인하며, 발표용 Presentation(기본, 그림 60~80%) 또는 혼자 읽는 Slidedoc(그림 40~60%, 맥락·본문·출처 포함) 하나로 구성합니다.
 일정과 FAQ는 덱보다 페이지가 맞아서 그 판단을 함께 적습니다. 아직 적용 전인
@@ -127,7 +127,8 @@ WCAG 2.2 AA를 지킵니다.
 | `references/blocks/checklist.md` | 진행률과 체크 행(담당 `data-variant="owner"`, 행 끝 칸 없음 `data-meta="none"`), 왼쪽 단계 화면이 행에 따라 바뀌는 연동 그림 변형(`data-variant="linked"`), 체크 JS |
 | `references/blocks/code-block.md` | 붙여 넣을 명령·설정 코드 블록과 복사 버튼, 클립보드를 못 쓸 때 선택 후 단축키 안내(그림 블록 아님, 줄 길이 예외) |
 | `references/blocks/slide-deck.md` | 덱 출력의 마크업·CSS·JS: 한 장씩 보는 16:9 슬라이드(슬라이드 폭 비례 글자), 결론 제목·근거 그림·해석·쪽수, 표지 다음 제목 목차, 네비와 키보드 이동, 인쇄, 좁은 화면 비율 해제, 덱 게이트 |
-| `references/blocks/accordion.md` | 질문 펼침(`details`/`summary`, JS 없음)과 용어 카드 |
+| `references/blocks/accordion.md` | 선택 펼침과 용어 목록(`details`/`summary`, JS 없음) |
+| `references/blocks/faq.md` | 답글형 FAQ: 질문 아래 들여 쓴 답과 `└` 연결선, 항상 펼침 |
 | `references/blocks/callout.md` | 결정 요청이나 다음 할 일 상자(페이지당 최대 1개, 히어로와 중복 금지) |
 | `references/formats/compare.md` | 시안·옵션 비교 (시안, 결정, 전/후 변형), 결정 덱 순서 |
 | `references/formats/flow.md` | 절차·구조 설명 (연결 그래프, 단계 도식), 설명 덱 순서 |

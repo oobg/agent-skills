@@ -131,9 +131,9 @@
   ─ 행 2 ─────────────────────────
   마무리 한 줄
   ```
-- **블록.** [diff-rows.md](blocks/diff-rows.md), [checklist.md](blocks/checklist.md), [accordion.md](blocks/accordion.md).
+- **블록.** [diff-rows.md](blocks/diff-rows.md), [checklist.md](blocks/checklist.md), [accordion.md](blocks/accordion.md), [faq.md](blocks/faq.md).
 - **page.** 보통 마지막 섹션이고 Quiet와 잘 맞는다.
-- **deck.** 참고 정리는 `summary`, 마지막 결정·요청은 `decision`이다. 마지막 장은 한 문장을 세로 중앙에 크게 두고 구분선 아래 작은 `dl` 메타 행을 붙인다. 목록 3개를 같은 무게로 놓지 않는다.
+- **deck.** 참고 정리는 `summary`, 마지막 장은 `closing`(`data-closing`: decision·request·action·criteria·takeaway)이다. 마지막 장은 한 문장을 세로 중앙에 크게 두고 구분선 아래 작은 `dl` 메타 행을 붙인다. 목록 3개를 같은 무게로 놓지 않는다.
 
 ## 리듬
 
@@ -172,7 +172,7 @@
 
 ### 색 비율과 옅은 표면
 
-- 커버·마지막 결정 장을 포함한 색 면적은 [shell.md](blocks/shell.md)의 진한 포인트 lint Warning(<1%·1~15%·>15%)을 따른다. 게이트를 맞추려고 색 면적을 늘리지 않는다.
+- 커버·마지막 closing 장을 포함한 색 면적은 [shell.md](blocks/shell.md)의 진한 포인트 lint Warning(<1%·1~15%·>15%)을 따른다. 게이트를 맞추려고 색 면적을 늘리지 않는다.
 - **면 단위 옅은 표면**(blue-light 무대, Impact 띠, 썸네일 판)은 비율 계산에서 빼고 **장면 수**로 관리한다: page는 Impact 띠 1개 + blue 무대 1개까지, deck은 Impact 20~30%.
 - 정본은 [shell.md](blocks/shell.md) 색 절이다.
 
