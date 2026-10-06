@@ -82,13 +82,19 @@ class TextCollector(HTMLParser):
             self.parts.append(data)
 
 
-def page_chars(source: str) -> str:
+def used_chars(source: str) -> str:
+    """Glyphs the page actually uses (visible text, attributes, script/style non-ASCII)."""
     collector = TextCollector()
     collector.feed(source)
     collector.close()
     text = html.unescape(" ".join(collector.parts))
     text = re.sub(r"\s+", " ", text)
-    chars = set(text) | set(BASE_CHARS) | set(COMMON_SYMBOLS)
+    return "".join(sorted(c for c in set(text) if c.isprintable() or c == " "))
+
+
+def page_chars(source: str) -> str:
+    """Used glyphs plus the base and common symbol sets kept in every subset."""
+    chars = set(used_chars(source)) | set(BASE_CHARS) | set(COMMON_SYMBOLS)
     return "".join(sorted(c for c in chars if c.isprintable() or c == " "))
 
 
@@ -192,6 +198,9 @@ def main() -> int:
 
     chars = page_chars(source)
     woff2, missing = subset(font_bytes, chars)
+    # Warn only for glyphs the page uses; base/common sets missing from the font are not the page's problem.
+    used = set(used_chars(source))
+    missing = [c for c in missing if c in used]
     if missing:
         shown = "".join(sorted(set(missing)))
         print(f"warning: {len(set(missing))} chars not in font cmap: {shown}", file=sys.stderr)

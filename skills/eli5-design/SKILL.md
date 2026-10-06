@@ -1,6 +1,6 @@
 ---
 name: eli5-design
-description: "아무것도 모르는 사람도 그림만 보고 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만든다. 그림 먼저, 짧은 글, 블록당 설명 3문장 이내, 용어는 비유로 풀기를 강제하고, 시안·옵션 비교, 절차 설명, 결과물 미리보기, 보고서, 따라하기 가이드, 일정·변경 내역, 사건·원인, 용어·FAQ 여덟 프리셋 중 하나를 기준으로 공용 블록을 골라 조립한다. 토큰은 형제 스킬 day0-design의 tokens.css 전체를 인라인하며, day0-design이 로컬에 없으면 공개 저장소 원본을 읽는다. '/eli5-design', '쉽게 설명하는 시안', '설명 페이지', '설명서 페이지', 'eli5 디자인', '그림으로 쉽게 보여줘' 요청에 사용한다. 설명 페이지가 아닌 Day0 제품 화면은 day0-design, 문구만이면 ux-writing으로 넘긴다. 설명 목적이 없는 일반 화면·랜딩 디자인에는 사용하지 않는다."
+description: "아무것도 모르는 사람도 그림만 보고 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만든다. 그림 먼저, 짧은 글, 블록당 설명 3문장 이내, 용어는 비유로 풀기를 강제하고, 시안·옵션 비교, 절차 설명, 결과물 미리보기, 보고서, 따라하기·사용 가이드, 일정·변경 내역, 사건·원인, 용어·FAQ 여덟 프리셋 중 하나를 기준으로 공용 블록을 골라 조립한다. 토큰은 형제 스킬 day0-design의 tokens.css 전체를 인라인하며, day0-design이 로컬에 없으면 공개 저장소 원본을 읽는다. '/eli5-design', '쉽게 설명하는 시안', '설명 페이지', '설명서 페이지', 'eli5 디자인', '그림으로 쉽게 보여줘' 요청에 사용한다. 설명 페이지가 아닌 Day0 제품 화면은 day0-design, 문구만이면 ux-writing으로 넘긴다. 설명 목적이 없는 일반 화면·랜딩 디자인에는 사용하지 않는다."
 ---
 
 # ELI5 Design
@@ -28,6 +28,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
    그림이 컨테이너 폭의 절반만 쓰고 옆을 비우지 않는다. 폭을 채우거나 옆에 짧은 설명을 붙인다.
 4. **섹션은 2~4개(기본 3~4개), 섹션마다 한 가지 일.** 앞쪽 핵심 섹션(header 다음 첫 1~2개 페이지 섹션)은 그림이 필수다.
    위험·한계·할 일 같은 목록 섹션(diff-rows·checklist·accordion만 담은 섹션)은 그림 없이 둘 수 있다.
+   **그림 없는 목록 섹션**은 섹션 머리 + 목록 블록 하나 + 마무리 한 줄 `p`(배운 점·다음 행동 한 줄) 1개까지다. 다른 블록이나 문단을 더하면 그림이 필요하다.
    **페이지 섹션**은 `main > section`과 `main > .d0-split > section`이다. 블록 안 `section`(mockup-frame의 `.d0-app__body` 등)은 세지 않는다. 프리셋 권장 구성을 전부 채우지 않고 독자 질문에 필요한 블록만 쓴다.
 5. **위계가 보인다.** 13px 회색 문장을 주 콘텐츠로 쓰지 않는다. 섹션 태그 pill은 기본 없음, callout은 페이지당 최대 1개.
    섹션 설명 `p`는 최대 1문장이고 제목과 같은 말이면 생략한다. 스케일 값은 아래 9번이 정본이다.
@@ -44,7 +45,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
    - **결론 히어로.** report·compare 전/후·incident는 수치가 있으면 h1 바로 아래(요약 행 위)에 결론 수치 1개를
      `d0-hero`로 둔다. 전 값(작게, grey-600, 취소선 없음) → 후 값(44px/600, 모바일 36, 단위는 숫자와 같은 크기) + 단위 + 한 줄 뜻(15px grey-600).
      수치가 없으면 생략한다. 정본: `references/blocks/hero.md`.
-   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄이 약 50자를 넘으면 `p`를 좁히지 않고 블록 레이아웃으로 줄인다
+   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄은 제외) `p`를 좁히지 않고 블록 레이아웃으로 줄인다
      (2열 grid로 행 나누기, 그림 옆 배치). 개행 규칙의 `max-width` 금지는 그대로다.
    - **타이포 대비.** h1 32px/700(display 자간·행간), h2 20px/700(title 자간), 본문 15px/400 grey-800(`p` 행간 1.65),
      보조 14px/400 grey-600, 라벨 12px/600 grey-600(대문자 변환 없음; grey-500은 선·화살표 같은 그래픽에만). 숫자는 전부 `tabular-nums`.
@@ -53,7 +54,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
      디바이더는 섹션 경계 1px grey-100과 행 목록의 행 구분선만 쓴다.
    - **그림 무대.** 도식 `figure`는 `data-stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고
      figcaption은 패널 밖 아래 13px grey-600. SVG 선은 기본 1.5·강조 2.5, round cap/join, 노드 그림자 없음.
-   - **색은 6:3:1로 섞는다.** 첫 화면(1280×800) 진한 포인트(채움·선) 1.2% 이상·전체(옅은 면 포함) 3~15%, 375×812 첫 화면 진한 포인트 0.8% 이상, 넓은 blue-light 무대로 전체만 채우지 않는다. 회색만으로 된 도식·카드 묶음 금지.
+   - **색은 6:3:1로 섞는다.** 첫 화면(1280×800) 진한 포인트(채움 면적) 1.2% 이상·전체(옅은 면 포함) 3~15%, 375×812 첫 화면 진한 포인트 0.8% 이상, 넓은 blue-light 무대로 전체만 채우지 않는다. 회색만으로 된 도식·카드 묶음 금지.
      blue는 단계(blue 선·채움 / blue-dark 글자·번호 / blue-light 옅은 면)로, 의미색(green 가능·완료, orange 주의·준비, red 위험·실패)은
      면·점·선·배지 배경으로만 쓰고 글자 색으로 쓰지 않는다. 페이지당 의미색 2가지 + blue. 정본: `references/blocks/shell.md` 색 절.
      KPI는 숫자 + 막대(`전` 행에만 값, `후` 행은 라벨만)만 두고 증감 배지를 달지 않는다.
@@ -129,26 +130,37 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 | report·compare 전/후·incident에 결론 수치가 있을 때 | `references/blocks/hero.md` |
 | 화면을 눌러 보게 할 때 | `references/blocks/mockup-frame.md` |
 | artifact로 발행하기 직전(폰트 인라인) | `scripts/subset_font.py` (Pretendard 서브셋 `@font-face` 생성) |
-| 시안·옵션 비교, 결정 요청, 전후 비교 | `references/formats/compare.md` |
-| 절차·흐름·구조·개념 설명 | `references/formats/flow.md` |
-| 결과물(파일·표·화면)의 모양 미리보기 | `references/formats/preview.md` |
-| 결과·지표 보고, 아직 적용 전인 변경 제안·설명 | `references/formats/report.md` |
-| 사용자가 직접 따라 하는 가이드 | `references/formats/guide.md` |
-| 로드맵·일정·변경 내역 | `references/formats/timeline.md` |
-| 장애·사건 경위와 원인 | `references/formats/incident.md` |
-| 용어 정리·FAQ | `references/formats/faq.md` |
+| 프리셋을 고른 뒤 | 아래 프리셋 판별 표의 프리셋 파일 하나 |
 
 ## 프리셋 판별
+
+먼저 독자가 읽고 나서 무엇을 할 수 있어야 하는지 한 줄로 정한다. 그 행동이 프리셋을 정한다.
+
+| 프리셋 | 언제 | 읽고 나서 할 수 있어야 하는 것 | 연다 |
+| --- | --- | --- | --- |
+| compare | 시안·옵션 비교, 결정 요청, 전후 비교 | 판단한다 | `references/formats/compare.md` |
+| flow | 절차·흐름·구조·개념 설명 | 흐름을 이해하고 다음 행동을 알게 한다(시작 조건 → 단계 → 성공 확인 → 막히면 → 다음, 개념·구조 설명 포함) | `references/formats/flow.md` |
+| preview | 결과물(파일·표·화면)의 모양 미리보기 | 관심 여부를 판단한다 | `references/formats/preview.md` |
+| report | 상태·진행 보고, 결과·지표 보고, 상위 보고 요약, 아직 적용 전인 변경 제안·설명 | 판단하거나 행동한다 | `references/formats/report.md` |
+| guide | 사용자가 직접 따라 하는 가이드, 도구·규칙을 잘 쓰는 사용 가이드 | 올바르게 실행하거나 사용하게 한다 — 따라하기(기본)·사용 가이드(`data-variant="practice"`) | `references/formats/guide.md` |
+| timeline | 로드맵·일정·변경 내역 | 시간과 의존성을 공유한다 | `references/formats/timeline.md` |
+| incident | 장애·사건 경위와 원인 | 이해하고 재발을 막는다 | `references/formats/incident.md` |
+| faq | 용어 정리·FAQ | 특정 질문을 바로 해결한다 | `references/formats/faq.md` |
+
+guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목적·원칙·상황별 추천으로 잘 쓰게 하면 사용 가이드다.
+프리셋 변형은 `<main class="d0-page" data-variant="...">`로 표시한다. 이름표일 뿐 스타일은 바꾸지 않는다.
+이름표 목록(정본): compare `prototype`(시안)·`decision`(결정)·`before-after`(전/후), guide `practice`(사용 가이드, 따라하기는 생략), timeline `roadmap`·`changelog`, report `status`(기본)·`results`·`executive`·`proposal`. flow·preview·incident·faq는 변형이 없다.
 
 헷갈리는 쌍은 이 기준으로 가른다.
 
 | 헷갈리는 쌍 | 기준 |
 | --- | --- |
 | timeline / flow | 날짜가 있으면 timeline, 순서만 있으면 flow |
-| guide / flow | 체크박스가 필요하면 guide, 이해만 하면 flow |
+| guide / flow | 체크박스로 직접 실행하면 guide 따라하기, 흐름 이해가 목적이면 flow, 잘 쓰는 법·선택 기준이면 guide 사용 가이드 |
 | preview / report | 결과물의 모양이면 preview, 그로부터 알게 된 것이면 report |
 | compare 시안 / 결정 | 화면을 눌러 고르면 시안, 숫자·정책을 고르면 결정 |
-| incident / report | 사건 하나의 경위면 incident, 결과·지표 정리면 report |
+| timeline / report | 날짜 순서가 주인공이면 timeline, 지금 상태와 다음 행동이 주인공이면 report |
+| incident / report | 사건 하나의 경위면 incident, 진행 상태·결과·지표 정리면 report |
 | 적용 전 변경 제안 | report + 요약 행 헤더, 수치는 `예상치`로 표기(측정값과 섞지 않는다) |
 
 ## 개행 규칙
@@ -166,7 +178,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
   문장마다 `<span class="d0-sentence">`(`display: block`) 또는 별도 `<p>`를 쓰고 `<br>`을 늘어놓지 않는다.
   한 문장이 한 줄을 넘치면 그 안에서는 자연 줄바꿈한다.
 - **요약 행.** 리드 내용이 "이전 → 현재 → 요청"처럼 역할로 나뉘면 문단 대신 header 요약 행(`라벨 | 한 문장` 2~3행)을 쓴다.
-  compare 전/후·결정 변형, report, incident, timeline 변경 내역의 기본 리드다. `결정 필요` 행이 있으면 결정 callout을 두지 않는다.
+  compare 전/후·결정 변형, report, incident, timeline 변경 내역의 기본 리드다. 결정·요청 행(`data-tone="decision"`)이 있으면 결정 callout을 두지 않는다.
   결정이 둘 이상이면 `결정 필요` 칸에 짧은 `ol`(최대 2개), 셋 이상이면 가장 중요한 1개만 요약 행에 두고 나머지는
   할 일 목록으로 보낸다. 요약 행은 최대 3행이다. 행 라벨·두 번째 결정의 세부 규칙은 `references/blocks/header.md`가 정본이다.
 
@@ -179,7 +191,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 - 인라인 `@font-face`는 메인 `<style>` **앞**의 별도 `<style>`이다. "tokens.css는 메인 `<style>` 맨 앞" 규칙과 충돌하지 않는다.
 - **라이트 온리.** `:root { color-scheme: light; }`와 `body` 배경색을 명시해 다크 호스트에서도 깨지지 않게 한다. 다크 팔레트를 추가하지 않는다.
 - 모바일 폭에서 좌우 16px 거터, 가로 스크롤 없음.
-- **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임에 넣을 페이지는 머리(라벨~요약 행 끝)를 260px 이하, 첫 무대를 300px 이하로 잡아 첫 도식이 프레임 안에서 잘리지 않게 한다(계산: `references/blocks/shell.md` 첫 화면 높이 예산).
+- **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임에 넣을 페이지는 첫 SVG 도식의 아래 끝이 720px 안에 든다. 머리 260 + 첫 무대 300은 합계 기준이다(정본: `references/blocks/shell.md` 첫 화면 높이 예산).
 - **한 artifact 안 여러 페이지.** 탭으로 고른 페이지를 iframe으로 보여 줄 때 같은 artifact의 다른 파일을 `src`로 부르지 않는다(뷰어 샌드박스에서 연결이 끊긴다).
   각 페이지 HTML을 base64 JSON으로 내장하고, 탭을 고르면 `TextDecoder`로 풀어 `iframe.srcdoc`에 넣는다. iframe은 `sandbox="allow-scripts"`이고 `allow-same-origin`은 주지 않는다.
   새 탭 열기는 같은 HTML로 만든 Blob URL을 쓰고, 막히면 "새 탭을 열 수 없어요. 이 화면에서 보세요" 같은 안내 문구를 보여 준다.
@@ -188,7 +200,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 
 ## 작업 순서
 
-1. **프리셋 판별.** 요청 신호와 판별 표로 주 프리셋 하나를 고른다. 해당 프리셋 파일을 연다.
+1. **프리셋 판별.** 먼저 독자가 읽고 나서 무엇을 할 수 있어야 하는지 한 줄로 정한다. 그 행동과 요청 신호, 판별 표로 주 프리셋 하나를 고른다. 해당 프리셋 파일을 연다.
 2. **독자 질문 확정.** 프리셋의 질문을 이 요청에 맞게 한 줄씩 다시 쓴다. 답할 수 없는 질문은 사용자에게 확인한다.
 3. **그림 먼저, 섹션 2~4개(기본 3~4개).** 첫 화면에 들어갈 SVG 도식을 먼저 정하고(프리셋의 대표 도식), 앞쪽 핵심 섹션 1~2개에
    그림을 고른 뒤 남은 질문(위험·할 일 등)에만 글 블록을 붙인다. `references/blocks.md` 표로 고른다. 처음이면 예시 HTML로 톤을 맞춘다.
@@ -209,15 +221,15 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 - [ ] `text-wrap: balance`가 제목 셀렉터(h1~h3)에만 있다
 - [ ] 개수 상한(카드 5·단계 5, guide 체크리스트만 7·옵션 3·질문 6·표 열 7 = 데이터 열 6 + 행 번호 열)을 넘지 않는다
 - [ ] `role="img"`와 `<title>`을 가진 인라인 SVG 도식(kpi-cards 막대 변형 포함)이 1개 이상 있다
-- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion 블록만 담은 섹션이어야 한다
+- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion 블록 하나(+ 마무리 한 줄 `p` 1개까지)만 담은 섹션이어야 한다
 - [ ] 도식 `figure.d0-fig`마다 안에 SVG가 있고, SVG `<text>` 하나가 4어절(공백 3개) 이상이 아니다(넘으면 텍스트 상자 도식으로 보고 FAIL)
 - [ ] 페이지 섹션(`main > section, main > .d0-split > section`)이 4개 이하, callout이 1개 이하다. mockup-frame 안 `section` 등 블록 안 `section`은 세지 않는다
-- [ ] header 요약 행에 `결정 필요`가 있으면 결정 callout이 없다(둘 중 하나만)
+- [ ] header 요약 행에 `data-tone="decision"` 행이 있으면 결정 callout이 없다(둘 중 하나만, 라벨 문구는 `결정 필요`·`도움 필요` 등 무엇이든 같다)
 - [ ] 모든 h2에 섹션 태그 pill이 붙어 있지 않다(전부 붙어 있으면 FAIL)
 - [ ] 배지(`.d0-pill`)에 고정 `height`와 `flex: none`이 있다
 - [ ] 배지 톤 종류(`span.d0-pill`의 `data-tone`, 없으면 회색)가 3가지 이하, 카드·행 하나에 배지가 1개 이하, 의미색(`--d0-green`·`--d0-red`·`--d0-orange`)을 글자 `color`로 쓴 곳이 없다
 - [ ] 같은 숫자 문자열(숫자+단위, 예 `26분`)이 렌더 텍스트(`body.innerText`, SVG `<text>` 포함)에 2회 이하다
-- [ ] 도식 `figure.d0-fig`마다 SVG가 `[data-stage]` 패널 안에 있고 figcaption은 패널 밖에 있다
+- [ ] 도식 `figure.d0-fig`마다 SVG가 `[data-stage]` 패널 안에 있고 figcaption은 패널 밖에 있다(전체 폭 비율 막대 `figure.d0-fig[data-variant="ratio"]`는 무대 없이 섹션 폭에 두는 예외)
 - [ ] kpi-cards에 증감 배지가 없다
 - [ ] SVG·CSS 안 모든 `var(--d0-*)`가 tokens.css에 있다
 - [ ] 구조(`section`·`header`·`figure`·`ol`/`ul`·`dl`·`table`·`time`·`data`·`progress`·`details`·`dialog`·`button`/`a`)를
@@ -249,17 +261,17 @@ WCAG 3.0은 아직 Working Draft라 방향 참고로만 보고, 판정은 WCAG 2
 - [ ] 1280×800에서 SVG 도식의 bounding box가 첫 화면 안에 전부 보인다(잘리면 FAIL), 375×812에서는 첫 그림 블록 높이의 절반 이상이 첫 화면 안이다(윗부분만 걸치면 FAIL)
 - [ ] 첫 화면(1280×800) 안에서 그림·목업 면적이 글 면적보다 크다(그림 = `figure`·`svg`·목업 프레임 box, 글 = `p`·`li`·`dd` 텍스트 블록 box의 첫 화면 안 면적 합. 그림 안 글은 그림으로 센다)
 - [ ] 그림이 컨테이너 폭의 절반만 쓰고 옆이 빈 배치가 없다(그림 폭이 부모 폭의 60% 미만이고 같은 줄 옆에 내용이 없으면 FAIL)
-- [ ] 1280×800 첫 화면에서 진한 포인트(`blue`·`blue-dark`·`green`·`orange`·`red` 채움·선)가 1.2% 이상, 375×812 첫 화면에서 0.8% 이상, 전체(옅은 면 포함)가 1280에서 3~15%이고 blue와 의미색 1가지 이상이 보인다. 넓은 blue-light 무대로 전체 비율만 채우지 않는다(측정: 해당 색이 `background-color`·SVG `fill`·`stroke`인 요소의 보이는 bbox 합 ÷ 뷰포트 면적, 센 요소의 자손은 제외. 정본 `references/blocks/shell.md` 색 절)
+- [ ] 1280×800 첫 화면에서 진한 포인트(`blue`·`blue-dark`·`green`·`orange`·`red` 채움)가 1.2% 이상, 375×812 첫 화면에서 0.8% 이상, 전체(옅은 면 포함)가 1280에서 3~15%이고 blue와 의미색 1가지 이상이 보인다. 넓은 blue-light 무대로 전체 비율만 채우지 않는다(측정: 해당 색이 `background-color`·SVG `fill`인 요소의 보이는 bbox 합 ÷ 뷰포트 면적, `stroke`·`border`만 그 색인 요소는 세지 않음, 센 요소의 자손은 제외. 정본 `references/blocks/shell.md` 색 절)
 - [ ] 회색만 있는 도식이 없다(도식 `svg`마다 blue 계열 또는 의미색 `fill`·`stroke` 요소가 1개 이상)
 - [ ] 배지가 세로로 늘어나지 않고 제목 첫 줄에 맞춰져 있다(배지 높이 = 22px 또는 20px, 배지 중심과 제목 첫 줄 중심 차 2px 이하)
 - [ ] SVG 안 글자의 렌더 크기가 11px 이상 16px 이하다(375px과 1280px 모두). 데스크톱에서 h2 18px보다 작다.
   렌더 글자 크기 = font-size × (SVG 렌더 폭 ÷ viewBox 폭)로 잰다. 글자 박스 높이는 쓰지 않는다(정본: `references/blocks/diagram.md` 라벨 절)
 - [ ] `.d0-split`으로 나란히 둔 두 섹션의 높이 비(긴 쪽 ÷ 짧은 쪽)가 1.5 이하다(1280px에서 두 `section` 높이. 무대 정렬 변형은 두 무대 안 SVG 높이로 잰다. 정본: `references/blocks/shell.md`)
 - [ ] 나란히 둔 두 섹션이 모두 무대 위 그림이면 `data-align="stage"`이고, 1280px에서 좌우 h2 위 끝·무대 위 끝·무대 높이·figcaption 위 끝의 차가 각각 2px 이하다. 375px에서는 1열로 쌓인다
-- [ ] 본문 텍스트 블록 한 줄이 50자 이하다(실제 줄 글자 수, 또는 텍스트 블록 폭 ÷ (15px × 0.95) 근사)
+- [ ] 본문 텍스트 블록 한 줄이 50자 이하다(실제 줄 글자 수, 또는 텍스트 블록 폭 ÷ (15px × 0.95) 근사. `code`·`pre`·명령어 줄은 제외)
 - [ ] 히어로가 있으면 히어로 수치가 1280×800 첫 화면 상단 1/3(y ≤ 267px) 안에 있다
 - [ ] 페이지 섹션 사이 세로 간격이 64px(모바일 48px)이다(앞 섹션 마지막 블록 아래 끝 ~ 다음 섹션 `header` 위 끝, 오차 ±4px)
-- [ ] 옆 영역이 남는데 줄이 바뀐 설명 문단이 없다(문단 폭이 부모 폭보다 24px 이상 좁은데 2줄 이상이면 FAIL)
+- [ ] 옆 영역이 남는데 줄이 바뀐 설명 문단이 없다(문단 폭이 부모의 content box 폭(패딩 제외), grid 안이면 그 열 폭보다 24px 이상 좁은데 2줄 이상이면 FAIL. callout·카드 패딩이나 열 폭을 남는 영역으로 세지 않는다)
 - [ ] 모바일 폭에서 가로 스크롤이 없다(375px에서 `scrollWidth` ≤ `clientWidth`)
 - [ ] 프리셋의 독자 질문마다 답하는 블록이 있다(질문 목록과 섹션 제목을 한 줄씩 짝지어 검토)
 - [ ] 처음 보는 사람이 그림과 제목만 훑어도 요지를 말할 수 있다(h1·h2·figcaption만 읽고 요지 한 문장을 써 본다)

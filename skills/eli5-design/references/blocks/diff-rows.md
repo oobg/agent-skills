@@ -11,6 +11,7 @@
 
 - compare 전/후 변형, timeline 변경 내역에서 "무엇이 어떻게 바뀌었나"를 보여 줄 때.
 - 항목마다 "나에게 달라지는 점"이 필요하면 후 값 아래 한 줄 주석을 둔다(`.d0-diff__note`).
+- 한계·참고 목록은 배지 행 변형, 대응이 필요한 위험·차단 목록(report 이슈·위험)은 위험 행 변형(`data-variant="risk"`).
 
 ## 배지 행 변형 (한계·위험 목록)
 
@@ -58,6 +59,46 @@
   .d0-rows.d0-cols li:nth-child(odd) { margin-right: 36px; } /* 열 사이 48px = 12 + 36 */
   .d0-rows.d0-cols li:nth-child(2) { border-top: 0; padding-top: 0; }
 }
+```
+
+## 위험 행 변형 (`data-variant="risk"`, report 이슈·위험)
+
+배지 행의 확장이다. 행 = 배지(`위험` orange / `차단` red) → `div`(제목 `strong` = 위험 한 문장 + `dl.d0-risk`).
+`dl`은 `영향`(무엇이 늦어지거나 깨지나)과 `대응`(누가 무엇을 하나) 두 쌍을 항상 갖는다. 대응이 아직 없으면 `대응` 칸에
+`팀 A가 10월 8일까지 방법 정하기`처럼 대응을 정하는 행동을 쓴다. 칸을 비우거나 `검토 중`만 쓰지 않는다.
+
+- 영향은 숫자나 날짜로 쓴다(`출시가 3일 늦어져요`). `큰 영향`처럼 크기를 말로만 하지 않는다.
+- 대응은 주체 + 짧은 구다. 기한·조건까지 다 쓴 할 일은 다음 단계 checklist 행 하나가 정본이고, 여기서는 같은 문장을 되풀이하지 않는다.
+- `dt`는 13px/600 grey-600, `dd`는 14px grey-800, 쌍 간격 4px. 한 `dd`는 한 줄(약 40자)이다.
+- 행이 여러 줄이라 2열 변형(`.d0-cols`)과 함께 쓰지 않는다. 3행 이내.
+
+```html
+<ul class="d0-rows" data-variant="risk">
+  <li><span class="d0-pill" data-tone="red">차단</span>
+    <div><strong>결제 테스트 계정이 아직 안 나왔어요</strong>
+      <dl class="d0-risk">
+        <div><dt>영향</dt><dd>결제 화면 검수가 3일 밀려요</dd></div>
+        <div><dt>대응</dt><dd>팀 B가 발급 요청을 다시 올렸어요</dd></div>
+      </dl></div></li>
+  <li><span class="d0-pill" data-tone="orange">위험</span>
+    <div><strong>번역 문구가 2개 화면에서 넘쳐요</strong>
+      <dl class="d0-risk">
+        <div><dt>영향</dt><dd>그대로 두면 버튼 글자가 잘려요</dd></div>
+        <div><dt>대응</dt><dd>팀 A가 짧은 문구로 바꿔요</dd></div>
+      </dl></div></li>
+</ul>
+```
+
+```css
+.d0-risk { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 6px 0 0; }
+.d0-risk > div {
+  display: grid; grid-column: 1 / -1;
+  grid-template-columns: 32px 1fr; /* subgrid 미지원 폴백 */
+  grid-template-columns: subgrid;
+  align-items: baseline;
+}
+.d0-risk dt { color: var(--d0-grey-600); font-size: var(--d0-text-compact); font-weight: 600; }
+.d0-risk dd { margin: 0; color: var(--d0-grey-800); font-size: 14px; }
 ```
 
 ## 스니펫
@@ -113,3 +154,4 @@
 - 행마다 `auto` 배지 열을 따로 둬 배지 길이에 따라 제목 시작 위치가 들쭉날쭉한 목록.
 - 행 상자·배경, `grey-200` 이상 구분선, 한 줄 50자를 넘는 행 설명을 그대로 두기, 홀수 행 목록에 2열 변형.
 - 행 하나에 배지 2개 이상, 페이지 배지 톤 4종류 이상, 모든 행에 같은 회색 배지만 두기([shell.md](shell.md) 색 절).
+- 위험 행에서 `영향`이나 `대응`을 빼기, `대응` 칸에 `검토 중`·`추후 대응`만 쓰기, 대응 문장을 다음 단계 행에 그대로 되풀이하기.

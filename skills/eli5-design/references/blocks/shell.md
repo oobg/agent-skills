@@ -13,8 +13,9 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - 컨테이너는 day0 폭 규칙을 따른다: 기본 wide `1200px`, `data-width="narrow"`면 `640px`.
 - 페이지 패딩: 데스크톱 `64px 32px 96px`, 640px 이하 `48px 16px 72px`(좌우 16px 거터).
 - 모든 블록은 페이지 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다.
-- **첫 화면 높이 예산.** 갤러리 iframe(높이 약 720px)이나 1280×800 첫 화면에서 첫 도식이 잘리지 않게, 머리(작업 라벨 → h1 → 히어로 → 요약 행 끝)는
-  1100~1280px 폭에서 260px 이하, 첫 그림 무대는 300px 이하로 잡는다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 무대 300 ≈ 708px).
+- **첫 화면 높이 예산(정본).** 판정은 하나다: 1100~1280px 폭에서 **첫 SVG 도식의 아래 끝이 y ≤ 720px**(갤러리 iframe 약 720px, 1280×800 첫 화면 공통).
+  머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 무대 300px은 **합계 560px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 무대 300 ≈ 708px).
+  머리가 짧으면 무대가 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
   넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 무대 SVG의 viewBox 높이를 줄인다.
 
 ## 여백 리듬
@@ -40,6 +41,7 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
   두 섹션이 모두 무대 위 그림이면 아래 무대 정렬 변형(`data-align="stage"`)이 기본이다.
 - 마지막이 아닌 `.d0-split` 안 섹션은 둘 다 아래 패딩 32px(모바일 24px)을 지킨다. 오른쪽 섹션이 `:last-child`라 `padding-bottom: 0`을 받는 것을
   `.d0-split:not(:last-child) > .d0-section`이 되돌린다(이 규칙이 없으면 split 아래 여백이 왼쪽 열만큼만 남는다).
+- 페이지 끝 `.d0-split`은 2열(960px 이상)에서 두 섹션 모두, 1열에서는 마지막 섹션만 `padding-bottom: 0`이다. 1열에서 왼쪽(위) 섹션의 아래 패딩까지 없애지 않는다.
 - 각 섹션은 자기 `border-top`을 그대로 둔다. 데스크톱에서는 구분선이 열 사이에서 끊겨 보이는데, 의도한 모양이다.
 - 세 개 이상 나란히 두지 않는다.
 - **높이 기준(정본).** 데스크톱에서 한쪽 섹션 높이가 다른 쪽의 1.5배를 넘으면 나란히 두지 않고 위아래로 쌓는다.
@@ -72,7 +74,7 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 
 ## 열 나누기 (`.d0-cols`) — 줄 길이
 
-본문 한 줄이 약 50자를 넘으면 글을 줄이거나 블록 레이아웃으로 폭을 나눈다. `p`에 `max-width`를 거는 대신
+본문 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄 제외) 글을 줄이거나 블록 레이아웃으로 폭을 나눈다. `p`에 `max-width`를 거는 대신
 블록을 2열로 나눈다. `.d0-cols`는 960px 이상에서 같은 폭 2열 grid(열 사이 48px), 그 아래는 1열이다.
 
 - 그림 + 짧은 설명, 행 목록 둘(주의 | 할 일), 짝수 개 행 목록에 쓴다. 행 목록 2열 변형은 [diff-rows.md](diff-rows.md).
@@ -120,9 +122,10 @@ Day0의 6:3:1(배경 · 텍스트 · 포인트)을 따른다. **회색만 남은
   375×812 첫 화면은 **진한 포인트 0.8% 이상**이다(모바일은 글이 첫 화면을 차지해 비율이 떨어진다. 1280에서 통과한 report 페이지가 375에서 0.06%로 무채색이었다).
   모바일에서 모자라면 히어로·요약 행·첫 무대 안의 기존 표식(현재 단계, 후 막대, 체크)이 첫 화면에 들도록 머리를 줄인다. 뜻 없는 면을 칠하지 않는다.
   색감을 만드는 것은 진한 포인트다. 전체 비율은 회색 일색과 과채색을 막는 범위일 뿐이다.
-  - 진한 포인트 = `blue`·`blue-dark`·`green`·`orange`·`red`가 채움 또는 선(HTML `background-color`, SVG 도형 `fill`·`stroke`)인 요소의 보이는 bbox 합 ÷ 뷰포트 면적.
-    옅은 면 안에 있어도 센다.
-  - 전체 = 진한 포인트에 옅은 면(`blue-light` 무대·썸네일 판, 각 `-bg` 배지 배경)을 더한 bbox 합 ÷ 뷰포트 면적(뷰포트로 자름). 이미 센 요소의 자손은 빼 겹침을 막는다.
+  - **측정 정의(정본).** 채움 면적만 센다: HTML `background-color`와 SVG 도형 `fill`이 해당 색인 요소의 보이는 bbox 합 ÷ 뷰포트 면적(뷰포트로 자름, 이미 센 요소의 자손은 제외).
+    `stroke`·`border`만 해당 색인 요소(점선 상자·윤곽·테두리)는 bbox로 세지 않는다. 선의 bbox는 속이 빈 상자 전체라 수치를 부풀린다.
+  - 진한 포인트 = 위 정의에서 색이 `blue`·`blue-dark`·`green`·`orange`·`red`인 채움. 옅은 면 안에 있어도 센다.
+  - 전체 = 진한 포인트 채움 + 옅은 면 채움(`blue-light` 무대·썸네일 판, 각 `-bg` 배지 배경). 같은 정의다.
   - 실측: 사용자가 좋다고 한 기준 톤 페이지 전체 3.56%·진한 1.53%, 회색 일색이라 혹평받은 출력 전체 1.52%·진한 0.37%, 예시 HTML 전체 10.55%·진한 1.24%.
     두 페이지를 가른 것은 전체가 아니라 진한 비율이다.
   - 넓은 blue-light 무대로 전체 비율만 채우지 않는다. 옅은 면이 넓어도 진한 포인트가 1.2% 미만이면 회색 페이지로 읽힌다.
@@ -266,7 +269,7 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 
 /* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px */
 .d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); }
-.d0-section:last-child, .d0-split:last-child > .d0-section { padding-bottom: 0; }
+.d0-section:last-child { padding-bottom: 0; } /* 1열 split이면 마지막(아래) 섹션만 0 */
 .d0-split:not(:last-child) > .d0-section { padding-bottom: 32px; } /* 오른쪽 섹션도 :last-child라 0이 되는 것을 막는다 */
 .d0-split { display: grid; gap: 0 48px; }
 .d0-split > * { min-width: 0; }
@@ -275,6 +278,7 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 @media (min-width: 960px) {
   .d0-split { grid-template-columns: 1fr 1fr; align-items: start; }
   .d0-cols { grid-template-columns: 1fr 1fr; }
+  .d0-split:last-child > .d0-section { padding-bottom: 0; } /* 2열에서만 두 섹션 모두 0 */
   /* 무대 정렬: 두 그림 섹션의 머리·무대·캡션 줄을 맞춘다 */
   .d0-split[data-align="stage"] { grid-template-rows: auto 1fr auto; align-items: stretch; }
   .d0-split[data-align="stage"] > .d0-section { grid-row: span 3; grid-template-rows: subgrid; align-content: stretch; }

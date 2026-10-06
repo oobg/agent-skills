@@ -17,6 +17,8 @@
   모든 카드가 같은 상태면 배지를 빼고 섹션 설명 한 줄로 말한다. 톤 종류는 페이지 전체에서 3가지 이하([shell.md](shell.md) 색 절).
 - **카드 수와 열.** 기본 격자는 `auto-fit`이라 3·5장은 한 줄을 채운다. 4장이면 `data-count="4"`로 데스크톱 4열·640px 이하 2열에 고정한다
   (`auto-fill`이나 큰 최대 폭에서는 빈 트랙이 남거나 3+1로 접힌다).
+- **카드 수와 그림 폭.** 카드 그림 폭은 약 280px 이하다. 3장 이하가 전체 폭(1200px)을 나눠 그림이 그보다 커지면 `data-layout="row"`로 바꾼다:
+  카드를 세로로 쌓고, 카드 안에서 그림을 왼쪽 고정폭 168px, 이름·배지를 오른쪽에 가로로 둔다(640px 이하는 다시 위아래).
 - 용어 변형(faq): 이름 아래 한 줄 비유(`.d0-thumb__note`, 13px)를 허용한다. 두 줄 이상이면 accordion으로 보낸다.
 
 ## 스니펫
@@ -70,6 +72,10 @@
 .d0-thumb:hover, a.d0-thumb:focus-visible { border-color: var(--d0-blue); transform: translateY(-2px); }
 .d0-thumb svg { width: 100%; height: auto; padding: 8px; border-radius: var(--d0-radius-sm); background: var(--d0-blue-light); }
 .d0-thumb strong { font-size: 15px; font-weight: 600; letter-spacing: var(--d0-tracking-title); }
+.d0-thumbs[data-layout="row"] { grid-template-columns: 1fr; }
+.d0-thumbs[data-layout="row"] .d0-thumb { grid-template-columns: 168px 1fr; grid-template-rows: auto 1fr; column-gap: 20px; }
+.d0-thumbs[data-layout="row"] .d0-thumb > :first-child { grid-row: span 2; }
+@media (max-width: 640px) { .d0-thumbs[data-layout="row"] .d0-thumb { grid-template-columns: 1fr; } .d0-thumbs[data-layout="row"] .d0-thumb > :first-child { grid-row: auto; } }
 .d0-thumb__note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 @media (prefers-reduced-motion: reduce) { .d0-thumb:hover, a.d0-thumb:focus-visible { transform: none; } }
 ```

@@ -11,7 +11,7 @@
 
 - `data-variant="decision"`: 결정 요청. 무엇을, 누가, 언제까지 정하는지 행으로 적는다.
   header 요약 행에 `결정 필요` 행이 있으면 이 callout을 두지 않는다(둘 중 하나만).
-- `data-variant="next"`: 결정이 없는 페이지의 다음 할 일 한 가지.
+- `data-variant="next"`: 결정이 없는 페이지의 다음 할 일 한 가지. 자리는 그 할 일이 속한 **마지막 섹션의 끝, 섹션 안쪽**이다(`section` 밖 `main` 직계로 두지 않는다).
 - `data-variant="conclusion"`: 리드로 결론을 말할 수 없을 때만. 히어로가 있으면 쓰지 않는다.
 
 ## 스니펫

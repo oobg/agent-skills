@@ -4,7 +4,8 @@
 
 - 같은 크기 2~3열. 열마다 독립 카드라 `<article>`(제목 h3). 열 = 안 이름 → 본문(미니 프로토타입 또는 비교 행) → 고르기 버튼(`aria-pressed`).
 - 흰 글자 버튼 배경은 `--d0-blue-dark`(`--d0-blue`는 흰 글자 대비 4.5:1 미달).
-- 후보 간 높이·정보량을 맞춘다. 고른 열만 `data-selected`로 soft 블루 배경을 받는다.
+- 후보 간 높이·정보량을 맞춘다. 고른 열은 기본이 **`고른 안` 배지 + 이유 한 줄(`.d0-option__why`) + 2px blue 테두리**다.
+  카드 전체 blue-light 배경은 반 폭 카드에서 전체 포인트 상한(15%, [shell.md](shell.md) 색 절)을 넘기기 쉬워 카드가 작을 때(3열 또는 카드 높이 200px 이하)만 `data-selected="fill"`로 쓴다.
 - 640px 이하에서는 세로로 쌓인다.
 
 ## 언제 쓰나 / 변형
@@ -33,7 +34,7 @@
     <dl class="d0-option__rows"><dt>장점</dt><dd>모든 페이지가 같아요.</dd><dt>위험</dt><dd>틀에 안 맞는 요청이 막혀요.</dd></dl>
   </article>
   <article class="d0-option" data-selected>
-    <h3>B안: 조각만 고정</h3>
+    <div class="d0-section-head__title"><h3>B안: 조각만 고정</h3><span class="d0-pill" data-tone="blue">고른 안</span></div>
     <svg class="d0-option__wire" viewBox="0 0 240 140" role="img" aria-labelledby="ob-t">
       <title id="ob-t">B안: 조각 모양은 같고, 고르는 조각과 순서는 페이지마다 다르다</title>
       <rect class="d0-s-frame" x="1" y="1" width="238" height="138" rx="10"/>
@@ -50,12 +51,12 @@
 ```css
 /* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
 .d0-option__wire { display: block; width: 100%; height: auto; }
-.d0-option[data-selected] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
+.d0-option[data-selected="fill"] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
 ```
 
 - SVG는 글자 없음(라벨 크기 게이트 밖). 이름과 뜻은 h3·`<title>`·행이 말한다. 카드마다 같은 viewBox·같은 프레임 크기를 쓴다.
 - 카드마다 blue 표식(`d0-s-accent`·`d0-s-zone`)은 하나씩, 두 안의 **차이 나는 자리**에 둔다. 회색만인 와이어는 금지다.
-- 결정이 이미 났으면 고른 카드에 `data-selected`, 고르기 버튼은 빼고 이유 한 줄(`.d0-option__why`)만 둔다.
+- 결정이 이미 났으면 고른 카드에 `data-selected` + `고른 안` 배지(h3 옆), 고르기 버튼은 빼고 이유 한 줄(`.d0-option__why`)만 둔다.
 
 ## 스니펫
 
@@ -87,7 +88,8 @@
   background: var(--d0-grey-50);
   transition: background var(--d0-dur) var(--d0-ease);
 }
-.d0-option[data-selected] { background: var(--d0-blue-light); }
+.d0-option[data-selected] { outline: 2px solid var(--d0-blue); outline-offset: -2px; } /* 기본: 테두리 강조 */
+.d0-option[data-selected="fill"] { background: var(--d0-blue-light); outline-color: var(--d0-blue-light); } /* 작은 카드만: 면으로 강조 */
 .d0-option h3 { font-size: 15px; font-weight: 650; }
 .d0-mock { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--d0-radius-control); background: #fff; }
 .d0-mock__btn { order: -1; }

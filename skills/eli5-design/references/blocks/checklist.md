@@ -17,7 +17,11 @@
 - `data-variant="owner"`(incident 재발 방지, report 다음 할 일): 행 끝 칸 = 담당·기한 `.d0-check__meta`
   (`팀 A · <time datetime="2026-10-20">10월 20일</time>`). 담당·기한이 없는 행은 메타 요소를 **빼고** 행에 `data-meta="none"`을 둔다.
   빈 `span`으로 자리를 채우지 않는다. 640px 이하에서는 메타가 설명 아래 줄로 내려간다.
-  기한이 날짜가 아니라 단계(`머지 후`, `PR 검토 때`)면 `<time>` 없이 텍스트로 쓴다(`팀 A · 머지 후`). `<time>`은 실제 날짜·기간에만 쓴다.
+  - **메타 슬롯.** 메타 = 주체 `span.d0-check__owner` + (기한 `<time>` 또는 조건 `span.d0-check__when`) 하나. 주체는 사람·팀 이름이다.
+  - **조건 슬롯(`.d0-check__when`).** 날짜가 아니라 "언제·무엇 뒤에" 시작하는지(`머지 후`, `백엔드 배포 확인 뒤`)를 `<time>` 없이 텍스트로 쓴다.
+    약 12자 이내로 쓰고, 더 길거나 날짜와 조건이 모두 있으면 조건을 결과 한 줄 앞에 넣는다(`백엔드 배포를 확인한 뒤 시작해요.`). `<time>`은 실제 날짜·기간에만 쓴다.
+  - `추후`·`예정`·`검토 중`만으로 기한·조건 칸을 채우지 않는다. 언제 시작하는지 모르면 그것을 정하는 행동과 주체를 행으로 쓴다.
+  - report 다음 단계에서는 모든 행에 주체가 있어야 하므로 `data-meta="none"`을 쓰지 않는다([report.md](../formats/report.md)).
 - 목록 전체에 행 끝 칸이 없으면 `.d0-check`에 `data-meta="none"`을 둬 모든 행을 `auto 1fr` 2열로 만든다.
 - **시간이 일부 행에만 있으면 시간 열을 만들지 않는다.** 그 행의 결과 한 줄 끝에 넣는다(`… 보여요. 약 20분`). 한 행에만 붙은 오른쪽 끝 숫자는 근거 없이 튀어 보인다.
 - 입력 예시가 필요한 행은 `<details>`로 행 안에 접어 둔다.
@@ -103,12 +107,12 @@ document.querySelectorAll('.d0-check').forEach(function (list) {
     <li class="d0-check__row">
       <input type="checkbox" class="d0-check__box" id="fix-1">
       <div><label for="fix-1">실패 알림을 채팅으로도 보내기</label><p>밤사이 실패를 아침 전에 알아요.</p></div>
-      <span class="d0-check__meta">팀 A · <time datetime="2026-10-20">10월 20일</time></span>
+      <span class="d0-check__meta"><span class="d0-check__owner">팀 A</span> · <time datetime="2026-10-20">10월 20일</time></span>
     </li>
     <li class="d0-check__row">
       <input type="checkbox" class="d0-check__box" id="fix-2">
       <div><label for="fix-2">재시도 횟수 3번으로 늘리기</label><p>잠깐 끊긴 연결은 저절로 다시 보내요.</p></div>
-      <span class="d0-check__meta">팀 B</span>
+      <span class="d0-check__meta"><span class="d0-check__owner">팀 B</span> · <span class="d0-check__when">알림 변경 머지 후</span></span>
     </li>
     <li class="d0-check__row" data-meta="none">
       <input type="checkbox" class="d0-check__box" id="fix-3">
@@ -120,6 +124,7 @@ document.querySelectorAll('.d0-check').forEach(function (list) {
 
 ```css
 .d0-check__meta { color: var(--d0-grey-700); font-size: var(--d0-text-compact); font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.d0-check__owner { color: var(--d0-grey-900); font-weight: 600; }
 .d0-check[data-meta="none"] .d0-check__row,
 .d0-check__row[data-meta="none"] { grid-template-columns: auto 1fr; }
 @media (max-width: 640px) {
@@ -137,3 +142,4 @@ JS는 기본 변형과 같다.
 - 요약 행의 결정 문장을 할 일 행에 다시 쓰기, 두 줄로 넘치는 결과 한 줄.
 - 사용자가 할 일과 시스템이 하는 일을 한 목록에 섞기(시스템 일은 결과 한 줄로만).
 - 일부 행에만 있는 시간 열, 메타 칸을 채우려는 빈 `span`·`-` 표시.
+- 주체 없이 `추후 배포 예정`처럼 쓴 할 일, 기한·조건 칸에 `추후`·`예정`·`TBD`만 두기.
