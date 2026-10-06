@@ -71,7 +71,8 @@ Slidedoc은 아래 CSS를 기본 CSS 뒤에 추가한다. 폰트를 더 줄여 �
     근거 슬라이드(종류 생략)의 기본 배치는 그림 + 요점 나란히다: `div.d0-slide__body[data-layout="split"]` 안에 그림과 `ul.d0-slide__points`(2~3개).
   - 발 `footer.d0-slide__foot`: 출처 한 줄(`p.d0-slide__src`, 선택) + 쪽수 `p.d0-slide__num` `n / N`(렌더 텍스트).
 - **네비** `nav.d0-deck__nav`: 덱의 마지막 자식. 이전·다음 `button[data-deck="prev|next"]`, 쪽수 `p.d0-deck__count`(`n / N`),
-  목차 `button[data-deck="toc"]`, 안내 `p.d0-deck__hint`("←/→로 넘겨요", 터치 기기는 "밀어서 넘겨요"). 한 장 모드에서만 보인다.
+  목차 `button[data-deck="toc"]`, 안내 `p.d0-deck__hint`("←/→로 넘겨요", 터치 기기는 "밀어서 넘겨요", 320에서도 한 줄). 한 장 모드에서만 보인다.
+  표지 발의 키 안내(`p.d0-slide__src` 안 `kbd`)는 터치 기기(`hover: none` + `pointer: coarse`)에서 숨고 네비 안내가 대신한다.
 - **제목 목차** `nav.d0-slide[data-kind="toc"]`: 표지 바로 다음 장. `ul.d0-slide__toc`에 작은 점 불렛과 항목마다 `a href="#s-03"`을 둔다. 항목 글자 = 해당 슬라이드 제목. 목차 장에는 쪽수를 표시하지 않는다.
 - **헤딩 순서.** 표지 h1 → 나머지 h2. 슬라이드 안에서 h3 이하는 쓰지 않는다.
 - **구도**(선택). 슬라이드에 `data-composition`을 달 수 있다. 값과 교차 규칙은 [composition.md](../composition.md)가 정본이다.
@@ -100,6 +101,8 @@ Slidedoc은 아래 CSS를 기본 CSS 뒤에 추가한다. 폰트를 더 줄여 �
   `window.focus()`를 불러 프레임 문서가 키를 받게 한다(슬라이드 자체에는 포커스를 주지 않는다. 주면 넘길 때마다 포커스 링이 생긴다).
   네비 안내 "←/→로 넘겨요"가 프레임 안에서도 보인다.
 - **좁은 화면·터치.** 슬라이드 폭이 730px 미만이면(375px 화면은 항상) 16:9를 풀고 px 고정 글자로 바뀐다(아래 타이포 표).
+  한 장 모드의 슬라이드 폭은 `100vw − 2 × 거터`를 넘지 않고, 화면 높이로는 730px 아래로 줄이지 않는다(키 작은 창·가로 폰에서 장이 좁아지지 않는다).
+  높이 498px 이하 창에서는 16:9를 풀고 장 안에서 스크롤한다.
   장이 뷰포트보다 길면 장 안에서 세로로 스크롤한다(`max-height: calc(100dvh − 크롬)`, `overflow-y: auto`). 네비는 화면 아래에 붙는다.
   터치 기기는 좌우 스와이프와 버튼으로 넘긴다: 터치·펜 포인터가 가로로 48px 넘게, 세로보다 크게 움직이면 다음(왼쪽으로 밀기)·이전(오른쪽으로 밀기)이다.
   마우스 드래그는 글자 선택과 부딪혀 쓰지 않는다. 덱과 장에 `touch-action: pan-y`라 세로 스크롤은 브라우저가 그대로 한다.
@@ -125,7 +128,9 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 - 화면이 줄면 덱 전체가 같은 비율로 줄어든다. `vw` 글자는 쓰지 않는다.
 - **그림 글자.** 기본(split) SVG는 viewBox 폭 400, 글자 17, 최대 폭 42cqi다(1280 한 장에서 약 19px, 375에서 13px).
   가로형 차트(`evidence`·`breakdown`)는 viewBox 폭 800, 글자 20, 최대 폭 84cqi이고(1280에서 약 23px), 730 미만에서는 글자를 30으로 키운다(375에서 약 11.7px).
-  라벨 사이 간격은 글자 30 기준으로 잡는다. 글자 크기는 `--sl-font`로 바뀌므로 SVG 안 `font-size` 속성을 쓰지 않는다.
+  730 미만에서 viewBox 폭 800인 SVG는 커버(map·side 포함)·패턴 규칙과 상관없이 `svg[viewBox^="0 0 800 "]`로 30을 받는다.
+  슬라이드 안쪽 폭 270px 이하(320 화면)에서는 기본 그림 20(12.8px), 가로형 36(11.5px)으로 한 단계 더 키운다.
+  라벨 사이 간격은 글자 36(기본은 20) 기준으로 잡는다. 다른 viewBox 폭을 쓰면 `글자 × 256 ÷ viewBox 폭 ≥ 11`이 되게 그 SVG의 `--sl-font`를 정한다. 글자 크기는 `--sl-font`로 바뀌므로 SVG 안 `font-size` 속성을 쓰지 않는다.
 - **색.** [shell.md](shell.md) 색 정본을 따른다. 강조할 계열 하나만 blue(`data-on`), 나머지 grey-400, 의미색은 면·점·선에만. 큰 숫자는 blue-dark 또는 grey-900.
 
 ## 슬라이드 종류 `data-kind`
@@ -575,11 +580,12 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-deck__btn[aria-disabled="true"] { color: var(--d0-grey-400); cursor: default; }
 .d0-deck__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .d0-deck__count { min-width: 64px; margin: 0; text-align: center; color: var(--d0-grey-800); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.d0-deck__hint { margin: 0 0 0 auto; color: var(--d0-grey-700); font-size: 13px; }
+.d0-deck__hint { margin: 0 0 0 auto; color: var(--d0-grey-700); font-size: 13px; white-space: nowrap; }
 .d0-deck__hint [data-hint="touch"] { display: none; }
-@media (pointer: coarse) {
+@media (hover: none) and (pointer: coarse) {
   .d0-deck__hint [data-hint="key"] { display: none; }
   .d0-deck__hint [data-hint="touch"] { display: inline; }
+  .d0-slide__src:has(kbd) { display: none; }  /* 표지의 키 안내: 터치에서는 네비 '밀어서 넘겨요'가 대신한다 */
 }
 
 /* 한 장 모드: JS가 data-mode="single"을 붙일 때만. 화면에서만 걸고 인쇄는 세로 나열로 돌아간다 */
@@ -588,7 +594,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-deck[data-mode="single"] {
     --deck-gutter: 32px;
     --deck-chrome: 88px;                 /* 위 16 + 네비 44 + 사이 12 + 아래 16 */
-    --slide-w: min(100vw - 2 * var(--deck-gutter), (100dvh - var(--deck-chrome)) * 16 / 9);
+    /* 높이로는 730px 아래로 줄이지 않는다(그 아래는 16:9가 풀려 장 안에서 스크롤한다) */
+    --slide-w: min(100vw - 2 * var(--deck-gutter), max((100dvh - var(--deck-chrome)) * 16 / 9, 730px));
     max-width: none; height: 100vh; height: 100dvh; margin: 0;
     padding: 16px var(--deck-gutter);
     grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
@@ -603,6 +610,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-deck[data-mode="single"] > .d0-slide:not([data-active]) { display: none; }
   .d0-deck[data-mode="single"] > .d0-slide[data-active] { animation: d0-deck-in var(--d0-dur-fast) var(--d0-ease); }
   .d0-deck[data-mode="single"] .d0-slide__num { display: none; }  /* 네비 쪽수가 대신한다 */
+  /* 키 작은 창(높이로 줄인 폭이 730px 아래): 폭은 730px에서 멈추고 16:9를 풀어 장 안에서 세로로 스크롤한다 */
+  @media (max-height: 498px) {
+    .d0-deck[data-mode="single"] > .d0-slide { aspect-ratio: auto; }
+    .d0-slide, .d0-slide[data-kind="cover"] { grid-template-rows: repeat(3, max-content); }  /* 몸을 내용 높이로 둬 그림을 줄이지 않는다 */
+  }
   .d0-deck[data-mode="single"] > .d0-deck__nav { grid-row: 2; display: flex; width: var(--slide-w); }
   /* 넓은 덱: 패딩·간격을 슬라이드 폭 기준으로 다시 잰다(덱 폭 ≠ 슬라이드 폭) */
   @container (min-width: 731px) {
@@ -617,6 +629,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
       --deck-chrome: 76px;               /* 위 12 + 네비 44 + 사이 8 + 아래 12 */
       padding: 12px var(--deck-gutter); gap: 8px; align-items: start;
     }
+    .d0-deck[data-mode="single"] > .d0-deck__nav { gap: 4px; }   /* 320에서도 안내가 한 줄에 들어가게 */
+    .d0-deck__count { min-width: 48px; }
   }
 }
 @keyframes d0-deck-in { from { opacity: 0; } }
@@ -626,8 +640,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 
 /* 좁은 슬라이드(730px 미만, 본문이 11px 아래로 내려가는 폭): 16:9를 풀고 px 고정 */
 @container (max-width: 730px) {
-  .d0-slide { aspect-ratio: auto; gap: 16px; padding: 20px 16px 14px; }
-  .d0-slide[data-kind="cover"] { grid-template-rows: auto auto auto; }
+  .d0-slide { aspect-ratio: auto; grid-template-rows: repeat(3, max-content); gap: 16px; padding: 20px 16px 14px; }  /* 몸은 내용 높이: 긴 장은 그림을 줄이지 않고 장 안에서 스크롤 */
+  .d0-slide[data-kind="cover"] { grid-template-rows: repeat(3, max-content); }
   .d0-slide__cover,
   .d0-deck[data-pattern] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
   .d0-slide__cover > .d0-slide__fig { height: auto; }
@@ -655,6 +669,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide[data-kind] .d0-slide__fig svg { max-width: none; height: auto; }
   .d0-slide[data-kind="evidence"] .d0-slide__fig,
   .d0-slide[data-kind="breakdown"] .d0-slide__fig { --sl-font: 30px; }
+  .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 30px; }  /* 가로형(800) 그림은 커버 종류·패턴 규칙과 상관없이 30(svg에 걸어 그림 단위 규칙을 이긴다) */
   .d0-slide__note { font-size: 13px; }
   .d0-slide__body[data-layout="split"] { grid-template-columns: 1fr; gap: 16px; }
   .d0-slide__points, .d0-slide__summary dd, .d0-slide__toc a, .d0-slide[data-kind="stat"] .d0-slide__note,
@@ -670,6 +685,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide[data-kind="screenshot"] .d0-shot__screen { height: auto; width: 100%; justify-self: stretch; }
   .d0-slide[data-kind="screenshot"] .d0-shot__note { font-size: 15px; }
   .d0-slide[data-kind="screenshot"] .d0-shot figcaption { font-size: 13px; }
+}
+/* 320 폭(슬라이드 안쪽 256px): 그림 글자를 한 단계 더 키워 렌더 11px 이상을 지킨다 */
+@container (max-width: 270px) {
+  .d0-slide__fig { --sl-font: 20px; }                            /* 기본(400): 20 × 256 ÷ 400 = 12.8px */
+  .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 36px; }   /* 가로형(800): 36 × 256 ÷ 800 = 11.5px */
 }
 @media (max-width: 640px) {
   .d0-deck { gap: 32px; padding: 24px 16px 64px; }
@@ -832,10 +852,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 ```
 
 - 쪽수 `n / N`은 목차를 제외한 슬라이드마다 마크업에 직접 쓴다(스크립트가 없을 때와 인쇄에서 보인다). 한 장 모드에서는 네비 쪽수가 대신 보인다. 슬라이드를 빼거나 더하면 쪽수를 함께 고친다.
-- 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi, 가로형은 800·글자 20(좁은 화면 30)·최대 84cqi를 유지한다.
+- 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi, 가로형은 800·글자 20(좁은 화면 30, 320 폭 36)·최대 84cqi를 유지한다.
   다른 도식 모양은 [diagram.md](diagram.md)를 따르되 클래스는 이 파일의 `d0-sl-*` 규칙(강조 하나만 blue)으로 칠한다.
 - 스크롤 리빌 모션은 붙이지 않는다. 장을 바꿀 때의 짧은 opacity 페이드만 있고 reduced-motion이면 즉시 바뀐다.
-- 화면은 넓은데 높이가 낮아(예: 1280×400) 슬라이드 폭만 730px 아래로 내려가면, 장은 16:9를 유지한 채 안쪽 글자만 px 고정으로 바뀌고 넘치는 몫은 장 안에서 스크롤한다.
+- 화면은 넓은데 높이가 낮으면(높이 498px 이하, 예: 1280×400, 812×375 가로 폰) 슬라이드 폭은 730px에서 멈추고 16:9를 풀어 안쪽 글자는 px 고정, 넘치는 몫은 장 안에서 세로로 스크롤한다.
+  좁은 장과 키 작은 창에서는 행이 내용 높이(`max-content`)라 그림을 줄여 장에 끼워 넣지 않는다.
 
 ## 덱 게이트 (구현)
 
@@ -870,9 +891,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 
 - [ ] 1280×800에서 보이는 `.d0-slide`가 1개이고, 높이 ÷ 폭이 0.5625(±1px), 가로 가운데(±1px), 덱 안에 다 들어온다(가로·세로 스크롤 없음). 내용이 넘치지 않는다(`scrollHeight` ≤ `clientHeight`)
 - [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, closing 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
-- [ ] SVG 글자 렌더 크기(font-size × SVG 렌더 배율)가 1280에서 28px 이하, 375에서 11px 이상이다
+- [ ] SVG 글자 렌더 크기(font-size × SVG 렌더 배율)가 1280에서 28px 이하, 320·375에서 11px 이상이다(커버 그림 포함)
 - [ ] `evidence`·`breakdown`·`screenshot`의 `figure`, 근거 split의 몸이 슬라이드 면(패딩 포함)의 60~80%다
 - [ ] 375×812에서 장이 16:9를 풀고, 글자가 11px 이상, 페이지 가로 스크롤이 없으며, 좌우 스와이프(48px 초과)로 장이 넘어간다. 긴 장은 장 안에서 세로로 스크롤된다
+- [ ] 320×568(터치)에서 SVG 실제 글자가 11px 이상이고, 네비가 넘치지 않고 안내가 한 줄이며, 표지 키 안내가 보이지 않는다
+- [ ] 키 작은 창(375×400)에서 슬라이드 폭 = `100vw − 2 × 거터`, 812×375에서 730px 이상이다
 
 ## 금지
 

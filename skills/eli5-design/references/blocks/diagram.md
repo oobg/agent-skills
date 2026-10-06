@@ -28,18 +28,19 @@
 
 - 설명 문장은 SVG 밖 `figcaption`·HTML에 둔다. 확대·번역·복사가 되기 때문이다.
 - SVG `<text>`는 짧은 노드·값 라벨(명사 1~3단어, `고친 파일`, `6분`)에만 쓴다.
-- **권장 크기는 렌더 13~14px**, 게이트는 375px에서 11px 이상·데스크톱 16px 이하다(h2보다 작게).
+- **권장 크기는 렌더 13~14px**, 게이트는 320·375px에서 11px 이상·데스크톱 16px 이하다(h2보다 작게).
 - **측정 기준(정본).** 렌더 글자 크기 = font-size f × (SVG 렌더 폭 ÷ viewBox 폭 W). SVG는 폭 100%로 커지므로 렌더 폭은
   `min(무대 안쪽 폭, max-width)`다. 글자 박스 높이(`getBBox`·`getBoundingClientRect`의 height)는 쓰지 않는다. 줄 높이와 글꼴 여백이 섞여 크게 나온다.
   - 375px 화면: 컨테이너 343px − 무대 패딩 40px = 안쪽 **303px**. 11px 이상이려면 `f × 303 ÷ W ≥ 11` → `W ≤ 27.5 × f`.
     무대가 없으면 렌더 폭이 343px라 글자가 조금 커진다. 무대 기준 식을 지키면 무대 없이도 통과한다.
+  - 320px 화면: 288px − 무대 패딩 40px = 안쪽 **248px**. `f × 248 ÷ W ≥ 11`이라 기본(360)은 17px, wide(480)는 22px로 올린다(공용 CSS의 340px 이하 규칙). 다른 W는 `f ≥ 11 × W ÷ 248`로 정한다.
   - 데스크톱 16px 이하: `f × max-width ÷ W ≤ 16` → `max-width ≤ W × 16 ÷ f`. 권장 14px이면 `max-width = W × 14 ÷ f`.
 - 아래 두 크기 중 하나를 고른다. 다른 W를 쓰면 위 두 식으로 max-width를 다시 계산해 해당 SVG에 둔다.
 
 | 크기 | viewBox 폭 W | 글자 f | SVG max-width | 375px 라벨 | 데스크톱 라벨 | 노드 r 9→렌더 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 기본 | 360 | 14 | 360px | 11.8px | 14.0px | 18px 지름 |
-| `data-size="wide"` | 480 | 18 | 400px | 11.4px | 15.0px | 15px 지름 |
+| 기본 | 360 | 14(320 폭 17) | 360px | 11.8px | 14.0px | 18px 지름 |
+| `data-size="wide"` | 480 | 18(320 폭 22) | 400px | 11.4px | 15.0px | 15px 지름 |
 
 - 번호 글자(`.d0-s-num`)도 같은 식을 따른다. 기본 14px(375px 11.8px), wide 18px(375px 11.4px·데스크톱 15px). wide에서 13~14px로 두면 375px에서 8~9px로 줄어 실패다.
 
@@ -221,6 +222,11 @@
 /* 핵심 무대 blue-light: 회색 선·흐린 글자를 한 단계 진하게 */
 .d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 .d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
+/* 320 폭: 안쪽 248px(무대 기준)에서도 라벨이 11px 이상. 기본 정의보다 뒤에 둔다 */
+@media (max-width: 340px) {
+  .d0-s-text, .d0-s-num { font-size: 17px; }                                              /* 17 × 248 ÷ 360 = 11.7px */
+  .d0-fig[data-size="wide"] .d0-s-text, .d0-fig[data-size="wide"] .d0-s-num { font-size: 22px; } /* 22 × 248 ÷ 480 = 11.4px */
+}
 ```
 
 대비(무대 grey-50 기준, tokens.css 값으로 계산): blue 3.75, blue-dark 5.18, green 3.26, red 3.36, orange 2.32(미달), grey-500 3.01, grey-400 2.06, grey-300 1.49.
@@ -597,6 +603,6 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 - 페이지 전체를 structural 한 장르로만 채우기(섹션 3개 이상이면), editorial 2개 이상, 문구·대답을 쓴 editorial, 56px을 넘는 editorial 숫자, 장르를 바꾸려고 섹션 더하기, SVG `<text>`로 그린 큰 숫자, 선·축·범례를 단 editorial, 현재가 둘인 narrative, 1.5·2.5 외 굵기로 상태 나누기.
 - 1.5·2.5 외 선 굵기(썸네일 격자 머리 테두리 제외), 각진 선 끝, 강조 경로 아닌 선에 그리기 모션.
 - 회색만으로 된 도식(blue·의미색 표식 0개), 의미색 `<text>` 글자, 테두리·라벨 없이 혼자 뜻을 전하는 orange 표식.
-- 노드 7개 초과, SVG 안 문장, 375px에서 11px 아래로 줄어들거나 데스크톱에서 16px을 넘는 라벨(h2보다 큰 라벨), 블루 강조가 흩어진 그림(강조 묶음은 하나).
+- 노드 7개 초과, SVG 안 문장, 320·375px에서 11px 아래로 줄어들거나 데스크톱에서 16px을 넘는 라벨(h2보다 큰 라벨), 블루 강조가 흩어진 그림(강조 묶음은 하나).
 - 폭 100% SVG 안 `<text>`(비율 막대 라벨은 HTML로), 절반 폭에 옆이 빈 비율 막대.
 - `<title>` 없는 정보 SVG, SVG 안 hex·rgb 색값, `width`·`height` 고정 속성으로 반응형을 깨는 SVG.
