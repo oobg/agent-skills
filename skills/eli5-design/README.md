@@ -9,6 +9,7 @@ Day0 시각 언어로 만드는 에이전트 스킬입니다. 시안 비교, 절
 - 시안이나 옵션을 나란히 놓고 결정을 받아야 할 때
 - 절차, 구조, 결과물의 모양을 처음 보는 사람에게 설명할 때
 - 보고서, 가이드, 일정, 사건 경위, 용어 정리를 한 장으로 보여 줄 때
+- 발표나 화면 공유로 한 장씩 넘기며 결론을 설득하는 슬라이드가 필요할 때
 - `/eli5-design` 으로 명시 호출할 때
 
 설명 페이지가 아닌 Day0 제품 화면은 `day0-design`, 문구만 다듬는 작업은
@@ -46,7 +47,7 @@ WCAG 2.2 AA를 지킵니다.
 | 프리셋 | 기준 | 독자가 다 읽고 답할 수 있어야 할 질문과 권장 구성 예시 |
 | 블록 | 선택 | 쓸지는 자유지만 쓰면 정해진 모양을 따릅니다 |
 
-프리셋은 비교, 절차, 미리보기, 보고서, 가이드, 일정, 사건, FAQ 여덟 가지입니다. 아직 적용 전인
+프리셋은 비교, 절차, 미리보기, 보고서, 가이드, 일정, 사건, FAQ, 슬라이드 아홉 가지입니다. 슬라이드 프리셋은 문서형 섹션 상한과 첫 화면 규칙 대신 덱 규칙(제목만 이어 읽어도 이야기가 되는 결론 문장 제목, 슬라이드당 그림 하나, 16:9, 표지·목차 포함 5~12장)을 따릅니다. 아직 적용 전인
 변경 제안은 보고서 프리셋으로 만들고 수치를 예상치로 표기합니다.
 블록 순서는 강제하지 않으며, 어느 프리셋에도 맞지 않는 요청은 원칙만 지키며
 블록을 자유롭게 조립합니다.
@@ -105,17 +106,20 @@ WCAG 2.2 AA를 지킵니다.
 | `references/blocks/diff-rows.md` | 바뀐 항목만 전후로 보여 주는 행, 배지 행 변형 |
 | `references/blocks/tab-preview.md` | 시트 탭, 파일명 바, 표 목업, 탭 전환 JS |
 | `references/blocks/timeline.md` | 가로 마일스톤과 세로 기록, 오늘 표식, SVG 시간 막대(`data-variant="timebar"`) |
-| `references/blocks/checklist.md` | 진행률과 체크 행(담당 `data-variant="owner"`, 행 끝 칸 없음 `data-meta="none"`), 체크 JS |
+| `references/blocks/checklist.md` | 진행률과 체크 행(담당 `data-variant="owner"`, 행 끝 칸 없음 `data-meta="none"`), 왼쪽 단계 화면이 행에 따라 바뀌는 연동 그림 변형(`data-variant="linked"`), 체크 JS |
+| `references/blocks/code-block.md` | 붙여 넣을 명령·설정 코드 블록과 복사 버튼, 클립보드를 못 쓸 때 선택 후 단축키 안내(그림 블록 아님, 줄 길이 예외) |
+| `references/blocks/slide-deck.md` | 슬라이드 덱 골격: 16:9 슬라이드(슬라이드 폭 비례 글자), 액션 타이틀·근거 그림·해석·쪽수, 표지 다음 제목 목차, 키보드 이동, 인쇄, 좁은 화면 비율 해제, 덱 게이트 |
 | `references/blocks/accordion.md` | 질문 펼침(`details`/`summary`, JS 없음)과 용어 카드 |
 | `references/blocks/callout.md` | 결정 요청이나 다음 할 일 상자(페이지당 최대 1개, 히어로와 중복 금지) |
 | `references/formats/compare.md` | 시안·옵션 비교 (시안, 결정, 전/후 변형) |
 | `references/formats/flow.md` | 절차·구조 설명 (연결 그래프, 단계 도식) |
 | `references/formats/preview.md` | 결과물 미리보기 |
 | `references/formats/report.md` | 보고서 |
-| `references/formats/guide.md` | 따라하기 가이드 |
+| `references/formats/guide.md` | 따라하기 가이드(연동 그림 체크리스트와 코드 블록)와 사용 가이드 |
 | `references/formats/timeline.md` | 로드맵과 변경 내역 |
 | `references/formats/incident.md` | 사건 경위와 원인 |
 | `references/formats/faq.md` | 용어 카드와 FAQ |
+| `references/formats/slides.md` | 발표용 슬라이드(업무 보고, 제안, 전략, 기술 발표 변형), 액션 타이틀 규칙 |
 | `references/examples/preview-compare.html` | 합성 데이터로 만든 완성 예시: 흐름과 격자 카드, 결과물 목업, 눌러 보는 A/B 프레임 |
 | `scripts/subset_font.py` | 완성한 페이지에서 쓰는 글자만 담은 Pretendard 서브셋을 base64 `@font-face`로 인라인해 외부 요청을 없앱니다. `fonttools`와 `brotli`가 필요합니다 |
 

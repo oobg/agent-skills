@@ -1,6 +1,6 @@
 ---
 name: eli5-design
-description: "아무것도 모르는 사람도 그림만 보고 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만든다. 그림 먼저, 짧은 글, 블록당 설명 3문장 이내, 용어는 비유로 풀기를 강제하고, 시안·옵션 비교, 절차 설명, 결과물 미리보기, 보고서, 따라하기·사용 가이드, 일정·변경 내역, 사건·원인, 용어·FAQ 여덟 프리셋 중 하나를 기준으로 공용 블록을 골라 조립한다. 토큰은 형제 스킬 day0-design의 tokens.css 전체를 인라인하며, day0-design이 로컬에 없으면 공개 저장소 원본을 읽는다. '/eli5-design', '쉽게 설명하는 시안', '설명 페이지', '설명서 페이지', 'eli5 디자인', '그림으로 쉽게 보여줘' 요청에 사용한다. 설명 페이지가 아닌 Day0 제품 화면은 day0-design, 문구만이면 ux-writing으로 넘긴다. 설명 목적이 없는 일반 화면·랜딩 디자인에는 사용하지 않는다."
+description: "아무것도 모르는 사람도 그림만 보고 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만든다. 그림 먼저, 짧은 글, 블록당 설명 3문장 이내, 용어는 비유로 풀기를 강제하고, 시안·옵션 비교, 절차 설명, 결과물 미리보기, 보고서, 따라하기·사용 가이드, 일정·변경 내역, 사건·원인, 용어·FAQ, 발표용 슬라이드 아홉 프리셋 중 하나를 기준으로 공용 블록을 골라 조립한다. 토큰은 형제 스킬 day0-design의 tokens.css 전체를 인라인하며, day0-design이 로컬에 없으면 공개 저장소 원본을 읽는다. '/eli5-design', '쉽게 설명하는 시안', '설명 페이지', '설명서 페이지', 'eli5 디자인', '그림으로 쉽게 보여줘', '쉽게 보는 발표 슬라이드' 요청에 사용한다. 설명 페이지가 아닌 Day0 제품 화면은 day0-design, 문구만이면 ux-writing으로 넘긴다. 설명 목적이 없는 일반 화면·랜딩 디자인에는 사용하지 않는다."
 ---
 
 # ELI5 Design
@@ -45,7 +45,7 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
    - **결론 히어로.** report·compare 전/후·incident는 수치가 있으면 h1 바로 아래(요약 행 위)에 결론 수치 1개를
      `d0-hero`로 둔다. 전 값(작게, grey-600, 취소선 없음) → 후 값(44px/600, 모바일 36, 단위는 숫자와 같은 크기) + 단위 + 한 줄 뜻(15px grey-600).
      수치가 없으면 생략한다. 정본: `references/blocks/hero.md`.
-   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄은 제외) `p`를 좁히지 않고 블록 레이아웃으로 줄인다
+   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄·code-block은 제외) `p`를 좁히지 않고 블록 레이아웃으로 줄인다
      (2열 grid로 행 나누기, 그림 옆 배치). 개행 규칙의 `max-width` 금지는 그대로다.
    - **타이포 대비.** h1 32px/700(display 자간·행간), h2 20px/700(title 자간), 본문 15px/400 grey-800(`p` 행간 1.65),
      보조 14px/400 grey-600, 라벨 12px/600 grey-600(대문자 변환 없음; grey-500은 선·화살표 같은 그래픽에만). 숫자는 전부 `tabular-nums`.
@@ -129,6 +129,9 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 | SVG 도식을 그릴 때(항상; 비율 `data-variant="ratio"`, 폭 `data-size="wide"`) | `references/blocks/diagram.md` |
 | report·compare 전/후·incident에 결론 수치가 있을 때 | `references/blocks/hero.md` |
 | 화면을 눌러 보게 할 때 | `references/blocks/mockup-frame.md` |
+| 따라하기 단계를 그림과 함께 보일 때(왼쪽 단계 화면이 행에 따라 바뀜, `data-variant="linked"`) | `references/blocks/checklist.md` |
+| 붙여 넣을 명령·설정이 있을 때(복사 버튼, 그림 블록 아님, 줄 길이 예외) | `references/blocks/code-block.md` |
+| slides 프리셋으로 발표 덱을 만들 때(16:9 슬라이드, 제목 목차, 키보드 이동, 덱 게이트) | `references/blocks/slide-deck.md` |
 | artifact로 발행하기 직전(폰트 인라인) | `scripts/subset_font.py` (Pretendard 서브셋 `@font-face` 생성) |
 | 프리셋을 고른 뒤 | 아래 프리셋 판별 표의 프리셋 파일 하나 |
 
@@ -146,10 +149,16 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드�
 | timeline | 로드맵·일정·변경 내역 | 시간과 의존성을 공유한다 | `references/formats/timeline.md` |
 | incident | 장애·사건 경위와 원인 | 이해하고 재발을 막는다 | `references/formats/incident.md` |
 | faq | 용어 정리·FAQ | 특정 질문을 바로 해결한다 | `references/formats/faq.md` |
+| slides | 발표·화면 공유용 슬라이드(업무 보고·제안·전략·기술 발표) | 한 장씩 따라오며 결론에 동의하고 결정·행동한다 | `references/formats/slides.md` |
 
 guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목적·원칙·상황별 추천으로 잘 쓰게 하면 사용 가이드다.
-프리셋 변형은 `<main class="d0-page" data-variant="...">`로 표시한다. 이름표일 뿐 스타일은 바꾸지 않는다.
-이름표 목록(정본): compare `prototype`(시안)·`decision`(결정)·`before-after`(전/후), guide `practice`(사용 가이드, 따라하기는 생략), timeline `roadmap`·`changelog`, report `status`(기본)·`results`·`executive`·`proposal`. flow·preview·incident·faq는 변형이 없다.
+프리셋 변형은 `<main class="d0-page" data-variant="...">`로 표시한다(slides만 `<main class="d0-deck" data-variant="...">`). 이름표일 뿐 스타일은 바꾸지 않는다.
+이름표 목록(정본): compare `prototype`(시안)·`decision`(결정)·`before-after`(전/후), guide `practice`(사용 가이드, 따라하기는 생략), timeline `roadmap`·`changelog`, report `status`(기본)·`results`·`executive`·`proposal`, slides `report`·`proposal`·`strategy`·`tech`. flow·preview·incident·faq는 변형이 없다.
+
+**slides 예외.** slides는 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 나열한 덱이다. 원칙 4번 섹션 상한(2~4개)·앞쪽 핵심 섹션 그림, 원칙 2·3번 첫 화면 규칙,
+원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한 대신
+`references/blocks/slide-deck.md`의 덱 규칙과 덱 게이트(액션 타이틀, 슬라이드당 그림 1개(표지·목차·요약 예외), 본문 3줄·불릿 3개, 슬라이드 5~12장, 제목 목차, 16:9, 강조 계열 하나만 blue)를 따른다.
+결론 수치는 히어로 대신 핵심 수치 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 헷갈리는 쌍은 이 기준으로 가른다.
 
@@ -162,6 +171,8 @@ guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목
 | timeline / report | 날짜 순서가 주인공이면 timeline, 지금 상태와 다음 행동이 주인공이면 report |
 | incident / report | 사건 하나의 경위면 incident, 진행 상태·결과·지표 정리면 report |
 | 적용 전 변경 제안 | report + 요약 행 헤더, 수치는 `예상치`로 표기(측정값과 섞지 않는다) |
+| slides / report | 발표·화면 공유로 한 장씩 넘기며 설득하면 slides, 혼자 읽는 문서면 report |
+| slides / compare·flow | 옵션을 나란히 놓고 고르는 문서면 compare, 흐름을 이해시키는 한 장이면 flow, 그것을 근거로 무엇을 하자고 발표하면 slides |
 
 ## 개행 규칙
 
@@ -202,7 +213,7 @@ guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목
 
 1. **프리셋 판별.** 먼저 독자가 읽고 나서 무엇을 할 수 있어야 하는지 한 줄로 정한다. 그 행동과 요청 신호, 판별 표로 주 프리셋 하나를 고른다. 해당 프리셋 파일을 연다.
 2. **독자 질문 확정.** 프리셋의 질문을 이 요청에 맞게 한 줄씩 다시 쓴다. 답할 수 없는 질문은 사용자에게 확인한다.
-3. **그림 먼저, 섹션 2~4개(기본 3~4개).** 첫 화면에 들어갈 SVG 도식을 먼저 정하고(프리셋의 대표 도식), 앞쪽 핵심 섹션 1~2개에
+3. **그림 먼저, 섹션 2~4개(기본 3~4개, slides는 제목 목차 먼저 쓰고 슬라이드마다 그림 하나).** 첫 화면에 들어갈 SVG 도식을 먼저 정하고(프리셋의 대표 도식), 앞쪽 핵심 섹션 1~2개에
    그림을 고른 뒤 남은 질문(위험·할 일 등)에만 글 블록을 붙인다. `references/blocks.md` 표로 고른다. 처음이면 예시 HTML로 톤을 맞춘다.
    리드가 역할로 나뉘면 header 요약 행을 쓴다. 결론 수치가 있으면 히어로에 두고, 다른 곳은 그 숫자를 되풀이하지 않는다.
 4. **토큰 인라인.** 탐색 순서(의존 절)로 찾은 tokens.css 전체를 수정 없이 메인 `<style>` 맨 앞에 붙인다. 모두 실패하면 멈춘다.
@@ -216,12 +227,13 @@ guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목
 **HARD (코드로 확인)**
 
 렌더 DOM 기준(JS 실행 후)으로 판정한다. 페이지 섹션은 `main > section, main > .d0-split > section`이다.
+slides 덱은 위 slides 예외에 적힌 항목 대신 `references/blocks/slide-deck.md` 덱 게이트로 판정하고, 나머지 항목은 그대로 적용한다.
 
 - [ ] 설명 `p`에 컨테이너보다 좁은 `max-width`·`width`·`ch` 제약이 없다
 - [ ] `text-wrap: balance`가 제목 셀렉터(h1~h3)에만 있다
 - [ ] 개수 상한(카드 5·단계 5, guide 체크리스트만 7·옵션 3·질문 6·표 열 7 = 데이터 열 6 + 행 번호 열)을 넘지 않는다
 - [ ] `role="img"`와 `<title>`을 가진 인라인 SVG 도식(kpi-cards 막대 변형 포함)이 1개 이상 있다
-- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion 블록 하나(+ 마무리 한 줄 `p` 1개까지)만 담은 섹션이어야 한다
+- [ ] header 다음 첫 1~2개 페이지 섹션(앞쪽 핵심 섹션)마다 그림 블록이 있다. 그림 블록이 없는 페이지 섹션은 diff-rows·checklist·accordion 블록 하나(+ 마무리 한 줄 `p` 1개까지)만 담은 섹션이어야 한다. checklist linked 변형의 무대 SVG는 그림 블록으로 세고, code-block은 그림으로 세지 않는다(행 `<details>` 안 code-block은 그 목록 블록의 일부다)
 - [ ] 도식 `figure.d0-fig`마다 안에 SVG가 있고, SVG `<text>` 하나가 4어절(공백 3개) 이상이 아니다(넘으면 텍스트 상자 도식으로 보고 FAIL)
 - [ ] 페이지 섹션(`main > section, main > .d0-split > section`)이 4개 이하, callout이 1개 이하다. mockup-frame 안 `section` 등 블록 안 `section`은 세지 않는다
 - [ ] header 요약 행에 `data-tone="decision"` 행이 있으면 결정 callout이 없다(둘 중 하나만, 라벨 문구는 `결정 필요`·`도움 필요` 등 무엇이든 같다)

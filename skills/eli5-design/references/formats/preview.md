@@ -17,6 +17,7 @@
 
 표 결과물은 미니 격자 썸네일(diagram grid) + 실물 같은 결과물 목업(tab-preview). 받는 화면이 있으면 [mockup-frame](../blocks/mockup-frame.md).
 결과물이 표가 아니라 HTML·화면이면 번호 핀 해부도([diagram](../blocks/diagram.md) 핀 오버레이: 화면 와이어프레임 위 번호 핀 + 번호별 설명) + 파일 구성 도식(파일·폴더 관계를 그린 diagram graph)을 대표 도식으로 쓴다.
+핀 해부도는 연동 동작이 기본이다. 범례 항목에 올리거나 Tab으로 가면 같은 번호 핀과 영역이 켜진다([diagram](../blocks/diagram.md) (g) pins).
 
 화면 미리보기는 기기 프레임에 담는다. PC 화면은 노트북 창 프레임(`data-device="desktop"`), 모바일 화면은 폰 프레임(`data-device="mobile"`)이다([mockup-frame](../blocks/mockup-frame.md) 기기 변형).
 둘 다 있으면 노트북 창을 크게, 폰을 옆에 작게 둔다. 프레임 없는 맨 화면 조각은 실제 화면으로 오해받는다.

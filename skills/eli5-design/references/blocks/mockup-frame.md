@@ -197,32 +197,74 @@ document.querySelectorAll('iframe[data-page64]').forEach(function (f) {
 
 **레이아웃: 뷰포트 높이 전부.**
 
-- 갤러리 섹션은 `height: 100vh; height: 100dvh`(`min-height`가 아니다)이고 행은 `auto auto minmax(0, 1fr)`(제목 · 탭 · 창)이다. 창이 남은 높이를 채우고, 내용이 넘치면 창 iframe이 줄어든다(`min-height: 0`, `flex: 1 1 0`). 섹션이 정확히 뷰포트 높이여야 스냅 뒤 위아래로 미세 조절할 일이 없다. **고정 높이(600px 등)를 쓰지 않는다.** 창이 중간에 끝나 "어느 정도 가다가 막히는" 느낌을 주지 않기 위해서다.
+- 갤러리 섹션은 `height: 100vh; height: 100dvh`(`min-height`가 아니다)이고 행은 `auto auto minmax(0, 1fr)`(제목 · 탭 · 창)이다. 창이 남은 높이를 채우고, 내용이 넘치면 창 iframe이 줄어든다(`min-height: 0`, `flex: 1 1 0`). 섹션이 정확히 뷰포트 높이여야 맞춤 뒤 위아래로 미세 조절할 일이 없다. **고정 높이(600px 등)를 쓰지 않는다.** 창이 중간에 끝나 "어느 정도 가다가 막히는" 느낌을 주지 않기 위해서다.
 - 640px 이하에서도 같은 규칙이다. 모바일 브라우저 주소창이 오르내려도 높이가 흔들리지 않게 `dvh`를 쓴다. 갤러리는 **페이지의 마지막 섹션**에 둔다(뒤에 섹션이 이어지면 100vh 섹션이 흐름을 끊는다).
 - 이 변형은 위 "고정 높이 600px" 규칙의 예외다. 같은 페이지의 일반 `.d0-frame`은 그대로 600px.
 
-**스크롤 스냅.** 갤러리 근처에 닿으면 섹션 맨 위가 뷰포트 맨 위에 딱 맞게 한 번 멈춘다.
+**스크롤 맞춤(스냅).** 사용자가 스크롤을 **완전히 멈춘 뒤에만**, 갤러리 근처면 섹션 맨 위를 뷰포트 맨 위에 부드럽게 맞춘다.
 
-- `html { scroll-snap-type: y proximity; }`로 켠다. **`mandatory`를 쓰지 않는다**(다른 섹션까지 끌려가 읽는 흐름이 깨진다).
-- 갤러리 섹션에만 `scroll-snap-align: start; scroll-snap-stop: always;`를 둔다. **스냅 대상은 갤러리 하나뿐**이며 다른 섹션에는 `scroll-snap-align`을 두지 않는다.
-- `@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; } }`로 해제한다.
+- CSS 스냅(`scroll-snap-type`, `scroll-snap-align`, `scroll-snap-stop`)을 쓰지 않는다. 관성 스크롤 중간에 붙잡혀 "끌려가는" 느낌을 준다. 맞춤은 JS가 맡는다.
+- 멈춤 판정: `scrollend` 이벤트(미지원이면 마지막 `scroll` 뒤 160ms 디바운스). 그때도 `wheel`·`touchmove`·`keydown` 입력이 160ms 안에 있었거나 손가락이 화면에 닿아 있으면 기다렸다 다시 본다.
+- 범위: 섹션 `top`이 뷰포트 높이의 ±25% 안일 때만 `window.scrollTo({ top: 섹션 절대 top, behavior: 'smooth' })`. 그 밖이면 건드리지 않는다.
+- 맞춤이 만든 `scrollend`로 다시 맞추지 않는다(플래그, 1초 안전 해제). 맞추는 중 새 입력이 오면 플래그를 풀고 사용자에게 넘긴다.
+- 탭·기기 토글을 누르거나 창(iframe) 안으로 포커스가 들어간 직후(600ms)는 맞추지 않는다. `prefers-reduced-motion: reduce`면 맞추지 않는다.
 
 ```css
-html { scroll-snap-type: y proximity; }
+html { scrollbar-gutter: stable; } /* 스냅 속성 없음 */
 .d0-section[data-fill="viewport"] {
   height: 100vh; height: 100dvh;
   grid-template-rows: auto minmax(0, 1fr); /* 제목 · 갤러리(탭 · 창) */
-  scroll-snap-align: start; scroll-snap-stop: always;
 }
 .d0-gallery, .d0-gallery__panel { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
 .d0-gallery__frame { flex: 1 1 0; min-height: 0; }
-@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; } }
+```
+
+```js
+(function () {
+  var sec = document.querySelector('[data-fill="viewport"]');
+  if (!sec) return;
+  var gal = sec.querySelector('.d0-gallery');
+  var QUIET = 160, RANGE = 0.25;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var lastInput = 0, lastGallery = 0, touching = false, scrolling = false, aligning = false, alignTimer = 0, idleTimer = 0;
+  function now() { return Date.now(); }
+  function input() { lastInput = now(); if (aligning) { aligning = false; clearTimeout(alignTimer); } }
+  window.addEventListener('wheel', input, { passive: true });
+  window.addEventListener('touchmove', input, { passive: true });
+  window.addEventListener('keydown', input);
+  window.addEventListener('touchstart', function () { touching = true; input(); }, { passive: true });
+  window.addEventListener('touchend', function () { touching = false; input(); }, { passive: true });
+  window.addEventListener('touchcancel', function () { touching = false; }, { passive: true });
+  function mark() { lastGallery = now(); } // 탭·토글 조작, iframe 안으로 포커스 이동(window blur)
+  if (gal) ['pointerdown', 'keydown', 'focusin'].forEach(function (t) { gal.addEventListener(t, mark); });
+  window.addEventListener('blur', mark);
+  function busy() { return touching || now() - lastGallery < 600; }
+  function settle() {
+    if (aligning) { aligning = false; clearTimeout(alignTimer); return; } // 맞춤이 만든 scrollend
+    if (scrolling) return; // 다시 움직이기 시작했으면 다음 멈춤에서 본다
+    var wait = QUIET - (now() - lastInput);
+    if (wait > 0) { clearTimeout(idleTimer); idleTimer = setTimeout(settle, wait); return; }
+    if (reduce.matches || busy()) return;
+    var top = sec.getBoundingClientRect().top;
+    if (Math.abs(top) < 1 || Math.abs(top) > window.innerHeight * RANGE) return;
+    aligning = true;
+    alignTimer = setTimeout(function () { aligning = false; }, 1000);
+    window.scrollTo({ top: top + window.pageYOffset, behavior: 'smooth' });
+  }
+  function stopped() { scrolling = false; settle(); }
+  var hasEnd = 'onscrollend' in window;
+  window.addEventListener('scroll', function () {
+    scrolling = true;
+    if (!hasEnd) { clearTimeout(idleTimer); idleTimer = setTimeout(stopped, QUIET); }
+  }, { passive: true });
+  if (hasEnd) window.addEventListener('scrollend', stopped);
+})();
 ```
 
 **스크롤 가둠.** 창 안 스크롤이 끝에 닿아도 바깥 페이지가 따라 움직이지 않게 한다.
 
-- 내장 문서 `head`에 `<style>html,body{overscroll-behavior:contain}</style>`를 넣는다(base64로 만들기 전에 주입).
-- 바깥 창 컨테이너(`.d0-win__body`)에도 `overscroll-behavior: contain`.
+- 내장 문서 `head`에 `<style>html{overflow-y:scroll;scrollbar-gutter:stable}html,body{overscroll-behavior:contain}</style>`를 넣는다(base64로 만들기 전에 주입). 탭을 오갈 때 짧은 페이지와 긴 페이지의 가로 폭이 달라 보이는 시프트를 막는다. iframe 루트에서는 `scrollbar-gutter: stable`만으로 폭을 예약하지 못하는 브라우저가 있으므로 `overflow-y: scroll`로 스크롤바 자리를 늘 둔다.
+- 바깥 창 컨테이너(`.d0-win__body`)에도 `overscroll-behavior: contain`. 창 안에 스크롤 컨테이너를 따로 두면 거기에도 `scrollbar-gutter: stable`. 갤러리를 담은 페이지 자신의 `html`에도 `scrollbar-gutter: stable`(shell 기본 CSS)을 둔다.
 
 **창 테두리(맥북 창).**
 
@@ -293,7 +335,7 @@ html { scroll-snap-type: y proximity; }
 document.querySelectorAll('[data-variant="gallery"]').forEach(function (g) {
   var tabs = Array.prototype.slice.call(g.querySelectorAll('[role="tab"]'));
   var title = g.querySelector('[data-win-title]'), cur = 0;
-  var HEAD = '<style>html,body{overscroll-behavior:contain}</style>';
+  var HEAD = '<style>html{overflow-y:scroll;scrollbar-gutter:stable}html,body{overscroll-behavior:contain}</style>';
   function html(f) { // base64 → UTF-8, head에 스크롤 가둠 주입
     var bytes = Uint8Array.from(atob(f.dataset.page64), function (c) { return c.charCodeAt(0); });
     var s = new TextDecoder().decode(bytes);
@@ -392,7 +434,7 @@ devs.forEach(function (b) {
 ## 금지
 
 - 눌러도 반응하지 않는 가짜 프로토타입, 프레임 밖으로 나오는 모달·막(`showModal()` 포함).
-- 갤러리 창을 고정 높이로 두기, 스냅을 `mandatory`로 걸거나 갤러리 외 섹션에 `scroll-snap-align` 두기, 갤러리 뒤에 다른 섹션 잇기, 신호등 점을 의미색(상태 표시)으로 쓰기.
+- 갤러리 창을 고정 높이로 두기, CSS 스크롤 스냅(`scroll-snap-type`·`scroll-snap-align`, 특히 `scroll-snap-stop: always`)으로 갤러리를 붙잡기, 스크롤 도중(입력 160ms 안·`scrollend` 전)에 맞추기, 갤러리 뒤에 다른 섹션 잇기, 신호등 점을 의미색(상태 표시)으로 쓰기.
 - 640px 이하 화면에 폰 베젤 겹치기(가로 스크롤), 기기를 바꿀 때 iframe을 다른 부모로 옮기기(다시 로드), iframe 폰 화면 폭을 375px 아닌 값으로 두기(정적 그림의 축소 프레임은 예외).
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
 - `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.

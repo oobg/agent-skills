@@ -383,30 +383,39 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 
 글자 없는 넓은 SVG(와이어프레임, 파일 구성 등) 위에 HTML 번호 핀(①②③)을 얹고, 이름과 뜻은 옆 범례 `dl`에 쓴다.
 SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)를 받지 않고 **SVG를 640px까지 키운다**. 핀 숫자와 범례는 HTML 텍스트 규칙을 따른다.
+**연동 동작이 기본이다.** 범례 항목·핀·SVG 영역 묶음을 같은 번호(`data-pin="n"`)로 묶고, 한 번에 한 번호만 켠다.
 
 ```html
-<figure class="d0-fig" data-stage data-variant="pins">
+<figure class="d0-fig" data-stage data-variant="pins" data-active-pin="2">
   <div class="d0-fig__stage">
     <div class="d0-pins">
       <svg viewBox="0 0 480 300" role="img" aria-labelledby="p1-t p1-d">
         <title id="p1-t">설명 페이지 한 장의 구성</title>
-        <desc id="p1-d">맨 위 머리, 그 아래 블루로 강조된 그림 무대, 맨 아래 목록 영역이 있어요. 번호 1~3이 각 부분을 가리켜요.</desc>
+        <desc id="p1-d">맨 위 머리, 가운데 그림 무대, 맨 아래 목록 영역이 있어요. 번호 1~3이 각 부분을 가리켜요.</desc>
         <rect class="d0-s-frame" x="1" y="1" width="478" height="298" rx="12"/>
-        <rect class="d0-s-fill" x="24" y="24" width="180" height="14" rx="7"/>
-        <rect class="d0-s-fill" x="24" y="48" width="300" height="10" rx="5"/>
-        <rect class="d0-s-zone" x="24" y="80" width="432" height="128" rx="10"/>
-        <rect class="d0-s-accent" x="48" y="112" width="160" height="64" rx="8"/>
-        <path class="d0-s-line" d="M24 236 H456 M24 264 H360"/>
+        <g data-pin="1">
+          <rect class="d0-s-area" x="14" y="14" width="452" height="54" rx="8"/>
+          <rect class="d0-s-accent" x="24" y="24" width="180" height="14" rx="7"/>
+          <rect class="d0-s-fill" x="24" y="48" width="300" height="10" rx="5"/>
+        </g>
+        <g data-pin="2">
+          <rect class="d0-s-zone" x="24" y="80" width="432" height="128" rx="10"/>
+          <rect class="d0-s-accent" x="48" y="112" width="160" height="64" rx="8"/>
+        </g>
+        <g data-pin="3">
+          <rect class="d0-s-area" x="14" y="222" width="452" height="56" rx="8"/>
+          <path class="d0-s-line" d="M24 236 H456 M24 264 H360"/>
+        </g>
       </svg>
-      <span class="d0-pin" style="left: 45%; top: 8%" aria-hidden="true">1</span>
-      <span class="d0-pin" data-on style="left: 50%; top: 27%" aria-hidden="true">2</span>
-      <span class="d0-pin" style="left: 80%; top: 79%" aria-hidden="true">3</span>
+      <span class="d0-pin" data-pin="1" style="left: 45%; top: 8%" aria-hidden="true">1</span>
+      <span class="d0-pin" data-pin="2" style="left: 50%; top: 27%" aria-hidden="true">2</span>
+      <span class="d0-pin" data-pin="3" style="left: 80%; top: 79%" aria-hidden="true">3</span>
     </div>
   </div>
   <dl class="d0-pins__key">
-    <div><dt><span class="d0-pin">1</span>머리</dt><dd>제목과 결론 한 줄이에요.</dd></div>
-    <div data-on><dt><span class="d0-pin" data-on>2</span>그림 무대</dt><dd>페이지의 주인공 그림이 놓여요.</dd></div>
-    <div><dt><span class="d0-pin">3</span>목록</dt><dd>주의할 점과 할 일이에요.</dd></div>
+    <div data-pin="1" tabindex="0"><dt><span class="d0-pin">1</span>머리</dt><dd>제목과 결론 한 줄이에요.</dd></div>
+    <div data-pin="2" tabindex="0"><dt><span class="d0-pin">2</span>그림 무대</dt><dd>페이지의 주인공 그림이 놓여요.</dd></div>
+    <div data-pin="3" tabindex="0"><dt><span class="d0-pin">3</span>목록</dt><dd>주의할 점과 할 일이에요.</dd></div>
   </dl>
   <figcaption>그림 무대가 가장 큰 자리를 차지해요.</figcaption>
 </figure>
@@ -417,25 +426,58 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
 .d0-fig[data-variant="pins"] svg { display: block; max-width: none; }
 .d0-pin {
   display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px;
-  background: #fff; box-shadow: inset 0 0 0 1.5px var(--d0-grey-700);
-  color: var(--d0-grey-900); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1;
+  background: var(--pin-bg, #fff); box-shadow: inset 0 0 0 1.5px var(--pin-ring, var(--d0-grey-600));
+  color: var(--pin-fg, var(--d0-grey-600)); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1;
 }
-.d0-pin[data-on] { background: var(--d0-blue-dark); box-shadow: none; color: #fff; }
 .d0-pins .d0-pin { position: absolute; transform: translate(-50%, -50%); }
 .d0-pins__key { display: grid; gap: 12px; margin: 0; }
-.d0-pins__key dt { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
-.d0-pins__key [data-on] dt { color: var(--d0-blue-dark); }
+.d0-pins__key > div { padding-left: 10px; border-left: 2px solid var(--key-line, transparent); }
+.d0-pins__key dt { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--key-dt, var(--d0-grey-900)); }
 .d0-pins__key dd { margin: 4px 0 0 32px; color: var(--d0-grey-600); font-size: 14px; }
+.d0-s-area { fill: var(--area-fill, none); stroke: var(--area-line, none); stroke-width: 1.5; stroke-dasharray: 4 3; }
+/* 켜진 번호: 그림의 data-active-pin과 같은 data-pin(핀 3~6개라 6까지 적는다). 값은 자식 핀·dt·영역으로 상속된다 */
+:is(.d0-fig[data-active-pin="1"] [data-pin="1"], .d0-fig[data-active-pin="2"] [data-pin="2"], .d0-fig[data-active-pin="3"] [data-pin="3"],
+    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) {
+  --pin-bg: var(--d0-blue-dark); --pin-ring: transparent; --pin-fg: #fff;
+  --key-line: var(--d0-blue); --key-dt: var(--d0-blue-dark);
+  --area-fill: var(--d0-blue-light); --area-line: var(--d0-blue);
+}
+/* 꺼진 영역: 묶음 안 색 토큰을 회색으로 바꿔 모든 도형이 따라간다 */
+.d0-fig[data-active-pin] g[data-pin]:not(.d0-fig[data-active-pin="1"] [data-pin="1"], .d0-fig[data-active-pin="2"] [data-pin="2"], .d0-fig[data-active-pin="3"] [data-pin="3"],
+    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) {
+  --d0-blue: var(--d0-grey-400); --d0-blue-dark: var(--d0-grey-500); --d0-blue-light: var(--d0-grey-100);
+  --d0-green: var(--d0-grey-400); --d0-green-bg: var(--d0-grey-100); --d0-orange: var(--d0-grey-400); --d0-orange-bg: var(--d0-grey-100);
+  --d0-red: var(--d0-grey-400); --d0-red-bg: var(--d0-grey-100);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .d0-pins .d0-pin, .d0-pins__key > div, .d0-pins__key dt { transition: background-color 150ms, box-shadow 150ms, color 150ms, border-color 150ms; }
+}
 @media (min-width: 900px) {
   .d0-fig[data-variant="pins"] { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); align-items: center; column-gap: 28px; }
   .d0-fig[data-variant="pins"] figcaption { grid-column: 1 / -1; }
 }
 ```
 
-- 핀 위치 = SVG 좌표 ÷ viewBox 크기 × 100%(위 예: 무대 윗변 가운데 (240, 80) → 240 ÷ 480 = 50%, 80 ÷ 300 = 27%). 래퍼 `.d0-pins`가 SVG와 같은 크기라 비율이 그대로 맞는다.
-- 핀은 24px 원 + 13px 숫자다. 기본은 흰 원 + grey-700 테두리 + grey-900 숫자, 강조 하나만 blue-dark 원 + 흰 숫자(5.5:1). blue 원 위 흰 숫자는 3.99:1이라 쓰지 않는다.
-- 핀은 3~6개. 화면 위 핀은 `aria-hidden`이고, 범례 `dt`가 같은 번호와 이름을 소리 내어 전한다. SVG `<desc>`는 번호가 무엇을 가리키는지 한 문장으로 말한다.
-- 375px에서도 핀은 24px 그대로다. 핀끼리 겹치면(중심 간격 28px 미만) 핀을 줄이거나 부분을 묶는다. 범례는 900px 아래에서 그림 아래로 내려간다.
+```js
+// 핀 연동: 범례 항목 hover·focus, 핀 hover에 그림의 data-active-pin만 바꾼다. 떠나도 마지막 번호를 유지한다.
+document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEach(function (fig) {
+  function pick(e) {
+    var el = e.target.closest && e.target.closest('.d0-pins > .d0-pin[data-pin], .d0-pins__key > [data-pin]');
+    if (el && fig.contains(el)) fig.setAttribute('data-active-pin', el.getAttribute('data-pin'));
+  }
+  fig.addEventListener('mouseover', pick);
+  fig.addEventListener('focusin', pick);
+});
+```
+
+- **번호로 묶기.** 범례 항목(`dt`/`dd`를 감싼 `div`), 화면 위 핀, SVG 영역 묶음 `<g>`에 같은 `data-pin="n"`을 단다. 영역 묶음 밖에는 틀(`d0-s-frame`)만 둔다.
+- **켜기.** 그림 `figure`의 `data-active-pin` 하나가 상태다. CSS가 같은 번호에 `--pin-*`·`--key-*`·`--area-*` 값을 넣어 켜고, JS는 이 속성만 바꾼다. 처음 값은 1번 또는 대표 항목이고, 이 값이 JS 없을 때의 정적 강조다. 범례 항목·핀에 `data-on`을 쓰지 않는다(SVG 안 `data-on`은 묶음 속 강조 도형 표시로 그대로 쓴다).
+- **켜진 번호.** 핀은 blue-dark 원 + 흰 숫자(5.5:1), 범례 항목은 왼쪽 2px blue 선 + `dt` blue-dark, 영역은 원래 blue·blue-light 도형 그대로다. 묶음에 blue 도형이 없으면(체크 도장, 목록 줄) `d0-s-area` 사각형을 묶음 맨 앞에 깐다. 꺼지면 보이지 않고, 켜지면 blue-light 판 + blue 점선이 된다. 의미색 도형(green 체크 등)은 켜지면 제 색이다.
+- **꺼진 번호.** 핀은 흰 원 + grey-600 테두리·숫자(5.0:1), 영역은 묶음 안 색 토큰을 회색으로 바꿔 grey-400·grey-100이 된다. 페이지 고유 클래스도 `--d0-*` 토큰을 쓰면 따라서 꺼진다. 그래서 SVG 도형 색은 꼭 토큰으로 쓴다.
+- **입력.** 범례 항목은 `tabindex="0"`(또는 `button`)으로 Tab 순서에 넣고, hover·focus에 켠다. 핀은 hover에만 켠다. 화살표 키 이동은 두지 않는다. 마우스를 떼도 마지막 번호를 유지한다. 전환은 150ms 색 바뀜뿐이고, 줄이기 설정에서는 없다.
+- **접근성.** SVG `<title>`·`<desc>`는 상태와 무관하게 고정이고, 색 대신 위치로 쓴다(`desc`에 "블루로 강조된" 같은 상태 색을 쓰지 않는다). 뜻은 범례 텍스트가 전한다. 화면 위 핀은 `aria-hidden`이다.
+- 핀 위치 = SVG 좌표 ÷ viewBox 크기 × 100%(위 예: 무대 윗변 가운데 (240, 80) → 240 ÷ 480 = 50%, 80 ÷ 300 = 27%). 래퍼 `.d0-pins`가 SVG와 같은 크기라 비율이 그대로 맞는다. 핀은 24px 원 + 13px 숫자다. blue 원 위 흰 숫자는 3.99:1이라 쓰지 않는다.
+- 핀은 3~6개다. 375px에서도 핀은 24px 그대로다. 핀끼리 겹치면(중심 간격 28px 미만) 핀을 줄이거나 부분을 묶는다. 범례는 900px 아래에서 그림 아래로 내려간다.
 - 핀 옆에 글자를 붙이지 않는다. 이름은 범례에만 쓴다. 범례 `dd`는 한 문장이다.
 
 ## 금지

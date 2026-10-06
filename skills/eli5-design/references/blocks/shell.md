@@ -236,6 +236,8 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 /* ../day0-design/references/tokens.css 파일 전체를 수정 없이 여기(메인 <style> 맨 앞)에 붙인다.
    day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
 :root { color-scheme: light; }
+/* 스크롤바 자리를 항상 비워 둔다: 긴 페이지와 짧은 페이지를 오가거나 탭·토글로 높이가 바뀌어도 가로 폭이 흔들리지 않는다 */
+html { scrollbar-gutter: stable; }
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;

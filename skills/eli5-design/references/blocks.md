@@ -10,8 +10,9 @@
 - 색·radius·그림자·모션·자간·행간·글꼴은 `var(--d0-*)`만 쓴다. tokens.css에 없는 이름을 만들지 않는다(표면 `#fff`만 예외).
   tokens.css에 없는 간격·폭·제목 크기는 shell.md의 타이포·여백 스케일을 px로 쓴다.
 - **그림이 주인공이다.** 그림 블록은 diagram(핀 오버레이 `pins` 포함), thumb-cards, tab-preview, mockup-frame, timeline의 SVG 시간 막대(`data-variant="timebar"`),
-  kpi-cards 막대 변형(`data-variant="bar"`), side-by-side 와이어 카드(`.d0-option__wire`), step-columns 그림 변형(`data-variant="figure"`)이다.
-  막대 없는 kpi-cards와 CSS 타임라인(가로·세로)은 그림이 아니다. 앞쪽 핵심 섹션(header 다음 첫 1~2개 페이지 섹션,
+  kpi-cards 막대 변형(`data-variant="bar"`), side-by-side 와이어 카드(`.d0-option__wire`), step-columns 그림 변형(`data-variant="figure"`),
+  checklist 연동 그림 변형(`data-variant="linked"`, 무대 SVG를 diagram으로 센다)이다.
+  막대 없는 kpi-cards, CSS 타임라인(가로·세로), code-block은 그림이 아니다. 앞쪽 핵심 섹션(header 다음 첫 1~2개 페이지 섹션,
   `main > section`·`main > .d0-split > section`)은 그림 블록을 먼저 고르고, 위험·한계·할 일 같은 목록 섹션은 그림 없이
   글 블록(diff-rows, checklist, accordion) 하나 + 마무리 한 줄 `p`(배운 점·다음 한 줄) 1개까지만 써도 된다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
   글 블록(step-columns, diff-rows, accordion)은 그림을 거들거나 목록을 담는 데만 쓴다.
@@ -22,7 +23,7 @@
   (같은 숫자 문자열 페이지당 2회 이하, SKILL.md 원칙 8번).
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
   행 목록의 행 구분선만. 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
-- **줄 길이.** 본문 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄 제외) `p`가 아니라 블록 레이아웃(2열 grid, 그림 옆 배치)으로 줄인다.
+- **줄 길이.** 본문 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md) 제외) `p`가 아니라 블록 레이아웃(2열 grid, 그림 옆 배치)으로 줄인다.
 - **두 섹션 나란히.** 프리셋이 허용하면 [shell.md](blocks/shell.md)의 `.d0-split` 레이아웃을 쓴다.
   한쪽 높이가 다른 쪽의 1.5배를 넘으면 나란히 두지 않는다([shell.md](blocks/shell.md) 높이 기준).
   두 섹션이 모두 무대 위 그림이면 `data-align="stage"`로 머리·무대·캡션 줄을 맞춘다. 목록 섹션이 섞이면 기본(`align-items: start`)이다.
@@ -80,6 +81,8 @@
 | step-columns | 그림 아래 단계 주석 | 2~5열, 블루 단계 라벨 → 소제목 → 짧은 항목. 그림+설명 변형 `data-variant="figure"`는 그림 | [step-columns.md](blocks/step-columns.md) |
 | side-by-side | 옵션 비교 | 같은 크기 2~3열, 장점·비용·위험 또는 작은 mock, 와이어 카드 `.d0-option__wire`(수치 없는 결정의 대표 도식) | [side-by-side.md](blocks/side-by-side.md) |
 | diff-rows | 바뀐 점만, 한계 목록 | 항목 \| 전 \| → \| 후(블루), 배지 행 변형, 위험 행 변형 `data-variant="risk"`(배지 + 위험 한 문장 + dl 영향/대응) | [diff-rows.md](blocks/diff-rows.md) |
-| checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건) | [checklist.md](blocks/checklist.md) |
+| checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건). 연동 그림 변형 `data-variant="linked"`(왼쪽 sticky 단계 화면이 행 호버·포커스·클릭·체크로 바뀜, 그림) | [checklist.md](blocks/checklist.md) |
+| code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
 | accordion | 질문·용어 | 질문 행 펼침, 용어 카드 변형 | [accordion.md](blocks/accordion.md) |
 | callout | 결정 요청 하나 | soft 블루 상자, **페이지당 최대 1개**, 히어로 결론을 되풀이하지 않음 | [callout.md](blocks/callout.md) |
+| slide-deck | slides 프리셋 전용 덱 골격(문서형 `d0-page` 대신) | `main.d0-deck` + 16:9 `section.d0-slide`(cqi 타이포): 액션 타이틀 → 근거 그림 하나 → 해석·출처 한 줄 → 쪽수, 표지 다음 제목 목차, ←/→ 키 이동, 인쇄 한 장씩, 좁은 화면은 비율 해제 | [slide-deck.md](blocks/slide-deck.md) |
