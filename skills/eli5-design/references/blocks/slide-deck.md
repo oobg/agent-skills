@@ -16,7 +16,7 @@
   - 발 `footer.d0-slide__foot`: 출처 한 줄(`p.d0-slide__src`, 선택) + 쪽수 `p.d0-slide__num` `n / N`(렌더 텍스트).
 - **네비** `nav.d0-deck__nav`: 덱의 마지막 자식. 이전·다음 `button[data-deck="prev|next"]`, 쪽수 `p.d0-deck__count`(`n / N`),
   목차 `button[data-deck="toc"]`, 안내 `p.d0-deck__hint`("←/→로 넘겨요", 터치 기기는 "밀어서 넘겨요"). 한 장 모드에서만 보인다.
-- **제목 목차** `nav.d0-slide[data-kind="toc"]`: 표지 바로 다음 장. `ol.d0-slide__toc` + 항목마다 `a href="#s-03"`. 항목 글자 = 해당 슬라이드 제목.
+- **제목 목차** `nav.d0-slide[data-kind="toc"]`: 표지 바로 다음 장. `ul.d0-slide__toc`에 작은 점 불렛과 항목마다 `a href="#s-03"`을 둔다. 항목 글자 = 해당 슬라이드 제목. 목차 장에는 쪽수를 표시하지 않는다.
 - **헤딩 순서.** 표지 h1 → 나머지 h2. 슬라이드 안에서 h3 이하는 쓰지 않는다.
 - **구도**(선택). 슬라이드에 `data-composition`을 달 수 있다. 값과 교차 규칙은 [composition.md](../composition.md)가 정본이다.
 
@@ -60,6 +60,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 | Display(표지 h1) | `h1.d0-slide__title` | 5.6 / 700 | 61px | 57px | 56–72 | 26px |
 | Impact·assertion 제목 | `.d0-slide__title` | 6 / 700 | 66px | 61px | 60 이상 | 28px |
 | 슬라이드 제목 | `.d0-slide__title` | 3.6 / 700 | 39px | 37px | 36–44 | 20px |
+| 결정·요청 | `decision`의 `.d0-slide__title` | 4.5 / 700 | 49px | 46px | Lead~Display 사이 | 24px |
 | Lead | `.d0-slide__lead` | 2.4 / 400 grey-700 | 26px | 25px | 24–30 | 17px |
 | 본문·요점·보조·해석 | `.d0-slide__points` `__sub` `__note` `dd` 목차 | 2 / 400 | 22px | 20px | 20–24 | 15px(해석 13px) |
 | Meta(눈썹·출처·쪽수·`dt`) | `__eyebrow` `__src` `__num` | 1.4 / 400~600 grey-600 | 15px | 14px | 14–18 | 12px |
@@ -76,14 +77,15 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 | 종류 | 몸 | 배치 |
 | --- | --- | --- |
 | (생략) 근거 | split: 그림(3) + 요점(2) | 몸(그림 + 요점)이 슬라이드 면의 60~80% |
-| `cover` | h1 + 요약 3행 `dl.d0-slide__summary` | 그림 예외 |
-| `toc` | `ol.d0-slide__toc` | 그림 예외, 번호는 쪽수와 같다(3부터) |
+| `cover` | 결론 h1 + 대표 도식 + 요약 0~1행 | `data-cover`로 도식 위치를 고른다 |
+| `toc` | `ul.d0-slide__toc` | 그림 예외, 작은 점 불렛으로 제목만 표시 |
 | `assertion` | 주장 한 문장(제목)만 | 그림 예외, Impact 기본, 제목이 세로 가운데 |
 | `evidence` | 결론 제목 + 가로형 차트 + 해석 한 줄 | 그림(`figure`)이 슬라이드 면의 60~80% |
 | `screenshot` | 결론 제목 + `figure.d0-shot` | 화면 상자가 몸 행 높이를 채운다(폭은 화면 비율, 왼쪽 정렬) |
 | `breakdown` | 결론 제목 + 전체 → 구성 요소 도식 | 그림이 슬라이드 면의 60~80% |
 | `stat` | 숫자 하나 + 해석 한 줄 | 큰 숫자가 그림 |
-| `summary` | 요청·결정·다음 행동 `ul.d0-slide__points` 3행 이내 | 그림 예외 |
+| `summary` | 참고용 정리 목록 3행 이내 | 그림 예외, 마지막 요청 장에는 쓰지 않는다 |
+| `decision` | 큰 결정·요청 한 문장 + 구분선 + 작은 `dl` 메타 행 | 그림 예외, 마지막 장 전용 |
 
 - **screenshot.** 화면·spotlight(`span.d0-shot__spot`)·번호 주석(`p.d0-shot__note`)·dim의 마크업과 CSS는 [mockup-frame.md](mockup-frame.md)가 정본이다.
   이 파일은 슬라이드 안 자리와 크기만 정한다: `figure.d0-shot`이 몸 행(`minmax(0, 1fr)`)을 채우고, 화면 상자는 그 높이를 다 쓰며 폭은 비율(기본 16:10)로 정해진다.
@@ -91,6 +93,54 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 - **그림 면적.** 그림 영역(`figure` 또는 `figure.d0-shot` bbox, 해석 줄·주석 포함. split이면 몸 전체)의 넓이 ÷ 슬라이드 면(패딩 포함) = 60~80%.
   제목 한 줄 기준으로 1280 한 장 모드에서 split·evidence 약 61%, breakdown·screenshot 약 64%다.
   split에 보조 한 줄(`__sub`)을 달면 몸이 약 55%로 떨어지므로 범위·조건은 출처 줄에 쓴다. 제목이 두 줄이면 그림이 그만큼 줄어든다.
+
+## 커버 변형 `data-cover`
+
+커버는 결론과 대표 도식 하나로 시작한다. 요약 3행을 반복하지 않고 도식·리드에 흡수하며, 결정할 것만 `dl.d0-slide__summary` 한 행으로 남길 수 있다.
+`div.d0-slide__cover` 안에 `header.d0-slide__head`와 `figure.d0-slide__fig`를 둔다. 커버 도식은 근거 장의 60~80% 면적 게이트 대신 주제의 실체와 의미 있는 그림 면적을 확인한다.
+
+| 값 | 위치 | 예시 |
+| --- | --- | --- |
+| `contrast` | 제목 아래 가로 A/B 대비 | compare |
+| `bottom` | 제목 아래 가로 흐름·시간 막대 | flow, timeline |
+| `side` | 오른쪽 기기·변화 차트·완성 화면, 그림 비율에 맞춘 열 | preview, report, guide |
+| `center` | 가운데 경과선, 결론을 그 위에 가운데 정렬 | incident |
+| `map` | 오른쪽 아래 작은 용어 지도 | faq |
+
+```html
+<section class="d0-slide" id="cover-example" data-kind="cover" data-cover="bottom" aria-labelledby="cover-example-t" tabindex="-1">
+  <div class="d0-slide__cover">
+    <header class="d0-slide__head"><h1 class="d0-slide__title" id="cover-example-t">요청 한 줄이 검사 뒤 설명 페이지 한 장이 된다</h1></header>
+    <figure class="d0-slide__fig">
+      <svg viewBox="0 0 800 180" role="img" aria-label="요청에서 검사까지 이어지는 과정"><title>요청에서 검사까지 이어지는 과정</title>
+        <path class="d0-sl-link" d="M100 80H700"/>
+        <circle cx="100" cy="80" r="24" fill="var(--d0-grey-200)"/><circle cx="400" cy="80" r="24" fill="var(--d0-blue)"/><circle cx="700" cy="80" r="24" fill="var(--d0-green)"/>
+        <g class="d0-sl-label"><text x="100" y="140">요청</text><text x="400" y="140">그림</text><text x="700" y="140">검사</text></g>
+      </svg>
+      <figcaption class="d0-slide__note">그림을 먼저 그리고 검사를 통과한 한 장을 넘긴다.</figcaption>
+    </figure>
+  </div>
+  <footer class="d0-slide__foot"><p class="d0-slide__num">1 / 9</p></footer>
+</section>
+```
+
+## 마지막 장 `data-kind="decision"`
+
+결정·요청 한 문장을 세로 중앙에 크게 두고(4.5cqi, 1280 한 장에서 약 49px), 그 아래 구분선과 작은 `dl.d0-slide__meta` 행을 둔다.
+메타는 담당·기한·다음 행동 중 덱에 이미 나온 사실만 2~3칸으로 적는다. 없는 담당이나 날짜를 만들어 채우지 않는다.
+결정 문장과 같은 무게의 불릿 목록을 두지 않고, Impact로 색칠하지 않는다. 제목이 그 결정 문장 하나다.
+
+```html
+<section class="d0-slide" id="decision-example" data-kind="decision" aria-labelledby="decision-example-t" tabindex="-1">
+  <header class="d0-slide__head"><h2 class="d0-slide__title" id="decision-example-t">이번 주 안에 발송 주기를 정해 주세요</h2></header>
+  <dl class="d0-slide__meta">
+    <div><dt>담당</dt><dd>서비스 운영 팀</dd></div>
+    <div><dt>기한</dt><dd>이번 주 금요일</dd></div>
+    <div><dt>다음</dt><dd>다음 주에 적용한다</dd></div>
+  </dl>
+  <footer class="d0-slide__foot"><p class="d0-slide__num">9 / 9</p></footer>
+</section>
+```
 
 ## 강조 `data-emphasis`
 
@@ -113,17 +163,13 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 
 ```html
 <main class="d0-deck" data-preset="report" data-variant="status">
-  <section class="d0-slide" id="s-01" data-kind="cover" aria-labelledby="s-01-t" tabindex="-1">
-    <header class="d0-slide__head">
+  <section class="d0-slide" id="s-01" data-kind="cover" data-cover="side" aria-labelledby="s-01-t" tabindex="-1">
+    <div class="d0-slide__cover"><header class="d0-slide__head">
       <p class="d0-slide__eyebrow">알림 개편 · 3분기 업무 보고</p>
       <h1 class="d0-slide__title" id="s-01-t">알림 개편은 일정대로 가고, 남은 결정은 발송 주기 하나다</h1>
       <p class="d0-slide__lead">재시도만 줄이면 주기는 어느 쪽이든 괜찮다</p>
-    </header>
-    <dl class="d0-slide__summary">
-      <div><dt>현재 상태</dt><dd>새 알림 화면을 팀 A가 쓰고 있다</dd></div>
-      <div><dt>문제</dt><dd>재시도가 늘어 발송이 늦어진다</dd></div>
-      <div><dt>결정할 것</dt><dd>발송 주기를 매일과 매주 중에 고른다</dd></div>
-    </dl>
+    </header><figure class="d0-slide__fig"><svg viewBox="0 0 400 220" role="img" aria-label="마지막 주에 재시도가 늘었다"><title>마지막 주에 재시도가 늘었다</title><rect class="d0-sl-bar" x="60" y="110" width="80" height="70"/><rect class="d0-sl-bar" data-on x="250" y="40" width="80" height="140"/><g class="d0-sl-label"><text x="100" y="208">첫 주</text><text x="290" y="208">마지막 주</text></g></svg><figcaption class="d0-slide__note">마지막 주에 재시도가 몰렸다.</figcaption></figure></div>
+    <dl class="d0-slide__summary"><div><dt>결정할 것</dt><dd>발송 주기를 매일과 매주 중에 고른다</dd></div></dl>
     <footer class="d0-slide__foot">
       <p class="d0-slide__src"><kbd>←</kbd> <kbd>→</kbd> 키로 넘겨요 · <kbd>F</kbd> 전체 화면</p>
       <p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>1 / 9</p>
@@ -132,7 +178,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 
   <nav class="d0-slide" id="s-02" data-kind="toc" aria-labelledby="s-02-t" tabindex="-1">
     <header class="d0-slide__head"><h2 class="d0-slide__title" id="s-02-t">제목만 읽기</h2></header>
-    <ol class="d0-slide__toc">
+    <ul class="d0-slide__toc">
       <li><a href="#s-03">재시도를 줄이지 않으면 발송 주기를 바꿔도 늦어진다</a></li>
       <li><a href="#s-04">재시도는 앞 세 주보다 마지막 주에 몰렸다</a></li>
       <li><a href="#s-05">재시도가 4주 만에 두 배 넘게 늘었다</a></li>
@@ -140,8 +186,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
       <li><a href="#s-07">재시도의 절반 넘게가 대기열에서 생긴다</a></li>
       <li><a href="#s-08">늦게 도착하는 알림이 절반에 가깝다</a></li>
       <li><a href="#s-09">이번 주 안에 발송 주기를 정해 주세요</a></li>
-    </ol>
-    <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>2 / 9</p></footer>
+    </ul>
   </nav>
 
   <!-- assertion + impact: 주장 한 문장만 -->
@@ -268,13 +313,9 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>8 / 9</p></footer>
   </section>
 
-  <section class="d0-slide" id="s-09" data-kind="summary" aria-labelledby="s-09-t" tabindex="-1">
+  <section class="d0-slide" id="s-09" data-kind="decision" aria-labelledby="s-09-t" tabindex="-1">
     <header class="d0-slide__head"><h2 class="d0-slide__title" id="s-09-t">이번 주 안에 발송 주기를 정해 주세요</h2></header>
-    <ul class="d0-slide__points">
-      <li>금요일까지 매일과 매주 중 하나를 고른다</li>
-      <li>정해지면 다음 주에 대기열을 먼저 고친다</li>
-      <li>2주 뒤 재시도 건수로 다시 보고한다</li>
-    </ul>
+    <dl class="d0-slide__meta"><div><dt>담당</dt><dd>서비스 운영 팀</dd></div><div><dt>기한</dt><dd>이번 주 금요일</dd></div><div><dt>다음</dt><dd>다음 주에 적용한다</dd></div></dl>
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>9 / 9</p></footer>
   </section>
 
@@ -342,7 +383,26 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide__points { margin: 0; padding-left: 1.2em; list-style: disc; display: grid; gap: 1.2cqi; align-content: center; color: var(--d0-grey-800); font-size: 2cqi; line-height: var(--d0-leading-body); }
 .d0-slide__points ::marker { color: var(--d0-blue); }
 
-/* 표지 요약 3행 */
+/* 커버: 내용의 모양에 따라 그림 위치와 비율을 달리한다 */
+.d0-slide[data-kind="cover"] { grid-template-rows: minmax(0, 1fr) auto auto; }
+.d0-slide__cover { min-height: 0; display: grid; grid-template-columns: 3fr 2fr; gap: 3cqi; align-items: center; }
+.d0-slide__cover > .d0-slide__fig { height: 100%; align-content: center; }
+.d0-slide__cover .d0-slide__fig svg { height: auto; max-height: 100%; }
+.d0-slide[data-cover="contrast"] .d0-slide__cover,
+.d0-slide[data-cover="bottom"] .d0-slide__cover,
+.d0-slide[data-cover="center"] .d0-slide__cover { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 2cqi; }
+.d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 20px; }
+.d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig svg { max-width: 84cqi; }
+.d0-slide[data-cover="center"] .d0-slide__head { max-width: 76cqi; justify-self: center; text-align: center; }
+.d0-deck[data-preset="preview"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
+.d0-deck[data-preset="report"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
+.d0-deck[data-preset="report"] .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
+.d0-slide[data-cover="map"] .d0-slide__cover { grid-template-columns: 2fr 1fr; }
+.d0-slide[data-cover="map"] .d0-slide__cover > .d0-slide__fig { height: auto; align-self: end; }
+.d0-slide[data-kind="cover"] .d0-slide__summary > div { padding: 0.8cqi 0; }
+.d0-slide[data-kind="cover"] .d0-slide__summary dd { font-size: 1.4cqi; }
+
+/* 표지: 남길 결정 한 행 */
 .d0-slide__summary { margin: 0; align-self: center; display: grid; }
 .d0-slide__summary > div { display: grid; grid-template-columns: 14cqi 1fr; gap: 2cqi; align-items: baseline; padding: 1.4cqi 0; border-top: 1px solid var(--d0-grey-100); }
 .d0-slide__summary > div:last-child { border-bottom: 1px solid var(--d0-grey-100); }
@@ -350,16 +410,15 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide__summary dd { margin: 0; color: var(--d0-grey-900); font-size: 2cqi; }
 .d0-slide__summary > div:last-child dt { color: var(--d0-blue-dark); }
 
-/* 제목 목차: 번호 = 쪽수(3부터) */
-.d0-slide__toc { margin: 0; padding: 0; list-style: none; counter-reset: d0-toc 2; align-self: start; display: grid; gap: 0.2cqi; }
-.d0-slide__toc li { counter-increment: d0-toc; }
+/* 제목 목차: 작은 점 불렛 + 제목 링크 */
+.d0-slide__toc { margin: 0; padding: 0; list-style: none; align-self: start; display: grid; gap: 0.2cqi; }
+.d0-slide__toc li { display: grid; grid-template-columns: 0.4cqi minmax(0, 1fr); align-items: baseline; column-gap: 1.2cqi; }
+.d0-slide__toc li::before { content: ""; width: 0.4cqi; height: 0.4cqi; align-self: center; border-radius: 50%; background: var(--d0-blue); }
 .d0-slide__toc a {
-  display: grid; grid-template-columns: 4cqi 1fr; align-items: baseline;
-  min-height: 24px; padding: 0.5cqi 0;
+  display: block; min-height: 24px; padding: 0.5cqi 0;
   color: var(--d0-grey-900); font-size: 2cqi; text-decoration: none;
   border-bottom: 1px solid var(--d0-grey-100);
 }
-.d0-slide__toc a::before { content: counter(d0-toc); color: var(--d0-blue-dark); font-weight: 600; font-variant-numeric: tabular-nums; }
 .d0-slide__toc a:hover { color: var(--d0-blue-dark); }
 
 /* assertion: 주장 한 문장을 세로 가운데에 */
@@ -394,7 +453,16 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide[data-kind="stat"] .d0-slide__fig { grid-template-rows: 1fr auto; align-content: center; }
 .d0-slide[data-kind="stat"] .d0-slide__note { color: var(--d0-grey-800); }
 
-/* summary: 요점 목록을 머리 바로 아래에 */
+/* decision: 세로 중앙의 큰 요청 하나 + 디바이더 아래 작은 사실 행 */
+.d0-slide[data-kind="decision"] { grid-template-rows: minmax(0, 1fr) auto auto; }
+.d0-slide[data-kind="decision"] .d0-slide__head { align-self: center; max-width: 88cqi; }
+.d0-slide[data-kind="decision"] .d0-slide__title { font-size: 4.5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+.d0-slide__meta { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqi; padding-top: 1.4cqi; border-top: 1px solid var(--d0-grey-200); }
+.d0-slide__meta > div { display: grid; gap: 0.4cqi; align-content: start; }
+.d0-slide__meta dt { color: var(--d0-grey-600); font-size: 1.4cqi; }
+.d0-slide__meta dd { margin: 0; color: var(--d0-grey-700); font-size: 1.4cqi; line-height: var(--d0-leading-body); }
+
+/* summary: 참고용 정리 목록 */
 .d0-slide[data-kind="summary"] .d0-slide__points { align-self: start; }
 
 /* 강조: impact = blue-light 전체 면, 큰 것 하나 */
@@ -489,6 +557,19 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 /* 좁은 슬라이드(730px 미만, 본문이 11px 아래로 내려가는 폭): 16:9를 풀고 px 고정 */
 @container (max-width: 730px) {
   .d0-slide { aspect-ratio: auto; gap: 16px; padding: 20px 16px 14px; }
+  .d0-slide[data-kind="cover"] { grid-template-rows: auto auto auto; }
+  .d0-slide__cover,
+  .d0-deck[data-preset] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
+  .d0-slide__cover > .d0-slide__fig { height: auto; }
+  .d0-slide[data-cover="center"] .d0-slide__head { max-width: none; }
+  .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 30px; }
+  .d0-slide[data-kind="cover"] .d0-slide__summary dd { font-size: 12px; }
+  .d0-slide[data-kind="decision"] { min-height: min(560px, calc(100dvh - 116px)); }
+  .d0-slide[data-kind="decision"] .d0-slide__head { max-width: none; }
+  .d0-slide[data-kind="decision"] .d0-slide__title { font-size: 24px; }
+  .d0-slide__meta { grid-template-columns: 1fr; gap: 8px; padding-top: 12px; }
+  .d0-slide__meta > div { grid-template-columns: 48px 1fr; gap: 8px; }
+  .d0-slide__meta dt, .d0-slide__meta dd { font-size: 12px; }
   .d0-slide__head { gap: 6px; }
   .d0-slide__eyebrow { font-size: 12px; }
   .d0-slide__title { font-size: 20px; }
@@ -511,7 +592,9 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide__points { gap: 6px; }
   .d0-slide__summary > div { grid-template-columns: 1fr; gap: 2px; padding: 10px 0; }
   .d0-slide__summary dt, .d0-slide__src, .d0-slide__num { font-size: 12px; }
-  .d0-slide__toc a { grid-template-columns: 28px 1fr; padding: 8px 0; }
+  .d0-slide__toc li { grid-template-columns: 4px minmax(0, 1fr); column-gap: 8px; }
+  .d0-slide__toc li::before { width: 4px; height: 4px; }
+  .d0-slide__toc a { padding: 8px 0; }
   .d0-slide__stat { font-size: 48px; }
   .d0-slide[data-kind="screenshot"] .d0-shot,
   .d0-slide[data-kind="screenshot"] .d0-shot__screen { height: auto; width: 100%; justify-self: stretch; }
@@ -678,8 +761,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 })();
 ```
 
-- 쪽수 `n / N`은 슬라이드마다 마크업에 직접 쓴다(스크립트가 없을 때와 인쇄에서 보인다). 한 장 모드에서는 네비 쪽수가 대신 보인다. 슬라이드를 빼거나 더하면 모든 쪽수와 목차를 함께 고친다.
-- 목차 번호는 CSS 카운터로 3부터 센다(`counter-reset: d0-toc 2`). 쪽수와 같은 번호다.
+- 쪽수 `n / N`은 목차를 제외한 슬라이드마다 마크업에 직접 쓴다(스크립트가 없을 때와 인쇄에서 보인다). 한 장 모드에서는 네비 쪽수가 대신 보인다. 슬라이드를 빼거나 더하면 쪽수를 함께 고친다.
 - 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi, 가로형은 800·글자 20(좁은 화면 30)·최대 84cqi를 유지한다.
   다른 도식 모양은 [diagram.md](diagram.md)를 따르되 클래스는 이 파일의 `d0-sl-*` 규칙(강조 하나만 blue)으로 칠한다.
 - 스크롤 리빌 모션은 붙이지 않는다. 장을 바꿀 때의 짧은 opacity 페이드만 있고 reduced-motion이면 즉시 바뀐다.
@@ -693,13 +775,14 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 **HARD (코드로 확인)**
 
 - [ ] `main.d0-deck[data-preset]`이 하나이고 `data-preset`이 내용 프리셋 8개 중 하나다. 슬라이드(`.d0-slide`)는 표지·목차 포함 5~12장이다
-- [ ] 첫 장이 `data-kind="cover"` + h1이고 바로 다음 장이 `nav[data-kind="toc"]`다. 목차 `li` 수 = 표지·목차를 뺀 장 수, 항목 글자 = 각 장 제목, `href` = 그 장 `id`
-- [ ] `data-kind`가 정본 값(생략 | cover | toc | assertion | evidence | screenshot | breakdown | stat | summary)만 쓴다
+- [ ] 마지막 장은 `decision`이며 큰 제목 한 문장 + 구분선 + 작은 `dl.d0-slide__meta` 2~3칸을 두고 같은 무게의 불릿 목록·Impact가 없다
+- [ ] 첫 장이 `data-kind="cover"` + h1이고 바로 다음 장이 `nav[data-kind="toc"]`다. 목차가 `ul.d0-slide__toc`이고 `li` 수 = 표지·목차를 뺀 장 수, 항목 글자 = 각 장 제목, `href` = 그 장 `id`; 목차에는 번호·쪽수가 없다
+- [ ] `data-kind`가 정본 값(생략 | cover | toc | assertion | evidence | screenshot | breakdown | stat | summary | decision)만 쓴다
 - [ ] 근거(생략)·`evidence`·`breakdown` 장마다 `figure.d0-slide__fig`가 정확히 1개이고 그 안에 `role="img"` + `<title>`을 가진 SVG가 있다.
-      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `cover`·`toc`·`summary`·`assertion`만 그림이 없다
+      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `toc`·`summary`·`decision`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
 - [ ] `data-emphasis="impact"` 장에 카드·요점 목록·두 번째 그림이 없다
 - [ ] 슬라이드당 `li` 3개 이하(`toc` 제외), 본문 텍스트(`p`·`li`·`dd`, 제목·쪽수 제외)가 렌더 기준 3줄 이하다
-- [ ] 슬라이드마다 쪽수 `n / N`이 렌더 텍스트로 있고 순서가 맞다
+- [ ] 목차를 제외한 슬라이드마다 쪽수 `n / N`이 렌더 텍스트로 있고 순서가 맞다
 - [ ] 슬라이드가 `section`(목차는 `nav`) + `aria-labelledby` + `tabindex="-1"`이고 헤딩은 표지 h1 → h2만 쓴다
 - [ ] 차트·도식 하나에 `data-on` 강조가 1계열이다. 의미색은 상태 표식에만, 그라디언트·3D·장식 아이콘이 없다
 - [ ] `nav.d0-deck__nav`에 `button[data-deck="prev"]`·`[data-deck="next"]`·`[data-deck="toc"]`, 쪽수, 안내 "←/→로 넘겨요"가 있고 버튼이 24px 이상이다
@@ -714,7 +797,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 **VISUAL (측정으로 확인)**
 
 - [ ] 1280×800에서 보이는 `.d0-slide`가 1개이고, 높이 ÷ 폭이 0.5625(±1px), 가로 가운데(±1px), 덱 안에 다 들어온다(가로·세로 스크롤 없음). 내용이 넘치지 않는다(`scrollHeight` ≤ `clientHeight`)
-- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
+- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, decision 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
 - [ ] SVG 글자 렌더 크기(font-size × SVG 렌더 배율)가 1280에서 28px 이하, 375에서 11px 이상이다
 - [ ] `evidence`·`breakdown`·`screenshot`의 `figure`, 근거 split의 몸이 슬라이드 면(패딩 포함)의 60~80%다
 - [ ] 375×812에서 장이 16:9를 풀고, 글자가 11px 이상, 페이지 가로 스크롤이 없으며, 좌우 스와이프(48px 초과)로 장이 넘어간다. 긴 장은 장 안에서 세로로 스크롤된다
