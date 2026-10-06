@@ -10,6 +10,7 @@
   기준과 CSS는 [shell.md](shell.md) 그림 무대 절. 아래 스니펫은 이 기준을 따른다: 흩어진 노드 (a) graph와 테두리 없는 선 그림 (f) sequence만 무대가 있고,
   나머지는 SVG를 `figure` 바로 안에 둔다. 무대를 더하려면 `data-stage`를 달고 SVG를 `div.d0-fig__stage`로 감싼다.
 - 무대 없는 그림이 폭의 절반만 쓰고 옆을 비우지 않게 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열 중 하나로 둔다. **그림을 키워 채우지 않는다.**
+- **옆 설명의 폭.** `data-layout="side"`는 그림이 놓인 열 폭이 넉넉할 때(예: 페이지 전체 폭 섹션)만 쓴다. `.d0-split`·`.d0-cols` 열 안에서는 설명을 `figcaption`으로 그림 아래에 둔다. 옆 설명 열의 최소 폭은 **220px**이다.
 - SVG는 `role="img"` + `<title>`(그림 이름) + `<desc>`(무엇이 강조됐는지 한두 문장). 장식 SVG만 `aria-hidden="true"`.
 - 색은 SVG 안에 직접 쓰지 않는다. 아래 `d0-s-*` 클래스가 `var(--d0-*)`를 쓴다. 강조 묶음은 블루 하나, 상태가 있는 표식은
   의미색 `data-tone="green|orange|red"`(완료·통과 / 주의·준비 / 실패·위험)를 단다. **회색만으로 된 도식은 금지**다. 색 규칙 정본은 [shell.md](shell.md) 색 절.
@@ -291,7 +292,9 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 
 ```css
 @media (min-width: 640px) {
-  .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 440px) 1fr; align-items: center; gap: 24px; }
+  .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 440px) minmax(220px, 1fr); align-items: center; gap: 24px; }
+  /* 반 열 안에 side가 남아 있어도 설명을 그림 아래로 쌓는다. SVG 폭 상한은 그대로다. */
+  :is(.d0-split, .d0-cols) .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 12px; }
 }
 ```
 

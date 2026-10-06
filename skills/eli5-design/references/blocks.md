@@ -85,6 +85,6 @@
 | diff-rows | 바뀐 점만, 한계 목록 | 항목 \| 전 \| → \| 후(블루), 배지 행 변형, 위험 행 변형 `data-variant="risk"`(배지 + 위험 한 문장 + dl 영향/대응) | [diff-rows.md](blocks/diff-rows.md) |
 | checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건). 연동 그림 변형 `data-variant="linked"`(왼쪽 sticky 단계 화면이 행 호버·포커스·클릭·체크로 바뀜, 그림) | [checklist.md](blocks/checklist.md) |
 | code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
-| accordion | 질문·용어 | 질문 행 펼침, 용어 카드 변형 | [accordion.md](blocks/accordion.md) |
+| accordion | FAQ 질문·용어, guide 보조 정보 | FAQ는 항상 노출하는 reply(들여쓴 답 + 꺾인 연결선), guide 선택 펼침, 용어 목록 변형 | [accordion.md](blocks/accordion.md) |
 | callout | 결정 요청 하나 | soft 블루 상자, **페이지당 최대 1개**, 히어로 결론을 되풀이하지 않음 | [callout.md](blocks/callout.md) |
 | slide-deck | 출력 형식이 deck일 때의 덱 골격(page의 `d0-page` 대신, 어느 내용 프리셋이든). 구성·Slide Gate는 [output/deck.md](output/deck.md) | `main.d0-deck[data-preset][data-variant]` + 16:9 `section.d0-slide`(`data-kind`로 종류, cqi 타이포)를 한 장씩 보기: 결론 제목 → 근거 그림 하나 → 해석 한 줄 → 쪽수, 표지 다음 제목 목차, 네비·←/→ 키 이동, 인쇄 한 장씩, 좁은 화면은 비율 해제 | [slide-deck.md](blocks/slide-deck.md) |
