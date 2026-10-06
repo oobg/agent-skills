@@ -3,6 +3,62 @@
 [덱 출력](../output/deck.md)의 마크업·CSS·JS 정본이다. 덱 구성·문장·Slide Gate는 덱 출력 문서가 정하고, 이 파일은 그 덱을
 화면에 한 장씩 띄우고 넘기는 구현을 정한다. 문서형 `main.d0-page` 대신 `main.d0-deck`을 쓴다.
 
+덱을 만들기 전에 [output/deck.md](../output/deck.md)의 Audience × Purpose와 Story Gate부터 통과한다.
+
+## 전달 모드 마크업과 밀도
+
+루트에서 전달 모드를 하나 고른다. 생략하면 Presentation이고, 한 덱 안에서 섞지 않는다.
+장수(표지·목차 포함 5~12장)와 한 장씩 넘기는 동작은 두 모드가 같다.
+
+```html
+<!-- 발표자와 함께 보는 Presentation (생략해도 같음) -->
+<main class="d0-deck" data-preset="report" data-variant="status" data-delivery="present">
+  <!-- 슬라이드와 네비 -->
+</main>
+
+<!-- 맥락·본문·출처를 포함해 혼자 읽는 Slidedoc -->
+<main class="d0-deck" data-preset="report" data-variant="status" data-delivery="read">
+  <!-- 슬라이드와 네비 -->
+</main>
+```
+
+아래 기본 타이포·그림 면적·본문 밀도는 Presentation 기준이다. Slidedoc은 [덱 출력의 전달 하위 모드 표](../output/deck.md)의
+본문 최대 8줄·18~20px·그림 영역 40~60%를 쓰고, 그 외 제목·Impact·Meta와 구현 동작은 유지한다.
+맥락·본문은 몸 안의 `p.d0-slide__text`로 두고, 출처는 기존 `p.d0-slide__src`를 쓴다.
+짧은 문단 2개와 불릿 3개 이내로 구성하며, 문단·불릿·해석·출처를 합쳐 렌더 최대 8줄을 넘으면 내용을 나눈다.
+
+Slidedoc은 아래 CSS를 기본 CSS 뒤에 추가한다. 폰트를 더 줄여 내용을 밀어 넣지 않고, 그림 옆에 맥락과 본문을 배치한 뒤 모드별 면적과 줄 수를 측정한다.
+
+```css
+/* read 본문: 1280×800 한 장 모드에서 약 18px, present는 2cqi(약 22px) */
+.d0-deck[data-delivery="read"] .d0-slide__text,
+.d0-deck[data-delivery="read"] .d0-slide__points,
+.d0-deck[data-delivery="read"] .d0-slide__note,
+.d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot__note,
+.d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot figcaption {
+  font-size: 1.65cqi;
+  line-height: var(--d0-leading-body);
+}
+.d0-deck[data-delivery="read"] .d0-slide__text {
+  margin: 0;
+  color: var(--d0-grey-800);
+  text-wrap: pretty;
+}
+.d0-deck[data-delivery="read"] .d0-slide__points { gap: 0.6cqi; }
+
+@container (width < 730px) {
+  .d0-deck[data-delivery="read"] .d0-slide__text,
+  .d0-deck[data-delivery="read"] .d0-slide__points,
+  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot__note {
+    font-size: 15px;
+  }
+  .d0-deck[data-delivery="read"] .d0-slide__note,
+  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot figcaption {
+    font-size: 13px;
+  }
+}
+```
+
 ## 해부 구조
 
 - **덱** `main.d0-deck[data-preset][data-variant]` 하나. `data-preset`은 내용 프리셋 8개(`compare` `flow` `preview` `report`
@@ -96,7 +152,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 
 ## 커버 변형 `data-cover`
 
-커버는 결론과 대표 도식 하나로 시작한다. 요약 3행을 반복하지 않고 도식·리드에 흡수하며, 결정할 것만 `dl.d0-slide__summary` 한 행으로 남길 수 있다.
+커버는 독자가 알아야 할 결론 문장과 대표 도식 하나로 시작한다. `비교 발표` 같은 유형·메타 정보는 크게 쓰지 않고 필요하면 작은 `.d0-slide__eyebrow`에만 둔다. 요약 3행을 반복하지 않고 도식·리드에 흡수하며, 결정할 것만 `dl.d0-slide__summary` 한 행으로 남길 수 있다.
 `div.d0-slide__cover` 안에 `header.d0-slide__head`와 `figure.d0-slide__fig`를 둔다. 커버 도식은 근거 장의 60~80% 면적 게이트 대신 주제의 실체와 의미 있는 그림 면적을 확인한다.
 
 | 값 | 위치 | 예시 |
@@ -772,6 +828,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 의미 검사(한 장 한 주장, 결론 제목, 제목만 읽어도 이어짐, Impact 비율 등)는 [덱 출력](../output/deck.md)의 Slide Gate가 먼저다.
 여기는 마크업·타이포·키·hash·인쇄·reduced-motion·375·iframe을 코드와 측정으로 확인한다. 나머지(토큰 인라인, 시맨틱, 접근성, 색 규칙, 개행)는 page와 같다.
 
+아래 체크 항목은 그대로 적용하되 본문 3줄·본문 20~24px·그림 영역 60~80%는 Presentation 기준이다. Slidedoc의 해당 세 기준만 덱 출력의 전달 하위 모드 표와 위 CSS로 판정한다. 제목·Meta·장수·한 장 보기와 나머지 구현 검사는 공통이다.
+
 **HARD (코드로 확인)**
 
 - [ ] `main.d0-deck[data-preset]`이 하나이고 `data-preset`이 내용 프리셋 8개 중 하나다. 슬라이드(`.d0-slide`)는 표지·목차 포함 5~12장이다
@@ -804,7 +862,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 
 ## 금지
 
-- 명사 제목(`현황`, `분석 결과`), 슬라이드 하나에 그림 둘 이상, 불릿 4개 이상, 여러 줄 문단.
+- 명사 제목(`현황`, `분석 결과`), 슬라이드 하나에 그림 둘 이상, 불릿 4개 이상, Presentation의 여러 줄 문단 또는 Slidedoc의 최대 8줄 상한을 넘긴 본문.
 - 슬라이드 높이를 px로 고정하기, `vw` 글자 크기, 데스크톱에서 16:9 풀기.
 - 자동 넘김, opacity 페이드 외의 전환(밀기·확대·3D 넘김), 스크롤 리빌, reduced-motion에서 전환 남기기.
 - 키보드 이동을 입력 칸 안에서 가로채기, 버튼 포커스 상태의 Space를 넘김 키로도 처리하기(이중 전진), CSS만으로 한 장 모드 켜기(JS 실패 시 장이 사라진다).

@@ -28,9 +28,9 @@
   linked 변형은 행 안에 접지 않고 아래 **활성 단계 코드 영역**에 펼쳐 둔다.
 - `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다.
   - 행마다 `data-step="n"`과 `data-caption`(그 단계 그림 설명 한 줄)을 둔다. SVG는 단계마다 `g[data-step="n"]` 그룹 하나를 갖고, 그룹마다 누를 곳 하나만 blue다.
-  - 행에 마우스를 올리거나(hover), 키보드 포커스가 들어오거나(focus-within), 행을 누르거나, 체크하면 무대가 그 단계 그림으로 바뀐다.
+  - 행에 마우스를 올리거나(hover), 키보드 포커스가 들어오거나(focus-within), 행을 누르면 무대가 그 단계 그림으로 바뀐다. 체크하면 다음 미완료 단계의 무대·캡션·코드를 함께 보여 준다.
     figure의 `data-active-step`이 보이는 그룹을 고르고, 현재 행은 `data-current`로 번호 원이 blue-dark(흰 숫자 5.5)가 된다.
-  - hover는 미리 보기다. 마우스가 목록을 떠나면 마지막으로 포커스·클릭·체크한 단계로 돌아간다.
+  - 마지막 hover·focus·click 단계는 목록을 떠나도 유지한다. 처음 로드할 때는 첫 미완료 단계를 보여 주고, 모두 완료하면 마지막 단계를 유지한다. 체크 해제 시에는 해제한 단계를 보여 준다.
   - 체크한 단계는 그룹에 `data-done`이 붙어 green 원 + 흰 체크선(`.d0-s-tick`, 3.47)이 나타난다. 행 번호 원은 green-bg + grey-900 숫자(15.12)다.
   - 그림 이름은 바뀐 단계에 맞춰 figcaption과 SVG `<desc>`를 함께 고친다(`<strong>2단계</strong> 파란 입력창에 주제를 적어요.`). 별도 `aria-live`는 두지 않는다.
   - 960px 미만: sticky를 풀고 무대 1장을 목록 위에 둔다. 행을 누르거나 체크하면 그림이 바뀐다. 무대를 한 장만 두는 이유는 같은 SVG를 행마다 복제하지 않기 위해서다.
@@ -268,8 +268,8 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
   var stage = list.querySelector('.d0-check__stage');
   var cap = stage.querySelector('figcaption');
   var desc = stage.querySelector('desc');
-  var rows = list.querySelectorAll('.d0-check__row');
-  var pinned = list.querySelector('.d0-check__row[data-current]') || rows[0];
+  var rows = Array.prototype.slice.call(list.querySelectorAll('.d0-check__row'));
+  if (!rows.length) return;
   function show(row) {
     var n = row.dataset.step;
     stage.dataset.activeStep = n;
@@ -279,25 +279,40 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
     desc.textContent = row.dataset.desc;
     rows.forEach(function (r) { r.toggleAttribute('data-current', r === row); });
   }
-  function pin(row) { pinned = row; show(row); }
-  rows.forEach(function (row) {
-    row.addEventListener('mouseenter', function () { show(row); });
-    row.addEventListener('focusin', function () { pin(row); });
-    row.addEventListener('click', function () { pin(row); });
-  });
-  list.querySelector('ol').addEventListener('mouseleave', function () { show(pinned); });
-  list.addEventListener('change', function (e) {
-    if (!e.target.matches('.d0-check__box')) return;
-    var row = e.target.closest('.d0-check__row');
-    var group = stage.querySelector('g[data-step="' + row.dataset.step + '"]');
-    if (e.target.checked) { row.dataset.status = 'done'; group.setAttribute('data-done', ''); }
-    else { delete row.dataset.status; group.removeAttribute('data-done'); }
-    var n = list.querySelectorAll('.d0-check__box:checked').length;
+  function sync() {
+    var n = 0;
+    rows.forEach(function (row) {
+      var checked = row.querySelector('.d0-check__box').checked;
+      var group = stage.querySelector('g[data-step="' + row.dataset.step + '"]');
+      if (checked) { row.dataset.status = 'done'; n++; }
+      else delete row.dataset.status;
+      group.toggleAttribute('data-done', checked);
+    });
     list.querySelector('[data-count]').textContent = n;
     var bar = list.querySelector('progress');
     bar.value = n; bar.textContent = n + ' / ' + bar.max;
-    pin(row);
+  }
+  function firstIncomplete(candidates) {
+    return candidates.find(function (row) { return !row.querySelector('.d0-check__box').checked; });
+  }
+  rows.forEach(function (row) {
+    row.addEventListener('mouseenter', function () { show(row); });
+    row.addEventListener('focusin', function () { show(row); });
+    row.addEventListener('click', function (e) {
+      // 체크박스·label의 활성 이동은 change에서 한 번만 처리한다.
+      if (e.target.closest('.d0-check__box, label')) return;
+      show(row);
+    });
   });
+  list.addEventListener('change', function (e) {
+    if (!e.target.matches('.d0-check__box')) return;
+    var row = e.target.closest('.d0-check__row');
+    sync();
+    var next = firstIncomplete(rows.slice(rows.indexOf(row) + 1)) || firstIncomplete(rows);
+    show(e.target.checked ? (next || rows[rows.length - 1]) : row);
+  });
+  sync();
+  show(firstIncomplete(rows) || rows[rows.length - 1]);
 });
 ```
 

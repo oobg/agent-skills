@@ -184,11 +184,14 @@ guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목
 | 출력 형식 | 언제 | 연다 |
 | --- | --- | --- |
 | `page`(기본) | 혼자 읽는 한 장짜리 문서. 신호가 없으면 page다 | 이 본문과 프리셋 파일 |
-| `deck` | 발표·화면 공유·한 장씩 넘기기 신호("발표 자료", "슬라이드로", "장표", "덱", "화면 공유용") | `references/output/deck.md`(구성·Slide Gate) + `references/blocks/slide-deck.md`(마크업) + 프리셋 파일의 "덱으로 낼 때" 절 |
+| `deck` | 발표·화면 공유·한 장씩 넘기기 또는 혼자 읽는 슬라이드 요청 신호("발표 자료", "슬라이드로", "장표", "덱", "화면 공유용") | `references/output/deck.md`(구성·Slide Gate) + `references/blocks/slide-deck.md`(마크업) + 프리셋 파일의 "덱으로 낼 때" 절 |
+
+덱 하위 모드는 발표자와 함께 보는 Presentation(`data-delivery="present"`, 기본) 또는 혼자 읽는 Slidedoc(`data-delivery="read"`) 하나로 정하고 덱 안에서 섞지 않는다.
+Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부터 통과하고 Slide·Visual·Ending과 구현 게이트를 본다.
 
 **deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 상한(2~4개)·앞쪽 핵심 섹션 그림, 원칙 2·3번 첫 화면 규칙,
 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한 대신
-`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 그림 면적 60~80%, Impact 20~30%, 마지막 장 요청·결정·다음 행동)와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
+`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 전달 모드별 그림 면적·본문 밀도, Impact 20~30%, 마지막 장 요청·결정·다음 행동)와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 ## 개행 규칙
@@ -244,7 +247,7 @@ guide는 두 변형으로 나뉜다. 순서대로 실행하면 따라하기, 목
 **HARD (코드로 확인)**
 
 렌더 DOM 기준(JS 실행 후)으로 판정한다. 페이지 섹션은 `main > section, main > .d0-split > section`이다.
-deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output/deck.md` Slide Gate(의미 검사 먼저)와 `references/blocks/slide-deck.md` 덱 게이트로 판정하고, 나머지 항목은 그대로 적용한다.
+deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output/deck.md` Slide Gate(Story 먼저, 이어서 Slide·Visual·Ending)와 `references/blocks/slide-deck.md` 덱 게이트로 판정하고, 나머지 항목은 그대로 적용한다.
 
 - [ ] 설명 `p`에 컨테이너보다 좁은 `max-width`·`width`·`ch` 제약이 없다
 - [ ] `text-wrap: balance`가 제목 셀렉터(h1~h3)에만 있다

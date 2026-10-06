@@ -4,12 +4,12 @@
 
 - FAQ 기본은 `data-variant="reply"`다. 질문 4~6개를 `<dl>` → `<div>` → `<dt>` 질문 + `<dd>` 답(3문장 이내)으로 묶는다. 답변은 질문에 종속된 reply이며 항상 노출한다.
 - 질문은 15px/600, 답은 14px/400 grey-700이다. 질문 아래 답을 16~24px 들여쓰고 질문 사이 24~32px를 둔다. 375px에서도 들여쓰기를 유지한다.
-- 왼쪽 1px grey-200 연결선은 질문 아래에서 내려와 답 첫 줄로 꺾인다. CSS pseudo-element로만 그리고 꺾임점의 작은 점만 blue를 쓴다. 질문·답 박스와 Q 배지는 없다.
-- 질문 묶음 전체는 `<section>`의 h2 아래 둔다. guide의 선택 보조 정보에만 `<details>` → `<summary>` → 답을 쓰며 JS 없이 동작한다. summary 안에 제목 태그를 넣지 않는다.
+- 왼쪽 1px grey-300 연결선은 질문 아래에서 내려와 답 첫 줄로 꺾인다. CSS pseudo-element로만 그리며 점은 두지 않는다. 질문·답 박스와 Q 배지는 없다.
+- 질문 묶음 전체는 `<section>`의 h2 아래 둔다. guide의 "막혔을 때"도 reply로 항상 노출한다. 다른 선택 보조 정보에만 `<details>` → `<summary>` → 답을 쓰며 JS 없이 동작한다. summary 안에 제목 태그를 넣지 않는다.
 
 ## 언제 쓰나 / 변형
 
-- faq의 질문은 reply를 쓴다. guide의 "막혔을 때"처럼 선택적으로 확인하는 보조 정보는 details 펼침을 쓸 수 있다.
+- faq의 질문은 reply를 쓴다. guide의 "막혔을 때"도 reply를 쓴다. 별도의 선택 보조 정보에만 details 펼침을 쓸 수 있다.
 - `data-variant="terms"`(용어 목록): 펼침 없이 `<dl>`로 나열한다. 행 = `<dt>` 용어(약어면 `<abbr title>`) → `<dd>` 한 줄 뜻 → 비유.
 
 ## 스니펫
@@ -49,12 +49,8 @@
 }
 .d0-acc[data-variant="reply"] dd::before {
   content: ""; position: absolute; left: -16px; top: -8px;
-  width: 10px; height: 19px;
-  border-left: 1px solid var(--d0-grey-200); border-bottom: 1px solid var(--d0-grey-200);
-}
-.d0-acc[data-variant="reply"] dd::after {
-  content: ""; position: absolute; left: -18px; top: 9px;
-  width: 4px; height: 4px; border-radius: 50%; background: var(--d0-blue);
+  width: 14px; height: calc(8px + 0.5em * var(--d0-leading-body));
+  border-left: 1px solid var(--d0-grey-300); border-bottom: 1px solid var(--d0-grey-300);
 }
 .d0-acc details { border-top: 1px solid var(--d0-grey-100); }
 .d0-acc summary {
