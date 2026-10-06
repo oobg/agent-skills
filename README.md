@@ -42,6 +42,7 @@ Claude Code에서는 이 저장소의 `ux-writing` 플러그인을 설치하면 
 
 ### 분석
 
+| [eli5-design](skills/eli5-design/SKILL.md) | 처음 보는 사람도 그림만 훑어 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만듭니다. `day0-design`과 함께 설치하는 것을 권장하며, 없으면 공개 저장소 원본을 읽으므로 네트워크가 필요합니다. |
 | 스킬 | 하는 일 |
 | --- | --- |
 | [feature-analysis](skills/feature-analysis/SKILL.md) | 프로토타입이나 프론트엔드 구현물에서 기능 구조, 상태, 업무 규칙, 워크플로우를 증거와 함께 복원하고 구현 수준과 격차를 정리합니다. |

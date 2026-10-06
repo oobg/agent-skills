@@ -97,6 +97,15 @@
         "gemini",
         "grok"
       ]
+    },
+    "eli5-design": {
+      "status": "active",
+      "providers": [
+        "claude",
+        "codex",
+        "gemini",
+        "grok"
+      ]
     }
   },
   "candidate_exclusions": [],
