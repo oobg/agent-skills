@@ -4,7 +4,7 @@
 
 - 순서가 있으므로 `<ol>`, 날짜는 늘 `<time datetime>`.
 - 점마다 날짜 → 제목 → 상태 배지. 점은 선 위에 놓인다. 배지는 높이 고정(22px)이라 행 높이로 늘어나지 않는다.
-- **CSS 타임라인(아래 기본·세로)은 그림 블록으로 치지 않는다.** 앞쪽 핵심 섹션의 그림은 아래 SVG 시간 막대(`data-variant="timebar"`)로 채우고,
+- **CSS 타임라인(아래 기본·세로)은 그림 블록으로 치지 않는다.** 첫 화면 섹션의 그림은 아래 SVG 시간 막대(`data-variant="timebar"`)로 채우고,
   CSS 목록은 그 아래 항목별 설명이 필요할 때만 붙인다.
 - 상태는 `data-status="planned|active|done"`(예정·진행·완료). 진행만 블루 점, 완료는 채운 회색, 예정은 빈 점. 상태 배지 글자를 늘 함께 둔다.
 - 오늘 표식은 블루 세로선 + `오늘` 라벨(`.d0-timeline__today`).
@@ -13,7 +13,8 @@
 
 - 기본(가로): 로드맵 마일스톤 3~5개. 640px 이하에서는 자동으로 세로가 된다.
 - `data-variant="vertical"`: 변경 내역·사건 기록. 항목 아래 "달라지는 점" 한 줄을 둔다.
-- `data-variant="timebar"`(SVG 시간 막대): 가로 축 위 점 3~5개와 구간 채움. 그림 블록이다. timeline 프리셋·incident 경과의 대표 도식으로 쓴다.
+- `data-variant="timebar"`(SVG 시간 막대): 가로 축 위 점 3~5개와 구간 채움. 그림 블록이다. timeline 패턴·incident 경과의 대표 도식으로 쓴다.
+- `ol.d0-rail`(status rail, 공용): 완료·진행·예정 구간 이름을 잇는 작은 가로 진행선. 아래 status rail 절이 유일한 정의다.
 
 ## SVG 시간 막대 (`data-variant="timebar"`)
 
@@ -72,6 +73,34 @@
   트랙 좌우에는 가장 넓은 라벨 절반만큼 여백을 둔다. 커밋 번호처럼 긴 값은 SVG 밖 목록이나 figcaption으로 보낸다.
 - 1280px 첫 화면에 넣을 때는 `.d0-split` 한쪽 열이나 diagram.md `data-layout="side"`에 둔다(무대 양옆이 비지 않게).
 
+## status rail (`ol.d0-rail`) — 지금 어디에 있는가
+
+공용 정보 블록이다. 구간·단계 이름 3~6개를 잇는 작은 가로 진행선으로 **지금 어디에 있는가**만 말한다. 따라하기 전체 지도([checklist](checklist.md) 구간), 일정의 현재 단계, 사건 경위의 지금 상태, 절차의 현재 단계에서 같은 요소를 다시 쓴다. 다른 파일에 따로 정의하지 않는다.
+
+- 역할 구분: rail은 위치(완료·진행·예정), [checkpoint](checkpoint.md)는 그 지점에서 완성되는 결과다. rail 이름은 짧은 구간 이름(`준비`, `초안`, `발행`), checkpoint는 결과 문장(`여기까지 하면 초안이 완성돼요`).
+- 마크업: `ol.d0-rail > li[data-state="done|current|planned"]`, 현재 항목은 `aria-current="step"`. 각 항목 앞 `span.d0-rail__mark`에 완료면 `✓`를 쓴다(색만으로 구분하지 않는다).
+- 점 10px(완료 green 채움, 현재 blue-dark 채움 + 굵은 이름, 예정 빈 원 grey-500 테두리), 잇는 선 2px grey-200, 이름 12px grey-600(현재 grey-900/600). 375px에서 이름이 감겨도 점·선은 한 줄이다.
+- 그림 블록이 아니다(첫 화면 그림은 시간 막대·도식이 맡는다). 전체 진행 수(`전체 n / N`)를 함께 쓸 때는 rail 바로 위 진행률 줄에 둔다.
+
+```html
+<ol class="d0-rail" aria-label="전체 구간">
+  <li data-state="done"><span class="d0-rail__mark" aria-hidden="true">✓</span>준비</li>
+  <li data-state="current" aria-current="step"><span class="d0-rail__mark" aria-hidden="true"></span>초안</li>
+  <li data-state="planned"><span class="d0-rail__mark" aria-hidden="true"></span>발행</li>
+</ol>
+```
+
+```css
+.d0-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 0 0 12px; }
+.d0-rail li { position: relative; padding: 16px 8px 0 0; color: var(--d0-grey-600); font-size: var(--d0-meta); line-height: var(--d0-leading-title); }
+.d0-rail li::before { content: ""; position: absolute; top: 0; left: 0; z-index: 1; box-sizing: border-box; width: 10px; height: 10px; border: 2px solid var(--d0-grey-500); border-radius: 999px; background: #fff; }
+.d0-rail li:not(:last-child)::after { content: ""; position: absolute; top: 4px; left: 10px; right: 0; height: 2px; background: var(--d0-grey-200); }
+.d0-rail li[data-state="done"]::before { border-color: var(--d0-green); background: var(--d0-green); }
+.d0-rail li[aria-current="step"] { color: var(--d0-grey-900); font-weight: 600; }
+.d0-rail li[aria-current="step"]::before { border-color: var(--d0-blue-dark); background: var(--d0-blue-dark); }
+.d0-rail__mark:not(:empty) { margin-right: 4px; color: var(--d0-grey-900); }
+```
+
 ## 스니펫
 
 ```html
@@ -122,5 +151,5 @@
 ## 금지
 
 - 점 수십 개(마일스톤 5개 이내, 더 있으면 기간으로 묶는다), 날짜 없는 점.
-- CSS 타임라인만으로 앞쪽 핵심 섹션의 그림을 대신하기, SVG 시간 막대의 점마다 상태 배지.
+- CSS 타임라인·status rail만으로 첫 화면 섹션의 그림을 대신하기, SVG 시간 막대의 점마다 상태 배지.
 - 내부 작업 번호·파일명만 나열하고 독자에게 달라지는 점이 없는 항목.

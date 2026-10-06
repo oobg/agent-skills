@@ -51,7 +51,7 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 ### 무대 정렬 변형 (`.d0-split[data-align="stage"]`)
 
 두 섹션이 모두 [섹션 머리 + 무대 위 그림 `figure` + figcaption]이면 이 변형이 기본이다. 좌우의 h2 줄, 무대 위·아래 끝, figcaption 줄이 같은 높이에 맞는다.
-한쪽이라도 목록 섹션(diff-rows·checklist·숫자 카드 등)이면 쓰지 않고 기본 `align-items: start`를 둔다.
+한쪽이라도 그림 없는 섹션(diff-rows·checklist·숫자 카드·explanation 등)이면 쓰지 않고 기본 `align-items: start`를 둔다.
 
 - 960px 이상에서만 건다. `.d0-split`이 행 3개(`auto 1fr auto`)를 만들고, 각 섹션은 `grid-row: span 3` + `grid-template-rows: subgrid`,
   `figure`는 `grid-row: span 2` + `subgrid`로 무대·캡션 행을 이어받는다. 낮은 쪽 무대가 늘어나고 SVG는 무대 세로 가운데에 놓인다.
@@ -146,7 +146,7 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 **기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 페이지 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
 **무대를 쓰는 때:** 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때,
 나란히 둔 두 그림의 높이를 맞출 때(`.d0-split[data-align="stage"]`).
-**그림을 키워 폭을 채우지 않는다.** SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 옆이 비면 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열(900px 이상)로 채운다.
+**그림을 키워 폭을 채우지 않는다.** SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 옆이 비면 관련 explanation을 그림 옆 열(`.d0-figtext`, [explanation.md](explanation.md))에 두거나 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열(900px 이상)로 채운다.
 전체 폭 그림은 가로로 긴 타임라인·단계 줄만 쓰고 최대 720px다([diagram.md](diagram.md) 라벨 절).
 
 무대를 쓰면 패널 = `div.d0-fig__stage`(배경 grey-50, `--d0-radius-card`, 패딩 28px,
@@ -266,8 +266,8 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 </head>
 <body>
 <main class="d0-page">
-  <!-- header(h1 → 히어로 → 요약 행) → section(2~4개, 기본 3~4개) -->
-  <section class="d0-section" aria-labelledby="sec-a">
+  <!-- header(h1 → 히어로 → 요약 행) → section(독자 질문마다 하나, data-pattern) -->
+  <section class="d0-section" data-pattern="preview" aria-labelledby="sec-a">
     <header class="d0-section-head"><h2 id="sec-a">파일은 이렇게 생겼어요</h2></header>
     <!-- 무대 위 그림 하나 + 그림 설명 한 줄 -->
   </section>

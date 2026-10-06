@@ -307,7 +307,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 </style>
 </head>
 <body>
-<main class="d0-page" data-variant="prototype">
+<main class="d0-page" data-recipe="feature-intro">
   <header class="d0-header">
     <div class="d0-header__meta"><span class="d0-header__label">내보내기 개편</span></div>
     <h1>주문 내보내기 화면 시안</h1>
@@ -316,7 +316,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 
   <div class="d0-split">
     <!-- ① 순서와 표 모양: 회색 무대 없이 직접 놓는다. -->
-    <section class="d0-section" data-composition="sequence" aria-labelledby="sec-pick">
+    <section class="d0-section" data-pattern="flow" data-composition="sequence" aria-labelledby="sec-pick">
       <header class="d0-section-head"><h2 id="sec-pick">내보내기는 고르고 받기</h2></header>
       <figure class="d0-fig" data-genre="narrative">
         <svg viewBox="0 0 360 100" role="img" aria-labelledby="flow-t flow-d">
@@ -345,7 +345,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
     </section>
 
     <!-- ② 표 목업과 짧은 주석: 열 안에서는 캡션을 아래에 둔다. -->
-    <section class="d0-section" data-composition="spotlight" aria-labelledby="sec-file">
+    <section class="d0-section" data-pattern="preview" data-composition="spotlight" aria-labelledby="sec-file">
       <header class="d0-section-head"><h2 id="sec-file">받은 파일은 이렇게 보여요</h2></header>
       <figure class="d0-tabprev">
         <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
@@ -366,7 +366,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
   </div>
 
   <!-- ③ 같은 크기·같은 데이터의 프레임. -->
-  <section class="d0-section" data-composition="split" aria-labelledby="sec-demo">
+  <section class="d0-section" data-pattern="compare" data-variant="prototype" data-composition="split" aria-labelledby="sec-demo">
     <header class="d0-section-head"><h2 id="sec-demo">두 시안을 직접 눌러 보세요</h2><p>합성 데이터이며, 파일 받기는 데모로만 동작하고 설정은 저장되지 않아요.</p></header>
     <div class="d0-demos">
       <article class="d0-demo" aria-labelledby="demoA-title" data-demo data-variant="modal" data-state="idle">

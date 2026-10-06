@@ -1,15 +1,19 @@
-# faq — 질문 답변 reply
+# faq — question-answer (질문 답변 reply)
+
+공용 정보 블록 question-answer다. 파일 이름은 faq지만 faq 패턴 전용이 아니라 어느 패턴에서나 빌려 쓴다.
+**독자가 실제로 가질 만한 질문일 때만 쓴다. 설명을 억지로 질문형으로 바꾸지 않는다.**
+예: guide의 `왜 여기서 멈추나요?`, report의 `왜 수치가 좋아졌나요?`, incident의 `내 주문도 영향을 받았나요?`.
 
 ## 해부 구조
 
-- 질문 4~6개를 `<dl class="d0-faq">` → `<div class="d0-faq__item">` → `<dt class="d0-faq__q">` 질문 + `<dd class="d0-faq__answer">` 답(3문장 이내)으로 묶는다. 답변은 질문에 종속된 reply이며 항상 노출한다.
+- 질문 1~6개(faq 패턴 섹션은 보통 4~6개)를 `<dl class="d0-faq">` → `<div class="d0-faq__item">` → `<dt class="d0-faq__q">` 질문 + `<dd class="d0-faq__answer">` 답(3문장 이내)으로 묶는다. 답변은 질문에 종속된 reply이며 항상 노출한다.
 - 질문은 15px/600, 답은 14px/400 grey-700이다. 질문 아래 답을 16~24px 들여쓰고 질문 사이 24~32px를 둔다. 375px에서도 들여쓰기를 유지한다.
 - 왼쪽 1px grey-300 연결선은 질문 아래에서 내려와 답 첫 줄로 꺾인다. CSS pseudo-element로만 그리며 점은 두지 않는다. 질문·답 박스와 Q 배지는 없다.
 - 질문 묶음 전체는 `<section>`의 h2 아래 둔다. "답을 못 찾았나요" 한 줄은 묶음 바로 아래 `p.d0-faq__more`로 둔다.
 
 ## 언제 쓰나
 
-- faq의 질문과 guide의 "막혔을 때"는 이 블록을 쓴다. 접어서 보는 선택 보조 정보와 용어 목록은 [accordion](accordion.md)이다.
+- faq 패턴의 질문, guide의 "막혔을 때", 보고·사건 섹션 끝의 실제 독자 질문 1~3개에 쓴다. 섹션 하나의 설명을 질문 두세 개로 쪼개 쓰지 않는다(그건 [explanation](explanation.md)이다). 접어서 보는 선택 보조 정보와 용어 목록은 [accordion](accordion.md)이다.
 - 답을 접어서 가리지 않는다. 핵심 답이 길어지면 문장을 줄이거나 질문을 나눈다.
 
 ## 스니펫

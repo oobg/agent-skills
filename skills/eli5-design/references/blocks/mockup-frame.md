@@ -194,7 +194,7 @@ document.querySelectorAll('iframe[data-page64]').forEach(function (f) {
 
 ## 여러 페이지를 창으로 보여 주기 — 페이지 갤러리 (`data-variant="gallery"`)
 
-페이지 여러 장을 맥북 창 모양 프레임 하나에 담고 탭으로 갈아 끼우며 보여 준다. 위 srcdoc 내장 규칙(base64 → `srcdoc`, `sandbox="allow-scripts"`만, `src` 금지)을 그대로 따른다.
+페이지 여러 장을 노트북 창 모양 프레임 하나에 담고 탭으로 갈아 끼우며 보여 준다. 위 srcdoc 내장 규칙(base64 → `srcdoc`, `sandbox="allow-scripts"`만, `src` 금지)을 그대로 따른다.
 
 **레이아웃: 뷰포트 높이 전부.**
 
@@ -267,7 +267,7 @@ html { scrollbar-gutter: stable; } /* 스냅 속성 없음 */
 - 내장 문서 `head`에 `<style>html{overflow-y:scroll;scrollbar-gutter:stable}html,body{overscroll-behavior:contain}</style>`를 넣는다(base64로 만들기 전에 주입). 탭을 오갈 때 짧은 페이지와 긴 페이지의 가로 폭이 달라 보이는 시프트를 막는다. iframe 루트에서는 `scrollbar-gutter: stable`만으로 폭을 예약하지 못하는 브라우저가 있으므로 `overflow-y: scroll`로 스크롤바 자리를 늘 둔다.
 - 바깥 창 컨테이너(`.d0-win__body`)에도 `overscroll-behavior: contain`. 창 안에 스크롤 컨테이너를 따로 두면 거기에도 `scrollbar-gutter: stable`. 갤러리를 담은 페이지 자신의 `html`에도 `scrollbar-gutter: stable`(shell 기본 CSS)을 둔다.
 
-**창 테두리(맥북 창).**
+**창 테두리(노트북 창).**
 
 - 타이틀바 높이 36~40px, grey-50 바탕, 아래 1px grey-200. 왼쪽 신호등 점 3개(12px 원, `--d0-red`·`--d0-orange`·`--d0-green`, `aria-hidden`), 가운데 현재 페이지 제목(13px grey-600, 탭을 바꾸면 갱신), 오른쪽 "새 탭에서 열기" 버튼.
 - 창 전체는 `--d0-radius-card`, 1px grey-200 테두리, `--d0-shadow-overlay`. 그림자는 "떠 있는 창"이라는 예외로만 허용한다.
@@ -383,20 +383,20 @@ document.querySelectorAll('[data-variant="gallery"]').forEach(function (g) {
 
 | 콘텐츠 | 프레임 | 토글 |
 |---|---|---|
-| PC 화면 미리보기(관리자·대시보드·문서 페이지) | `desktop` 맥북 창 | 없음 |
+| PC 화면 미리보기(관리자·대시보드·문서 페이지) | `desktop` 노트북 창 | 없음 |
 | 모바일 화면(앱·모바일 웹) | `mobile` 폰 | 없음(`data-device="mobile"`로 시작) |
 | 반응형이라 둘 다 해당 | 처음은 `desktop` | "PC / 모바일" 토글 |
 
-- **desktop** = 위 맥북 창 그대로(타이틀바 38px, 신호등 점 3개, 가운데 제목, 오른쪽 새 탭 링크).
+- **desktop** = 위 노트북 창 그대로(타이틀바 38px, 신호등 점 3개, 가운데 제목, 오른쪽 새 탭 링크).
 - **mobile** = 폰. 바깥 베젤 8px `--d0-grey-900`, 모서리 44px, `--d0-shadow-overlay`. 화면 폭 **375px 고정**(내장 페이지 `innerWidth`가 375),
   위 상태줄 40px(시각 "9:41" · 다이내믹 아일랜드 알약 하나 · 배터리 SVG), 아래 홈 인디케이터 줄 120×5px. 상태줄·홈 줄은 `aria-hidden`.
-  맥북 타이틀바는 숨긴다(새 탭 링크도 함께 사라진다. 새 탭은 PC 폭으로 열리므로 폰 모드에서는 두지 않는다).
-- **이 폰 규칙(폭 375px 고정·최소 높이)은 iframe으로 실제 페이지를 넣을 때만 적용한다.** 정적 그림(SVG·미니 마크업) 둘레의 축소 프레임은 `formats/preview.md` 규칙(폭 140~200px, 베젤 6px, 모서리 28px)을 따른다.
+  노트북 창 타이틀바는 숨긴다(새 탭 링크도 함께 사라진다. 새 탭은 PC 폭으로 열리므로 폰 모드에서는 두지 않는다).
+- **이 폰 규칙(폭 375px 고정·최소 높이)은 iframe으로 실제 페이지를 넣을 때만 적용한다.** 정적 그림(SVG·미니 마크업) 둘레의 축소 프레임은 `patterns/preview.md` 규칙(폭 140~200px, 베젤 6px, 모서리 28px)을 따른다.
 - 폰 높이는 창 행(`1fr`)의 남은 높이를 채우되 **최대 812px, 최소 560px**, 가로 가운데. 폰 화면 iframe도 내장 문서 `head` 주입으로 `overscroll-behavior: contain`.
 - 토글은 탭 줄 오른쪽에 버튼 2개(`aria-pressed`)를 `role="group"`으로 묶는다. 타이틀바 안에 두지 않는다(폰 모드에서 사라진다).
   **iframe을 다른 부모로 옮기지 않는다.** 옮기면 `srcdoc`이 다시 로드된다. 같은 iframe에 창 모양(`data-device`)만 바꾼다.
 - **640px 이하 화면에서는 폰 프레임을 겹치지 않는다.** 베젤까지 391px라 343px 본문에 들어가지 않고, 작은 화면은 그 자체가 폰이다.
-  폰 스타일은 `min-width: 641px`에서만 적용하고 토글은 숨긴다. 이때 창은 본문 폭 맥북 창이며 내장 페이지는 본문 폭(약 341px)으로 보인다.
+  폰 스타일은 `min-width: 641px`에서만 적용하고 토글은 숨긴다. 이때 창은 본문 폭 노트북 창이며 내장 페이지는 본문 폭(약 341px)으로 보인다.
   `innerWidth = 375` 검증은 641px 이상 뷰포트의 mobile 모드에서 한다.
 - 베젤·아일랜드·상태줄·홈 줄은 장식이다. 의미색 예산·대비 게이트에서 제외한다(신호등 점과 같은 예외). 상태줄 아이콘은 글리프 대신 SVG로 그린다(서브셋 폰트에 없는 기호를 피한다).
 

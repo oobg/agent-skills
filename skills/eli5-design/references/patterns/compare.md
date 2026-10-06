@@ -1,9 +1,11 @@
 # compare — 시안·옵션 비교
 
+**패턴: 무엇과 무엇이 어떻게 다르고, 무엇을 고르나?** 페이지 타입이 아니라 이 질문에 답하는 섹션의 표현 방식이다. 다른 패턴 섹션과 한 페이지에 섞어 쓴다(섹션 `data-pattern="compare"`, 변형은 같은 섹션의 `data-variant`).
+
 독자가 알고 싶은 것: 그래서 무엇을 고르지?
 읽고 나서 할 수 있어야 하는 것: **판단한다.**
 
-## 독자가 다 읽고 답할 수 있어야 할 질문
+## 이 패턴이 답하는 질문
 
 - 후보는 몇 개이고 각각 무엇이 다른가?
 - 무엇을 추천하며, 왜인가?
@@ -39,11 +41,29 @@
 mockup-frame은 HTML 목업이라 SVG 게이트를 채우지 않는다. 와이어프레임 SVG(① 또는 프레임 위)가 그 게이트를 채운다.
 결정 변형은 옵션별 전/후 막대(diagram bars). 수치가 없는 결정이면 막대를 억지로 만들지 않고, 옵션 카드 안 와이어프레임([side-by-side](../blocks/side-by-side.md)의 그림 카드 변형)을 대표 도식으로 쓴다. 옵션마다 같은 크기·같은 구도로 그린다.
 
-## 권장 구성 (섹션 3~4개, 앞쪽 핵심 섹션은 그림 필수)
+## 섹션으로 쓸 때
 
-권장 구성은 출발점이다. 독자 질문에 필요한 섹션만 만들고, 아래를 전부 채우지 않는다.
+- 다른 패턴이 이끄는 페이지에서 "어떤 대안을 견줬나", "바꾸기 전과 후는"이 질문 하나로 나오면 비교 섹션 하나로 답한다.
+- 추천 블록: 와이어 카드가 든 [side-by-side](../blocks/side-by-side.md) 또는 전/후 막대([diagram](../blocks/diagram.md)), 바뀐 행만 [diff-rows](../blocks/diff-rows.md). 구도는 Split(A | B).
+- 섹션 머리 1문장에 비교 결론을 쓰고, 선택 이유는 아래 explanation으로 붙인다.
 
-- 시안: header(문장형 리드: 비교 대상 + 핵심 차이) → ① 무엇이 다른가: 화면 와이어프레임 2장 나란히(diagram wireframe) → ② 직접 눌러 보기: mockup-frame 2개 → ③ 고르면 달라지는 점: diff-rows 3행 이내 + callout(상황별 추천·결정 요청).
+## 함께 자주 섞는 패턴
+
+- incident·report 뒤에 "어떤 대응을 견줬나"로, preview 뒤에 "지금과 무엇이 다른가"(전/후)로, 결정 문서의 근거·트레이드오프로([recipes](../recipes.md)).
+
+## explanation 쓰는 곳
+
+- 비교축 표·옵션 카드 아래에 `interpretation`(그래서 무엇이 낫나)과 `constraint`(이 조건이면 답이 바뀐다). 전/후 변형은 `reason`(왜 바꾸나)과 `impact`(누구에게 달라지나). 측정 근거는 explanation이 아니라 evidence로 둔다.
+
+## 추천 조합
+
+요약 행(문제 / 추천 / 결정 필요) + side-by-side 와이어 카드 또는 before-after + evidence + explanation `constraint` + closing `decision`. 블록은 패턴이 소유하지 않는다. 다른 패턴 문서의 블록도 필요하면 그대로 빌린다([blocks.md](../blocks.md)).
+
+## 페이지 주 패턴일 때 (자연스러운 깊이 3~5)
+
+이 패턴이 페이지 대부분을 차지할 때의 출발점이다. 깊이는 참고값이고 섹션 수는 독자 질문이 정한다. 첫 화면 섹션은 그림이 필수이고, 그 아래 섹션은 핵심 구조가 있으면 그림을 권장한다. 아래를 전부 채우지 않는다.
+
+- 시안: header(문장형 리드: 비교 대상 + 핵심 차이) → ① 무엇이 다른가: 화면 와이어프레임 2장 나란히(diagram wireframe) → ② 직접 눌러 보기: mockup-frame 2개 → ③ 고르면 달라지는 점: diff-rows 3행 이내 → 문서 끝 closing `decision`(상황별 추천·결정 요청, [closing](../blocks/closing.md)). 요약 행에 결정 행이 있으면 closing은 생략하거나 `action`으로 짧게.
 - 결정: header(요약 행: 문제 / 추천 / 결정 필요) → ① 옵션별 비용·시간: 전/후 막대(diagram bars) → ② 옵션 비교: side-by-side 결정 변형(같은 축으로 장점·비용·위험) → ③ 고르면 생기는 일: 연결 그래프(diagram graph, 영향받는 곳만 블루).
 - 전/후: header(h1 → hero 결론 수치(있을 때) → 요약 행: 이전 / 현재 / 결정 필요) → ① 어디가 바뀌나: 와이어프레임 또는 연결 그래프 → ② 얼마나: 전/후 막대 → ③ 바뀐 행: diff-rows.
 
@@ -52,8 +72,8 @@ mockup-frame은 HTML 목업이라 SVG 게이트를 채우지 않는다. 와이�
 요약 행 값은 데스크톱 한 줄(약 35자 이내).
 KPI를 쓰면 숫자 + 막대만 두고 증감 배지를 달지 않는다.
 한 사실은 한 번: 결론 수치는 히어로에만 크게 둔다. 예: 히어로가 `26분 → 10분`이면 요약 행은 `PR 검사 시간 단축`, 섹션 제목은 `어디서 줄었나`처럼 숫자 없이 쓴다.
-앞쪽 ①·②는 그림 필수다. diff-rows만 있는 목록 섹션은 그림 없이 둔다.
-요약 행에 결정·요청 행(`data-tone="decision"`)이 있으면 결정 callout을 두지 않는다. 결정 세부는 요약 행 아래 보조 줄로.
+첫 화면 섹션 ①은 그림 필수이고, ②도 화면·수치 구조가 있으면 그림을 둔다. diff-rows만 있는 섹션은 그림 없이 두되 바뀐 이유는 explanation `reason`으로 붙인다.
+요약 행에 결정·요청 행(`data-tone="decision"`)이 있으면 결정 callout과 closing `decision`을 두지 않는다. 결정 세부는 요약 행 아래 보조 줄로.
 결정이 둘 이상이면 [header.md](../blocks/header.md) 요약 행 규칙(`ol` 최대 2개)을 따른다.
 
 합성 예: "주문 내보내기 화면의 버튼 위치 A안·B안", "알림 주기 매일 vs 매주 결정".
@@ -66,9 +86,9 @@ KPI를 쓰면 숫자 + 막대만 두고 증감 배지를 달지 않는다.
 - "모든 면에서 낫다", "압도적" 같은 말을 쓰지 않는다. 어떤 축에서 나은지 쓴다.
 - 추천은 조건문으로 쓴다. "A가 좋다"가 아니라 "X가 중요하면 A".
 
-## 프리셋 안티패턴
+## 패턴 안티패턴
 
-- 그림 없이 글 블록만 쌓기, 권장 구성의 블록을 전부 채운 5개 이상 섹션.
+- 핵심 구조가 있는 섹션을 그림 없이 문단으로만 채우기, 질문 없이 추천 블록을 전부 채우기, 짧게 만들려고 이유·조건을 지우기.
 - 비교축이 후보마다 다름(같은 기준의 행으로 놓지 않음).
 - 표만 있고 핵심 차이 문장이 없음.
 - 한쪽이 모든 면에서 우월하다고 쓰기, 추천하지 않는 안의 강점 누락.
@@ -86,7 +106,7 @@ KPI를 쓰면 숫자 + 막대만 두고 증감 배지를 달지 않는다.
 
 ## 덱으로 낼 때
 
-Deck Type **Decision**: `<main class="d0-deck" data-preset="compare" data-variant="decision">`. 규칙은 [deck](../output/deck.md).
+Deck Type **Decision**: `<main class="d0-deck" data-pattern="compare" data-variant="decision">`. 규칙은 [deck](../output/deck.md).
 
 스토리라인(표지 다음 제목 목차는 공통이라 생략):
 결정할 것 → 판단 기준 → 선택지 → 트레이드오프 → 추천 → 결정 요청
@@ -98,7 +118,7 @@ Deck Type **Decision**: `<main class="d0-deck" data-preset="compare" data-varian
 | 선택지 | `breakdown` 또는 근거([side-by-side](../blocks/side-by-side.md) 와이어 카드) |
 | 트레이드오프 | `evidence`(옵션별 막대, 같은 축) |
 | 추천 | `assertion`(조건문 한 문장: "X가 중요하면 A") |
-| 결정 요청 | `summary`(누가, 언제까지, 무엇을) |
+| 결정 요청 | `closing`(`decision`: 누가, 언제까지, 무엇을) |
 
 Impact: 추천(`assertion`), 그리고 트레이드오프의 결정적 숫자가 있으면 그 `stat` 한 장.
 시안 변형을 발표하면 선택지 장을 `screenshot` 두 장(같은 구도)으로 바꾼다. 전/후 변형은 report 상태 보고 스토리라인을 빌린다.

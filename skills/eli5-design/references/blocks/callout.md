@@ -11,7 +11,8 @@
 
 - `data-variant="decision"`: 결정 요청. 무엇을, 누가, 언제까지 정하는지 행으로 적는다.
   header 요약 행에 `결정 필요` 행이 있으면 이 callout을 두지 않는다(둘 중 하나만).
-- `data-variant="next"`: 결정이 없는 페이지의 다음 할 일 한 가지. 자리는 그 할 일이 속한 **마지막 섹션의 끝, 섹션 안쪽**이다(`section` 밖 `main` 직계로 두지 않는다).
+- **문서 끝 다음 행동·결정은 공용 [closing](closing.md)이 맡는다. callout은 본문 중간용이다.** 같은 결정·다음 할 일을 callout과 closing에 함께 두지 않는다.
+- `data-variant="next"`: 본문 중간의 다음 할 일 한 가지(예: 다음 섹션을 읽기 전에 독자가 먼저 해야 할 일). 자리는 그 할 일이 속한 섹션의 끝, 섹션 안쪽이다(`section` 밖 `main` 직계로 두지 않는다). 문서 끝의 다음 행동은 closing `action`이다.
 - `data-variant="conclusion"`: 리드로 결론을 말할 수 없을 때만. 히어로가 있으면 쓰지 않는다.
 
 ## 스니펫

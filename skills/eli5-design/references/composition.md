@@ -1,6 +1,6 @@
 # composition — 구도
 
-프리셋은 **무엇을** 말할지, 블록은 **무엇으로** 그릴지 정한다. 구도는 그 사이에서 한 화면을 **어떻게 놓을지** 정한다.
+구도는 용어 계층의 Layout이다. Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은 어디에 놓을지 정한다. 구도는 그 사이에서 한 화면을 **어떻게 놓을지** 정한다.
 모든 섹션이 `제목 → 회색 무대 → SVG → 캡션`으로 같은 화면처럼 보이면 장면이 바뀌지 않는다. 섹션마다 구도를 고르고, 이웃한 섹션과 다르게 놓는다.
 
 ## 세 축
@@ -20,7 +20,7 @@
 </section>
 ```
 
-**구도 다양화는 섹션을 늘리지 않는다.** 섹션 수는 대개 3개, 최대 4개 그대로 두고, Editorial·Impact는 기존 섹션 하나를 **대체**할 때만 쓴다.
+**구도 다양화는 섹션을 늘리지 않는다.** 섹션 수는 독자 질문이 정한 그대로 두고(SKILL.md 원칙 4번), Editorial·Impact는 기존 섹션 하나를 **대체**할 때만 쓴다.
 기본 타이포·간격(h1 32 / h2 20 / 본문 15, 섹션 사이 64, 블록 사이 24, 컨테이너 1200)은 바꾸지 않는다. 크게 쓰는 것은 Impact·Spotlight 장면뿐이다.
 
 `data-composition`은 선택 표시다. 스타일을 바꾸지 않고, 리듬 규칙(같은 구도 연속 금지)을 검토하는 이름표다. 배치는 고른 블록과 레이아웃(`.d0-split`·`.d0-cols`·`data-layout="side"`)이 만든다.
@@ -43,7 +43,7 @@
   ```
 - **블록.** [hero.md](blocks/hero.md), Impact 띠([shell.md](blocks/shell.md)), editorial 도식.
 - **page.** header(h1 → 히어로 → 요약 행)가 첫 Hero다. 본문에서는 기존 섹션 하나를 Impact 띠(문장 32px 또는 숫자 64px)로 바꿀 때만 쓴다.
-- **deck.** 표지(`cover`)는 프리셋 대표 도식의 모양에 맞춰 contrast·bottom·side·center·map 배치를 고른다([slide-deck](blocks/slide-deck.md)). 주장(`assertion`)·큰 숫자(`stat`)는 하나를 크게 두며 주장 슬라이드는 Impact가 기본이다.
+- **deck.** 표지(`cover`)는 주 패턴 대표 도식의 모양에 맞춰 contrast·bottom·side·center·map 배치를 고른다([slide-deck](blocks/slide-deck.md)). 주장(`assertion`)·큰 숫자(`stat`)는 하나를 크게 두며 주장 슬라이드는 Impact가 기본이다.
 
 ### Spotlight — 화면 한 곳
 
@@ -116,7 +116,7 @@
   └──────────────────────────────┘
   해석 한 줄
   ```
-- **블록.** bars (b), 비율 막대, [kpi-cards.md](blocks/kpi-cards.md) 막대 변형.
+- **블록.** bars (b), 비율 막대, [kpi-cards.md](blocks/kpi-cards.md) 막대 변형, 공용 [evidence.md](blocks/evidence.md)(그림형 `figure.d0-evidence`), 해석은 [explanation.md](blocks/explanation.md) `interpretation`.
 - **page.** 섹션 h2를 결론 문장으로 쓴다("어디서 줄었나"가 아니라 "내보내기 대기가 절반 아래로 줄었어요").
 - **deck.** `data-kind="evidence"`.
 
@@ -129,10 +129,11 @@
   제목
   ─ 행 1 ─────────────────────────
   ─ 행 2 ─────────────────────────
-  마무리 한 줄
+  ━ closing 한 문장 ━━━━━━━━━━━━━━
+  담당 · 기한 · 다음
   ```
-- **블록.** [diff-rows.md](blocks/diff-rows.md), [checklist.md](blocks/checklist.md), [accordion.md](blocks/accordion.md), [faq.md](blocks/faq.md).
-- **page.** 보통 마지막 섹션이고 Quiet와 잘 맞는다.
+- **블록.** [diff-rows.md](blocks/diff-rows.md), [checklist.md](blocks/checklist.md), [accordion.md](blocks/accordion.md), [faq.md](blocks/faq.md)(question-answer), [closing.md](blocks/closing.md).
+- **page.** 보통 마지막 섹션이고 Quiet와 잘 맞는다. 끝에 남길 일 하나가 있으면 `footer.d0-closing`(공용 closing)으로 맺는다.
 - **deck.** 참고 정리는 `summary`, 마지막 장은 `closing`(`data-closing`: decision·request·action·criteria·takeaway)이다. 마지막 장은 한 문장을 세로 중앙에 크게 두고 구분선 아래 작은 `dl` 메타 행을 붙인다. 목록 3개를 같은 무게로 놓지 않는다.
 
 ## 리듬
@@ -181,14 +182,15 @@
 - **회색 무대는 기본 없음.** 도식은 흰 바탕에 바로 놓고 페이지 왼쪽 정렬선을 따른다.
   **무대를 쓰는 때:** 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때, 나란히 둔 두 그림의 높이를 맞출 때(`.d0-split[data-align="stage"]`).
 - 무대 없는 그림이 폭의 절반만 쓰고 옆을 비우면 안 된다. **그림을 키워 채우지 않는다.** `.d0-split` 2열(나란히 두던 구성을 우선 유지), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열(900px 이상), pins 중 하나로 채운다.
+  관련 explanation이 있으면 그림 옆 열(`.d0-figtext`, [explanation](blocks/explanation.md))에 두는 것이 먼저다.
   SVG는 글자가 없어도 기본 360px, wide 400px에서 멈추고, 전체 폭은 가로로 긴 타임라인·단계 줄만 최대 720px다.
 - **카드·둥근 박스를 기본값으로 쓰지 않는다.** 묶음은 여백·정렬·행 구분선으로 만든다. 카드는 하나씩 눌러 보거나 나란히 견주는 독립 대상(썸네일, 시안)일 때만 쓴다.
 
-## 프리셋별 권장 구도 순서
+## 패턴별 권장 구도 순서
 
-page 기준 예시다. 첫 칸은 header다. 본문 섹션은 3개(최대 4개)를 넘기지 않고, Impact 띠·editorial은 기존 섹션을 대체한다. 나란히 둘 수 있는 두 장면은 `.d0-split` 2열로 묶는다. 독자 질문에 필요 없는 장면은 뺀다.
+page 기준 예시다. 그 패턴이 페이지 대부분을 차지할 때의 순서이고, 패턴을 섞으면 섹션마다 그 패턴의 장면을 빌린다. 첫 칸은 header다. 섹션 수는 독자 질문이 정하고, Impact 띠·editorial은 기존 섹션을 대체한다. 나란히 둘 수 있는 두 장면은 `.d0-split` 2열로 묶는다. 독자 질문에 필요 없는 장면은 뺀다.
 
-| 프리셋 | 권장 순서 |
+| 패턴 | 권장 순서 |
 | --- | --- |
 | compare | Hero(결정 질문) → Split(A \| B, 전/후) → Spotlight(차이 한 곳) → Summary(결정·할 일) |
 | flow | Hero → Sequence(narrative 단계) → Canvas(구조) → Summary(막히면) |

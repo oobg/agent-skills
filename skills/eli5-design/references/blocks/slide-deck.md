@@ -12,12 +12,12 @@
 
 ```html
 <!-- 발표자와 함께 보는 Presentation (생략해도 같음) -->
-<main class="d0-deck" data-preset="report" data-variant="status" data-delivery="present">
+<main class="d0-deck" data-pattern="report" data-variant="status" data-delivery="present">
   <!-- 슬라이드와 네비 -->
 </main>
 
 <!-- 맥락·본문·출처를 포함해 혼자 읽는 Slidedoc -->
-<main class="d0-deck" data-preset="report" data-variant="status" data-delivery="read">
+<main class="d0-deck" data-pattern="report" data-variant="status" data-delivery="read">
   <!-- 슬라이드와 네비 -->
 </main>
 ```
@@ -61,8 +61,8 @@ Slidedoc은 아래 CSS를 기본 CSS 뒤에 추가한다. 폰트를 더 줄여 �
 
 ## 해부 구조
 
-- **덱** `main.d0-deck[data-preset][data-variant]` 하나. `data-preset`은 내용 프리셋 8개(`compare` `flow` `preview` `report`
-  `guide` `timeline` `incident` `faq`) 중 하나로 필수이고, `data-variant`는 그 프리셋의 변형 이름표다(없으면 생략). 스타일은 이름표와 무관하다.
+- **덱** `main.d0-deck[data-pattern][data-variant]` 하나. `data-pattern`은 패턴 8개(`compare` `flow` `preview` `report`
+  `guide` `timeline` `incident` `faq`) 중 하나(덱의 주 패턴)로 필수이고, `data-variant`는 그 패턴의 변형 이름표다(없으면 생략). 레시피로 짠 덱은 `data-recipe`를 더할 수 있다. 스타일은 이름표와 무관하다.
 - **슬라이드** `section.d0-slide`(목차만 `nav.d0-slide`) = 머리 → 몸 → 발. `id`(`s-01`…), `aria-labelledby`(제목 id), `tabindex="-1"`.
   16:9, 흰 면 + radius card, 안쪽 패딩은 슬라이드 폭에 비례한다(위 4.5%, 좌우 5%, 아래 3%).
   - 머리 `header.d0-slide__head`: 결론 제목(`h1` 표지만, 나머지 `h2`, `.d0-slide__title`) + 보조 한 줄(`p.d0-slide__sub`) 또는 리드(`p.d0-slide__lead`, 표지 등 impact가 아닌 장만), 둘 다 선택.
@@ -182,6 +182,8 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 
 ## 마지막 장 `data-kind="closing"`
 
+공용 [closing](closing.md) 블록의 덱 형태다. page에서는 같은 블록을 `footer.d0-closing`으로 쓴다.
+
 마지막 장은 상위 종류 `data-kind="closing"` 하나이고, 무엇을 마무리하는지는 `data-closing`이 말한다. 구도와 CSS는 종류와 무관하게 같다.
 
 | `data-closing` | 쓰임 | 메타 라벨 예 |
@@ -222,7 +224,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 
 ## 언제 쓰나
 
-- 출력 형식이 덱일 때만 쓴다. 내용 프리셋 8개 모두 덱으로 낼 수 있다. 문서형 page 안에 슬라이드 한 장을 끼워 넣지 않는다(그건 diagram + section-head다).
+- 출력 형식이 덱일 때만 쓴다. 패턴 8개 모두 덱으로 낼 수 있다. 문서형 page 안에 슬라이드 한 장을 끼워 넣지 않는다(그건 diagram + section-head다).
 - 슬라이드 수는 표지·목차를 포함해 5~12장이다. 넘으면 덱을 나눈다.
 
 ## 스니펫
@@ -230,7 +232,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 아래 HTML·CSS·JS를 그대로 모으면 9장짜리 샘플 덱이 된다(근거 split 1, impact 2장 = 22%).
 
 ```html
-<main class="d0-deck" data-preset="report" data-variant="status">
+<main class="d0-deck" data-pattern="report" data-variant="status">
   <section class="d0-slide" id="s-01" data-kind="cover" data-cover="side" aria-labelledby="s-01-t" tabindex="-1">
     <div class="d0-slide__cover"><header class="d0-slide__head">
       <p class="d0-slide__eyebrow">알림 개편 · 3분기 업무 보고</p>
@@ -462,9 +464,9 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 20px; }
 .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig svg { max-width: 84cqi; }
 .d0-slide[data-cover="center"] .d0-slide__head { max-width: 76cqi; justify-self: center; text-align: center; }
-.d0-deck[data-preset="preview"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-preset="report"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-preset="report"] .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
+.d0-deck[data-pattern="preview"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
+.d0-deck[data-pattern="report"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
+.d0-deck[data-pattern="report"] .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
 .d0-slide[data-cover="map"] .d0-slide__cover { grid-template-columns: 2fr 1fr; }
 .d0-slide[data-cover="map"] .d0-slide__cover > .d0-slide__fig { height: auto; align-self: end; }
 .d0-slide[data-kind="cover"] .d0-slide__summary > div { padding: 0.8cqi 0; }
@@ -627,7 +629,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide { aspect-ratio: auto; gap: 16px; padding: 20px 16px 14px; }
   .d0-slide[data-kind="cover"] { grid-template-rows: auto auto auto; }
   .d0-slide__cover,
-  .d0-deck[data-preset] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
+  .d0-deck[data-pattern] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
   .d0-slide__cover > .d0-slide__fig { height: auto; }
   .d0-slide[data-cover="center"] .d0-slide__head { max-width: none; }
   .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 30px; }
@@ -844,7 +846,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 
 **HARD (코드로 확인)**
 
-- [ ] `main.d0-deck[data-preset]`이 하나이고 `data-preset`이 내용 프리셋 8개 중 하나다. 슬라이드(`.d0-slide`)는 표지·목차 포함 5~12장이다
+- [ ] `main.d0-deck[data-pattern]`이 하나이고 `data-pattern`이 패턴 8개 중 하나다. 슬라이드(`.d0-slide`)는 표지·목차 포함 5~12장이다
 - [ ] 마지막 장은 `data-kind="closing"`이고 `data-closing`이 decision·request·action·criteria·takeaway 중 하나이며 큰 제목 한 문장 + 구분선 + 작은 `dl.d0-slide__meta` 2~3칸을 두고 같은 무게의 불릿 목록·Impact가 없다
 - [ ] 첫 장이 `data-kind="cover"` + h1이고 바로 다음 장이 `nav[data-kind="toc"]`다. 목차가 `ul.d0-slide__toc`이고 `li` 수 = 표지·목차를 뺀 장 수, 항목 글자 = 각 장 제목, `href` = 그 장 `id`; 목차에는 번호·쪽수가 없다
 - [ ] `data-kind`가 정본 값(생략 | cover | toc | assertion | evidence | screenshot | breakdown | stat | summary | closing)만 쓴다
