@@ -2,7 +2,9 @@
 
 ## 해부 구조
 
-- 2~4열. 열마다 블루 단계 라벨(`1단계`) → 소제목 h3 → 굵은 항목명 + 설명 한 줄 쌍.
+- 2~4열. 열마다 블루 단계 라벨(`1단계`, 12px/600 blue-dark) → 소제목 h3(16px) → 굵은 항목명 + 설명 한 줄 쌍(14px).
+- 단계 열은 그림을 거드는 주석이다. 같은 섹션의 그림(도식·격자 카드) 바로 아래에 둔다. 열마다 설명은 두 줄 이내.
+- 순서가 있으므로 `<ol>`, 열마다 `<li>`, 라벨-값 쌍은 `<dl>`.
 - 열 너비는 같게, 모든 열이 같은 구조를 갖는다.
 - 열 사이는 1px 디바이더로 나눈다. 카드 박스로 감싸지 않는다.
 
@@ -47,10 +49,9 @@
 .d0-step { display: grid; gap: 8px; align-content: start; padding: 4px 20px; }
 .d0-step + .d0-step { border-left: 1px solid var(--d0-grey-100); }
 .d0-step:first-child { padding-left: 0; }
-.d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
-.d0-step h3 { font-size: 15px; font-weight: 650; }
-.d0-step dt { margin-top: 4px; font-weight: 600; }
-.d0-step dd { color: var(--d0-grey-600); }
+.d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-meta); font-weight: 600; }
+.d0-step dt { margin-top: 4px; font-size: 14px; font-weight: 600; }
+.d0-step dd { color: var(--d0-grey-600); font-size: 14px; }
 @media (max-width: 640px) {
   .d0-steps { grid-auto-flow: row; }
   .d0-step { padding: 16px 0; }

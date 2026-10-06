@@ -2,12 +2,14 @@
 
 ## 해부 구조
 
-- 같은 크기 2~3열. 열 = 안 이름 → 본문(미니 프로토타입 또는 비교 행) → 고르기 버튼(`aria-pressed`).
+- 같은 크기 2~3열. 열마다 독립 카드라 `<article>`(제목 h3). 열 = 안 이름 → 본문(미니 프로토타입 또는 비교 행) → 고르기 버튼(`aria-pressed`).
 - 흰 글자 버튼 배경은 `--d0-blue-dark`(`--d0-blue`는 흰 글자 대비 4.5:1 미달).
 - 후보 간 높이·정보량을 맞춘다. 고른 열만 `data-selected`로 soft 블루 배경을 받는다.
 - 640px 이하에서는 세로로 쌓인다.
 
 ## 언제 쓰나 / 변형
+
+- 화면 시안을 실제처럼 눌러 보게 하려면 이 블록 대신 [mockup-frame.md](mockup-frame.md)을 쓴다. 이 블록의 mock 변형은 버튼 하나 수준의 작은 차이에만 쓴다.
 
 - `data-variant="mock"`(시안): 각 열이 직접 눌러 보는 미니 프로토타입이다. 안의 버튼이 실제로 반응한다.
 - `data-variant="decision"`(결정): 같은 순서의 `장점·비용·위험` 행. 추천 열에만 추천 이유 한 줄(`.d0-option__why`)을 붙인다.
@@ -18,14 +20,14 @@
 <div class="d0-sbs" data-variant="mock">
   <article class="d0-option">
     <h3>A안: 버튼을 위에</h3>
-    <div class="d0-mock"><span>주문 24건</span><button type="button" class="d0-mock__btn">내보내기</button>
-      <p class="d0-mock__msg" aria-live="polite"></p></div>
+    <figure class="d0-mock"><span>주문 <data value="24">24</data>건</span><button type="button" class="d0-mock__btn">내보내기</button>
+      <output class="d0-mock__msg"></output></figure>
     <button type="button" class="d0-option__pick" aria-pressed="false">A안 고르기</button>
   </article>
   <article class="d0-option">
     <h3>B안: 버튼을 아래에</h3>
-    <div class="d0-mock" data-layout="bottom"><span>주문 24건</span><button type="button" class="d0-mock__btn">내보내기</button>
-      <p class="d0-mock__msg" aria-live="polite"></p></div>
+    <figure class="d0-mock" data-layout="bottom"><span>주문 <data value="24">24</data>건</span><button type="button" class="d0-mock__btn">내보내기</button>
+      <output class="d0-mock__msg"></output></figure>
     <button type="button" class="d0-option__pick" aria-pressed="false">B안 고르기</button>
   </article>
 </div>
@@ -44,7 +46,7 @@
 }
 .d0-option[data-selected] { background: var(--d0-blue-light); }
 .d0-option h3 { font-size: 15px; font-weight: 650; }
-.d0-mock { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--d0-radius-control); background: #fff; }
+.d0-mock { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--d0-radius-control); background: #fff; }
 .d0-mock__btn { order: -1; }
 .d0-mock[data-layout="bottom"] .d0-mock__btn { order: 2; }
 .d0-mock__btn, .d0-option__pick { border: 0; border-radius: var(--d0-radius-sm); padding: 8px 14px; font-weight: 600; }

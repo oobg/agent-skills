@@ -17,9 +17,18 @@ Day0 시각 언어로 만드는 에이전트 스킬입니다. 시안 비교, 절
 ## 핵심 동작
 
 "아무것도 모르는 사람에게, 큰 그림과 적은 글로 된 HTML로 설명하라"는 원칙을
-강제합니다. 첫 화면에 그림을 두고, 블록당 설명을 3문장 이내로 줄이고, 용어는
-비유로 풉니다. 카드, 단계, 옵션, 질문, 표 열에는 개수 상한이 있고 넘으면
-페이지를 나눕니다.
+강제합니다. 페이지마다 주제의 실제 모양을 그린 인라인 SVG 도식(연결 그래프, 전/후
+막대, 표 모양 격자, 화면 와이어프레임, 막대가 있는 지표 카드)을 첫 화면에 하나 이상 두고, 결과물이나 화면이
+있으면 설명 대신 목업과 직접 눌러 보는 프로토타입으로 보여 줍니다. 텍스트 상자를
+화살표로 이은 그림은 도식으로 인정하지 않습니다. 페이지 섹션(`main` 바로 아래 `section`)은 2~4개(기본 3~4개)로 제한하고
+header 다음 첫 1~2개 섹션에는 그림을 반드시 두며, 위험이나 할 일 같은 목록 섹션은 그림 없이 둘 수 있습니다.
+callout은 페이지당 하나까지만 씁니다. 카드, 단계, 옵션, 질문, 표 열에도
+개수 상한이 있고 넘으면 페이지를 나눕니다.
+
+타이포 위계(제목 26px, 섹션 18px, 리드 15px)와 넉넉한 여백을 정해 두었고, 이 값은
+`day0-design`보다 우선합니다. 색, radius, 모션, 컴포넌트 규칙은 `day0-design`을 따릅니다. 배지는
+높이를 고정해 목록 행 안에서 늘어나지 않고, 의미색 배경과 점을 쓰되 글자 대비는
+WCAG 2.2 AA를 지킵니다.
 
 구성은 세 층으로 나뉩니다.
 
@@ -29,12 +38,14 @@ Day0 시각 언어로 만드는 에이전트 스킬입니다. 시안 비교, 절
 | 프리셋 | 기준 | 독자가 다 읽고 답할 수 있어야 할 질문과 권장 구성 예시 |
 | 블록 | 선택 | 쓸지는 자유지만 쓰면 정해진 모양을 따릅니다 |
 
-프리셋은 비교, 절차, 미리보기, 보고서, 가이드, 일정, 사건, FAQ 여덟 가지입니다.
+프리셋은 비교, 절차, 미리보기, 보고서, 가이드, 일정, 사건, FAQ 여덟 가지입니다. 아직 적용 전인
+변경 제안은 보고서 프리셋으로 만들고 수치를 예상치로 표기합니다.
 블록 순서는 강제하지 않으며, 어느 프리셋에도 맞지 않는 요청은 원칙만 지키며
 블록을 자유롭게 조립합니다.
 
 설명 문단이 옆 공간을 남긴 채 일찍 줄 바뀌지 않도록, 설명 문단은 부모 폭을 그대로
-쓰고 `text-wrap: balance`는 제목에만 둡니다. 결과는 단일 HTML 파일이며, 라이트
+쓰고 `text-wrap: balance`는 제목에만 둡니다. 역할이 다른 두 문장 이상의 리드는 문장마다
+줄을 나누고, "이전 → 현재 → 요청"처럼 나뉘는 내용은 요약 행으로 씁니다. 결과는 단일 HTML 파일이며, 라이트
 전용으로 다크 환경에서도 깨지지 않게 배경을 명시합니다. 호스트에 artifact 발행
 기능이 있으면 발행합니다.
 
@@ -64,30 +75,32 @@ Day0 시각 언어로 만드는 에이전트 스킬입니다. 시안 비교, 절
 
 | 파일 | 내용 |
 | --- | --- |
-| `SKILL.md` | 원칙, 3층 모델, day0-design 탐색 순서, 모듈 라우팅, 프리셋 판별, 개행 규칙, 작업 순서, 출력 게이트 |
-| `references/blocks.md` | 블록 인덱스: 공통 규칙과 블록 표(언제 쓰나, 생김새, 파일) |
-| `references/blocks/shell.md` | 페이지 골격 스니펫: 웹폰트, 토큰 인라인 자리, 컨테이너, 개행·포커스·모션 축소 기본값 |
-| `references/blocks/header.md` | 작업 라벨, 제목, 리드, 구분선 |
-| `references/blocks/section-head.md` | 섹션 제목, 회색 태그, 설명 한 줄 |
-| `references/blocks/flow-line.md` | 한 줄 흐름과 현재 단계 표시 |
-| `references/blocks/thumb-cards.md` | SVG 도식 썸네일 카드와 상태 배지 |
-| `references/blocks/kpi-cards.md` | 지표 숫자, 증감, 한 줄 해석 |
-| `references/blocks/diagram.md` | 번호 상자와 SVG 화살표 도식 (흐름형, 레이어형) |
-| `references/blocks/step-columns.md` | 단계별 열 |
-| `references/blocks/side-by-side.md` | 시안 미니 프로토타입과 결정 비교 열, 선택 전환 JS |
-| `references/blocks/diff-rows.md` | 바뀐 항목만 전후로 보여 주는 행 |
+| `SKILL.md` | 원칙(SVG 도식 필수, 보여 주기, 섹션 2~4개, 위계), 3층 모델, day0-design 탐색 순서, 모듈 라우팅, 프리셋 판별, 개행 규칙, 작업 순서, 출력 게이트 |
+| `references/blocks.md` | 블록 인덱스: 공통 규칙(그림 우선, 배지 높이·색)과 블록 표(언제 쓰나, 생김새, 파일) |
+| `references/blocks/shell.md` | 페이지 골격 스니펫: 웹폰트, 토큰 인라인 자리, 타이포·여백 스케일, 섹션, 나란히 두 섹션(`.d0-split`), 배지와 대비 계산표, 포커스·모션 축소 기본값 |
+| `references/blocks/header.md` | 작업 라벨, 제목, 리드(문장 단위 개행), 요약 행 변형 |
+| `references/blocks/section-head.md` | 섹션 구분선, 제목, 설명 한 줄, 정보가 있을 때만 태그 |
+| `references/blocks/diagram.md` | SVG 도식: 연결 그래프, 전/후 막대(비율 `data-variant="ratio"`, 전체 폭 `data-size="wide"`), 미니 격자(JS 생성), 화면 와이어프레임 |
+| `references/blocks/thumb-cards.md` | 미니 격자·와이어프레임 SVG 그림 카드와 상태 배지 |
+| `references/blocks/mockup-frame.md` | 프레임 안에서 눌러 보는 미니 앱: 상단 바, 고스트 카드, 모달·오른쪽 패널, 토스트 |
+| `references/blocks/kpi-cards.md` | 지표 숫자와 전→후 증감, 미니 막대 변형 |
+| `references/blocks/flow-line.md` | 그림 위 한 줄 흐름과 현재 단계 표시 |
+| `references/blocks/step-columns.md` | 그림 아래 단계별 주석 열 |
+| `references/blocks/side-by-side.md` | 결정 비교 열과 작은 mock, 선택 전환 JS |
+| `references/blocks/diff-rows.md` | 바뀐 항목만 전후로 보여 주는 행, 배지 행 변형 |
 | `references/blocks/tab-preview.md` | 시트 탭, 파일명 바, 표 목업, 탭 전환 JS |
 | `references/blocks/timeline.md` | 가로 마일스톤과 세로 기록, 오늘 표식 |
-| `references/blocks/checklist.md` | 진행률과 체크 행, 체크 JS |
-| `references/blocks/accordion.md` | 질문 펼침과 용어 카드, 펼침 JS |
-| `references/blocks/callout.md` | 결론, 결정 요청, 다음 할 일 상자 |
+| `references/blocks/checklist.md` | 진행률과 체크 행(담당 `data-variant="owner"`, 행 끝 칸 없음 `data-meta="none"`), 체크 JS |
+| `references/blocks/accordion.md` | 질문 펼침(`details`/`summary`, JS 없음)과 용어 카드 |
+| `references/blocks/callout.md` | 결정 요청이나 다음 할 일 상자(페이지당 최대 1개) |
 | `references/formats/compare.md` | 시안·옵션 비교 (시안, 결정, 전/후 변형) |
-| `references/formats/flow.md` | 절차·구조 설명 (흐름형, 레이어형 도식) |
+| `references/formats/flow.md` | 절차·구조 설명 (연결 그래프, 단계 도식) |
 | `references/formats/preview.md` | 결과물 미리보기 |
 | `references/formats/report.md` | 보고서 |
 | `references/formats/guide.md` | 따라하기 가이드 |
 | `references/formats/timeline.md` | 로드맵과 변경 내역 |
 | `references/formats/incident.md` | 사건 경위와 원인 |
 | `references/formats/faq.md` | 용어 카드와 FAQ |
+| `references/examples/preview-compare.html` | 합성 데이터로 만든 완성 예시: 흐름과 격자 카드, 결과물 목업, 눌러 보는 A/B 프레임 |
 
 설치와 검증 방법은 저장소의 [루트 README](../../README.md)에서 확인할 수 있습니다.
