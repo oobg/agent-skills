@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주문 내보내기 화면 시안</title>
+<!-- 일반 HTML 파일이라 jsDelivr 링크를 쓴다. artifact로 발행할 때는 이 자리에 scripts/subset_font.py 출력(@font-face <style>)을 넣는다 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 /* ── 생성 시 이 자리에 day0-design/references/tokens.css 전체를 수정 없이 붙인다 ── */
@@ -77,14 +78,14 @@
 /* ── tokens.css 끝 ── 아래부터 페이지 CSS (값은 var(--d0-*)만, 표면 #fff 예외) */
 :root { color-scheme: light; }
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; background: #fff; color: var(--d0-grey-900); font-family: var(--d0-font); font-size: 15px; line-height: var(--d0-leading-body); letter-spacing: var(--d0-tracking-body); word-break: keep-all; overflow-wrap: break-word; }
-.d0-page { max-width: 1200px; margin: 0 auto; padding: 48px 32px 88px; }
-h1, h2, h3, h4 { margin: 0; line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
+body { margin: 0; background: #fff; color: var(--d0-grey-800); font-family: var(--d0-font); font-size: 15px; line-height: var(--d0-leading-body); letter-spacing: var(--d0-tracking-body); font-variant-numeric: tabular-nums; word-break: keep-all; overflow-wrap: break-word; }
+.d0-page { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; }
+h1, h2, h3, h4 { margin: 0; color: var(--d0-grey-900); line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
 h1, h2, h3 { text-wrap: balance; }
-h1 { font-size: 26px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-h2 { font-size: 18px; font-weight: 700; }
+h1 { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+h2 { font-size: 20px; font-weight: 700; }
 h3 { font-size: 16px; font-weight: 650; }
-p { margin: 0; text-wrap: pretty; }
+p { margin: 0; line-height: 1.65; text-wrap: pretty; }
 ul, ol, dl, dd, figure { margin: 0; padding: 0; list-style: none; }
 svg { display: block; max-width: 100%; height: auto; }
 button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer; }
@@ -93,16 +94,17 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 :focus-visible { outline: 2px solid var(--d0-blue-dark); outline-offset: 2px; }
 
 /* header */
-.d0-header { display: grid; gap: 10px; padding-bottom: 28px; }
+.d0-header { display: grid; gap: 12px; padding-bottom: 32px; }
 .d0-header__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .d0-header__label { color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
 .d0-header__lead { color: var(--d0-grey-600); }
 
 /* section */
-.d0-section { display: grid; gap: 24px; align-content: start; padding-block: 36px; border-top: 1px solid var(--d0-grey-200); min-width: 0; }
-.d0-section-head { display: grid; gap: 6px; }
+.d0-section { display: grid; gap: 24px; align-content: start; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); min-width: 0; }
+.d0-section:last-child { padding-bottom: 0; }
+.d0-section-head { display: grid; gap: 8px; }
 .d0-section-head__title { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.d0-section-head p { color: var(--d0-grey-600); }
+.d0-section-head p { color: var(--d0-grey-600); font-size: 14px; }
 
 /* pill (배지 22px 고정, 버튼·탭 32px) */
 .d0-pill { display: inline-flex; align-items: center; gap: 6px; flex: none; align-self: flex-start; justify-self: start; height: 22px; padding: 0 9px; border: 0; border-radius: 999px; background: var(--d0-grey-100); color: var(--d0-grey-700); font-size: var(--d0-meta); font-weight: 600; line-height: 1; white-space: nowrap; }
@@ -122,12 +124,12 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
 .d0-flow__node { display: flex; align-items: center; gap: 10px; }
 .d0-flow__node span { padding: 8px 12px; border-radius: var(--d0-radius-sm); background: var(--d0-grey-50); color: var(--d0-grey-600); font-weight: 600; }
 .d0-flow__node:not(:last-child)::after { content: "→" / ""; color: var(--d0-grey-600); }
-.d0-flow__node[data-current] span { display: inline-flex; align-items: center; gap: 6px; background: var(--d0-blue-light); color: var(--d0-blue-dark); }
+.d0-flow__node[data-current] span { display: inline-flex; align-items: center; gap: 6px; background: var(--d0-blue-dark); color: #fff; }
 .d0-flow__node[data-current] span::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
 .d0-thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .d0-thumb { display: grid; gap: 10px; align-content: start; padding: 16px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card); background: #fff; transition: border-color var(--d0-dur) var(--d0-ease), transform var(--d0-dur) var(--d0-ease); }
 .d0-thumb:hover { border-color: var(--d0-blue); transform: translateY(-2px); }
-.d0-thumb svg { width: 100%; }
+.d0-thumb svg { width: 100%; padding: 8px; border-radius: var(--d0-radius-sm); background: var(--d0-blue-light); } /* 썸네일 판: 옅은 블루 면(thumb-cards.md) */
 .d0-thumb strong { font-size: 15px; font-weight: 600; letter-spacing: var(--d0-tracking-title); }
 .d0-s-cell { fill: var(--d0-grey-200); }
 .d0-s-head { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 0.75; }
@@ -140,13 +142,18 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
 .d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-meta); font-weight: 600; }
 .d0-step dt { margin-top: 4px; font-size: 14px; font-weight: 600; }
 .d0-step dd { color: var(--d0-grey-600); font-size: 14px; }
+.d0-tabprev__bar small { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
+
+/* 모션 (shell.md) */
+html[data-motion="on"] [data-reveal] { transition: opacity calc(var(--d0-dur) * 2) var(--d0-ease), transform calc(var(--d0-dur) * 2) var(--d0-ease); }
+html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: translateY(8px); }
 
 /* ② tab-preview (엑셀형 목업) */
 .d0-tabprev { display: grid; gap: 12px; min-width: 0; }
 .d0-tabprev__tabs { display: flex; flex-wrap: wrap; gap: 6px; }
 .d0-tabprev__tabs [role="tab"] { transition: background var(--d0-dur-fast) var(--d0-ease); }
 .d0-tabprev__tabs [role="tab"]:hover { background: var(--d0-grey-200); }
-.d0-tabprev__tabs [data-selected] , .d0-tabprev__tabs [data-selected]:hover { background: var(--d0-blue-light); color: var(--d0-blue-dark); }
+.d0-tabprev__tabs [data-selected] , .d0-tabprev__tabs [data-selected]:hover { background: var(--d0-blue-dark); color: #fff; }
 .d0-tabprev__panel { min-width: 0; overflow: hidden; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-control); background: #fff; }
 .d0-tabprev__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: var(--d0-grey-50); border-bottom: 1px solid var(--d0-grey-200); font-size: var(--d0-text-compact); }
 .d0-tabprev__bar b { font-weight: 600; overflow-wrap: anywhere; }
@@ -154,22 +161,25 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
 .d0-sheet__wrap { overflow-x: auto; }
 .d0-sheet { width: 100%; min-width: 520px; table-layout: fixed; border-collapse: collapse; font-size: var(--d0-text-compact); font-variant-numeric: tabular-nums; }
 .d0-sheet th, .d0-sheet td { height: 32px; padding: 4px 10px; border: 1px solid var(--d0-grey-100); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.d0-sheet thead th, .d0-sheet tbody th { background: var(--d0-grey-50); color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 500; text-align: center; }
+.d0-sheet thead th, .d0-sheet tbody th, .d0-sheet tfoot th { background: var(--d0-grey-50); color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 500; text-align: center; }
 .d0-sheet tr > :first-child { width: 40px; }
-.d0-sheet td[data-cell="head"] { background: var(--d0-blue-light); font-weight: 700; }
+.d0-sheet td[data-cell="head"] { background: var(--d0-blue-light); color: var(--d0-grey-900); font-weight: 700; }
+.d0-sheet td[data-cell="key"] { color: var(--d0-grey-700); font-weight: 600; }
 .d0-sheet td[data-cell="num"] { text-align: right; }
 .d0-sheet td[data-cell="label"] { color: var(--d0-grey-700); font-weight: 600; }
 .d0-sheet td[data-cell="title"] { font-size: 14px; font-weight: 700; }
-.d0-sheet tr[data-total] td, .d0-sheet tfoot td { background: var(--d0-grey-50); font-weight: 700; }
+.d0-sheet tr[data-total] td, .d0-sheet tfoot td { background: var(--d0-blue-light); color: var(--d0-grey-900); font-weight: 700; border-top: 2px solid var(--d0-blue); }
 .d0-sheet tr[data-freeze] td { border-bottom: 2px solid var(--d0-grey-400); }
 .d0-sheet__tabs { display: flex; gap: 2px; padding: 0 8px; background: var(--d0-grey-50); border-top: 1px solid var(--d0-grey-200); }
 .d0-sheet__tabs button { min-height: 32px; padding: 0 14px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
-.d0-sheet__tabs button[aria-pressed="true"] { background: #fff; color: var(--d0-grey-900); font-weight: 600; border-bottom-color: var(--d0-blue); }
+.d0-sheet__tabs button[aria-pressed="true"] { background: #fff; color: var(--d0-grey-900); font-weight: 600; border-bottom-color: var(--d0-green); }
 .d0-tabprev__notes { display: flex; flex-wrap: wrap; gap: 6px 20px; color: var(--d0-grey-600); font-size: 14px; }
 .d0-tabprev__notes > div { display: flex; gap: 6px; }
 .d0-tabprev__notes dt { color: var(--d0-grey-900); font-weight: 600; }
-.d0-fig { display: grid; gap: 12px; min-width: 0; margin: 0; }
-.d0-fig figcaption { color: var(--d0-grey-600); font-size: 14px; }
+.d0-fig { display: grid; gap: 12px; align-content: start; min-width: 0; margin: 0; }
+.d0-fig__stage { display: grid; justify-items: center; padding: 28px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
+.d0-fig__stage > :not(svg) { justify-self: stretch; }
+.d0-fig figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 .d0-tabprev { margin: 0; }
 
 /* ③ mockup-frame */
@@ -263,7 +273,11 @@ legend { padding: 0; }
 .d0-prev tr[data-total] > * { background: var(--d0-blue-light); font-weight: 700; }
 
 @media (max-width: 640px) {
-  .d0-page { padding: 40px 16px 72px; }
+  .d0-page { padding: 48px 16px 72px; }
+  h1 { font-size: 26px; }
+  h2 { font-size: 18px; }
+  .d0-section { padding-block: 24px; }
+  .d0-fig__stage { padding: 20px; }
   .d0-steps { grid-auto-flow: row; }
   .d0-step, .d0-step:first-child { padding: 16px 0; }
   .d0-step + .d0-step { border-left: 0; border-top: 1px solid var(--d0-grey-100); }
@@ -284,10 +298,7 @@ legend { padding: 0; }
   <header class="d0-header">
     <div class="d0-header__meta"><span class="d0-header__label">내보내기 개편</span></div>
     <h1>주문 내보내기 화면 시안</h1>
-    <p class="d0-header__lead">
-      <span class="d0-sentence">‘내보내기’를 누르면 바로 받지 않고, 받을 자료 묶음부터 고르게 바꾸려 해요.</span>
-      <span class="d0-sentence">받게 될 파일 모양을 먼저 보여 드리고, 같은 흐름을 설문형과 고르기형 두 시안으로 만들었어요.</span>
-    </p>
+    <p class="d0-header__lead">‘내보내기’를 누르면 바로 받지 않고, 받을 자료 묶음부터 고르게 바꾸려 해요.</p>
   </header>
 
   <!-- ① 고르고 받기 -->
@@ -300,8 +311,8 @@ legend { padding: 0; }
       <li class="d0-flow__node" data-current aria-current="step"><span>자료 묶음 고르기</span></li>
       <li class="d0-flow__node"><span>그 파일만 받기</span></li>
     </ol>
-    <figure class="d0-fig">
-      <ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"></ul>
+    <figure class="d0-fig" data-stage>
+      <div class="d0-fig__stage"><ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"></ul></div>
       <figcaption>묶음마다 표 모양이 달라요. 파란 칸이 합계예요.</figcaption>
     </figure>
     <ol class="d0-steps">
@@ -332,12 +343,12 @@ legend { padding: 0; }
   <section class="d0-section" aria-labelledby="sec-file">
     <header class="d0-section-head">
       <h2 id="sec-file">받은 파일은 이렇게 보여요</h2>
-      <p>묶음마다 시트가 두 장이에요. 첫 장은 안내, 둘째 장은 데이터예요.</p>
+      <p>첫 시트는 안내, 둘째 시트는 데이터예요.</p>
     </header>
     <figure class="d0-tabprev">
       <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
       <div class="d0-tabprev__panel" role="tabpanel" id="xlPanel">
-        <div class="d0-tabprev__bar"><b id="xlFile"></b><span class="d0-pill" data-tone="orange">지어낸 예시</span></div>
+        <div class="d0-tabprev__bar"><b id="xlFile"></b><small>예시 데이터</small></div>
         <div class="d0-sheet__wrap" role="region" aria-label="시트 표" tabindex="0"><table class="d0-sheet" id="xlTable"></table></div>
         <div class="d0-sheet__tabs" id="xlSheets" role="group" aria-label="시트"></div>
       </div>
@@ -349,7 +360,7 @@ legend { padding: 0; }
   <section class="d0-section" aria-labelledby="sec-demo">
     <header class="d0-section-head">
       <div class="d0-section-head__title"><h2 id="sec-demo">두 가지 시안</h2><span class="d0-pill" data-tone="blue">눌러 볼 수 있어요</span></div>
-      <p>A는 질문에 답하면 알맞은 묶음을 찾아 주고, B는 묶음을 직접 골라 옆에서 확인해요. 데모라 파일은 내려가지 않아요.</p>
+      <p>데모라서 눌러도 파일은 내려가지 않아요.</p>
     </header>
     <div class="d0-demos">
       <article class="d0-demo" aria-labelledby="demoA-title" data-demo data-variant="modal" data-state="idle">
@@ -394,7 +405,7 @@ legend { padding: 0; }
       build: function (p) { var r = rng(5);
         return { head: ["일자", "요일", "주문", "금액", "취소"], numFrom: 2, sheet: "일자별", sumLabel: "누계",
           rows: days(p).map(function (d) { var o = 61 + Math.floor(r() * 53); return [md(d), WD[d.getDay()], o, o * (12100 + Math.floor(r() * 31) * 170), Math.floor(r() * 6)]; }) }; } },
-    { id: "teamDay", name: "팀 × 일자", ask: "팀마다 날짜별로 보고 싶어요", tone: "blue", badge: "오래 걸려요", sortable: true,
+    { id: "teamDay", name: "팀 × 일자", ask: "팀마다 날짜별로 보고 싶어요", tone: "orange", badge: "오래 걸려요", sortable: true,
       g: { rows: 9, cols: 12, sumCol: true, blanks: 0.14, seed: 5, label: "팀 행 × 일자 열 표, 오른쪽 합계 열" },
       build: function (p) { var r = rng(9), ds = days(p).slice(0, 4);
         return { head: ["팀"].concat(ds.map(md), ["기간 합계"]), numFrom: 1, sheet: "팀×일자", more: days(p).length,
@@ -447,6 +458,7 @@ legend { padding: 0; }
     (kids || []).forEach(function (c) { if (c != null) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
     return e;
   }
+  // 묶음마다 상태가 갈리므로 기본 상태(지금 가능)도 배지로 보인다. 카드마다 1개, 페이지 톤은 green·orange·blue 3가지(shell.md 색 절).
   function pill(b, size) { return h("span", { class: "d0-pill", "data-tone": b.tone, "data-size": size || null, text: b.badge }); }
   function d0Grid(spec, decorative) {
     var NS = "http://www.w3.org/2000/svg", W = 160, H = 96, svg = document.createElementNS(NS, "svg");
@@ -510,7 +522,7 @@ legend { padding: 0; }
       tb.appendChild(body);
     } else {
       body.appendChild(tr(t.head.map(function (x) { return h("td", { "data-cell": "head", text: x }); }), { "data-freeze": true }));
-      t.rows.forEach(function (r) { body.appendChild(tr(r.map(function (v, i) { return td(v, i, t, "", { "data-cell": i >= t.numFrom ? "num" : null }); }))); });
+      t.rows.forEach(function (r) { body.appendChild(tr(r.map(function (v, i) { return td(v, i, t, "", { "data-cell": i >= t.numFrom ? "num" : i === 0 ? "key" : null }); }))); });
       tb.appendChild(body);
       tb.appendChild(h("tfoot", null, [tr(t.sum.map(function (v, i) { return sumTd(v, i, t); }), { "data-total": true })]));
     }
@@ -679,6 +691,20 @@ legend { padding: 0; }
     draw();
   }
   demoA(); demoB();
+})();
+// ── 모션 (shell.md): 섹션 직계 블록을 한 번 드러낸다. reduced-motion·JS 없음이면 그대로 보인다 ──
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (!e.isIntersecting) return; e.target.setAttribute('data-in', ''); io.unobserve(e.target); });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.d0-header, .d0-section').forEach(function (g) {
+    Array.prototype.forEach.call(g.children, function (el, i) {
+      el.setAttribute('data-reveal', ''); el.style.transitionDelay = (i * 60) + 'ms'; io.observe(el);
+    });
+  });
+  document.documentElement.setAttribute('data-motion', 'on');
 })();
 </script>
 </body>

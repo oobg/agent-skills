@@ -3,7 +3,7 @@
 ## 해부 구조
 
 - `A → B → C` 한 줄. 노드는 짧은 명사, 화살표는 노드 사이 텍스트 기호.
-- 현재 단계만 `data-current`(+ `aria-current="step"`)로 블루 + 점 표시, 나머지는 회색.
+- 현재 단계만 `data-current`(+ `aria-current="step"`)로 blue-dark 채움 + 흰 글자(5.50) + 점 표시, 나머지는 회색. 기준 톤의 활성 칩 모양이다(blue 채움은 흰 글자 3.99라 안 쓴다).
 - 노드 3~5개. 모바일에서 줄이 바뀌어도 화살표는 앞 노드에 붙어 줄 끝에 남는다.
 
 ## 언제 쓰나 / 변형
@@ -46,8 +46,8 @@
 }
 .d0-flow__node[data-current] span {
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--d0-blue-light);
-  color: var(--d0-blue-dark);
+  background: var(--d0-blue-dark);
+  color: #fff;
 }
 /* 색만으로 현재를 말하지 않도록 점 모양을 함께 둔다 */
 .d0-flow__node[data-current] span::before {

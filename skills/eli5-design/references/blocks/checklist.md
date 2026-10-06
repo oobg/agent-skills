@@ -2,10 +2,14 @@
 
 ## 해부 구조
 
-- 맨 위 진행률(완료 수 / 전체 + 막대). 그 아래 행 + 1px 디바이더.
-- 행 = 체크박스(실제 `input type="checkbox"`, 24px 원) → 제목 label(사용자가 하는 동작) → 결과 한 줄(끝나면 보이는 것) → 행 끝 칸(기본: 소요 시간, owner: 담당·기한, 없으면 생략).
+- 맨 위 진행률(완료 수 / 전체 + 막대). 그 아래 행 + 1px `grey-100` 디바이더. 행에 상자·배경을 두지 않는다.
+- 행 = 체크박스(실제 `input type="checkbox"`, 24px 원) → 제목 label(15px/600, 사용자가 하는 동작) → 결과 한 줄(14px grey-600, 끝나면 보이는 것) → 행 끝 칸(기본: 소요 시간, owner: 담당·기한, 없으면 생략).
+- 결과 한 줄은 한 줄(약 50자 이내)이다. 넘치면 줄이거나 목록을 `.d0-split` 한쪽 섹션에 둬 열 폭을 줄인다.
+- 결정 본문이 header 요약 행에 있으면 할 일 행은 짧게 가리킨다(`PR로 올릴지 답하기` + `위 결정 1`). 결정 문장을 다시 쓰지 않는다.
 - 행 안 요소는 첫 줄 기준으로 맞춘다(`align-items: start`). 체크박스·시간·배지가 행 높이로 늘어나지 않는다.
 - 체크하면 행이 `data-status="done"`이 되고 진행률(네이티브 `<progress>`)이 갱신된다. 소요 시간은 `<time datetime="PT3M">`.
+- 색: 진행 막대는 blue, 끝난 체크는 green 원 + 흰 체크선(흰 바탕 위 green 3.47, green 위 흰 선 3.47로 그래픽 3:1 통과). 체크 모양과 취소선이 색 없이도 완료를 말한다.
+  green은 글자에 쓰지 않는다(완료 행 글자는 grey-600).
 
 ## 언제 쓰나 / 변형
 
@@ -52,7 +56,7 @@
 ```
 
 ```css
-.d0-check__progress { display: block; font-weight: 600; font-variant-numeric: tabular-nums; }
+.d0-check__progress { display: block; color: var(--d0-grey-600); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .d0-check__bar {
   appearance: none; display: block; width: 100%; height: 6px; margin: 8px 0 12px;
   border: 0; border-radius: 999px; background: var(--d0-grey-100); overflow: hidden; color: var(--d0-blue);
@@ -60,8 +64,8 @@
 .d0-check__bar::-webkit-progress-bar { background: var(--d0-grey-100); }
 .d0-check__bar::-webkit-progress-value { background: var(--d0-blue); transition: width var(--d0-dur) var(--d0-ease); }
 .d0-check__bar::-moz-progress-bar { background: var(--d0-blue); }
-.d0-check__row { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 12px; padding: 14px 0; border-top: 1px solid var(--d0-grey-100); }
-.d0-check__row label { font-weight: 600; cursor: pointer; }
+.d0-check__row { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 12px; padding: 16px 0; border-top: 1px solid var(--d0-grey-100); }
+.d0-check__row label { color: var(--d0-grey-900); font-weight: 600; cursor: pointer; }
 .d0-check__row p, .d0-check summary { color: var(--d0-grey-600); font-size: 14px; }
 .d0-check__time { color: var(--d0-grey-600); font-size: var(--d0-text-compact); font-variant-numeric: tabular-nums; }
 .d0-check__box {
@@ -70,7 +74,7 @@
   border: 2px solid var(--d0-grey-500); border-radius: 999px; background: #fff; cursor: pointer;
 }
 .d0-check__box::after { content: ""; width: 10px; height: 6px; border: solid #fff; border-width: 0 0 2px 2px; transform: rotate(-45deg) translate(1px, -1px); }
-.d0-check__row[data-status="done"] .d0-check__box { border-color: var(--d0-blue-dark); background: var(--d0-blue-dark); }
+.d0-check__row[data-status="done"] .d0-check__box { border-color: var(--d0-green); background: var(--d0-green); }
 .d0-check__row[data-status="done"] label { color: var(--d0-grey-600); text-decoration: line-through; }
 .d0-check details { margin-top: 6px; }
 ```
@@ -128,6 +132,8 @@ JS는 기본 변형과 같다.
 
 ## 금지
 
-- 행마다 카드, 완료 판정이 모호한 제목("확인하기", "점검").
+- 행마다 카드, 행 배경, `grey-200` 이상 구분선, 완료 판정이 모호한 제목("확인하기", "점검").
+- green 글자(완료 행 제목을 초록으로), 체크 모양 없이 색만 바뀌는 완료 표시.
+- 요약 행의 결정 문장을 할 일 행에 다시 쓰기, 두 줄로 넘치는 결과 한 줄.
 - 사용자가 할 일과 시스템이 하는 일을 한 목록에 섞기(시스템 일은 결과 한 줄로만).
 - 일부 행에만 있는 시간 열, 메타 칸을 채우려는 빈 `span`·`-` 표시.
