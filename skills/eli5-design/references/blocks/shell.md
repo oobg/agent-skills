@@ -6,8 +6,8 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 ## 해부 구조
 
 - doctype → `lang="ko"` → meta viewport → 폰트 → 메인 `<style>`.
-- **폰트.** artifact로 발행할 때는 `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
-  메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 일반 HTML 파일은 아래 스니펫의 jsDelivr `<link>` 하나를 허용한다(정본: SKILL.md 출력 형식).
+- **폰트.** 결과물 HTML을 넘길 때는(파일·artifact 모두, 발행 여부와 무관) `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
+  메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 아래 스니펫의 jsDelivr `<link>`는 작업 중 초안용이고, 도구를 못 쓸 때만 남긴다(정본: SKILL.md 출력 형식).
 - 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 컨테이너 → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 열 나누기 → 공용 배지 → 포커스 → 모션.
   폰트 `<style>`은 이 앞의 별도 요소라 "tokens.css는 메인 `<style>` 맨 앞" 규칙과 부딪히지 않는다.
 - 컨테이너는 day0 폭 규칙을 따른다: 기본 wide `1200px`, `data-width="narrow"`면 `640px`.
@@ -72,14 +72,22 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 </div>
 ```
 
-## 열 나누기 (`.d0-cols`) — 줄 길이
+## 줄 길이 (정본)
 
-본문 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄 제외) 글을 줄이거나 블록 레이아웃으로 폭을 나눈다. `p`에 `max-width`를 거는 대신
-블록을 2열로 나눈다. `.d0-cols`는 960px 이상에서 같은 폭 2열 grid(열 사이 48px), 그 아래는 1열이다.
+본문 텍스트 블록 한 줄은 **공백 포함 실제 글자 수 50자 이하**다(`code`·`pre`·명령어 줄·[code-block](code-block.md) 제외). 판정은 렌더된 줄마다 공백까지 센 글자 수로 하고, 폭에서 글자 수를 추정하는 근사식은 쓰지 않는다.
 
-- 그림 + 짧은 설명, 행 목록 둘(주의 | 할 일), 짝수 개 행 목록에 쓴다. 행 목록 2열 변형은 [diff-rows.md](diff-rows.md).
+- **폭 기준은 32em이다.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px(32.1~35.2em)이다.
+  그래서 글 블록 컨테이너가 32em(15px에서 480px) 이하이면 한글 위주 문장은 한 줄 50자를 넘지 못한다. 행간(1.55~1.65)은 이 값에 영향이 없다.
+  숫자·라틴 문자·공백이 많은 줄은 글자 폭이 좁아 같은 폭에 더 들어갈 수 있으므로 실제 글자 수로 확인한다.
+  같은 측정에서 650px 열은 최대 66자, 1200px 페이지의 반 열(약 552px)은 54자였다. 2열로 나누는 것만으로는 50자를 지키지 못한다.
+- **좁히는 곳은 컨테이너다.** `p`·`dd`에 `max-width`를 걸지 않고(개행 규칙), 글 블록 컨테이너(explanation `dl`, evidence `dl`, faq `dl`)에 `max-width: 32em`을 건다. 2열(`.d0-cols`)로 쓴 글 블록은 묶음 대신 열 칸(`.d0-cols > *`)마다 32em이 걸린다. 960px 미만 1열에서도 같다.
+  em 단위라 14px 보조문 블록에서도 같은 기준이 된다. 그 안 문단은 컨테이너 폭을 그대로 쓰므로 "옆 영역이 남는데 줄이 바뀐 문단" 게이트의 대상이 아니다(32em 바깥 빈 폭은 남는 영역으로 세지 않는다).
+- **한 줄짜리 글**(요약 행 값, 행 설명, checklist 결과 한 줄, checkpoint)은 문장 길이로 지킨다. 50자를 넘는 문장은 줄인다.
+- **리드 `p`**(header 리드, 섹션 리드)는 컨테이너를 좁히지 않는다. 리드가 한 줄 50자를 넘으면 문장 단위 개행(`.d0-sentence`)이 **필수**다(아래 개행 절의 "선택" 조건보다 이 규칙이 우선한다). 문장마다 줄을 나누고 문장 하나를 50자 이내로 쓴다.
+- **2열(`.d0-cols`).** 960px 이상에서 열 트랙이 각각 `minmax(0, 32em)`인 2열 grid(열 사이 48px), 그 아래는 1열이다. 글 블록의 열 칸은 어느 폭에서나 `max-width: 32em`이다(그림 칸은 그림 폭 상한을 따른다).
+  그림 + 짧은 설명, 행 목록 둘(주의 | 할 일), 짝수 개 행 목록에 쓴다. 행 목록 2열 변형은 [diff-rows.md](diff-rows.md).
 - 홀수 개 항목을 2열로 나눠 마지막 하나가 외톨이로 남으면 쓰지 않는다. 섹션 둘이면 `.d0-split`을 쓴다.
-- 1200px 페이지에서 한 열은 약 552px, 15px 본문 한 줄이 약 36자다.
+- 그림 옆 설명 열(`.d0-figtext`, `data-layout="side"`)도 글 열을 `minmax(220px, 32em)`으로 둔다([explanation.md](explanation.md), [diagram.md](diagram.md)).
 
 ## 타이포 스케일
 
@@ -91,13 +99,14 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 | Impact 숫자 (`.d0-impact__num`) | 64px / 600, display 자간, 단위도 같은 크기 | blue-dark | 48px (아래 강조 절) |
 | h2 (섹션 제목) | 20px / 700, title 자간 | grey-900 | 18px |
 | h3 (그림·열 제목) | 16px / 650 | grey-900 | 16px |
-| 본문 | 15px / 400, 문단 행간 1.65 | grey-800 | 15px |
+| 본문 | 15px / 400, 문단 행간 1.65(아래 행간 예외) | grey-800 | 15px |
 | 보조(섹션 설명, 행 설명) | 14px / 400 | grey-600 | 14px |
 | 그림 설명(figcaption) | 13px / 400 | grey-600 | 13px |
 | 라벨(카드 라벨, 막대 라벨) | 12px / 600, 대문자 변환 없음 | grey-600 | 12px |
 | 배지 | 12px / 600, 높이 22px | 아래 배지 표 | 12px |
 
 - 숫자는 전부 `font-variant-numeric: tabular-nums`다. `body`에 한 번 건다.
+- **행간 예외(정본).** 행간은 토큰(`--d0-leading-*`)이 기본이다. 단 설명 문단(`p`, explanation `dd`)의 행간 1.65는 긴 설명을 읽기 위한 이 스킬의 타이포 값이고 글(본문) 행간에서 토큰 규칙의 예외다(배지·큰 숫자·핀처럼 한 줄 요소의 `line-height: 1`은 글 행간이 아니다). 다른 글자(본문 `body`, 목록, 슬라이드)는 `--d0-leading-body`(1.55)를 쓴다.
 - 12px 라벨 글자는 grey-600(흰 바탕 5.0, grey-50 위 4.71)이다. grey-500은 흰 바탕 3.19라 작은 글자에 쓰지 않는다.
   히어로 전 값도 grey-600이다.
 - 회색 보조문은 줄인다. 섹션 설명은 최대 1문장이고 제목과 같은 말이면 뺀다. 주 콘텐츠는 그림과 숫자, 15px 본문이다.
@@ -226,7 +235,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 점은 글자 배지를 거드는 보조 표식이라 `aria-hidden`이다. 상태 뜻은 글자가 전한다(1.4.11 대상 아님).
 
 **배지 수.** 정보가 있는 상태 배지는 카드·행마다 1개까지, 페이지 전체 톤 종류(`data-tone` 값, 없으면 회색)는 3가지 이하다.
-기본 상태라도 다른 상태와 대비가 필요하면 단다(예: `지금 가능` / `준비 중` / `백엔드 필요`). 모든 항목이 같은 상태면 달지 않는다.
+기본 상태라도 다른 상태와 대비가 필요하면 단다(예: `지금 가능` / `준비 중` / `백엔드 필요`). 모든 항목이 같은 상태면 항목마다 달지 않는다. 그 상태를 알려야 하면 섹션 머리에 한 번만 단다(diff-rows `data-badge="head"`, [diff-rows.md](diff-rows.md)).
 탭·버튼으로 쓰는 pill(아래 32px 변형)은 컨트롤이라 배지로 세지 않는다.
 
 **높이 고정.** 배지는 grid·flex 행 안에서 늘어나지 않는다. `height` 고정 + `flex: none` + `align-self: flex-start`
@@ -235,8 +244,8 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 
 ## 개행
 
-- 리드·설명 문단은 부모 폭을 그대로 쓴다. `p`에 컨테이너보다 좁은 `max-width`를 걸지 않는다. 줄이 길면 `.d0-cols`로 나눈다.
-- 문장 단위 개행(선택): 리드·설명이 2문장 이상이고 데스크톱 폭에서 2줄을 넘기거나 문장마다 역할이 다르면
+- 리드·설명 문단은 부모 폭을 그대로 쓴다. `p`에 컨테이너보다 좁은 `max-width`를 걸지 않는다. 줄이 길면 위 줄 길이 절대로 글 블록 컨테이너를 32em으로 두거나 `.d0-cols`로 나눈다.
+- 문장 단위 개행(선택, 단 리드가 한 줄 50자를 넘으면 필수 — 위 줄 길이 절): 리드·설명이 2문장 이상이고 데스크톱 폭에서 2줄을 넘기거나 문장마다 역할이 다르면
   문장마다 `<span class="d0-sentence">`로 감싼다(`display: block`). `<br>`을 늘어놓지 않는다.
 
 ## 모션 (선택)
@@ -258,7 +267,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주문 내보내기 한눈에 보기</title>
-<!-- artifact 발행: 이 <link> 대신 scripts/subset_font.py 출력(<style>@font-face…</style>)을 여기 둔다 -->
+<!-- 넘기기 전(파일·artifact 모두): 이 <link> 대신 scripts/subset_font.py 출력(<style>@font-face…</style>)을 여기 둔다 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 /* (아래 css 블록 + 고른 블록 css) */
@@ -328,9 +337,12 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-split > * { min-width: 0; }
 .d0-cols { display: grid; gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
+/* 줄 길이(정본: 줄 길이 절): 글 블록 컨테이너 32em = 15px 본문 공백 포함 50자 이하. p·dd에는 걸지 않는다 */
+:is(.d0-explain, .d0-evidence, .d0-faq):not(.d0-cols) { max-width: 32em; }
+:is(.d0-explain, .d0-evidence, .d0-faq).d0-cols > * { max-width: 32em; } /* 2열 글 블록: 열 칸마다, 960px 미만 1열에서도 */
 @media (min-width: 960px) {
   .d0-split { grid-template-columns: 1fr 1fr; align-items: start; }
-  .d0-cols { grid-template-columns: 1fr 1fr; }
+  .d0-cols { grid-template-columns: repeat(2, minmax(0, 32em)); }
   .d0-split:last-child > .d0-section { padding-bottom: 0; } /* 2열에서만 두 섹션 모두 0 */
   /* 무대 정렬: 두 그림 섹션의 머리·무대·캡션 줄을 맞춘다 */
   .d0-split[data-align="stage"] { grid-template-rows: auto 1fr auto; align-items: stretch; }
@@ -454,12 +466,13 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 ## 금지
 
 - 다크 팔레트·`prefers-color-scheme: dark` 분기 추가, `body` 배경 생략.
-- `p`나 리드에 컨테이너보다 좁은 `max-width`·`width`·`ch`. 줄이 길면 `.d0-cols`, 페이지 전체를 좁히려면 `data-width="narrow"`.
-- Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, artifact 발행본에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
+- `p`나 리드에 컨테이너보다 좁은 `max-width`·`width`·`ch`. 줄이 길면 글 블록 컨테이너 32em(줄 길이 절)이나 `.d0-cols`, 페이지 전체를 좁히려면 `data-width="narrow"`.
+- Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, 넘긴 결과물 HTML에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
 - 글자에 `--d0-blue`·`--d0-grey-500` 이하·시맨틱 전경색 사용(흰 바탕 대비 4.5:1 미달). 글자는 `--d0-blue-dark`, `--d0-grey-600` 이상.
   예외는 18.66px/700 이상 큰 글자(3:1)뿐이다.
 - tokens.css에 없는 `--d0-*` 변수 만들기(표면 `#fff`만 예외). 반투명 막은 `color-mix(in srgb, var(--d0-grey-900) 32%, transparent)`.
-- 배지 높이를 행 높이에 맡기기(늘어난 배지), 섹션마다 카드 상자, 섹션 안 블록마다 테두리, `grey-200` 이상 진한 구분선.
+- 배지 높이를 행 높이에 맡기기(늘어난 배지), 섹션마다 카드 상자, 섹션 안 블록마다 테두리, 섹션·행 사이 `grey-200` 이상 진한 구분선.
+  예외는 블록 안 한 줄 표식인 closing 문장 아래 구분선(page `.d0-closing__meta`, deck `.d0-slide__meta`)과 checkpoint 뒤 선이다. 이 둘은 1px grey-200이고 섹션·행 구분선으로 세지 않는다.
 - 회색만 있는 도식·카드, 의미색 글자, 의미색 3가지 이상, 카드·행 하나에 배지 2개 이상, 배지 톤 4종류 이상, 혼자 뜻을 전하는 orange 선·점.
 - `.d0-split`에 섹션 3개 이상, `align-items: stretch`로 짧은 섹션을 옆 섹션 높이까지 늘리기(두 그림 섹션의 무대 정렬 변형 `data-align="stage"`만 예외. 늘어난 높이는 무대가 받는다).
 - 그라디언트·글래스·두꺼운 그림자·장식 3D, 무대 패널에 테두리나 그림자.

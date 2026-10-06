@@ -12,7 +12,7 @@
 - 무대 없는 그림이 폭의 절반만 쓰고 옆을 비우지 않게 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열 중 하나로 둔다. **그림을 키워 채우지 않는다.**
 - **옆 설명의 폭.** `data-layout="side"`는 그림이 놓인 열 폭이 넉넉할 때(예: 페이지 전체 폭 섹션)만 쓴다. `.d0-split`·`.d0-cols` 열 안에서는 설명을 `figcaption`으로 그림 아래에 둔다. 옆 설명 열의 최소 폭은 **220px**이다.
 - SVG는 `role="img"` + `<title>`(그림 이름) + `<desc>`(무엇이 강조됐는지 한두 문장). 장식 SVG만 `aria-hidden="true"`.
-- 색은 SVG 안에 직접 쓰지 않는다. 아래 `d0-s-*` 클래스가 `var(--d0-*)`를 쓴다. 강조 묶음은 블루 하나, 상태가 있는 표식은
+- 색은 SVG 안에 직접 쓰지 않는다. 아래 `d0-s-*` 클래스가 `var(--d0-*)`를 쓴다. 강조 묶음은 블루 하나(같은 의미 계열은 행이 여럿이어도 한 묶음, 정의는 [composition.md](../composition.md) 강조 순서), 상태가 있는 표식은
   의미색 `data-tone="green|orange|red"`(완료·통과 / 주의·준비 / 실패·위험)를 단다. **회색만으로 된 도식은 금지**다. 색 규칙 정본은 [shell.md](shell.md) 색 절.
 - 페이지의 핵심 도식 하나는 무대를 blue-light로 칠할 수 있다(`figure.d0-fig[data-stage="blue"]`). 그 위 회색 선은 grey-600, 흐린 라벨은 grey-700로
   자동으로 한 단계 진해진다(blue-light 위 grey-500 선 2.87, grey-600 글자 4.49라 미달). blue 무대는 면 단위 옅은 표면이라 색 비율에서 빼고 장면 수로 센다(페이지당 1개).
@@ -25,6 +25,8 @@
 - **텍스트 상자를 화살표로 이은 것은 도식이 아니다.** 상자 안에 문장이 들어가는 순간 글이다. Mermaid 등 자동 배치 도구는 쓰지 않고 손으로 그린다.
 
 ## 라벨
+
+이 절의 글자 크기(`.d0-s-text`·`.d0-s-num` 14px, 렌더 11~16px 게이트)는 **page 규칙**이다. deck의 도식 글자는 [slide-deck.md](slide-deck.md) 타이포 절의 그림 글자 규칙(`d0-sl-label`·`d0-sl-value`, `--sl-font`, SVG 안 `font-size` 속성 금지)을 따른다. 도형 클래스는 page·deck 공용이다(아래 공용 CSS).
 
 - 설명 문장은 SVG 밖 `figcaption`·HTML에 둔다. 확대·번역·복사가 되기 때문이다.
 - SVG `<text>`는 짧은 노드·값 라벨(명사 1~3단어, `고친 파일`, `6분`)에만 쓴다.
@@ -44,12 +46,14 @@
 
 - 번호 글자(`.d0-s-num`)도 같은 식을 따른다. 기본 14px(375px 11.8px), wide 18px(375px 11.4px·데스크톱 15px). wide에서 13~14px로 두면 375px에서 8~9px로 줄어 실패다.
 
-- 노드·원은 viewBox 단위로 그린다. 기본 크기에서 노드 r 9~11(렌더 지름 18~22px), 바깥 고리 r 17을 넘기지 않는다.
-- **폭 상한(정본).** 모든 SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 60% 폭 게이트는 그림을 키워서가 아니라 옆 열(explanation 옆 열 `.d0-figtext`·split·side·2열·주석 열)로 채운다.
-  전체 폭 그림은 가로로 긴 타임라인·단계 줄(narrative 포함)만 허용하고 최대 720px다. 이때 viewBox 폭을 720 안팎으로 다시 그려 데스크톱 라벨 16px 이하를 지키고, 375px에서 라벨이 11px 아래로 줄면 `.d0-fig__scroll`에 넣거나 세로로 돌린다.
-- **결론: 글자가 든 SVG는 렌더 폭 약 440px에서 멈춘다.** 데스크톱 16px 상한에서 기본은 360 × 16 ÷ 14 ≈ 411px, wide는 480 × 16 ÷ 18 ≈ 427px이다.
-  그래서 전체 폭(1136px) 섹션에 글자 든 SVG를 혼자 두면 양옆이 빈다. `.d0-split`·`.d0-cols` 2열 한쪽에 넣거나,
-  `data-layout="side"`(그림 왼쪽 최대 440px + 오른쪽 설명)로 옆을 채운다. 폭을 꽉 채우는 그림은 글자를 HTML로 뺀다(비율 막대).
+- 노드·원은 viewBox 단위로 그린다. 기본 크기에서 노드 r 9~11(렌더 지름 18~22px), 바깥 고리 r 17을 넘기지 않는다. 이 반지름은 page 규칙이다. deck SVG(viewBox 400·800, 렌더 배율이 다름)는 [slide-deck.md](slide-deck.md) 샘플처럼 viewBox에 맞춰 키운다(예: viewBox 800에서 r 24).
+- **폭 상한(정본).** 그림 폭은 세 단계뿐이다: **기본 360px, `data-size="wide"` 400px, 가로로 긴 타임라인·단계 줄(narrative 포함)만 최대 720px.**
+  글자가 없어도 같다. 예외는 화면 미리보기 [mockup-frame](mockup-frame.md) `figure.d0-shot`(화면 상자 최대 560px)과 목업 프레임이다. 이들은 도식이 아니라 화면 자체라 이 체계 밖이다. 핀 오버레이(pins), side-by-side 와이어 카드(`.d0-option__wire`), 썸네일처럼 카드·범례 옆에 놓인 그림도 이 상한을 따른다.
+  그림 옆 열 grid(`.d0-figtext`, `data-layout="side"`, pins 범례)의 그림 열 폭도 같은 값(기본 360, wide 400)이고, 무대(`data-stage`)가 있으면 무대 패딩 56px을 더한다(416, 456).
+  60% 폭 게이트는 그림을 키워서가 아니라 옆 열(explanation 옆 열 `.d0-figtext`·split·side·2열·주석 열)로 채운다.
+  720px 그림은 viewBox 폭을 720 안팎으로 다시 그려 데스크톱 라벨 16px 이하를 지키고, 375px에서 라벨이 11px 아래로 줄면 `.d0-fig__scroll`에 넣거나 세로로 돌린다.
+- 그래서 전체 폭(1136px) 섹션에 360·400px 그림을 혼자 두면 양옆이 빈다. `.d0-split`·`.d0-cols` 2열 한쪽에 넣거나,
+  `data-layout="side"`(그림 열 + 오른쪽 설명 열)로 옆을 채운다. 폭을 꽉 채우는 그림은 글자를 HTML로 뺀다(비율 막대).
 - 이 조건을 못 맞추는 넓은 그림(W > 27.5 × f)은 `.d0-fig__scroll` 상자에 넣는다. 페이지 가로 스크롤은 금지다.
 - 폭을 꽉 채워야 하는 그림(비율 막대)은 글자를 SVG 밖 HTML에 두고 SVG는 도형만 그린다. 아래 (b) 비율 변형 참고.
 
@@ -77,7 +81,7 @@
 | Narrative | 방향과 진행 상태. 지나온 것 / 현재 / 남은 것을 굵기·채움·점선 차이로 | 지금 어디까지 왔나, 무엇이 남았나 | Sequence |
 | Editorial | 선 거의 없이 실제 숫자 하나를 크게(56px), 객체 하나는 작게, 주변 라벨 최소 | 이것 하나만 기억하면 될 때 | Hero, Evidence |
 
-- **같은 페이지에서 장르를 섞는다.** 섹션이 3~4개면 structural 외에 narrative나 editorial을 하나 둔다. 장르를 바꾸려고 섹션을 더하지 않고 기존 섹션의 그림을 바꾼다. editorial은 페이지당 최대 1개다.
+- **같은 페이지에서 장르를 섞기를 권장한다.** 섹션이 3~4개면 structural 외에 narrative나 editorial을 하나 두는 것을 먼저 검토한다. 맞는 내용이 없으면 structural만으로 둔다(강제가 아니다). 장르를 바꾸려고 섹션을 더하지 않고 기존 섹션의 그림을 바꾼다. editorial은 페이지당 최대 1개다.
 - 장르가 바뀌어도 공통 규칙(선 굵기 1.5·2.5, 토큰 색, `role="img"` + `<title>`, 회색만 있는 도식 금지, 라벨 크기 게이트)은 그대로다.
 
 ### Structural — 구조
@@ -99,6 +103,7 @@
 - 진행 방향은 왼쪽 → 오른쪽(또는 아래 → 위로 오르는 곡선)이다. 곡선 하나로 그리고, 지나온 구간과 남은 구간은 현재 점에서 나눈 `path` 두 개다.
 - 지나온 구간에만 `d0-draw`를 붙여 그려지게 한다. 남은 점선은 처음부터 보인다.
 - 현재는 하나다. 끝난 구간이 상태(통과·실패)를 말해야 하면 그 점에 `data-tone`을 단다.
+- **현재 위치가 없는 절차**(일반 사용 순서, 아직 시작 전 계획)에 narrative를 쓰면 독자가 설 대표 시점 하나를 정해 현재로 그린다(예: 가장 많이 막히는 단계, 다음 결정 지점). 대표 시점을 정할 수 없으면 narrative 대신 steps (e)를 쓴다.
 - 점은 3~6개. 라벨은 점마다 1~2단어, 현재 라벨만 blue-dark다. 날짜가 주인공이면 [timeline.md](timeline.md)를 쓴다.
 
 ```html
@@ -219,6 +224,8 @@
 .d0-s-bar[data-tone="red"] { fill: var(--d0-red); }
 .d0-s-bar[data-tone="orange"] { fill: var(--d0-orange); } /* 값 라벨이 막대 옆에 있을 때만 */
 .d0-s-zone[data-tone="red"] { fill: var(--d0-red-bg); stroke: var(--d0-red); }
+.d0-s-edge[data-tone="red"] { stroke: var(--d0-red); }                                   /* 되돌림·실패 경로. data-back과 함께 쓰면 빨간 점선 */
+.d0-s-stop { fill: none; stroke: var(--d0-red); stroke-width: 2.5; stroke-linecap: round; } /* 막힘 표시: 경로를 가로지르는 짧은 선·X, 라벨과 함께 */
 /* 핵심 무대 blue-light: 회색 선·흐린 글자를 한 단계 진하게 */
 .d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 .d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
@@ -235,6 +242,25 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 값이 라벨 글자로 함께 적힌 막대, 이름이 카드 제목으로 적힌 격자 칸, 자리만 잡는 와이어프레임 면, 참여자 이름이 적힌 세로선에만 쓴다.
 흰 숫자는 blue-dark 원 위에만 둔다(5.5:1). blue 원 위 흰 글자는 3.99:1이라 쓰지 않는다. green 원에는 숫자 대신 흰 체크선(`.d0-s-tick`, 그래픽 3.47:1)을 둔다.
 **의미색 표식은 혼자 뜻을 전하지 않는다.** 완료 단계는 체크 모양, 실패 노드는 라벨, orange 면은 진한 테두리나 값 라벨을 함께 둔다.
+
+### 흔한 표식 → 클래스 (page·deck 공용)
+
+도형은 page와 deck 모두 이 클래스로 칠한다. SVG에 `fill`·`stroke` 값(`var(--d0-*)` 포함)을 직접 쓰지 않는다. deck에서는 이 공용 CSS의 도형 규칙을 함께 붙이고, 글자만 [slide-deck.md](slide-deck.md)의 `d0-sl-label`·`d0-sl-value`로 쓴다.
+
+| 표식 | 클래스 |
+| --- | --- |
+| 화면·카드 틀 | `.d0-s-frame` |
+| 속 빈 노드 / 채운 강조 노드 | `.d0-s-node` / `.d0-s-node[data-on]` |
+| 작은 점(상태 점) | `.d0-s-node`를 r 4~6으로, 상태는 `data-on`·`data-tone` |
+| 완료 체크(초록) | `.d0-s-node[data-tone="green"]` + 흰 체크선 `.d0-s-tick` |
+| 실패·위험 노드 | `.d0-s-node[data-tone="red"]` + 라벨 |
+| 되돌림 화살표(빨강) | `.d0-s-edge[data-tone="red"]`, 돌아가는 길이면 `data-back`을 더해 점선 |
+| 점선 절단·끊긴 연결 | `.d0-s-edge[data-back]`(grey-500 점선) |
+| 막힘 표시 | `.d0-s-stop`(red 2.5 짧은 선·X) + 라벨 |
+| 남은 길(narrative) | `.d0-s-edge[data-ahead]` |
+| 범위·영역 | `.d0-s-zone`(`data-tone="red"` 가능) |
+
+새 표식이 필요하면 새 블록을 만들지 않고 이 공용 CSS에 토큰만 쓰는 클래스 하나를 더한다([blocks.md](../blocks.md) 블록 추가 판별).
 
 ## (a) graph — 연결 그래프
 
@@ -298,7 +324,12 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 
 ```css
 @media (min-width: 640px) {
-  .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 440px) minmax(220px, 1fr); align-items: center; gap: 24px; }
+  /* 그림 열 = SVG 폭 상한(기본 360, wide 400), 설명 열 220px~32em(줄 길이 정본: shell.md) */
+  .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 360px) minmax(220px, 32em); justify-content: start; align-items: center; gap: 24px; }
+  .d0-fig[data-layout="side"][data-size="wide"] { grid-template-columns: minmax(0, 400px) minmax(220px, 32em); }
+  /* 무대가 있으면 그림 열 = SVG 상한 + 무대 패딩 56 */
+  .d0-fig[data-stage][data-layout="side"] { grid-template-columns: minmax(0, 416px) minmax(220px, 32em); }
+  .d0-fig[data-stage][data-layout="side"][data-size="wide"] { grid-template-columns: minmax(0, 456px) minmax(220px, 32em); }
   /* 반 열 안에 side가 남아 있어도 설명을 그림 아래로 쌓는다. SVG 폭 상한은 그대로다. */
   :is(.d0-split, .d0-cols) .d0-fig[data-layout="side"] { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 12px; }
 }
@@ -308,6 +339,8 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 - **막대 수.** 전/후 비교 쌍은 2개까지(막대 4개). 비교 쌍이 3개 이상이면 [kpi-cards.md](kpi-cards.md)의 막대 변형(카드 하나에 쌍 하나)을 쓴다.
 - 값 라벨은 막대 끝 바로 뒤(+8)에 둔다. 범례를 따로 두지 않는다. 후(지금) 막대만 블루.
 - 막대가 전/후가 아니라 상태(통과·실패 건수)를 말하면 `data-tone="green|red"`로 칠한다. 값 라벨은 그대로 둔다.
+- **선택지 비교 형태.** 선택지(A안·B안)의 비용·시간을 견줄 때는 전/후 라벨 대신 선택지 이름을 행 라벨로 쓰고, 행마다 같은 트랙(`d0-s-track`)과 같은 축을 둔다.
+  `data-on`(blue)은 추천안 하나에만 단다. 추천이 아직 없으면 지금 방식 행(기준선) 하나를 blue로 둔다. 추천도 지금 방식도 없으면 회색만 남으므로 막대 대신 side-by-side 와이어 카드를 쓴다. 전/후 의미가 없으므로 "후 막대만 blue" 규칙 대신 이 규칙을 따른다. 행 수 상한은 옵션 상한(3)이다.
 - 막대가 3개 이상이면 행 간격 52를 유지하고 viewBox 높이를 `행 수 × 52 + 8`로 늘린다.
 
 ### 비율 막대 (`data-variant="ratio"`)
@@ -497,11 +530,11 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 ## (g) pins — 번호 핀 오버레이
 
 글자 없는 넓은 SVG(와이어프레임, 파일 구성 등) 위에 HTML 번호 핀(①②③)을 얹고, 이름과 뜻은 옆 범례 `dl`에 쓴다.
-SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)를 받지 않지만 폭 상한은 같다: **SVG는 최대 400px**(wide 상한)이고 옆 범례 열로 폭을 채운다. 핀 숫자와 범례는 HTML 텍스트 규칙을 따른다.
+SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)를 받지 않지만 폭 상한은 같다: **SVG는 기본 360px, `data-size="wide"`면 400px**이고(폭 상한 절) 옆 범례 열로 폭을 채운다. 핀 숫자와 범례는 HTML 텍스트 규칙을 따른다.
 **연동 동작이 기본이다.** 범례 항목·핀·SVG 영역 묶음을 같은 번호(`data-pin="n"`)로 묶고, 한 번에 한 번호만 켠다.
 
 ```html
-<figure class="d0-fig" data-variant="pins" data-active-pin="2">
+<figure class="d0-fig" data-variant="pins" data-size="wide" data-active-pin="2">
     <div class="d0-pins">
       <svg viewBox="0 0 480 300" role="img" aria-labelledby="p1-t p1-d">
         <title id="p1-t">설명 페이지 한 장의 구성</title>
@@ -535,7 +568,8 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
 ```
 
 ```css
-.d0-fig[data-variant="pins"] .d0-pins { position: relative; justify-self: start; width: 100%; max-width: 400px; } /* 무대 없음: 페이지 왼쪽 정렬선, 폭 상한 400 */
+.d0-fig[data-variant="pins"] .d0-pins { position: relative; justify-self: start; width: 100%; max-width: 360px; } /* 무대 없음: 페이지 왼쪽 정렬선, 폭 상한 360 */
+.d0-fig[data-variant="pins"][data-size="wide"] .d0-pins { max-width: 400px; }
 .d0-fig[data-variant="pins"] .d0-fig__stage > .d0-pins { justify-self: center; } /* 무대 있음: 무대 가운데(기존 동작) */
 .d0-fig[data-variant="pins"] svg { display: block; max-width: none; }
 .d0-pin {
@@ -568,7 +602,8 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
 }
 @media (min-width: 900px) {
   .d0-fig[data-variant="pins"] { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); align-items: center; column-gap: 28px; }
-  .d0-fig[data-variant="pins"]:not([data-stage]) { grid-template-columns: minmax(0, 400px) minmax(220px, 300px); justify-content: start; } /* 무대 없음: 범례가 SVG 바로 오른쪽, 남는 폭은 범례 뒤로 */
+  .d0-fig[data-variant="pins"]:not([data-stage]) { grid-template-columns: minmax(0, 360px) minmax(220px, 300px); justify-content: start; } /* 무대 없음: 범례가 SVG 바로 오른쪽, 남는 폭은 범례 뒤로 */
+  .d0-fig[data-variant="pins"][data-size="wide"]:not([data-stage]) { grid-template-columns: minmax(0, 400px) minmax(220px, 300px); }
   .d0-fig[data-variant="pins"] figcaption { grid-column: 1 / -1; }
 }
 ```
@@ -585,7 +620,7 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 });
 ```
 
-- 와이어프레임 틀(`d0-s-frame`)이 경계라 무대 없이 둔다. 무대가 없으면 `.d0-pins`는 페이지 왼쪽 정렬선에 붙고(`justify-self: start`), 900px 이상에서 범례 열은 SVG(최대 400px) 바로 오른쪽에서 시작하고 남는 폭은 범례 뒤로 간다. 무대를 쓰면 `div.d0-fig__stage`가 `.d0-pins`를 감싸 무대 가운데에 놓이고, 무대가 남는 폭을 채운다. 나머지는 같다.
+- 와이어프레임 틀(`d0-s-frame`)이 경계라 무대 없이 둔다. 무대가 없으면 `.d0-pins`는 페이지 왼쪽 정렬선에 붙고(`justify-self: start`), 900px 이상에서 범례 열은 SVG(기본 360px, wide 400px) 바로 오른쪽에서 시작하고 남는 폭은 범례 뒤로 간다. 무대를 쓰면 `div.d0-fig__stage`가 `.d0-pins`를 감싸 무대 가운데에 놓이고, 무대가 남는 폭을 채운다. 나머지는 같다.
 - **번호로 묶기.** 범례 항목(`dt`/`dd`를 감싼 `div`), 화면 위 핀, SVG 영역 묶음 `<g>`에 같은 `data-pin="n"`을 단다. 영역 묶음 밖에는 틀(`d0-s-frame`)만 둔다.
 - **켜기.** 그림 `figure`의 `data-active-pin` 하나가 상태다. CSS가 같은 번호에 `--pin-*`·`--key-*`·`--area-*` 값을 넣어 켜고, JS는 이 속성만 바꾼다. 처음 값은 1번 또는 대표 항목이고, 이 값이 JS 없을 때의 정적 강조다. 범례 항목·핀에 `data-on`을 쓰지 않는다(SVG 안 `data-on`은 묶음 속 강조 도형 표시로 그대로 쓴다).
 - **켜진 번호.** 핀은 blue-dark 원 + 흰 숫자(5.5:1), 범례 항목은 왼쪽 2px blue 선 + `dt` blue-dark, 영역은 원래 blue·blue-light 도형 그대로다. 묶음에 blue 도형이 없으면(체크 도장, 목록 줄) `d0-s-area` 사각형을 묶음 맨 앞에 깐다. 꺼지면 보이지 않고, 켜지면 blue-light 판 + blue 점선이 된다. 의미색 도형(green 체크 등)은 켜지면 제 색이다.
@@ -600,7 +635,7 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 
 - 텍스트 상자 + 화살표 줄(문장이 든 상자), 정보 없는 장식 그림, 3D·그라디언트·그림자·아이콘 일러스트, Mermaid 등 자동 배치 도식.
 - 경계가 이미 보이는 도식에 기본값으로 두른 무대, 무대 안에 figcaption, 무대에 테두리·그림자, 무대 없이 폭 절반만 쓰고 옆을 비운 도식.
-- 페이지 전체를 structural 한 장르로만 채우기(섹션 3개 이상이면), editorial 2개 이상, 문구·대답을 쓴 editorial, 56px을 넘는 editorial 숫자, 장르를 바꾸려고 섹션 더하기, SVG `<text>`로 그린 큰 숫자, 선·축·범례를 단 editorial, 현재가 둘인 narrative, 1.5·2.5 외 굵기로 상태 나누기.
+- narrative·editorial로 말할 내용(진행 위치, 기억할 숫자 하나)이 있는데도 페이지 전체를 structural로만 채우기, editorial 2개 이상, 문구·대답을 쓴 editorial, 56px을 넘는 editorial 숫자, 장르를 바꾸려고 섹션 더하기, SVG `<text>`로 그린 큰 숫자, 선·축·범례를 단 editorial, 현재가 둘인 narrative, 1.5·2.5 외 굵기로 상태 나누기.
 - 1.5·2.5 외 선 굵기(썸네일 격자 머리 테두리 제외), 각진 선 끝, 강조 경로 아닌 선에 그리기 모션.
 - 회색만으로 된 도식(blue·의미색 표식 0개), 의미색 `<text>` 글자, 테두리·라벨 없이 혼자 뜻을 전하는 orange 표식.
 - 노드 7개 초과, SVG 안 문장, 320·375px에서 11px 아래로 줄어들거나 데스크톱에서 16px을 넘는 라벨(h2보다 큰 라벨), 블루 강조가 흩어진 그림(강조 묶음은 하나).

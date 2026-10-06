@@ -20,8 +20,9 @@
 
 | 변형 | 언제 | 핵심 블록 |
 | --- | --- | --- |
+| (생략) 개념 비교 | 고를 것 없이 두세 개념·방식의 차이를 이해시킨다(기본값, 이름표 없음) | 같은 구도의 도식 2개 나란히(`.d0-split` 또는 side-by-side 와이어 카드) + explanation `interpretation` |
 | 시안 `prototype` | 화면을 눌러 보며 고른다 | [mockup-frame](../blocks/mockup-frame.md) 2개(나란히 눌러 보는 프레임) |
-| 결정 `decision` | 숫자·정책·방식을 고른다 | 전/후 막대 + side-by-side 결정 변형 |
+| 결정 `decision` | 숫자·정책·방식을 고른다 | 선택지 비교 막대([diagram](../blocks/diagram.md) bars 선택지 비교 형태) + side-by-side 결정 변형(추천만 했으면 `data-recommended`) |
 | 전/후 `before-after` | 이미 정한 변경을 보여 준다 | 와이어프레임·막대 + diff-rows |
 
 ## 섹션 구성
@@ -39,7 +40,7 @@
 
 시안 변형은 화면 와이어프레임 SVG 2장([diagram](../blocks/diagram.md) (d)) + 나란히 놓은 같은 크기 프로토타입 프레임 2개([mockup-frame](../blocks/mockup-frame.md)).
 mockup-frame은 HTML 목업이라 SVG 게이트를 채우지 않는다. 와이어프레임 SVG(① 또는 프레임 위)가 그 게이트를 채운다.
-결정 변형은 옵션별 전/후 막대(diagram bars). 수치가 없는 결정이면 막대를 억지로 만들지 않고, 옵션 카드 안 와이어프레임([side-by-side](../blocks/side-by-side.md)의 그림 카드 변형)을 대표 도식으로 쓴다. 옵션마다 같은 크기·같은 구도로 그린다.
+결정 변형은 옵션별 선택지 비교 막대(diagram bars의 선택지 비교 형태: 행 = 선택지, 추천안 하나만 blue). 전/후 막대는 전/후 변형에만 쓴다. 수치가 없는 결정이면 막대를 억지로 만들지 않고, 옵션 카드 안 와이어프레임([side-by-side](../blocks/side-by-side.md)의 그림 카드 변형)을 대표 도식으로 쓴다. 옵션마다 같은 크기·같은 구도로 그린다.
 
 ## 섹션으로 쓸 때
 
@@ -57,15 +58,16 @@ mockup-frame은 HTML 목업이라 SVG 게이트를 채우지 않는다. 와이�
 
 ## 추천 조합
 
-요약 행(문제 / 추천 / 결정 필요) + side-by-side 와이어 카드 또는 before-after + evidence + explanation `constraint` + closing `decision`. 블록은 패턴이 소유하지 않는다. 다른 패턴 문서의 블록도 필요하면 그대로 빌린다([blocks.md](../blocks.md)).
+요약 행(라벨은 [header.md](../blocks/header.md) 라벨 표) + side-by-side 와이어 카드 또는 before-after + evidence + explanation `constraint` + closing `decision`. 블록은 패턴이 소유하지 않는다. 다른 패턴 문서의 블록도 필요하면 그대로 빌린다([blocks.md](../blocks.md)).
 
 ## 페이지 주 패턴일 때 (자연스러운 깊이 3~5)
 
 이 패턴이 페이지 대부분을 차지할 때의 출발점이다. 깊이는 참고값이고 섹션 수는 독자 질문이 정한다. 첫 화면 섹션은 그림이 필수이고, 그 아래 섹션은 핵심 구조가 있으면 그림을 권장한다. 아래를 전부 채우지 않는다.
 
+- 개념 비교(변형 없음): header(문장형 리드: 무엇과 무엇의 차이인가) → ① 어떻게 다른가: 같은 구도 도식 2개 나란히 → ② 그래서 언제 무엇을 쓰나: explanation `constraint` → 필요하면 closing `action`.
 - 시안: header(문장형 리드: 비교 대상 + 핵심 차이) → ① 무엇이 다른가: 화면 와이어프레임 2장 나란히(diagram wireframe) → ② 직접 눌러 보기: mockup-frame 2개 → ③ 고르면 달라지는 점: diff-rows 3행 이내 → 문서 끝 closing `decision`(상황별 추천·결정 요청, [closing](../blocks/closing.md)). 요약 행에 결정 행이 있으면 closing은 생략하거나 `action`으로 짧게.
-- 결정: header(요약 행: 문제 / 추천 / 결정 필요) → ① 옵션별 비용·시간: 전/후 막대(diagram bars) → ② 옵션 비교: side-by-side 결정 변형(같은 축으로 장점·비용·위험) → ③ 고르면 생기는 일: 연결 그래프(diagram graph, 영향받는 곳만 블루).
-- 전/후: header(h1 → hero 결론 수치(있을 때) → 요약 행: 이전 / 현재 / 결정 필요) → ① 어디가 바뀌나: 와이어프레임 또는 연결 그래프 → ② 얼마나: 전/후 막대 → ③ 바뀐 행: diff-rows.
+- 결정: header(요약 행, 라벨은 [header.md](../blocks/header.md) 라벨 표) → ① 옵션별 비용·시간: 선택지 비교 막대(diagram bars 선택지 비교 형태) → ② 옵션 비교: side-by-side 결정 변형(같은 축으로 장점·비용·위험) → ③ 고르면 생기는 일: 연결 그래프(diagram graph, 영향받는 곳만 블루).
+- 전/후: header(h1 → hero 결론 수치(있을 때) → 요약 행, 라벨은 [header.md](../blocks/header.md) 라벨 표) → ① 어디가 바뀌나: 와이어프레임 또는 연결 그래프 → ② 얼마나: 전/후 막대 → ③ 바뀐 행: diff-rows.
 
 결정 변형의 요약 행 `추천` 값은 상황 조건을 붙인 한 줄로 쓴다(예: `속도가 중요하면 B안`).
 전/후 변형의 히어로는 h1 바로 아래(요약 행 위) 수치 1개다([hero](../blocks/hero.md)). 이미 결정된 경우 요약 행 라벨 `결정 필요` 대신 `정함`을 쓴다(값은 고른 안 한 줄).
@@ -113,7 +115,7 @@ Deck Type **Decision**: `<main class="d0-deck" data-pattern="compare" data-varia
 
 | 장 | `data-kind` |
 | --- | --- |
-| 결정할 것 | `cover`(h1 = 결정 문장, 요약 3행 `문제` / `추천` / `결정 필요`) |
+| 결정할 것 | `cover`(h1 = 결정 문장, 대표 도식 + 요약 0~1행 `결정 필요`만. 문제·추천은 도식·리드에 흡수, [slide-deck](../blocks/slide-deck.md) 커버 변형) |
 | 판단 기준 | 근거(생략, 기준 축을 그린 그림 + 요점) |
 | 선택지 | `breakdown` 또는 근거([side-by-side](../blocks/side-by-side.md) 와이어 카드) |
 | 트레이드오프 | `evidence`(옵션별 막대, 같은 축) |

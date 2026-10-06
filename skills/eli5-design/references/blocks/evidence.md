@@ -1,11 +1,11 @@
 # evidence — 주장과 근거
 
 공용 정보 블록이다. **Claim(주장 한 줄) + Proof(근거)**를 한 짝으로 묶는다. 어느 패턴에서나 "그래서 왜 그렇게 말할 수 있나"를 보일 때 쓴다.
-예: `B안이 더 적합하다` / `새 요청 10건 중 10건 수용`.
+예: `B안이 더 잘 맞아요` / `새 요청 10건 중 10건 수용`.
 
 ## 해부 구조
 
-- **Claim.** 결론 한 줄(15px/600 grey-900). 주제명이 아니라 주장이다(`처리 시간` ✕ → `처리 시간이 절반으로 줄었다` ○).
+- **Claim.** 결론 한 줄(15px/600 grey-900). 주제명이 아니라 주장이다(`처리 시간` ✕ → `처리 시간이 절반으로 줄었어요` ○). 말투는 출력의 말투를 따른다(page 해요체, SKILL.md 말투).
 - **Proof.** 주장을 받치는 근거 하나. 표현 방식(`data-proof`)은 넷 중 하나다.
 
   | `data-proof` | 근거 모양 | 마크업 |
@@ -30,11 +30,11 @@ evidence는 "무엇을 근거로"(측정·출처·사례), [explanation](explana
 ```html
 <dl class="d0-evidence">
   <div data-proof="number">
-    <dt>B안이 새 요청을 다 받는다</dt>
+    <dt>B안은 새 요청을 다 받아요</dt>
     <dd><data value="10">10건 중 10건</data><span>지난 4주 새 요청 기준</span></dd>
   </div>
   <div data-proof="source">
-    <dt>A안은 월말에 느려진다</dt>
+    <dt>A안은 월말에 느려져요</dt>
     <dd>월말 사흘 동안 대기열이 평소의 세 배였어요.<small>출처: 내부 집계(합성)</small></dd>
   </div>
 </dl>
@@ -42,7 +42,7 @@ evidence는 "무엇을 근거로"(측정·출처·사례), [explanation](explana
 <!-- Proof가 전/후일 때: before-after를 Proof 안에 넣는다 -->
 <dl class="d0-evidence">
   <div data-proof="before-after">
-    <dt>받을 묶음을 먼저 고르면 다시 받는 일이 줄었다</dt>
+    <dt>받을 묶음을 먼저 고르면 다시 받는 일이 줄어요</dt>
     <dd>
       <div class="d0-ba" data-kind="improve">
         <div data-side="before"><span class="d0-ba__label">기존</span><p>전체를 받은 뒤 엑셀에서 지워요.</p></div>

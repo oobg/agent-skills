@@ -39,6 +39,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | 새로 필요한 것 | 어디에 더하나 |
 | --- | --- |
 | 새 모양 | 기존 블록의 `data-variant` |
+| 기존 블록에 클래스 하나(도식 표식, 상태 하나) | 새 블록이 아니라 variant 범주다. 그 블록 파일의 공용 CSS에 토큰만 쓰는 클래스로 더한다(예: [diagram.md](blocks/diagram.md) 흔한 표식 표) |
 | 새 배치 | Layout(구도, [composition.md](composition.md)) |
 | 새 조합 | Recipe([recipes.md](recipes.md)) |
 | 새 의미 구조가 둘 이상 패턴에서 반복해 필요 | 그때만 새 공용 블록 |
@@ -48,6 +49,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 - 페이지는 [shell.md](blocks/shell.md)에서 시작한다. day0-design의 `tokens.css` 전체를 수정 없이
   메인 `<style>` 맨 앞에 인라인하고(폰트 `@font-face` `<style>`은 그 앞 별도 요소), day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 `<link>`로 걸지 않는다.
 - 색·radius·그림자·모션·자간·행간·글꼴은 `var(--d0-*)`만 쓴다. tokens.css에 없는 이름을 만들지 않는다(표면 `#fff`만 예외).
+  글(본문) 행간의 예외는 설명 문단(`p`, explanation `dd`)의 1.65다([shell.md](blocks/shell.md) 행간 예외).
   tokens.css에 없는 간격·폭·제목 크기는 shell.md의 타이포·여백 스케일을 px로 쓴다.
 - **그림이 주인공이다.** 그림 블록은 diagram(핀 오버레이 `pins` 포함), thumb-cards, tab-preview, mockup-frame, timeline의 SVG 시간 막대(`data-variant="timebar"`),
   kpi-cards 막대 변형(`data-variant="bar"`), side-by-side 와이어 카드(`.d0-option__wire`), step-columns 그림 변형(`data-variant="figure"`),
@@ -64,8 +66,8 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 - **한 사실은 한 번.** 결론 수치는 [hero.md](blocks/hero.md) 한 곳에 두고 요약 행·섹션 제목·KPI·callout에서 되풀이하지 않는다
   (같은 숫자 문자열 페이지당 2회 이하, SKILL.md 원칙 8번).
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
-  행 목록의 행 구분선만. 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
-- **줄 길이.** 본문 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md) 제외) `p`가 아니라 블록 레이아웃(2열 grid, 그림 옆 배치)으로 줄인다.
+  행 목록의 행 구분선만(closing 문장 아래·checkpoint 뒤 grey-200 한 줄은 블록 부품 예외, [shell.md](blocks/shell.md) 금지 절). 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
+- **줄 길이.** 본문 한 줄은 공백 포함 50자 이하다(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md) 제외). `p`가 아니라 글 블록 컨테이너(32em)나 2열로 줄인다. 측정값·방법의 정본은 [shell.md](blocks/shell.md) 줄 길이 절이다.
 - **두 섹션 나란히.** 두 질문이 나란히 읽혀도 되면 [shell.md](blocks/shell.md)의 `.d0-split` 레이아웃을 쓴다.
   한쪽 높이가 다른 쪽의 1.5배를 넘으면 나란히 두지 않는다([shell.md](blocks/shell.md) 높이 기준).
   두 섹션이 모두 무대 위 그림이면 `data-align="stage"`로 머리·무대·캡션 줄을 맞춘다. 그림 없는 섹션이 섞이면 기본(`align-items: start`)이다.

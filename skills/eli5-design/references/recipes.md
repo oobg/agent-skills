@@ -5,6 +5,8 @@
 섹션 수는 레시피가 아니라 독자 질문이 정한다(SKILL.md 원칙 4번). 레시피를 썼으면 `<main class="d0-page" data-recipe="...">`로 표시한다(선택).
 
 각 섹션은 `질문 → Pattern(섹션 data-pattern) → 추천 Block` 순서로 적는다. Pattern 칸이 `—`이면 단일 정보 요구라 Block으로 바로 답한다.
+**표의 첫 행이 첫 화면 섹션이다.** 첫 행에는 첫 화면 규칙(SKILL.md 원칙 2·3번: 도식이 첫 화면 안, 그림 면적 > 글 면적)을 통과할 그림이 있는 질문을 둔다. 순서를 바꿀 때도 이 조건을 지킨다.
+높이 12px 비율 막대(`data-variant="ratio"`)만으로는 면적이 모자라므로 첫 화면에서는 전/후 막대·그래프·와이어프레임처럼 면이 있는 그림을 주 그림으로 둔다.
 공용 Block: [explanation](blocks/explanation.md) · [evidence](blocks/evidence.md) · [before-after](blocks/before-after.md) · [checkpoint](blocks/checkpoint.md) · [status rail](blocks/timeline.md) · [question-answer](blocks/faq.md) · [closing](blocks/closing.md).
 
 ## 장애 회고 `postmortem`
@@ -15,7 +17,7 @@ incident + timeline + evidence + before-after + closing.
 
 | 질문 | Pattern | 추천 Block |
 | --- | --- | --- |
-| 무슨 일이 있었고 지금 어떤가? | `incident` | 첫 화면 영향 그래프, 히어로 또는 요약 행 `발생 / 복구 / 영향`, explanation `impact` |
+| 무슨 일이 있었고 지금 어떤가? | `incident` | 첫 화면 영향 그래프, 히어로 또는 요약 행([header](blocks/header.md) 라벨 표), explanation `impact` |
 | 무슨 순서로 일어났나? | `timeline` | SVG 시간 막대 + 세로 타임라인, 원인이 확정된 지점에 checkpoint(`여기서 원인 확정`), 인지가 늦은 이유는 explanation `reason` |
 | 왜 생겼고 왜 못 막았나? | `incident` | 직접 → 근본 원인 graph, 옆 열에 evidence(어떻게 확인했나), explanation `constraint` |
 | 무엇을 고쳤나? | — | before-after `fix`(문제 → 수정) |
@@ -31,13 +33,13 @@ report + timeline + compare + faq.
 
 | 질문 | Pattern | 추천 Block |
 | --- | --- | --- |
-| 무엇이 나갔고 지금 상태는? | `report` | 첫 화면 완료 범위 비율 막대 또는 전/후 막대, 상태 배지, evidence(측정 근거) |
+| 무엇이 나갔고 지금 상태는? | `report` | 첫 화면 전/후 막대(완료 범위 비율 막대는 보조로), 상태 배지, evidence(측정 근거) |
 | 일정은 어디쯤인가, 다음은 언제인가? | `timeline` | status rail(준비 · 출시 · 확대), 시간 막대, 밀린 이유는 explanation `reason` |
 | 이전과 무엇이 다른가? | `compare` | before-after `improve`(기존 → 개선), 누구에게 달라지는지 explanation `impact` |
 | 자주 묻는 것은? | `faq` | question-answer 3~5개 |
 | 무엇을 해 주길 바라나? | — | closing `request` 또는 `action` |
 
-- **덱으로 낼 때.** `<main class="d0-deck" data-pattern="report" data-variant="results" data-recipe="launch-report">`. [report](patterns/report.md)의 결과·지표 스토리라인을 따른다. FAQ는 덱에 넣지 않고 page로 둔다.
+- **덱으로 낼 때.** `<main class="d0-deck" data-pattern="report" data-variant="results" data-recipe="launch-report">`. [report](patterns/report.md)의 결과·지표 스토리라인을 따른다. FAQ는 덱에 넣지 않고 page로 둔다. 발표 없이 메일·메신저로 돌려 읽히는 출시 보고면 `data-delivery="read"`(Slidedoc)로 내고, 장마다 측정 근거·출처를 글 그릇에 담는다.
 
 ## 설치 가이드 `install-guide`
 
@@ -72,14 +74,14 @@ preview + flow + compare + faq.
 
 ## 의사결정 문서 `decision-doc`
 
-context + compare + evidence + trade-off + decision.
+compare + context + evidence + trade-off + decision.
 
 - **독자·목적.** 결정권자. 배경과 근거를 보고 트레이드오프를 이해한 뒤 하나를 고르게 한다.
 
 | 질문 | Pattern | 추천 Block |
 | --- | --- | --- |
-| 왜 지금 정해야 하나? | — 또는 `report` | 첫 화면 문제 크기 막대·비율 도식 + explanation `context`, 요약 행 `문제 / 추천 / 결정 필요` |
-| 무엇과 무엇을 견주나? | `compare` | 결정 변형: side-by-side 와이어 카드, 같은 비교축 |
+| 무엇과 무엇을 견주나? | `compare` | 첫 화면 결정 변형: side-by-side 와이어 카드(또는 선택지 비교 막대), 같은 비교축, 결정 요약 행([header](blocks/header.md) 라벨 표) |
+| 왜 지금 정해야 하나? | — 또는 `report` | explanation `context`. 문제 크기가 숫자면 전/후 막대를 이 섹션에 둔다(첫 화면에 두지 않는다) |
 | 근거는? | — | evidence(number·source), 숫자 크기는 kpi-cards 막대 변형 |
 | 무엇을 얻고 무엇을 포기하나? | `compare` | 고르면 생기는 일 graph + explanation `constraint`(이 조건이면 답이 바뀐다) |
 | 무엇을 결정해 주길 바라나? | — | 요약 행 결정 행 또는 closing `decision` 중 한 곳 |
@@ -94,7 +96,7 @@ report + timeline + risk + next.
 
 | 질문 | Pattern | 추천 Block |
 | --- | --- | --- |
-| 지금 어떤 상태이고 무엇이 달라졌나? | `report` | 첫 화면 상태 배지 + 비율 막대 또는 전/후 막대, evidence, 달라진 이유 explanation `reason` |
+| 지금 어떤 상태이고 무엇이 달라졌나? | `report` | 첫 화면 상태 배지 + 전/후 막대 또는 일정 시간 막대(비율 막대는 보조로), evidence, 달라진 이유 explanation `reason` |
 | 일정은 어디쯤인가? | `timeline` | status rail 또는 시간 막대(오늘 표식), 밀리면 explanation `impact` |
 | 무엇이 위험한가? | `report` | diff-rows 위험 행(영향·대응) |
 | 다음에 누가 무엇을 하나? | — | checklist 담당 변형, 가장 중요한 하나는 closing `request` |

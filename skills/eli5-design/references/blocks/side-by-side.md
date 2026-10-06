@@ -14,6 +14,8 @@
 
 - `data-variant="mock"`(시안): 각 열이 직접 눌러 보는 미니 프로토타입이다. 안의 버튼이 실제로 반응한다.
 - `data-variant="decision"`(결정): 같은 순서의 `장점·비용·위험` 행. 추천 열에만 추천 이유 한 줄(`.d0-option__why`)을 붙인다.
+- **추천했지만 결정 전(`data-recommended`).** 추천안 카드에 `data-recommended` + h3 옆 `추천` 배지(`data-tone="blue"`) + 이유 한 줄(`.d0-option__why`)만 둔다. 아직 고른 것이 아니므로 `data-selected`·2px blue 테두리·고르기 버튼이 없다. 결정이 나면 `data-selected` + `고른 안`으로 바꾼다.
+- 변형 이름표가 없으면(개념 비교) 추천·선택 상태 없이 같은 구도의 카드만 나란히 둔다.
 - **와이어 카드(`.d0-option__wire`).** 옵션 카드마다 h3 바로 아래 글자 없는 와이어프레임 SVG(`role="img"` + `<title>`)를 두면 이 블록은
   **그림 블록으로 인정된다.** 수치 없는 결정 비교(어느 구조·배치로 갈까)의 대표 도식은 이 형태다. 결정 변형의 행과 함께 쓴다.
 
@@ -24,7 +26,7 @@
   <article class="d0-option">
     <h3>A안: 순서까지 고정</h3>
     <svg class="d0-option__wire" viewBox="0 0 240 140" role="img" aria-labelledby="oa-t">
-      <title id="oa-t">A안: 모든 페이지가 같은 칸 네 개를 같은 순서로 쓴다</title>
+      <title id="oa-t">A안: 모든 페이지가 같은 칸 네 개를 같은 순서로 써요</title>
       <rect class="d0-s-frame" x="1" y="1" width="238" height="138" rx="10"/>
       <rect class="d0-s-accent" x="16" y="16" width="208" height="20" rx="5"/>
       <rect class="d0-s-fill" x="16" y="44" width="208" height="20" rx="5"/>
@@ -36,7 +38,7 @@
   <article class="d0-option" data-selected>
     <div class="d0-section-head__title"><h3>B안: 조각만 고정</h3><span class="d0-pill" data-tone="blue">고른 안</span></div>
     <svg class="d0-option__wire" viewBox="0 0 240 140" role="img" aria-labelledby="ob-t">
-      <title id="ob-t">B안: 조각 모양은 같고, 고르는 조각과 순서는 페이지마다 다르다</title>
+      <title id="ob-t">B안: 조각 모양은 같고, 고르는 조각과 순서는 페이지마다 달라요</title>
       <rect class="d0-s-frame" x="1" y="1" width="238" height="138" rx="10"/>
       <rect class="d0-s-accent" x="16" y="16" width="100" height="48" rx="6"/>
       <rect class="d0-s-fill" x="124" y="16" width="100" height="48" rx="6"/>
@@ -50,7 +52,7 @@
 
 ```css
 /* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
-.d0-option__wire { display: block; width: 100%; height: auto; }
+.d0-option__wire { display: block; width: 100%; max-width: 360px; height: auto; } /* 폭 상한: diagram.md 폭 상한 절(기본 360) */
 .d0-option[data-selected="fill"] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
 ```
 

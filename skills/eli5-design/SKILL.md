@@ -30,12 +30,13 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드,
    페이지당 최대 1개이고 **실제 숫자일 때만** 쓴다(문구·대답 금지). 96px 이상 숫자는 Impact 띠 안에서만 쓴다. 정본: `references/blocks/diagram.md` 장르 절.
    kpi-cards 막대 변형(`data-variant="bar"`)은 도식으로 인정한다. 막대 없는 kpi-cards는 그림이 아니다.
    **첫 화면**은 1280×800 뷰포트에서 도식의 bounding box가 전부 보이는 것(잘리면 실패), 375×812에서는
-   첫 그림 블록 높이의 절반 이상이 첫 화면 안에 보이는 것이다(윗부분만 걸치면 실패).
+   첫 그림 블록 높이의 절반 이상이 첫 화면 안에 보이는 것이다(윗부분만 걸치면 실패). 320×568은 첫 그림 블록의 위 끝이 첫 화면 안에 들어오면 충분하다(면적 규칙은 1280×800에만 적용).
 3. **첫 화면은 보여 준다.** 결과물·화면·데이터가 있으면 설명하지 말고 목업이나 눌러 보는 프로토타입으로 보인다.
    **첫 화면(1280×800) 안에서** 그림·목업 면적이 글 면적보다 크다. 이 면적 규칙은 첫 화면에만 적용한다.
    그 아래 섹션은 그림이 필수가 아니다. 핵심 구조(관계·순서·크기·모양)가 있는 섹션은 그림을 권장하고, 구조를 글로 길게 풀지 않는다.
    그림이 컨테이너 폭의 절반만 쓰고 옆을 비우지 않는다. **그림을 키워서 채우지 않고** 관련 explanation을 그림 옆 열에 두거나(`references/blocks/explanation.md`),
    `.d0-split`(2열 split 우선), `data-layout="side"`, `.d0-cols` 2열, 짧은 주석 열로 채운다(`references/composition.md` 무대와 상자).
+   단 **첫 화면 섹션**(`.d0-split`으로 시작하면 짝 섹션 포함)에서는 explanation을 그림 옆 열·옆 섹션에 두지 않고 그림 아래에 둔다. 옆은 figcaption·짧은 주석·범례만 채운다(옆 글 열이 그림 면적을 이기지 않게).
    글자 없는 SVG·와이어프레임도 기본 360px(`data-size="wide"` 400px) 상한이다. 전체 폭 그림은 가로로 긴 타임라인·단계 줄만, 최대 720px이다.
 4. **섹션은 독자 질문으로 정한다.** 섹션 하나는 독자 질문 하나에 답한다. 다른 질문은 별도 섹션으로 나누고, 같은 질문에 답하는 블록은 한 섹션에 합친다.
    섹션 수에 목표나 하한은 없다. 핵심 질문에 답하지 못하면 실패이고, 7개를 넘으면 묶을 수 있는 질문이 있는지 재검토한다(경고).
@@ -54,8 +55,9 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드,
    `time`·`data`·`progress`·`details`·`dialog`·`button`/`a`). 레이아웃·스타일 훅용 `div`·`span`
    (배지, 라벨, 그리드 묶음)은 허용한다. 빈 간격용 요소는 금지다. 블록별 태그는 `references/blocks.md`
    공통 규칙을 따르고, ARIA는 네이티브 요소로 안 될 때(탭 등)만 쓴다.
-8. **한 사실은 한 번.** 숫자·결정은 정본 위치 하나에만 본문으로 둔다. 같은 숫자 문자열(예 `26분`)은 렌더 텍스트에
-   페이지당 2회 이하. 결정은 요약 행 또는 할 일 중 한 곳에 두고 다른 곳은 짧은 참조만 쓴다.
+8. **한 사실은 한 번.** 숫자·결정은 정본 위치 하나에만 본문으로 둔다. 같은 숫자 문자열(예 `26분`)은 화면에 보이는 텍스트에
+   페이지당 2회 이하다. 세는 범위는 `body.innerText`다(SVG `<text>`는 이미 들어 있으므로 따로 더하지 않고, SVG `<title>`·`<desc>`는 들어 있지 않아 세지 않는다).
+   closing 메타(`dl.d0-closing__meta`·`dl.d0-slide__meta`)와 덱 제목 목차는 앞 사실을 가리키는 자리라 빼고 센다. 결정은 요약 행 또는 할 일 중 한 곳에 두고 다른 곳은 짧은 참조만 쓴다.
    요약 행 값은 데스크톱 한 줄(약 35자 이내), 용어 풀이는 `abbr` 또는 괄호 중 하나만 처음 등장 시 1회.
    **중복 제거는 맥락 제거가 아니다.** 같은 숫자·결정을 되풀이하지 말라는 규칙이지, 그 숫자가 왜 나왔는지·무엇을 뜻하는지·어떤 조건에서 달라지는지를 지우라는 규칙이 아니다.
    그림이 이미 보여 준 모양은 글로 반복하지 않고, 그림이 보여 줄 수 없는 이유·조건·영향은 explanation, 근거는 evidence로 남긴다.
@@ -63,14 +65,14 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드,
    - **결론 히어로.** 결론 수치가 있는 보고·전/후 비교·사건 페이지는 h1 바로 아래(요약 행 위)에 결론 수치 1개를
      `d0-hero`로 둔다. 전 값(작게, grey-600, 취소선 없음) → 후 값(44px/600, 모바일 36, 단위는 숫자와 같은 크기) + 단위 + 한 줄 뜻(15px grey-600).
      수치가 없으면 생략한다. 정본: `references/blocks/hero.md`.
-   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄이 약 50자를 넘으면(`code`·`pre`·명령어 줄·code-block은 제외) `p`를 좁히지 않고 블록 레이아웃으로 줄인다
-     (2열 grid로 행 나누기, 그림 옆 배치). 개행 규칙의 `max-width` 금지는 그대로다.
-   - **타이포 대비.** h1 32px/700(display 자간·행간), h2 20px/700(title 자간), 본문 15px/400 grey-800(`p` 행간 1.65),
+   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄은 공백 포함 50자 이하다(`code`·`pre`·명령어 줄·code-block은 제외). `p`를 좁히지 않고 글 블록 컨테이너를 32em으로 두거나 2열로 나눈다.
+     개행 규칙의 `p` `max-width` 금지는 그대로다. 측정값과 방법의 정본은 `references/blocks/shell.md` 줄 길이 절이다.
+   - **타이포 대비.** h1 32px/700(display 자간·행간), h2 20px/700(title 자간), 본문 15px/400 grey-800(`p` 행간 1.65, 토큰 규칙의 예외로 `references/blocks/shell.md` 행간 예외),
      보조 14px/400 grey-600, 라벨 12px/600 grey-600(대문자 변환 없음; grey-500은 선·화살표 같은 그래픽에만). 숫자는 전부 `tabular-nums`.
      explanation은 라벨 14px/600 grey-900 + 설명 15px grey-700이다. 모바일(≤640px) h1 26, h2 18, 히어로 숫자 36.
    - **여백 리듬.** 섹션 사이 64px(모바일 48), 섹션 안 블록 간 24px, 제목↔설명 8px, 페이지 상단 패딩 64.
      Impact 띠는 선택이고 페이지당 0~1개다. 구분선 대신 띠 경계를 쓰고, 띠 안 위아래 패딩 48(모바일 32) + 띠 경계↔이웃 섹션 16으로 섹션 사이가 일반과 같은 64px(모바일 48)이다. 띠 안에는 문장 하나(32/700, 모바일 24) 또는 숫자 하나(64, 모바일 48)만 두고 editorial을 넣지 않는다(`references/blocks/shell.md` 강조 면 절).
-     디바이더는 섹션 경계 1px grey-100과 행 목록의 행 구분선만 쓴다.
+     디바이더는 섹션 경계 1px grey-100과 행 목록의 행 구분선만 쓴다. closing 문장 아래·checkpoint 뒤 1px grey-200 한 줄은 블록 부품이라 예외다(`references/blocks/shell.md` 금지 절).
    - **그림 무대.** 회색 무대는 기본 없음이다. 무대가 필요할 때만 도식 SVG를 `figure.d0-fig[data-stage]` 안 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
      figcaption은 그림(무대) 밖 아래 13px grey-600. 쓰는 기준은 `references/composition.md`. SVG 선은 기본 1.5·강조 2.5, round cap/join, 노드 그림자 없음.
    - **강조 순서.** 크기 → 위치 → 여백 → 무게 → 색. 색은 마지막 수단이다. 구도·강조 3단계·밀도 리듬은 `references/composition.md`가 정본이다.
@@ -139,8 +141,9 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 - 토큰: `day0-design/references/tokens.css` **파일 전체를 수정 없이** 메인 `<style>` 맨 앞에 붙여 넣는다.
   토큰을 외부 `<link>`로 걸지 않는다(artifact CSP 차단, 발행 후 소리 없는 변경, 오프라인 깨짐).
+  파일 머리 주석(출처 경로·메모)도 원문 그대로 둔다. 예시 데이터의 "실제 회사·제품 이름 금지"는 페이지 내용에 대한 규칙이라 이 주석에는 적용하지 않는다.
 - 규칙: day0-design `SKILL.md`의 스택 규칙·컴포넌트 원칙을 따른다.
-- **우선순위.** 설명 페이지의 타이포 스케일(h1 32 / h2 20 / 본문 15, 원칙 9번)과 페이지 여백은 이 스킬 값이
+- **우선순위.** 설명 페이지의 타이포 스케일(h1 32 / h2 20 / 본문 15, 설명 문단 행간 1.65, 원칙 9번)과 페이지 여백은 이 스킬 값이
   day0-design보다 우선한다. 색·radius·모션·컴포넌트 규칙은 day0-design을 따른다.
 - 금지: `day0-design/references/anti-patterns.md`를 함께 적용한다.
 
@@ -168,7 +171,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | 섹션·슬라이드를 구성할 때(구도, 강조 3단계 `data-emphasis`, 밀도 리듬, 회색 무대를 쓰는 기준) | `references/composition.md` |
 | 출력 형식이 deck일 때(덱 구성, 슬라이드 종류, Impact 비율, Slide Gate) | `references/output/deck.md` |
 | 출력 형식이 deck일 때 마크업·CSS·JS(16:9 한 장 보기, 네비, 키보드, 인쇄, 덱 게이트) | `references/blocks/slide-deck.md` |
-| artifact로 발행하기 직전(폰트 인라인) | `scripts/subset_font.py` (Pretendard 서브셋 `@font-face` 생성) |
+| 결과물 HTML을 넘기기 직전(폰트 인라인, 발행 여부와 무관) | `scripts/subset_font.py` (Pretendard 서브셋 `@font-face` 생성) |
 
 ## 패턴 판별
 
@@ -224,8 +227,9 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 - **page.** 섹션마다 `data-pattern="compare|flow|preview|report|guide|timeline|incident|faq"`를 단다(`main > section`, `main > .d0-split > section`).
   패턴 변형은 같은 섹션의 `data-variant`로 단다. 레시피를 썼으면 `<main class="d0-page" data-recipe="...">`(선택). 패턴이 없는 섹션은 `data-pattern`을 생략한다.
 - **deck.** 덱은 스토리라인 하나가 필요하므로 루트에 주 패턴 하나를 단다: `<main class="d0-deck" data-pattern="..." data-variant="...">`(필수). 레시피로 짠 덱이면 `data-recipe`를 더한다.
+  루트 `data-pattern`은 스토리라인을 이끄는 주 패턴의 이름표일 뿐이다. 다른 패턴의 내용도 장 단위로 섞어 넣는다(`references/output/deck.md` 루트 마크업).
 - 이름표일 뿐 스타일은 바꾸지 않는다(덱 표지 비율처럼 정본 파일이 정한 예외만).
-- 변형 이름표 목록(정본): compare `prototype`(시안)·`decision`(결정)·`before-after`(전/후), guide `practice`(사용 가이드, 따라하기는 생략), timeline `roadmap`·`changelog`, report `status`(기본)·`results`·`executive`·`proposal`. flow·preview·incident·faq는 변형이 없다.
+- 변형 이름표 목록(정본): compare (생략 = 개념 비교)·`prototype`(시안)·`decision`(결정)·`before-after`(전/후), guide `practice`(사용 가이드, 따라하기는 생략), timeline `roadmap`·`changelog`, report `status`(기본)·`results`·`executive`·`proposal`. flow·preview·incident·faq는 변형이 없다.
 - 예전 이름표는 이렇게 옮긴다: 페이지 루트의 옛 변형 이름표 `data-variant` → 해당 섹션의 `data-pattern` + `data-variant`, 덱 루트의 옛 `data-preset` → `data-pattern`. 예전 slides 변형의 대응은 `references/output/deck.md`.
 
 ## 출력 형식 판별 (page | deck)
@@ -239,13 +243,15 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 page와 deck은 같은 Pattern·Block을 쓴다. 다른 것은 밀도다: page는 explanation·evidence로 맥락까지 담고, deck은 한 장 한 주장으로 같은 블록을 줄여 쓰며(예: evidence는 `evidence` 슬라이드, closing은 마지막 장) 남는 말은 발표자가 한다.
 
+**말투.** page는 해요체, deck은 제목·본문·해석을 `-다`체로 쓴다. 한 출력 안에서 섞지 않는다. 사용자가 준 문구와 인용, deck의 마지막 장 요청 문장(`정해 주세요`)과 네비 안내(`←/→로 넘겨요`)처럼 독자에게 직접 말하는 UI 문구는 그대로 둔다.
+
 덱 하위 모드는 발표자와 함께 보는 Presentation(`data-delivery="present"`, 기본) 또는 혼자 읽는 Slidedoc(`data-delivery="read"`) 하나로 정하고 덱 안에서 섞지 않는다.
 Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부터 통과하고 Slide·Visual·Ending과 구현 게이트를 본다.
 
 **deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명(Slidedoc 맥락 줄은 전달 모드 표의 줄 수 상한을 따른다),
 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한, Page Depth Gate 대신
 `references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 전달 모드별 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
-결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
+결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차·closing 메타 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 ## 개행 규칙
 
@@ -269,9 +275,9 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 ## 출력 형식
 
 - **단일 self-contained HTML 파일**을 만든다. 호스트에 artifact 발행 기능이 있으면 발행한다.
-- **폰트.** artifact로 발행할 때는 `scripts/subset_font.py`로 페이지 글자만 담은 Pretendard 서브셋 `@font-face`를 인라인해 외부 요청을 0건으로 만든다.
-  일반 HTML 파일은 Pretendard Variable jsDelivr `<link>` 하나를 허용한다. 도구를 못 쓰면(파이썬·원본 폰트 없음) 링크를 유지하고,
-  artifact에서는 링크가 막혀 시스템 폰트로 대체된다고 사용자에게 알린다. 그 밖의 외부 리소스는 없다. CSS·SVG·JS는 인라인이다.
+- **폰트.** 결과물 HTML을 넘기는 모든 경우(파일 전달, artifact 발행)의 기본은 `scripts/subset_font.py`로 페이지 글자만 담은 Pretendard 서브셋 `@font-face`를 인라인해 외부 요청을 0건으로 만드는 것이다. 발행 여부와 무관하다.
+  도구를 못 쓸 때(파이썬·원본 폰트 없음)만 Pretendard Variable jsDelivr `<link>` 하나를 두고, 외부 요청이 1건 남으며 artifact에서는 링크가 막혀 시스템 폰트로 대체된다고 사용자에게 알린다.
+  그 밖의 외부 리소스는 없다. CSS·SVG·JS는 인라인이다.
 - 인라인 `@font-face`는 메인 `<style>` **앞**의 별도 `<style>`이다. "tokens.css는 메인 `<style>` 맨 앞" 규칙과 충돌하지 않는다.
 - **라이트 온리.** `:root { color-scheme: light; }`와 `body` 배경색을 명시해 다크 호스트에서도 깨지지 않게 한다. 다크 팔레트를 추가하지 않는다.
 - 모바일 폭에서 좌우 16px 거터, 가로 스크롤 없음.
@@ -301,8 +307,8 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 8. **작성.** `references/blocks/shell.md` 스니펫에서 시작해 고른 블록 파일의 스니펫을 붙인다. 블록 해부대로 짓고, 섹션마다 `data-pattern`을 단다.
    설명은 한 라벨 아래 3문장 이내, 용어는 비유로 푼다.
 9. **게이트.** 아래 출력 게이트를 통과할 때까지 고친다. page는 Page Depth Gate를, deck은 Slide Gate를 의미 검사로 먼저 본다.
-10. **발행 직전 폰트 인라인.** artifact로 발행하면 글자를 다 고친 뒤 `scripts/subset_font.py`로 서브셋 `@font-face`를 만들어
-    jsDelivr `<link>` 자리에 넣는다(글자가 바뀌면 다시 만든다). 도구가 없으면 링크를 두고 시스템 폰트 대체를 알린다.
+10. **넘기기 직전 폰트 인라인.** 결과물 HTML을 넘기면(파일·artifact 모두) 글자를 다 고친 뒤 `scripts/subset_font.py`로 서브셋 `@font-face`를 만들어
+    jsDelivr `<link>` 자리에 넣는다(글자가 바뀌면 다시 만든다). 도구가 없으면 링크를 두고 외부 요청과 시스템 폰트 대체 가능성을 알린다.
 
 ## 출력 게이트
 
@@ -338,7 +344,7 @@ deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output
 - [ ] 모든 h2에 섹션 태그 pill이 붙어 있지 않다(전부 붙어 있으면 FAIL)
 - [ ] 배지(`.d0-pill`)에 고정 `height`와 `flex: none`이 있다
 - [ ] 배지 톤 종류(`span.d0-pill`의 `data-tone`, 없으면 회색)가 3가지 이하, 카드·행 하나에 배지가 1개 이하, 의미색(`--d0-green`·`--d0-red`·`--d0-orange`)을 글자 `color`로 쓴 곳이 없다
-- [ ] 같은 숫자 문자열(숫자+단위, 예 `26분`)이 렌더 텍스트(`body.innerText`, SVG `<text>` 포함)에 2회 이하다
+- [ ] 같은 숫자 문자열(숫자+단위, 예 `26분`)이 화면에 보이는 텍스트(`body.innerText` 기준. SVG `<text>`는 이미 포함되므로 따로 더하지 않고, SVG `<title>`·`<desc>`는 제외)에 2회 이하다. closing 메타 `dd`와 덱 제목 목차는 빼고 센다
 - [ ] 무대를 쓴 도식 `figure.d0-fig[data-stage]`는 SVG가 `.d0-fig__stage` 패널 안에 있고 figcaption은 패널 밖에 있다(회색 무대는 기본 없음, 쓰는 기준은 `references/composition.md`)
 - [ ] kpi-cards에 증감 배지가 없다
 - [ ] `data-pattern` 값이 있으면 패턴 8개 중 하나다
@@ -350,7 +356,7 @@ deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output
 - [ ] `color-scheme: light`와 `body` 배경이 있다
 - [ ] tokens.css 전체가 메인 `<style>` 맨 앞에 인라인되어 있고 토큰용 외부 `<link>`가 없다
 - [ ] 한 artifact 안 여러 페이지를 iframe으로 보여 줄 때 iframe `src`로 같은 artifact 파일을 부르지 않는다(`srcdoc` + `sandbox="allow-scripts"`, `allow-same-origin` 없음)
-- [ ] artifact 발행본은 외부 요청이 0건이다(서브셋 `@font-face` 인라인, 도구가 없어 링크를 둔 경우만 예외이고 사용자에게 알렸다). 일반 HTML 파일은 외부 리소스가 Pretendard jsDelivr 링크뿐이다
+- [ ] 결과물 HTML(파일·artifact 모두)은 외부 요청이 0건이다(서브셋 `@font-face` 인라인). 도구가 없어 Pretendard jsDelivr 링크 하나를 둔 경우만 예외이고 사용자에게 알렸다
 - [ ] day0-design `SKILL.md`의 HARD 게이트(토큰 변수만, 리스트는 행+디바이더, 상태는 `data-*`, focus-visible, reduced-motion)
 
 **접근성 (WCAG 2.2 AA 하한)**
@@ -369,9 +375,9 @@ WCAG 3.0은 아직 Working Draft라 방향 참고로만 보고, 판정은 WCAG 2
 
 측정은 브라우저에서 `getBoundingClientRect()`로 한다. 각 항목 괄호 안이 측정 방법이다.
 
-- [ ] 1280×800에서 SVG 도식의 bounding box가 첫 화면 안에 전부 보인다(잘리면 FAIL), 375×812에서는 첫 그림 블록 높이의 절반 이상이 첫 화면 안이다(윗부분만 걸치면 FAIL)
+- [ ] 1280×800에서 SVG 도식의 bounding box가 첫 화면 안에 전부 보인다(잘리면 FAIL), 375×812에서는 첫 그림 블록 높이의 절반 이상이 첫 화면 안이다(윗부분만 걸치면 FAIL). 320×568은 첫 그림 블록의 위 끝이 첫 화면 안이면 통과다
 - [ ] 첫 화면(1280×800) 안에서 그림·목업 면적이 글 면적보다 크다(그림 = `figure`·`svg`·목업 프레임 box, 글 = `p`·`li`·`dd` 텍스트 블록 box의 첫 화면 안 면적 합. 그림 안 글은 그림으로 센다). 첫 화면 아래 섹션은 이 면적 비교를 하지 않는다
-- [ ] 그림이 컨테이너 폭의 절반만 쓰고 옆이 빈 배치가 없다(그림 `figure` box 폭이 부모 폭의 60% 미만이고 같은 줄 옆에 내용이 없으면 FAIL). 채우는 방법은 그림 확대가 아니라 관련 explanation을 그림 옆 열에 두기(`.d0-figtext`), `data-layout="side"`(그림 + 옆 설명), `.d0-split`·`.d0-cols` 2열(그 열 폭을 부모로 잰다), 짧은 주석 열, 비율 막대(`data-variant="ratio"`, 폭 꽉 채움)다. 글자 없는 SVG·와이어프레임도 렌더 폭 360px(`data-size="wide"` 400px) 이하이고, 그보다 넓은 그림은 가로로 긴 타임라인·단계 줄만 최대 720px다. Editorial은 SVG 객체가 작아도 같은 줄에 숫자가 있으므로 `figure` 전체로 잰다. Narrative는 일반 도식과 같다
+- [ ] 그림이 컨테이너 폭의 절반만 쓰고 옆이 빈 배치가 없다(그림 `figure` box 폭이 부모 폭의 60% 미만이고 같은 줄 옆에 내용이 없으면 FAIL). 채우는 방법은 그림 확대가 아니라 관련 explanation을 그림 옆 열에 두기(`.d0-figtext`, 첫 화면 섹션 제외), `data-layout="side"`(그림 + 옆 설명), `.d0-split`·`.d0-cols` 2열(그 열 폭을 부모로 잰다), 짧은 주석 열, 비율 막대(`data-variant="ratio"`, 폭 꽉 채움)다. 글자 없는 SVG·와이어프레임도 렌더 폭 360px(`data-size="wide"` 400px) 이하이고, 그보다 넓은 그림은 가로로 긴 타임라인·단계 줄만 최대 720px다(화면 미리보기 `.d0-shot`·목업 프레임은 제외, `references/blocks/diagram.md` 폭 상한). Editorial은 SVG 객체가 작아도 같은 줄에 숫자가 있으므로 `figure` 전체로 잰다. Narrative는 일반 도식과 같다
 - [ ] 옅은 면의 장면 수를 지킨다(page Impact 띠 1개 이하·blue 무대 1개 이하, deck Impact 20~30%). 색 면적은 아래 Warning으로만 판정한다
 - [ ] 회색만 있는 도식이 없다(도식 `svg`마다 blue 계열 또는 의미색 `fill`·`stroke` 요소가 1개 이상)
 - [ ] 배지가 세로로 늘어나지 않고 제목 첫 줄에 맞춰져 있다(배지 높이 = 22px 또는 20px, 배지 중심과 제목 첫 줄 중심 차 2px 이하)
@@ -379,7 +385,7 @@ WCAG 3.0은 아직 Working Draft라 방향 참고로만 보고, 판정은 WCAG 2
   렌더 글자 크기 = font-size × (SVG 렌더 폭 ÷ viewBox 폭)로 잰다. 글자 박스 높이는 쓰지 않는다(정본: `references/blocks/diagram.md` 라벨 절)
 - [ ] `.d0-split`으로 나란히 둔 두 섹션의 높이 비(긴 쪽 ÷ 짧은 쪽)가 1.5 이하다(1280px에서 두 `section` 높이. 무대 정렬 변형은 두 무대 안 SVG 높이로 잰다. 정본: `references/blocks/shell.md`)
 - [ ] 나란히 둔 두 섹션이 모두 무대 위 그림이면 `data-align="stage"`이고, 1280px에서 좌우 h2 위 끝·무대 위 끝·무대 높이·figcaption 위 끝의 차가 각각 2px 이하다. 375px에서는 1열로 쌓인다
-- [ ] 본문 텍스트 블록 한 줄이 50자 이하다(실제 줄 글자 수, 또는 텍스트 블록 폭 ÷ (15px × 0.95) 근사. `code`·`pre`·명령어 줄은 제외)
+- [ ] 본문 텍스트 블록 한 줄이 공백 포함 50자 이하다(렌더된 줄마다 공백까지 센 실제 글자 수. 폭 근사식은 쓰지 않는다. `code`·`pre`·명령어 줄은 제외. 정본: `references/blocks/shell.md` 줄 길이 절)
 - [ ] 히어로가 있으면 히어로 수치가 1280×800 첫 화면 상단 1/3(y ≤ 267px) 안에 있다
 - [ ] 페이지 섹션 사이 세로 간격이 64px(모바일 48px)이다(앞 섹션 마지막 블록 아래 끝 ~ 다음 섹션 `header` 위 끝, 오차 ±4px). Impact 띠(`data-emphasis="impact"`) 앞뒤도 같은 64px(모바일 48px)이다(띠 경계↔이웃 섹션 내용 16px + 띠 안 패딩 48px, 모바일 16 + 32)
 - [ ] 옆 영역이 남는데 줄이 바뀐 설명 문단이 없다(문단 폭이 부모의 content box 폭(패딩 제외), grid 안이면 그 열 폭보다 24px 이상 좁은데 2줄 이상이면 FAIL. callout·카드 패딩이나 열 폭을 남는 영역으로 세지 않는다)

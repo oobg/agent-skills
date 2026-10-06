@@ -5,6 +5,8 @@
 
 덱을 만들기 전에 [output/deck.md](../output/deck.md)의 Audience × Purpose와 Story Gate부터 통과한다.
 
+**전제.** 덱도 [shell.md](shell.md) 공통 CSS(tokens.css 인라인, `color-scheme`, `box-sizing: border-box` 리셋, `body` 기본 타이포)를 먼저 붙이고 그 뒤에 이 파일의 CSS를 붙인다. 리셋이 없으면 슬라이드 폭에 패딩이 더해져 화면 밖으로 넘친다(1280에서 1216px 장이 약 1338px가 된다).
+
 ## 전달 모드 마크업과 밀도
 
 루트에서 전달 모드를 하나 고른다. 생략하면 Presentation이고, 한 덱 안에서 섞지 않는다.
@@ -22,40 +24,40 @@
 </main>
 ```
 
-아래 기본 타이포·그림 면적·본문 밀도는 Presentation 기준이다. Slidedoc은 [덱 출력의 전달 하위 모드 표](../output/deck.md)의
-본문 최대 8줄·18~20px·그림 영역 40~60%를 쓰고, 그 외 제목·Impact·Meta와 구현 동작은 유지한다.
-맥락·본문은 몸 안의 `p.d0-slide__text`로 두고, 출처는 기존 `p.d0-slide__src`를 쓴다.
-짧은 문단 2개와 불릿 3개 이내로 구성하며, 문단·불릿·해석·출처를 합쳐 렌더 최대 8줄을 넘으면 내용을 나눈다.
+아래 기본 타이포·그림 면적·본문 밀도는 Presentation 기준이다. Slidedoc은 [덱 출력의 전달 하위 모드 표](../output/deck.md)(줄 수·글자 크기·그림 비율 하한의 정본)를 쓰고, 그 외 제목·Impact·Meta와 구현 동작은 유지한다.
 
-Slidedoc은 아래 CSS를 기본 CSS 뒤에 추가한다. 폰트를 더 줄여 내용을 밀어 넣지 않고, 그림 옆에 맥락과 본문을 배치한 뒤 모드별 면적과 줄 수를 측정한다.
+**Slidedoc 글 그릇과 배치.**
+- 맥락·본문은 글 그릇 `div.d0-slide__copy` 안에 둔다: 짧은 문단 `p.d0-slide__text` 최대 2개 + `ul.d0-slide__points`(불릿 3개 이하). 출처는 기존 `p.d0-slide__src`(발)를 쓴다.
+- 근거(split) 장: `div.d0-slide__body[data-layout="split"]` = 그림 + `.d0-slide__copy`. 열 비율은 Presentation과 같은 3fr 2fr이고, 글이 길어 넘치면 2fr 1fr이 아니라 글을 줄인다.
+- `evidence`·`breakdown` 장: 몸을 `div.d0-slide__body[data-layout="split"]`로 감싸 가로형 그림 + `.d0-slide__copy`를 7fr 3fr로 둔다(아래 CSS).
+- `assertion`·`stat`·Impact·`toc`·`closing`은 글 그릇을 두지 않는다(출처 한 줄만, [덱 출력](../output/deck.md) Slidedoc 예외).
+- 문단·불릿·해석·보조 줄·출처를 합쳐 렌더 최대 8줄을 넘으면 내용을 나눈다. 폰트를 더 줄여 밀어 넣지 않는다.
+
+아래 CSS는 기본 CSS와 함께 붙인다. 붙이는 위치와 무관하다: 글자 목록은 `:where()`로 감싸 특이도를 접두어 `.d0-deck[data-delivery="read"] .d0-slide`(0-3-0)에 고정했다. 같은 요소의 크기를 정하는 기본 규칙은 이보다 낮거나 같고, 같은 것(좁은 화면 evidence·breakdown 해석 0-3-0)은 read 좁은 화면 규칙 0-4-0이 덮는다. 기본에서 더 높은 screenshot 캡션(0-3-1)과 커버 요약(0-3-1)은 read 쪽도 0-4-0 별도 규칙으로 둔다. 좁은 화면 규칙은 1280 규칙과 같은 특이도로 블록 안 뒤에 있어 항상 이긴다.
+본문 크기를 받는 요소는 `__text`·`__points`·`__sub`·`__note`·목차 `a`·요약 `dd`다. closing 메타 `dd`와 커버 요약 `dd`는 두 모드 모두 Meta 크기다(위 타이포 표).
 
 ```css
-/* read 본문: 1280×800 한 장 모드에서 약 18px, present는 2cqi(약 22px) */
-.d0-deck[data-delivery="read"] .d0-slide__text,
-.d0-deck[data-delivery="read"] .d0-slide__points,
-.d0-deck[data-delivery="read"] .d0-slide__note,
-.d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot__note,
-.d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot figcaption {
+/* read 본문: 1280×800 한 장 모드에서 약 18px(1.65cqi), present는 2cqi(약 22px). 특이도 0-3-0 */
+.d0-deck[data-delivery="read"] .d0-slide :where(.d0-slide__text, .d0-slide__points, .d0-slide__sub, .d0-slide__note, .d0-slide__toc a, .d0-slide__summary dd) {
   font-size: 1.65cqi;
   line-height: var(--d0-leading-body);
 }
-.d0-deck[data-delivery="read"] .d0-slide__text {
-  margin: 0;
-  color: var(--d0-grey-800);
-  text-wrap: pretty;
-}
+.d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] :where(.d0-shot__note, .d0-shot figcaption) { font-size: 1.65cqi; line-height: var(--d0-leading-body); } /* 0-4-0: 기본 0-3-1 캡션 규칙을 이긴다 */
+.d0-deck[data-delivery="read"] .d0-slide[data-kind="cover"] :where(.d0-slide__summary dd) { font-size: 1.4cqi; } /* 커버 요약은 Meta 그대로 */
+.d0-deck[data-delivery="read"] .d0-slide__copy { min-width: 0; display: grid; gap: 1.2cqi; align-content: center; }
+.d0-deck[data-delivery="read"] .d0-slide__text { margin: 0; color: var(--d0-grey-800); text-wrap: pretty; }
 .d0-deck[data-delivery="read"] .d0-slide__points { gap: 0.6cqi; }
+.d0-deck[data-delivery="read"] .d0-slide:is([data-kind="evidence"], [data-kind="breakdown"]) .d0-slide__body[data-layout="split"] { grid-template-columns: 7fr 3fr; }
 
-@container (width < 730px) {
-  .d0-deck[data-delivery="read"] .d0-slide__text,
-  .d0-deck[data-delivery="read"] .d0-slide__points,
-  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot__note {
-    font-size: 15px;
-  }
-  .d0-deck[data-delivery="read"] .d0-slide__note,
-  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] .d0-shot figcaption {
-    font-size: 13px;
-  }
+/* 좁은 화면: Presentation과 같은 값(본문 15px, 해석 13px, evidence·breakdown·stat 해석 15px). 위와 같은 특이도로 뒤에 둔다 */
+@container (max-width: 730px) {
+  .d0-deck[data-delivery="read"] .d0-slide :where(.d0-slide__text, .d0-slide__points, .d0-slide__sub, .d0-slide__toc a, .d0-slide__summary dd) { font-size: 15px; }
+  .d0-deck[data-delivery="read"] .d0-slide :where(.d0-slide__note) { font-size: 13px; }
+  .d0-deck[data-delivery="read"] .d0-slide:is([data-kind="evidence"], [data-kind="breakdown"], [data-kind="stat"]) :where(.d0-slide__note) { font-size: 15px; }
+  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] :where(.d0-shot__note) { font-size: 15px; }
+  .d0-deck[data-delivery="read"] .d0-slide[data-kind="screenshot"] :where(.d0-shot figcaption) { font-size: 13px; }
+  .d0-deck[data-delivery="read"] .d0-slide[data-kind="cover"] :where(.d0-slide__summary dd) { font-size: 12px; }
+  .d0-deck[data-delivery="read"] .d0-slide:is([data-kind="evidence"], [data-kind="breakdown"]) .d0-slide__body[data-layout="split"] { grid-template-columns: 1fr; }
 }
 ```
 
@@ -121,29 +123,31 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 | 슬라이드 제목 | `.d0-slide__title` | 3.6 / 700 | 39px | 37px | 36–44 | 20px |
 | 마지막 장 | `closing`의 `.d0-slide__title` | 4.5 / 700 | 49px | 46px | Lead~Display 사이 | 24px |
 | Lead | `.d0-slide__lead` | 2.4 / 400 grey-700 | 26px | 25px | 24–30 | 17px |
-| 본문·요점·보조·해석 | `.d0-slide__points` `__sub` `__note` `dd` 목차 | 2 / 400 | 22px | 20px | 20–24 | 15px(해석 13px) |
-| Meta(눈썹·출처·쪽수·`dt`) | `__eyebrow` `__src` `__num` | 1.4 / 400~600 grey-600 | 15px | 14px | 14–18 | 12px |
+| 본문·요점·보조·해석 | `.d0-slide__points` `__sub` `__note` 요약 `dd` 목차 | 2 / 400 | 22px | 20px | 20–24 | 15px(해석 13px, evidence·breakdown·stat 해석 15px) |
+| Meta(눈썹·출처·쪽수·`dt`·closing 메타 `dd`·커버 요약 `dd`) | `__eyebrow` `__src` `__num` `.d0-slide__meta dd` | 1.4 / 400~600 grey-600 | 15px | 14px | 14–18 | 12px |
 | 큰 숫자 | `.d0-slide__stat` | 10 / 600 blue-dark | 109px | 102px | 72–120 | 48px |
 
 - 화면이 줄면 덱 전체가 같은 비율로 줄어든다. `vw` 글자는 쓰지 않는다.
-- **그림 글자.** 기본(split) SVG는 viewBox 폭 400, 글자 17, 최대 폭 42cqi다(1280 한 장에서 약 19px, 375에서 13px).
+- **그림 글자.** 기본 SVG는 viewBox 폭 400, 글자 17, 최대 폭 42cqi다(1280 한 장에서 약 19px, 375에서 13px). split 안 SVG는 그림 열 폭을 채운다(1280 한 장에서 열 약 58cqi). 그대로 두면 글자 17이 약 27px로 28px 상한에 붙으므로, 731px 이상에서 split 안 viewBox 400 SVG는 글자 15로 낮춘다(3fr 열에서 약 24px, 세로 나열 약 22px). 730px 이하는 1열이라 기본 글자 규칙 그대로다.
   가로형 차트(`evidence`·`breakdown`)는 viewBox 폭 800, 글자 20, 최대 폭 84cqi이고(1280에서 약 23px), 730 미만에서는 글자를 30으로 키운다(375에서 약 11.7px).
   730 미만에서 viewBox 폭 800인 SVG는 커버(map·side 포함)·패턴 규칙과 상관없이 `svg[viewBox^="0 0 800 "]`로 30을 받는다.
   슬라이드 안쪽 폭 270px 이하(320 화면)에서는 기본 그림 20(12.8px), 가로형 36(11.5px)으로 한 단계 더 키운다.
   라벨 사이 간격은 글자 36(기본은 20) 기준으로 잡는다. 다른 viewBox 폭을 쓰면 `글자 × 256 ÷ viewBox 폭 ≥ 11`이 되게 그 SVG의 `--sl-font`를 정한다. 글자 크기는 `--sl-font`로 바뀌므로 SVG 안 `font-size` 속성을 쓰지 않는다.
+  이 글자 규칙이 deck의 정본이고, [diagram.md](diagram.md) 라벨 절의 14px·렌더 11~16px 규칙은 page에만 적용한다. 덱 SVG 글자는 `d0-sl-label`·`d0-sl-value`·`d0-sl-head`로만 쓴다.
+- **도형 클래스.** 막대·축·연결선은 아래 `d0-sl-*`를 쓰고, 그 밖의 표식(틀, 속 빈 노드, 상태 점, 초록 체크, 되돌림 화살표, 막힘, 점선 절단)은 [diagram.md](diagram.md) "흔한 표식 → 클래스" 표의 `d0-s-*` 공용 클래스와 그 공용 CSS 도형 규칙을 함께 붙여 쓴다. SVG에 `fill`·`stroke` 값을 직접 쓰지 않는다.
 - **색.** [shell.md](shell.md) 색 정본을 따른다. 강조할 계열 하나만 blue(`data-on`), 나머지 grey-400, 의미색은 면·점·선에만. 큰 숫자는 blue-dark 또는 grey-900.
 
 ## 슬라이드 종류 `data-kind`
 
 | 종류 | 몸 | 배치 |
 | --- | --- | --- |
-| (생략) 근거 | split: 그림(3) + 요점(2) | 몸(그림 + 요점)이 슬라이드 면의 60~80% |
+| (생략) 근거 | split: 그림(3) + 요점(2), Slidedoc은 요점 자리에 `.d0-slide__copy` | 그림 비율 하한은 덱 출력 모드 표 |
 | `cover` | 결론 h1 + 대표 도식 + 요약 0~1행 | `data-cover`로 도식 위치를 고른다 |
 | `toc` | `ul.d0-slide__toc` | 그림 예외, 작은 점 불렛으로 제목만 표시 |
 | `assertion` | 주장 한 문장(제목)만 | 그림 예외, Impact 기본, 제목이 세로 가운데 |
-| `evidence` | 결론 제목 + 가로형 차트 + 해석 한 줄 | 그림(`figure`)이 슬라이드 면의 60~80% |
+| `evidence` | 결론 제목 + 가로형 차트 + 해석 한 줄(Slidedoc은 차트 + `.d0-slide__copy` 7fr 3fr) | 그림 비율 하한은 덱 출력 모드 표 |
 | `screenshot` | 결론 제목 + `figure.d0-shot` | 화면 상자가 몸 행 높이를 채운다(폭은 화면 비율, 왼쪽 정렬) |
-| `breakdown` | 결론 제목 + 전체 → 구성 요소 도식 | 그림이 슬라이드 면의 60~80% |
+| `breakdown` | 결론 제목 + 전체 → 구성 요소 도식 | 그림 비율 하한은 덱 출력 모드 표 |
 | `stat` | 숫자 하나 + 해석 한 줄 | 큰 숫자가 그림 |
 | `summary` | 참고용 정리 목록 3행 이내 | 그림 예외, 마지막 요청 장에는 쓰지 않는다 |
 | `closing` | 큰 마무리 한 문장 + 구분선 + 작은 `dl` 메타 행. 상위 종류이고 `data-closing`이 세부(decision·request·action·criteria·takeaway) | 그림 예외, 마지막 장 전용 |
@@ -151,14 +155,13 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
 - **screenshot.** 화면·spotlight(`span.d0-shot__spot`)·번호 주석(`p.d0-shot__note`)·dim의 마크업과 CSS는 [mockup-frame.md](mockup-frame.md)가 정본이다.
   이 파일은 슬라이드 안 자리와 크기만 정한다: `figure.d0-shot`이 몸 행(`minmax(0, 1fr)`)을 채우고, 화면 상자는 그 높이를 다 쓰며 폭은 비율(기본 16:10)로 정해진다.
   주석·캡션은 본문 크기(2cqi)로 키운다. 화면 비율이 다르면 `.d0-shot__screen`에 `style="aspect-ratio: 가로 / 세로"`를 적는다. 730 미만에서는 높이 자동, 폭 100%.
-- **그림 면적.** 그림 영역(`figure` 또는 `figure.d0-shot` bbox, 해석 줄·주석 포함. split이면 몸 전체)의 넓이 ÷ 슬라이드 면(패딩 포함) = 60~80%.
-  제목 한 줄 기준으로 1280 한 장 모드에서 split·evidence 약 61%, breakdown·screenshot 약 64%다.
-  split에 보조 한 줄(`__sub`)을 달면 몸이 약 55%로 떨어지므로 범위·조건은 출처 줄에 쓴다. 제목이 두 줄이면 그림이 그만큼 줄어든다.
+- **그림 면적.** 실제로 그려진 그림 요소(`svg`·`img`, screenshot은 `.d0-shot__screen`)의 렌더 box ÷ 몸 영역(슬라이드 안쪽 폭 × 몸 행 높이, 머리·발·패딩 제외)으로 잰다. `figure` box나 split 열 box가 아니다. 측정 정의와 하한은 [덱 출력](../output/deck.md) 전달 하위 모드 표가 정본이다.
+  split의 SVG는 그림 열을 채우므로(위 그림 글자) 열을 넓히면 그림도 커진다. 제목이 길면 보조 한 줄(`__sub`)을 달 수 있다. 몸 영역 기준이라 제목 두 줄·보조 줄이 비율을 바꾸지 않는다.
 
 ## 커버 변형 `data-cover`
 
 커버는 독자가 알아야 할 결론 문장과 대표 도식 하나로 시작한다. `비교 발표` 같은 유형·메타 정보는 크게 쓰지 않고 필요하면 작은 `.d0-slide__eyebrow`에만 둔다. 요약 3행을 반복하지 않고 도식·리드에 흡수하며, 결정할 것만 `dl.d0-slide__summary` 한 행으로 남길 수 있다.
-`div.d0-slide__cover` 안에 `header.d0-slide__head`와 `figure.d0-slide__fig`를 둔다. 커버 도식은 근거 장의 60~80% 면적 게이트 대신 주제의 실체와 의미 있는 그림 면적을 확인한다.
+`div.d0-slide__cover` 안에 `header.d0-slide__head`와 `figure.d0-slide__fig`를 둔다. 커버 도식은 근거 장의 그림 비율 게이트(모드 표 하한) 대신 주제의 실체와 의미 있는 그림 면적을 확인한다.
 
 | 값 | 위치 | 예시 |
 | --- | --- | --- |
@@ -175,7 +178,7 @@ JS 없는 세로 나열(1280 화면, 슬라이드 1136px, 안쪽 1022px)은 1cqi
     <figure class="d0-slide__fig">
       <svg viewBox="0 0 800 180" role="img" aria-label="요청에서 검사까지 이어지는 과정"><title>요청에서 검사까지 이어지는 과정</title>
         <path class="d0-sl-link" d="M100 80H700"/>
-        <circle cx="100" cy="80" r="24" fill="var(--d0-grey-200)"/><circle cx="400" cy="80" r="24" fill="var(--d0-blue)"/><circle cx="700" cy="80" r="24" fill="var(--d0-green)"/>
+        <circle class="d0-s-node" cx="100" cy="80" r="24"/><circle class="d0-s-node" data-on cx="400" cy="80" r="24"/><circle class="d0-s-node" data-tone="green" cx="700" cy="80" r="24"/>
         <g class="d0-sl-label"><text x="100" y="140">요청</text><text x="400" y="140">그림</text><text x="700" y="140">검사</text></g>
       </svg>
       <figcaption class="d0-slide__note">그림을 먼저 그리고 검사를 통과한 한 장을 넘긴다.</figcaption>
@@ -455,6 +458,10 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 
 .d0-slide__body[data-layout="split"] { min-height: 0; display: grid; grid-template-columns: 3fr 2fr; gap: 3cqi; align-items: center; }
 .d0-slide__body[data-layout="split"] > .d0-slide__fig { height: 100%; }
+.d0-slide__body[data-layout="split"] > .d0-slide__fig svg { max-width: 100%; } /* split: 그림 열을 채운다 */
+@container (min-width: 731px) {
+  .d0-slide__body[data-layout="split"] > .d0-slide__fig svg[viewBox^="0 0 400 "] { --sl-font: 15px; } /* 넓어진 split 그림: 15 × 637 ÷ 400 ≈ 24px(28px 상한 여유) */
+}
 .d0-slide__points { margin: 0; padding-left: 1.2em; list-style: disc; display: grid; gap: 1.2cqi; align-content: center; color: var(--d0-grey-800); font-size: 2cqi; line-height: var(--d0-leading-body); }
 .d0-slide__points ::marker { color: var(--d0-blue); }
 
@@ -567,6 +574,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-sl-value text[data-on] { fill: var(--d0-blue-dark); }
 .d0-sl-label text { fill: var(--d0-grey-600); }
 .d0-sl-head text { fill: var(--d0-grey-800); font-weight: 600; text-anchor: start; }
+/* 공용 도형(d0-s-*, diagram.md 공용 CSS)을 Impact 장에 둘 때: blue-light 위 grey-500 선은 3:1 미달이라 한 단계 진하게 */
+.d0-slide[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 
 /* 네비 */
 .d0-deck__nav { align-items: center; gap: 8px; min-height: 44px; }
@@ -852,7 +861,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 ```
 
 - 쪽수 `n / N`은 목차를 제외한 슬라이드마다 마크업에 직접 쓴다(스크립트가 없을 때와 인쇄에서 보인다). 한 장 모드에서는 네비 쪽수가 대신 보인다. 슬라이드를 빼거나 더하면 쪽수를 함께 고친다.
-- 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi, 가로형은 800·글자 20(좁은 화면 30, 320 폭 36)·최대 84cqi를 유지한다.
+- 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi(split 안은 그림 열 폭), 가로형은 800·글자 20(좁은 화면 30, 320 폭 36)·최대 84cqi를 유지한다.
   다른 도식 모양은 [diagram.md](diagram.md)를 따르되 클래스는 이 파일의 `d0-sl-*` 규칙(강조 하나만 blue)으로 칠한다.
 - 스크롤 리빌 모션은 붙이지 않는다. 장을 바꿀 때의 짧은 opacity 페이드만 있고 reduced-motion이면 즉시 바뀐다.
 - 화면은 넓은데 높이가 낮으면(높이 498px 이하, 예: 1280×400, 812×375 가로 폰) 슬라이드 폭은 730px에서 멈추고 16:9를 풀어 안쪽 글자는 px 고정, 넘치는 몫은 장 안에서 세로로 스크롤한다.
@@ -863,7 +872,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 의미 검사(한 장 한 주장, 결론 제목, 제목만 읽어도 이어짐, Impact 비율 등)는 [덱 출력](../output/deck.md)의 Slide Gate가 먼저다.
 여기는 마크업·타이포·키·hash·인쇄·reduced-motion·375·iframe을 코드와 측정으로 확인한다. 나머지(토큰 인라인, 시맨틱, 접근성, 색 규칙, 개행)는 page와 같다.
 
-아래 체크 항목은 그대로 적용하되 본문 3줄·본문 20~24px·그림 영역 60~80%는 Presentation 기준이다. Slidedoc의 해당 세 기준만 덱 출력의 전달 하위 모드 표와 위 CSS로 판정한다. 제목·Meta·장수·한 장 보기와 나머지 구현 검사는 공통이다.
+줄 수·본문 크기·그림 비율 하한은 모드마다 다르며 [덱 출력](../output/deck.md) 전달 하위 모드 표가 정본이다. 아래 항목의 해당 값은 그 표의 현재 모드 값으로 읽는다. 제목·Meta·장수·한 장 보기와 나머지 구현 검사는 공통이다.
 
 **HARD (코드로 확인)**
 
@@ -874,7 +883,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 - [ ] 근거(생략)·`evidence`·`breakdown` 장마다 `figure.d0-slide__fig`가 정확히 1개이고 그 안에 `role="img"` + `<title>`을 가진 SVG가 있다.
       `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `toc`·`summary`·`closing`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
 - [ ] `data-emphasis="impact"` 장에 카드·요점 목록·두 번째 그림이 없다
-- [ ] 슬라이드당 `li` 3개 이하(`toc` 제외), 본문 텍스트(`p`·`li`·`dd`, 제목·쪽수 제외)가 렌더 기준 3줄 이하다
+- [ ] 슬라이드당 `li` 3개 이하(`toc` 제외), 본문 텍스트가 [덱 출력](../output/deck.md) 모드 표의 줄 수 이하다. 세는 범위는 [덱 출력](../output/deck.md) 전달 하위 모드 표가 정본이다(Presentation: 몸의 `p`·`li`·`dd`. 제목·쪽수·출처와 그림 해석 줄 `figcaption.d0-slide__note`는 빼고, 해석 줄은 따로 1줄 이하)
 - [ ] 목차를 제외한 슬라이드마다 쪽수 `n / N`이 렌더 텍스트로 있고 순서가 맞다
 - [ ] 슬라이드가 `section`(목차는 `nav`) + `aria-labelledby` + `tabindex="-1"`이고 헤딩은 표지 h1 → h2만 쓴다
 - [ ] 차트·도식 하나에 `data-on` 강조가 1계열이다. 의미색은 상태 표식에만, 그라디언트·3D·장식 아이콘이 없다
@@ -890,9 +899,9 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 **VISUAL (측정으로 확인)**
 
 - [ ] 1280×800에서 보이는 `.d0-slide`가 1개이고, 높이 ÷ 폭이 0.5625(±1px), 가로 가운데(±1px), 덱 안에 다 들어온다(가로·세로 스크롤 없음). 내용이 넘치지 않는다(`scrollHeight` ≤ `clientHeight`)
-- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, closing 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문 20~24px, Meta 14~18px, 큰 숫자 72~120px이다
+- [ ] 1280 한 장 모드에서 제목 36~44px, 표지 h1 56~72px, Impact 제목 60px 이상, closing 제목은 Lead~Display 사이(약 49px), 리드 24~30px, 본문은 모드 표의 본문 크기, Meta 14~18px, 큰 숫자 72~120px이다
 - [ ] SVG 글자 렌더 크기(font-size × SVG 렌더 배율)가 1280에서 28px 이하, 320·375에서 11px 이상이다(커버 그림 포함)
-- [ ] `evidence`·`breakdown`·`screenshot`의 `figure`, 근거 split의 몸이 슬라이드 면(패딩 포함)의 60~80%다
+- [ ] 그린 그림(`svg`·`img`·`.d0-shot__screen` box) ÷ 몸 영역이 [덱 출력](../output/deck.md) 전달 하위 모드 표의 하한 이상이다(1280×800 한 장 모드에서 잰다(슬라이드 폭 730px 미만의 1열 배치는 제외))
 - [ ] 375×812에서 장이 16:9를 풀고, 글자가 11px 이상, 페이지 가로 스크롤이 없으며, 좌우 스와이프(48px 초과)로 장이 넘어간다. 긴 장은 장 안에서 세로로 스크롤된다
 - [ ] 320×568(터치)에서 SVG 실제 글자가 11px 이상이고, 네비가 넘치지 않고 안내가 한 줄이며, 표지 키 안내가 보이지 않는다
 - [ ] 키 작은 창(375×400)에서 슬라이드 폭 = `100vw − 2 × 거터`, 812×375에서 730px 이상이다

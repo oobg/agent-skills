@@ -7,10 +7,11 @@ page 본문 설명의 기본 그릇이고 어느 패턴에서나 쓴다. 그림 
 
 - 묶음 `dl.d0-explain` > 항목 `div[data-role]` > `dt` 라벨 + `dd` 설명.
 - **라벨**은 14px/600 grey-900, 화면 문구는 자연어다(`왜 늦어졌나`, `영향`, `조건`, `그래서`). 역할 이름표를 화면에 그대로 쓰지 않는다.
-- **설명**은 15px grey-700, 행간 1.65, **1~3문장**이다. 블록당 3문장 상한은 이 블록에서 "한 라벨 아래 3문장"으로 센다.
+- **설명**은 15px grey-700, 행간 1.65([shell.md](shell.md) 행간 예외), **1~3문장**이다. 블록당 3문장 상한은 이 블록에서 "한 라벨 아래 3문장"으로 센다.
 - 묶음당 항목은 보통 2~3개이고 최대 3개다. 넷 이상이면 그 섹션은 질문 둘이다. 섹션을 나눈다.
 - 항목 사이 24px. 카드·배경·테두리·그림자 상자로 감싸지 않는다. 묶음은 여백과 라벨 굵기로만 만든다.
-- 놓는 곳은 둘 중 하나다: 그림 아래 세로로, 또는 그림 옆 열(`.d0-figtext`). 전체 폭에 혼자 두면 한 줄이 50자를 넘으므로 `dl.d0-explain.d0-cols`로 2열을 쓴다.
+- 놓는 곳은 둘 중 하나다: 그림 아래 세로로, 또는 그림 옆 열(`.d0-figtext`). 묶음은 `max-width: 32em`이라 한 줄 50자를 넘지 않는다(정본: [shell.md](shell.md) 줄 길이 절). 항목이 짝수라 전체 폭을 나눠 쓰려면 `dl.d0-explain.d0-cols`로 2열(열마다 32em)을 쓴다.
+- **첫 화면 섹션에서는 그림 아래에 둔다.** 첫 화면 섹션(header 다음 첫 페이지 섹션, `.d0-split`으로 시작하면 짝 섹션 포함, SKILL.md 원칙 3번)에서 옆 열·옆 섹션에 두면 글 면적이 그림 면적을 이기기 쉽다. 그 섹션의 그림 옆은 figcaption·짧은 주석·범례로만 채운다.
 
 ### 역할 (`data-role`)
 
@@ -33,7 +34,7 @@ page 본문 설명의 기본 그릇이고 어느 패턴에서나 쓴다. 그림 
 
 - 그림이 모양을 보였지만 독자가 "왜?", "그래서?", "언제나 그런가?"를 다시 물을 때.
 - 그림 없는 섹션을 라벨→설명·조건→영향 구조로 지을 때(원칙 4번, 주장→근거는 [evidence](evidence.md)).
-- 그림이 폭의 절반만 쓰고 옆이 빌 때. 그림을 키우지 않고 관련 explanation을 옆 열에 둔다(그림 360/400 상한 유지).
+- 그림이 폭의 절반만 쓰고 옆이 빌 때(첫 화면 섹션 제외). 그림을 키우지 않고 관련 explanation을 옆 열에 둔다(그림 폭 상한은 [diagram.md](diagram.md) 폭 상한 절).
 
 ## 다른 글 블록과의 경계
 
@@ -80,20 +81,23 @@ page 본문 설명의 기본 그릇이고 어느 패턴에서나 쓴다. 그림 
 .d0-explain { display: grid; gap: 24px; margin: 0; }
 .d0-explain > div { display: grid; gap: 4px; min-width: 0; }
 .d0-explain dt { font-size: 14px; font-weight: 600; color: var(--d0-grey-900); line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
-.d0-explain dd { margin: 0; font-size: 15px; color: var(--d0-grey-700); line-height: 1.65; text-wrap: pretty; }
-.d0-explain.d0-cols { column-gap: 48px; } /* 전체 폭에 혼자 둘 때 2열(.d0-cols는 shell) */
+.d0-explain dd { margin: 0; font-size: 15px; color: var(--d0-grey-700); line-height: 1.65; text-wrap: pretty; } /* 1.65: shell.md 행간 예외 */
+.d0-explain.d0-cols { column-gap: 48px; } /* 2열(.d0-cols는 shell, 열마다 32em). 1열 묶음의 32em 상한도 shell에 있다 */
 
-/* 그림 옆 열: 그림 열은 diagram의 side와 같은 440px 상한, 설명 열 최소 220px */
+/* 그림 옆 열: 그림 열 = SVG 폭 상한(기본 360, wide 400, 무대가 있으면 + 패딩 56), 설명 열 220px~32em(줄 길이 정본: shell.md) */
 .d0-figtext { display: grid; gap: 24px; align-items: start; }
 .d0-figtext > * { min-width: 0; }
 @media (min-width: 960px) {
-  .d0-figtext { grid-template-columns: minmax(0, 440px) minmax(220px, 1fr); column-gap: 48px; align-items: center; }
+  .d0-figtext { grid-template-columns: minmax(0, 360px) minmax(220px, 32em); justify-content: start; column-gap: 48px; align-items: center; }
+  .d0-figtext:has(> .d0-fig[data-size="wide"]) { grid-template-columns: minmax(0, 400px) minmax(220px, 32em); }
+  .d0-figtext:has(> .d0-fig[data-stage]) { grid-template-columns: minmax(0, 416px) minmax(220px, 32em); }
+  .d0-figtext:has(> .d0-fig[data-stage][data-size="wide"]) { grid-template-columns: minmax(0, 456px) minmax(220px, 32em); }
 }
 /* 반 열(.d0-split·.d0-cols) 안에서는 옆이 좁으므로 그림 아래로 쌓는다 */
 :is(.d0-split, .d0-cols) .d0-figtext { grid-template-columns: minmax(0, 1fr); align-items: start; }
 ```
 
-grey-700은 흰 바탕에서 글자 대비 4.5:1을 넘는다([shell.md](shell.md) 대비 계산표). 1200px 페이지에서 설명 열은 약 650px, 15px 본문 한 줄 약 45자다.
+grey-700은 흰 바탕에서 글자 대비 4.5:1을 넘는다([shell.md](shell.md) 대비 계산표). 설명 열은 32em(15px에서 480px)에서 멈추므로 한 줄이 공백 포함 50자를 넘지 않는다. 남는 폭은 열 뒤로 비운다.
 
 ## 금지
 
@@ -102,4 +106,5 @@ grey-700은 흰 바탕에서 글자 대비 4.5:1을 넘는다([shell.md](shell.m
 - 카드·배경·테두리·그림자 상자로 감싸기, 역할마다 다른 색 칠하기, 의미색 글자.
 - 히어로·요약 행에 있는 숫자를 되풀이하기(원칙 8번). 숫자는 정본 위치를 가리키고 이유·조건만 쓴다.
 - 그림 옆을 채우려고 그림과 무관한 설명을 붙이기, 옆 열을 채우려고 그림을 키우기.
-- `dd`에 `max-width`를 걸어 좁히기(SKILL.md 개행 규칙).
+- `dd`에 `max-width`를 걸어 좁히기(SKILL.md 개행 규칙). 좁히는 곳은 묶음 `dl`이다.
+- 첫 화면 섹션에서 explanation을 그림 옆 열에 두기.

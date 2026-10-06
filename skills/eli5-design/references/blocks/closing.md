@@ -15,11 +15,12 @@
 | `takeaway` | 앞으로 지킬 것을 남긴다 | 지킬 것 / 담당 / 다음 |
 
 라벨은 예다. 문서에 나온 사실에 맞게 바꾸고, 없는 담당·날짜를 만들어 채우지 않는다. 메타는 2~3칸이다.
+메타는 앞에 나온 사실을 가리키는 자리라 같은 숫자 문자열 반복 셈(SKILL.md 원칙 8번)에서 뺀다. 그래도 숫자보다 담당·행동어(`다음 주 적용`, `운영 팀`)로 쓸 수 있으면 그쪽을 먼저 쓴다.
 
 ## 출력별 형태
 
 - **deck.** 마지막 장 `section.d0-slide[data-kind="closing"][data-closing]`. 마크업·CSS·게이트는 [slide-deck](slide-deck.md) 마지막 장 절이 정본이다.
-- **page.** 마지막 페이지 섹션 안쪽 끝의 `footer.d0-closing[data-closing]` 하나. 문장(17px/700 grey-900, h2보다 작다) → 12px → 1px grey-200 구분선 → 12px → `dl.d0-closing__meta`(라벨 12px/600 grey-600, 값 14px grey-800). 960px 이상은 메타 3열, 그 아래는 `라벨 | 값` 행.
+- **page.** 마지막 페이지 섹션 안쪽 끝의 `footer.d0-closing[data-closing]` 하나. 문장(17px/700 grey-900, h2보다 작다) → 12px → 1px grey-200 구분선(진한 구분선 금지의 예외, [shell.md](shell.md) 금지 절) → 12px → `dl.d0-closing__meta`(라벨 12px/600 grey-600, 값 14px grey-800). 960px 이상은 메타 3열, 그 아래는 `라벨 | 값` 행.
   섹션을 새로 만들지 않는다. 배경·테두리 상자·blue 면이 없다.
 
 ## 다른 요소와 겹치지 않게
