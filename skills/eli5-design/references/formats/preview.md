@@ -57,4 +57,25 @@ header(문장형 리드: 무엇인지 한 문장) → ① 어떤 모습인가: �
 - preview는 결과물의 **모양**, report는 그 결과물로 **알게 된 것**.
 - 쓰는 법을 단계로 따라가게 하려면 guide.
 
+## 덱으로 낼 때
+
+Deck Type **Demo**(제품이 쓰이는 장면) 또는 **Explainer**(결과물의 모양): `<main class="d0-deck" data-preset="preview">`. 규칙은 [deck](../output/deck.md).
+
+Demo 스토리라인(표지 다음 제목 목차는 공통이라 생략):
+상황 → 사용자 → Before → 제품 → 사용 흐름 → 실제 화면 → After → 다음
+
+| 장 | `data-kind` |
+| --- | --- |
+| 상황 | `cover`(h1 = 무엇이 달라지나 한 문장) |
+| 사용자 | 근거(누가 어디서 쓰는지 그림 + 요점) |
+| Before | `screenshot`(지금 화면, 막히는 곳 spotlight) 또는 `evidence` |
+| 제품 | `assertion`(한 문장 정의) |
+| 사용 흐름 | 근거(단계 도식) |
+| 실제 화면 | `screenshot`(봐야 할 곳 spotlight + 번호 주석) |
+| After | `stat` 또는 `evidence`(전/후) |
+| 다음 | `summary`(써 볼 사람·도입 요청) |
+
+Impact: 제품(`assertion`), After(`stat`).
+Explainer로 결과물 모양만 보이면 결과물 한 문장(`cover`) → 전체 모양(근거) → 해부(`screenshot` 또는 diagram 핀) → 예시 값(`evidence`) → 다음(`summary`)로 줄인다.
+
 블록 해부: [blocks.md](../blocks.md)

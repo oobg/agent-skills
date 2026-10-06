@@ -17,8 +17,10 @@
   글 블록(diff-rows, checklist, accordion) 하나 + 마무리 한 줄 `p`(배운 점·다음 한 줄) 1개까지만 써도 된다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
   글 블록(step-columns, diff-rows, accordion)은 그림을 거들거나 목록을 담는 데만 쓴다.
 - 그림은 컨테이너 폭을 채우거나 옆에 짧은 설명을 붙인다. 폭 절반만 쓰고 옆을 비우지 않는다.
-- **그림 무대.** 도식 `figure`의 SVG는 `data-stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
-  figcaption은 패널 밖 아래에 둔다. 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
+- **그림 무대.** 회색 무대는 기본 없음이다. 필요할 때만 도식 `figure.d0-fig[data-stage]`의 SVG를 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
+  figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
+- **구도와 강조.** 섹션·슬라이드의 구도(`data-composition`), 강조 3단계(`data-emphasis="quiet|impact"`), 밀도 리듬, 강조 순서(크기 → 위치 → 여백 → 무게 → 색)는
+  [composition.md](composition.md)가 정본이다. 블록 고르기 전에 섹션마다 구도를 먼저 정한다.
 - **한 사실은 한 번.** 결론 수치는 [hero.md](blocks/hero.md) 한 곳에 두고 요약 행·섹션 제목·KPI·callout에서 되풀이하지 않는다
   (같은 숫자 문자열 페이지당 2회 이하, SKILL.md 원칙 8번).
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
@@ -71,9 +73,9 @@
 | header | 모든 페이지 첫 블록(필수) | 작업 라벨 → h1 → (히어로) → 리드(문장형 또는 요약 행) | [header.md](blocks/header.md) |
 | hero | report·compare 전/후·incident의 결론 수치 1개(수치 없으면 생략) | h1 바로 아래: 전 값(작게) → 후 값 44px/600 + 단위 + 한 줄 뜻 | [hero.md](blocks/hero.md) |
 | section-head | 구획마다 | 위 구분선 + h2 20px + 설명 최대 1문장(제목과 같으면 생략), 태그는 기본 없음 | [section-head.md](blocks/section-head.md) |
-| diagram | **그림(필수 1개 이상)** | `data-stage` 패널 위 SVG: 연결 그래프·전/후 막대(비율 `data-variant="ratio"`, 전체 폭 `data-size="wide"`)·미니 격자·화면 와이어프레임·번호 핀 오버레이 `data-variant="pins"`(preview 해부도, faq 용어 핀) | [diagram.md](blocks/diagram.md) |
+| diagram | **그림(필수 1개 이상)** | `data-stage` 패널 위 SVG: 연결 그래프·전/후 막대(비율 `data-variant="ratio"`, 전체 폭 `data-size="wide"`)·미니 격자·화면 와이어프레임·번호 핀 오버레이 `data-variant="pins"`(preview 해부도, faq 용어 핀). 장르 `data-genre`(`structural`·`narrative`·`editorial`, 생략=structural, editorial은 선 거의 없이 숫자·문구·객체 하나를 크게) | [diagram.md](blocks/diagram.md) |
 | thumb-cards | 무엇이 몇 개, 각각 어떤 모양 | 3~5장, 미니 격자·와이어프레임 SVG + 이름 + 배지 | [thumb-cards.md](blocks/thumb-cards.md) |
-| mockup-frame | 결과 화면을 직접 눌러 봄 | 고정 높이 프레임 안 미니 앱: 상단 바·고스트 카드·모달/시트·토스트. 별도 페이지는 `srcdoc` 내장(`src` 금지), 여러 페이지는 `data-variant="gallery"`(뷰포트 높이 맥북 창 + 탭), 기기 프레임 `data-device="desktop|mobile"`(PC 화면은 맥북 창, 모바일 화면은 375px 폰, 둘 다면 PC/모바일 토글) | [mockup-frame.md](blocks/mockup-frame.md) |
+| mockup-frame | 결과 화면을 직접 눌러 봄 | 고정 높이 프레임 안 미니 앱: 상단 바·고스트 카드·모달/시트·토스트. 별도 페이지는 `srcdoc` 내장(`src` 금지), 여러 페이지는 `data-variant="gallery"`(뷰포트 높이 맥북 창 + 탭), 기기 프레임 `data-device="desktop|mobile"`(PC 화면은 맥북 창, 모바일 화면은 375px 폰, 둘 다면 PC/모바일 토글). 화면 캡처 spotlight `figure.d0-shot`(화면 + `.d0-shot__spot` 위치 표시 + 바깥 흐림 + 번호 주석 `.d0-shot__note`, deck의 `screenshot` 슬라이드) | [mockup-frame.md](blocks/mockup-frame.md) |
 | tab-preview | 결과물(파일·표) 모양 | pill 탭 → 파일명 바 → 표 목업 | [tab-preview.md](blocks/tab-preview.md) |
 | timeline | 날짜가 있는 순서 | 점 + 날짜 + 제목 + 상태, 오늘 표식(CSS, 그림 아님). SVG 시간 막대 `data-variant="timebar"`는 그림 | [timeline.md](blocks/timeline.md) |
 | kpi-cards | 근거 숫자(막대 변형은 그림) | 라벨 + 큰 숫자 + 막대(`전` 행에만 값, `후` 행은 라벨만, 큰 숫자가 후 값), 증감 배지·문단 없음, 막대 변형 `data-variant="bar"` | [kpi-cards.md](blocks/kpi-cards.md) |
@@ -85,4 +87,4 @@
 | code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
 | accordion | 질문·용어 | 질문 행 펼침, 용어 카드 변형 | [accordion.md](blocks/accordion.md) |
 | callout | 결정 요청 하나 | soft 블루 상자, **페이지당 최대 1개**, 히어로 결론을 되풀이하지 않음 | [callout.md](blocks/callout.md) |
-| slide-deck | slides 프리셋 전용 덱 골격(문서형 `d0-page` 대신) | `main.d0-deck` + 16:9 `section.d0-slide`(cqi 타이포): 액션 타이틀 → 근거 그림 하나 → 해석·출처 한 줄 → 쪽수, 표지 다음 제목 목차, ←/→ 키 이동, 인쇄 한 장씩, 좁은 화면은 비율 해제 | [slide-deck.md](blocks/slide-deck.md) |
+| slide-deck | 출력 형식이 deck일 때의 덱 골격(page의 `d0-page` 대신, 어느 내용 프리셋이든). 구성·Slide Gate는 [output/deck.md](output/deck.md) | `main.d0-deck[data-preset][data-variant]` + 16:9 `section.d0-slide`(`data-kind`로 종류, cqi 타이포)를 한 장씩 보기: 결론 제목 → 근거 그림 하나 → 해석 한 줄 → 쪽수, 표지 다음 제목 목차, 네비·←/→ 키 이동, 인쇄 한 장씩, 좁은 화면은 비율 해제 | [slide-deck.md](blocks/slide-deck.md) |

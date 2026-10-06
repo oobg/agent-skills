@@ -57,4 +57,24 @@ header(문장형 리드, 시작 조건을 한 줄로) → ① 전체 모양: flo
 - 체크박스로 직접 실행하면 guide 따라하기, 흐름 이해가 목적이면 flow, 잘 쓰는 법·선택 기준이면 guide 사용 가이드.
 - 날짜가 붙으면 timeline, 순서만 있으면 flow.
 
+## 덱으로 낼 때
+
+Deck Type **Explainer**: `<main class="d0-deck" data-preset="flow">`. 규칙은 [deck](../output/deck.md).
+
+스토리라인(표지 다음 제목 목차는 공통이라 생략):
+한 문장 정의 → 큰 그림 → 구성 요소 → 흐름 → 예시 → 예외 → 요약
+
+| 장 | `data-kind` |
+| --- | --- |
+| 한 문장 정의 | `cover` 다음 `assertion`(비유 한 문장) |
+| 큰 그림 | 근거(연결 그래프 전체, 가로로 길면 전체 폭) |
+| 구성 요소 | `breakdown`(부품 2~5개, 지금 말하는 부품만 blue) |
+| 흐름 | 근거(단계 도식 또는 [step-columns](../blocks/step-columns.md) 그림 변형) |
+| 예시 | `screenshot` 또는 `evidence`(실제 한 건을 따라감) |
+| 예외 | 근거(막히는 갈림을 그린 그래프) |
+| 요약 | `summary`(기억할 것 + 다음 행동 한 줄) |
+
+Impact: 한 문장 정의(`assertion`), 큰 그림(그림 하나만 둔 면).
+구조 변경 기술 발표(예전 `tech`)는 문제 → 기존 구조(`breakdown`) → 병목(`evidence`) → 변경 구조(`breakdown`) → 전/후(`evidence`) → 트레이드오프(근거) → 다음(`summary`)로 바꾼다.
+
 블록 해부: [blocks.md](../blocks.md)

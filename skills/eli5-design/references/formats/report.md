@@ -153,4 +153,39 @@ SKILL.md 출력 게이트에 더해 확인한다.
 - 사건 하나의 경위와 원인이면 incident.
 - 날짜 순서 자체가 주인공이면 timeline, 지금 상태와 다음 행동이 주인공이면 report(일정은 ② 섹션 시간 막대로 빌린다).
 
+## 덱으로 낼 때
+
+Deck Type **Executive Update**(`status`·`executive`)와 **Proposal**(`proposal`). 규칙은 [deck](../output/deck.md).
+루트는 `<main class="d0-deck" data-preset="report" data-variant="status">`처럼 변형을 그대로 단다. 스토리라인에서 표지 다음 제목 목차는 공통이라 생략한다.
+
+**상태 보고 `status`·상위 보고 `executive`:**
+이번 결론 → 핵심 지표 → 변화 → 리스크 → 대응 → 다음
+
+| 장 | `data-kind` |
+| --- | --- |
+| 이번 결론 | `cover`(h1 = 결론, 요약 3행에 상태 배지) |
+| 핵심 지표 | `stat`(숫자 하나 + 뜻 한 줄) |
+| 변화 | `evidence`(전/후 막대 또는 완료 범위 비율 막대) |
+| 리스크 | 근거(영향 그래프 + 요점, 차단이면 `assertion`) |
+| 대응 | `breakdown`(대응을 부품으로) 또는 근거 |
+| 다음 | `summary`(담당·기한 3행 이내) |
+
+Impact: 핵심 지표(`stat`), 차단 리스크가 있으면 그 `assertion`.
+
+**제안 `proposal`:**
+문제 → 사용자 영향 → 원인 → 제안 → 예상 효과 → 범위·리스크 → 결정 요청
+
+| 장 | `data-kind` |
+| --- | --- |
+| 문제 | `cover`(h1 = 제안의 결론) 다음 `assertion`(문제 한 문장) |
+| 사용자 영향 | `evidence` |
+| 원인 | `breakdown` |
+| 제안 | 근거(화면 와이어) 또는 `screenshot` |
+| 예상 효과 | `stat`(값은 `예상치`로 표기) |
+| 범위·리스크 | 근거(범위 비율 막대 + 요점) |
+| 결정 요청 | `summary` |
+
+Impact: 문제(`assertion`), 예상 효과(`stat`).
+결과·지표 보고 `results`는 결론 → `stat` → 전/후 `evidence` → 어떻게 했나 `breakdown` → 다음 `summary` 순서로 줄인다.
+
 블록 해부: [blocks.md](../blocks.md)

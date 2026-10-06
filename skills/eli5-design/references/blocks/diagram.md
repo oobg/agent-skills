@@ -4,15 +4,18 @@
 
 ## 해부 구조
 
-- `figure.d0-fig[data-stage]` = 무대 패널 `div.d0-fig__stage`(grey-50, `--d0-radius-card`, 패딩 28px / 모바일 20px) 안에 인라인 SVG 하나
-  → 패널 **밖** `figcaption` 한 줄(13px grey-600, "그래서 무엇이 보이는가"). 무대 CSS는 [shell.md](shell.md)에 있다.
-- 모든 도식은 무대 위에 놓는다. 예외는 폭을 꽉 채우는 비율 막대(무대 없이 섹션 폭)와 카드 안 미니 격자(카드가 무대다)다.
+- `figure.d0-fig` = 인라인 SVG 하나 → 아래 `figcaption` 한 줄(13px grey-600, "그래서 무엇이 보이는가"). 장르는 `data-genre`(아래 장르 절).
+- **무대는 기본 없음, 필요할 때만.** 도식이 여백 없이 떠서 경계가 안 보일 때, 흰 면 요소에 받침 면이 필요할 때, 두 그림 높이를 맞출 때만
+  `figure.d0-fig[data-stage]` + 무대 패널 `div.d0-fig__stage`(grey-50, `--d0-radius-card`, 패딩 28px / 모바일 20px)를 쓰고 `figcaption`은 패널 **밖**에 둔다.
+  기준과 CSS는 [shell.md](shell.md) 그림 무대 절. 아래 스니펫은 이 기준을 따른다: 흩어진 노드 (a) graph와 테두리 없는 선 그림 (f) sequence만 무대가 있고,
+  나머지는 SVG를 `figure` 바로 안에 둔다. 무대를 더하려면 `data-stage`를 달고 SVG를 `div.d0-fig__stage`로 감싼다.
+- 무대 없는 그림이 폭의 절반만 쓰고 옆을 비우지 않게 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열 중 하나로 둔다. **그림을 키워 채우지 않는다.**
 - SVG는 `role="img"` + `<title>`(그림 이름) + `<desc>`(무엇이 강조됐는지 한두 문장). 장식 SVG만 `aria-hidden="true"`.
 - 색은 SVG 안에 직접 쓰지 않는다. 아래 `d0-s-*` 클래스가 `var(--d0-*)`를 쓴다. 강조 묶음은 블루 하나, 상태가 있는 표식은
   의미색 `data-tone="green|orange|red"`(완료·통과 / 주의·준비 / 실패·위험)를 단다. **회색만으로 된 도식은 금지**다. 색 규칙 정본은 [shell.md](shell.md) 색 절.
 - 페이지의 핵심 도식 하나는 무대를 blue-light로 칠할 수 있다(`figure.d0-fig[data-stage="blue"]`). 그 위 회색 선은 grey-600, 흐린 라벨은 grey-700로
-  자동으로 한 단계 진해진다(blue-light 위 grey-500 선 2.87, grey-600 글자 4.49라 미달). 무대 면도 포인트 면적에 들어가므로
-  전체 폭 무대(1280px에서 약 25~30%)는 12% 상한을 넘는다. blue 무대는 반 열(`.d0-split`·`.d0-cols`) 도식이나 작은 무대에만 쓴다.
+  자동으로 한 단계 진해진다(blue-light 위 grey-500 선 2.87, grey-600 글자 4.49라 미달). blue 무대는 면 단위 옅은 표면이라 색 비율에서 빼고 장면 수로 센다(페이지당 1개).
+  전체 폭 blue 무대는 Impact 띠와 구분되지 않으므로 반 열(`.d0-split`·`.d0-cols`) 도식이나 작은 무대에만 쓴다. Impact 띠 안 그림은 무대 없이 띠 위에 바로 둔다.
 - 강조는 색만으로 말하지 않는다. 채움/빈 모양, 굵기, 라벨 중 하나를 함께 바꾼다.
 - **선.** 굵기는 기본 1.5, 강조 2.5 두 가지뿐이다. 모든 선은 `stroke-linecap: round`, `stroke-linejoin: round`. 노드에 그림자·그라디언트 없음.
 - **그리기 모션.** 강조 경로(`data-on` 엣지·화살표)에 `class="… d0-draw"`와 `pathLength="1"`을 붙이면 섹션이 드러날 때 600ms 동안 그려진다.
@@ -28,6 +31,7 @@
 - **측정 기준(정본).** 렌더 글자 크기 = font-size f × (SVG 렌더 폭 ÷ viewBox 폭 W). SVG는 폭 100%로 커지므로 렌더 폭은
   `min(무대 안쪽 폭, max-width)`다. 글자 박스 높이(`getBBox`·`getBoundingClientRect`의 height)는 쓰지 않는다. 줄 높이와 글꼴 여백이 섞여 크게 나온다.
   - 375px 화면: 컨테이너 343px − 무대 패딩 40px = 안쪽 **303px**. 11px 이상이려면 `f × 303 ÷ W ≥ 11` → `W ≤ 27.5 × f`.
+    무대가 없으면 렌더 폭이 343px라 글자가 조금 커진다. 무대 기준 식을 지키면 무대 없이도 통과한다.
   - 데스크톱 16px 이하: `f × max-width ÷ W ≤ 16` → `max-width ≤ W × 16 ÷ f`. 권장 14px이면 `max-width = W × 14 ÷ f`.
 - 아래 두 크기 중 하나를 고른다. 다른 W를 쓰면 위 두 식으로 max-width를 다시 계산해 해당 SVG에 둔다.
 
@@ -39,9 +43,11 @@
 - 번호 글자(`.d0-s-num`)도 같은 식을 따른다. 기본 14px(375px 11.8px), wide 18px(375px 11.4px·데스크톱 15px). wide에서 13~14px로 두면 375px에서 8~9px로 줄어 실패다.
 
 - 노드·원은 viewBox 단위로 그린다. 기본 크기에서 노드 r 9~11(렌더 지름 18~22px), 바깥 고리 r 17을 넘기지 않는다.
+- **폭 상한(정본).** 모든 SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 60% 폭 게이트는 그림을 키워서가 아니라 옆 열(split·side·2열·주석 열)로 채운다.
+  전체 폭 그림은 가로로 긴 타임라인·단계 줄(narrative 포함)만 허용하고 최대 720px다. 이때 viewBox 폭을 720 안팎으로 다시 그려 데스크톱 라벨 16px 이하를 지키고, 375px에서 라벨이 11px 아래로 줄면 `.d0-fig__scroll`에 넣거나 세로로 돌린다.
 - **결론: 글자가 든 SVG는 렌더 폭 약 440px에서 멈춘다.** 데스크톱 16px 상한에서 기본은 360 × 16 ÷ 14 ≈ 411px, wide는 480 × 16 ÷ 18 ≈ 427px이다.
-  그래서 전체 폭(1136px) 섹션에 글자 든 SVG를 혼자 두면 무대 양옆이 빈다. 전체 폭 흐름은 `.d0-split`·`.d0-cols` 2열 한쪽에 넣거나,
-  `data-layout="side"`(무대 왼쪽 최대 440px + 오른쪽 설명)로 옆을 채우거나, `data-size="wide"`로 키운다. 폭을 꽉 채우는 그림은 글자를 HTML로 뺀다(비율 막대).
+  그래서 전체 폭(1136px) 섹션에 글자 든 SVG를 혼자 두면 양옆이 빈다. `.d0-split`·`.d0-cols` 2열 한쪽에 넣거나,
+  `data-layout="side"`(그림 왼쪽 최대 440px + 오른쪽 설명)로 옆을 채운다. 폭을 꽉 채우는 그림은 글자를 HTML로 뺀다(비율 막대).
 - 이 조건을 못 맞추는 넓은 그림(W > 27.5 × f)은 `.d0-fig__scroll` 상자에 넣는다. 페이지 가로 스크롤은 금지다.
 - 폭을 꽉 채워야 하는 그림(비율 막대)은 글자를 SVG 밖 HTML에 두고 SVG는 도형만 그린다. 아래 (b) 비율 변형 참고.
 
@@ -57,6 +63,113 @@
 | (e) steps 단계 | 번호 원을 1.5px 선으로 잇고 라벨은 아래 | 몇 단계 중 어디인가, 핵심 단계 하나 |
 | (f) sequence 주고받기 | 참여자 세로선 3~4개 + 가로 화살표와 짧은 라벨 | 누가 누구에게 무엇을 넘기나 |
 | (g) pins 번호 핀 `data-variant="pins"` | 글자 없는 넓은 SVG 위 HTML 번호 핀 + 옆 범례 | 화면 어디가 무엇인가(preview 해부도, faq 용어 핀) |
+
+## 장르 (`data-genre`)
+
+변형이 **무엇을** 그리는지라면 장르는 **어떤 목소리로** 그리는지다. 거의 모든 도식이 구조형 선 도식이면 페이지가 한 화면처럼 보인다.
+`figure.d0-fig[data-genre="structural|narrative|editorial"]`, 생략하면 structural이다. 구도와 묶는 법은 [composition.md](../composition.md).
+
+| 장르 | 그리는 것 | 언제 | 어울리는 구도 |
+| --- | --- | --- | --- |
+| Structural (생략) | 선·면으로 대상의 모양과 연결. 위 변형 (a)~(g) | 무엇이 무엇에 닿나, 어떤 모양인가 | Canvas, Split |
+| Narrative | 방향과 진행 상태. 지나온 것 / 현재 / 남은 것을 굵기·채움·점선 차이로 | 지금 어디까지 왔나, 무엇이 남았나 | Sequence |
+| Editorial | 선 거의 없이 실제 숫자 하나를 크게(56px), 객체 하나는 작게, 주변 라벨 최소 | 이것 하나만 기억하면 될 때 | Hero, Evidence |
+
+- **같은 페이지에서 장르를 섞는다.** 섹션이 3~4개면 structural 외에 narrative나 editorial을 하나 둔다. 장르를 바꾸려고 섹션을 더하지 않고 기존 섹션의 그림을 바꾼다. editorial은 페이지당 최대 1개다.
+- 장르가 바뀌어도 공통 규칙(선 굵기 1.5·2.5, 토큰 색, `role="img"` + `<title>`, 회색만 있는 도식 금지, 라벨 크기 게이트)은 그대로다.
+
+### Structural — 구조
+
+위 변형 (a)~(g)가 모두 structural이다. 대상의 실제 모양을 선과 면으로 그리고, 닿는 것·바뀌는 것 하나만 blue로 칠한다. 속성은 생략한다.
+
+### Narrative — 진행
+
+선 하나가 방향을 갖고 흘러가며, 그 위 위치가 상태를 말한다. 단계 그림 (e)가 "몇 번째인가"라면 narrative는 "얼마나 왔고 얼마나 남았나"다.
+
+- **세 상태를 굵기·채움·선 모양으로 가른다.** 선 굵기는 1.5·2.5 두 가지뿐이므로 채움과 점선을 함께 바꾼다.
+
+  | 상태 | 선 | 점 | 라벨 |
+  | --- | --- | --- | --- |
+  | 지나온 것 | 2.5 blue 실선(`d0-s-edge[data-on]`) | 작은 채움 원 r 6(`d0-s-node[data-on]`) | grey-600(`d0-s-muted`) |
+  | 현재 | 선이 여기서 끝난다 | 큰 채움 원 r 11 + 바깥 고리 r 17 | blue-dark 600(`data-on`) |
+  | 남은 것 | 1.5 grey-500 점선(`d0-s-edge[data-ahead]`) | 빈 원 r 6(`d0-s-node`) | grey-600(`d0-s-muted`) |
+
+- 진행 방향은 왼쪽 → 오른쪽(또는 아래 → 위로 오르는 곡선)이다. 곡선 하나로 그리고, 지나온 구간과 남은 구간은 현재 점에서 나눈 `path` 두 개다.
+- 지나온 구간에만 `d0-draw`를 붙여 그려지게 한다. 남은 점선은 처음부터 보인다.
+- 현재는 하나다. 끝난 구간이 상태(통과·실패)를 말해야 하면 그 점에 `data-tone`을 단다.
+- 점은 3~6개. 라벨은 점마다 1~2단어, 현재 라벨만 blue-dark다. 날짜가 주인공이면 [timeline.md](timeline.md)를 쓴다.
+
+```html
+<figure class="d0-fig" data-genre="narrative">
+  <svg viewBox="0 0 360 132" role="img" aria-labelledby="n1-t n1-d">
+    <title id="n1-t">배포까지 남은 길</title>
+    <desc id="n1-d">접수와 확인을 지나 지금 검토에 와 있어요. 배포와 완료가 남았어요.</desc>
+    <path class="d0-s-edge" data-ahead d="M168 48 C204 48 220 40 252 40 C284 40 300 40 324 40"/>
+    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M24 84 C60 84 70 64 96 64 C122 64 140 48 168 48"/>
+    <circle class="d0-s-node" data-on cx="24" cy="84" r="6"/>
+    <circle class="d0-s-node" data-on cx="96" cy="64" r="6"/>
+    <circle class="d0-s-ring" cx="168" cy="48" r="17"/>
+    <circle class="d0-s-node" data-on cx="168" cy="48" r="11"/>
+    <circle class="d0-s-node" cx="252" cy="40" r="6"/>
+    <circle class="d0-s-node" cx="324" cy="40" r="6"/>
+    <text class="d0-s-text d0-s-muted" x="24" y="114" text-anchor="middle">접수</text>
+    <text class="d0-s-text d0-s-muted" x="96" y="94" text-anchor="middle">확인</text>
+    <text class="d0-s-text" data-on x="168" y="88" text-anchor="middle">지금 검토</text>
+    <text class="d0-s-text d0-s-muted" x="252" y="70" text-anchor="middle">배포</text>
+    <text class="d0-s-text d0-s-muted" x="324" y="70" text-anchor="middle">완료</text>
+  </svg>
+  <figcaption>절반을 지났어요. 검토가 끝나면 바로 배포해요.</figcaption>
+</figure>
+```
+
+```css
+.d0-s-edge[data-ahead] { stroke-dasharray: 4 5; } /* 남은 길: 1.5 grey-500 점선 */
+```
+
+### Editorial — 하나를 크게
+
+선을 거의 쓰지 않는다. **실제 숫자** 하나를 크게 HTML로 쓰고, SVG는 그 뜻을 받치는 작은 객체 하나만 그린다. 문서 밀도는 그대로 두고 그 자리의 구도만 바꾼다.
+
+- **큰 글자는 HTML이다.** SVG `<text>`는 라벨 크기 게이트(렌더 16px 이하)를 받으므로 큰 숫자를 SVG 안에 넣지 않는다(비율 막대가 라벨을 HTML로 빼는 것과 같은 이유). 확대·복사·번역도 된다.
+- **큰 숫자는 색이 아니라 크기로** 말한다. 56px/600(모바일 40px) grey-900이 기본이고, 페이지의 큰 숫자 blue-dark 하나를 여기에 쓸 때만 `data-tone="blue"`다([hero.md](hero.md)).
+- **객체는 하나, 최대 120px.** 원 하나의 몫, 막대 하나, 상자 하나처럼 글자 없는 도형 하나다. 선·축·범례·눈금을 두지 않는다. blue는 그 객체의 강조 부분 하나에만.
+- 라벨은 figcaption 한 문장뿐이다(15px grey-700, 무엇을 잰 숫자인지). 무대를 두지 않는다.
+- 숫자는 정본 위치 하나에만 둔다. 히어로·Impact 띠와 같은 숫자면 editorial을 쓰지 않는다.
+- **실제 숫자일 때만** 쓴다. 문구나 대답(`네 번에 한 번`, `네, 돼요`)을 큰 글자로 쓰지 않는다. 그런 말은 섹션 제목이나 Impact 문장으로 쓴다.
+- 96px 이상 숫자는 쓰지 않는다. 더 크게 말해야 하면 Impact 띠 숫자([shell.md](shell.md) 강조 면)이고, editorial을 Impact 띠 안에 넣지 않는다.
+- 섹션을 더해서 쓰지 않는다. 기존 섹션의 그림을 editorial로 바꿀 때만 쓴다.
+
+```html
+<figure class="d0-fig" data-genre="editorial">
+  <svg viewBox="0 0 120 120" role="img" aria-labelledby="e1-t e1-d">
+    <title id="e1-t">지난 주문 중 전부 검사한 몫</title>
+    <desc id="e1-d">원 하나의 4분의 1이 채워져 있어요.</desc>
+    <circle class="d0-s-bar" cx="60" cy="60" r="58"/>
+    <path class="d0-s-accent" d="M60 60 V2 A58 58 0 0 1 118 60 Z"/>
+  </svg>
+  <p class="d0-ed__num"><data value="25">25</data>%</p>
+  <figcaption>지난 주문 네 번 중 한 번은 전부 검사해요.</figcaption>
+</figure>
+```
+
+```css
+.d0-fig[data-genre="editorial"] {
+  grid-template-columns: minmax(64px, 120px) minmax(0, 1fr); grid-template-areas: "obj num" "obj cap";
+  align-items: end; column-gap: 24px; row-gap: 6px;
+}
+.d0-fig[data-genre="editorial"] > svg { grid-area: obj; align-self: center; width: 100%; max-width: 120px; }
+.d0-ed__num { grid-area: num; margin: 0; color: var(--d0-grey-900); font-size: 56px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
+.d0-fig[data-genre="editorial"][data-tone="blue"] .d0-ed__num { color: var(--d0-blue-dark); }
+.d0-fig[data-genre="editorial"] figcaption { grid-area: cap; align-self: start; color: var(--d0-grey-700); font-size: 15px; }
+@media (max-width: 640px) {
+  .d0-fig[data-genre="editorial"] { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; }
+  .d0-ed__num { font-size: 40px; }
+}
+```
+
+- 원의 나머지는 grey-400(값이 큰 숫자로 적혀 있다), 몫은 blue. 몫 경로는 중심 → 12시 → 호 → 중심이다(25%면 3시까지).
+- 375px에서도 객체와 숫자가 한 줄에 놓인다(객체 72px + 숫자 40px).
+- 그림이 120px로 작으므로 섹션 폭을 혼자 채우지 않는다. `.d0-split` 한 열에 두거나 옆에 짧은 설명·목록 열을 둔다.
 
 ## 공용 CSS
 
@@ -146,6 +259,7 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 </figure>
 ```
 
+- **무대를 둔다.** 흩어진 노드와 흰 채움 노드라 바탕 위에서 그림의 경계가 안 보이기 때문이다(무대 기준은 [shell.md](shell.md)).
 - 노드는 7개까지. 열은 2~3개(원인 → 중간 → 결과). 더 많으면 묶어서 `+12` 같은 노드 하나로 줄인다.
 - 시작 노드(고친 것)는 블루 채움 + 바깥 고리. 닿는 노드·선만 `data-on`. 닿지 않는 것은 흰 채움 + grey-500 테두리.
 - 상태가 있으면 노드에 의미색을 단다: 고장 난 곳 `data-tone="red"`, 통과한 곳 `green`(incident 영향 그래프 등). 의미색 노드에도 라벨을 붙인다.
@@ -155,8 +269,7 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 ## (b) bars — 전/후 막대
 
 ```html
-<figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage">
+<figure class="d0-fig" data-layout="side">
   <svg viewBox="0 0 360 112" role="img" aria-labelledby="b1-t b1-d">
     <title id="b1-t">내보내기 대기 시간 전과 후</title>
     <desc id="b1-d">전에는 14분, 지금은 6분이에요.</desc>
@@ -168,20 +281,13 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
     <rect class="d0-s-bar" data-on x="32" y="68" width="111" height="26" rx="6"/>
     <text class="d0-s-text" data-on x="151" y="86">6분</text>
   </svg>
-  </div>
   <figcaption>기다리는 시간이 절반 아래로 줄었어요.</figcaption>
 </figure>
 ```
 
-- **배치.** 막대 SVG는 360px(`wide`는 400px)에서 멈추고 무대가 그 둘레를 채운다. 전체 폭 섹션에 혼자 두면 무대가 넓게 비므로
-  `.d0-split` 한 열에 넣거나, 2열 figure(무대 왼쪽, figcaption 오른쪽 열)로 옆에 짧은 설명을 붙인다.
-
-```html
-<figure class="d0-fig" data-stage data-layout="side">
-  <div class="d0-fig__stage"><svg>…</svg></div>
-  <figcaption>기다리는 시간이 절반 아래로 줄었어요.</figcaption>
-</figure>
-```
+- **배치.** 막대는 경계가 분명해 무대 없이 둔다. 막대 SVG는 360px(`wide`는 400px)에서 멈추므로 전체 폭 섹션에 혼자 두면 옆이 빈다.
+  위 스니펫처럼 2열 figure(`data-layout="side"`: 그림 왼쪽, figcaption 오른쪽 열)로 옆에 짧은 설명을 붙이거나 `.d0-split` 한 열에 넣는다.
+  무대를 쓰는 경우(두 그림 높이 맞춤 등)에도 같은 속성이 그대로 동작한다: `<figure class="d0-fig" data-stage data-layout="side"><div class="d0-fig__stage"><svg>…</svg></div><figcaption>…</figcaption></figure>`.
 
 ```css
 @media (min-width: 640px) {
@@ -232,8 +338,8 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 결과물이 표일 때 "어떤 모양의 표인가"를 썸네일로 그린다. 같은 함수로 카드 여러 장을 만든다.
 
 ```html
-<figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage"><div data-grid='{"rows":8,"cols":6,"sumCol":true,"sumRow":true,"blanks":0.15,"seed":3,"label":"팀 행 × 일자 열 표"}'></div></div>
+<figure class="d0-fig" data-layout="side">
+  <div data-grid='{"rows":8,"cols":6,"sumCol":true,"sumRow":true,"blanks":0.15,"seed":3,"label":"팀 행 × 일자 열 표"}'></div>
   <figcaption>팀마다 한 줄, 날짜마다 한 칸이에요.</figcaption>
 </figure>
 ```
@@ -278,13 +384,13 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 - 스펙: `rows`·`cols`(머리 행·키 열 포함), `headRow`·`keyCol`(기본 true), `sumRow`·`sumCol`(기본 false),
   `blanks`(빈칸 비율 0~1), `seed`(같은 값이면 같은 모양), `label`(접근 이름, 필수).
 - 색: 머리 행 blue-light(+ 얇은 blue 테두리), 키 열 grey-400, 합계 행·열 blue, 값 칸 grey-200, 빈칸은 생략.
+- 무대 없이 둔다. 머리 행·키 열·합계 칸이 표의 테두리를 만든다. 옆이 비지 않게 `data-layout="side"`로 figcaption을 옆에 둔다. 카드 안에 넣으면 카드가 받침이다.
 - 글자 없는 그림이라 라벨 규칙의 예외다. 이름은 카드 제목이 말한다. 실제 결과물의 행·열 수에 맞춘다.
 
 ## (d) wireframe — 화면 골격
 
 ```html
-<figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage">
+<figure class="d0-fig" data-layout="side">
   <svg viewBox="0 0 360 220" role="img" aria-labelledby="w1-t w1-d">
     <title id="w1-t">주문 관리 화면 골격</title>
     <desc id="w1-d">위쪽 바 오른쪽 버튼과 그 아래 필터 영역이 블루로 강조돼 있어요. 아래는 카드 두 장과 표 영역이에요.</desc>
@@ -299,11 +405,11 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
     <rect class="d0-s-fill" x="16" y="176" width="328" height="12" rx="4"/>
     <rect class="d0-s-fill" x="16" y="196" width="220" height="12" rx="4"/>
   </svg>
-  </div>
   <figcaption>새 필터는 버튼 바로 아래, 표 위에 생겨요.</figcaption>
 </figure>
 ```
 
+- 바깥 틀(`d0-s-frame`)이 경계를 그리므로 무대 없이 둔다.
 - 회색 면은 자리만 잡는다(글자 없는 막대). 바뀌는 곳은 블루 하나(버튼은 채움, 영역은 점선 테두리 `d0-s-zone`).
 - 라벨이 필요하면 SVG 밖 figcaption에 쓴다. 넣는다면 바뀌는 곳 하나에만 짧은 명사로.
 - 눌러 봐야 이해되는 화면이면 와이어프레임 대신 [mockup-frame.md](mockup-frame.md)을 쓴다.
@@ -315,8 +421,7 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 글 상자를 화살표로 잇는 흐름 줄 대신 이 그림을 쓴다.
 
 ```html
-<figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage">
+<figure class="d0-fig" data-layout="side">
   <svg viewBox="0 0 360 104" role="img" aria-labelledby="s1-t s1-d">
     <title id="s1-t">내보내기 네 단계</title>
     <desc id="s1-d">첫 단계 '누르기'는 초록 체크로 지금과 같다는 표시예요. 두 번째 '묶음 고르기'가 블루로 채워져 있어요. 이번에 새로 생기는 단계예요.</desc>
@@ -335,11 +440,11 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
     <text class="d0-s-text d0-s-muted" x="220" y="80" text-anchor="middle">미리보기</text>
     <text class="d0-s-text d0-s-muted" x="308" y="80" text-anchor="middle">받기</text>
   </svg>
-  </div>
   <figcaption>두 번째 단계가 새로 생겨요. 나머지는 지금과 같아요.</figcaption>
 </figure>
 ```
 
+- 선과 원이 한 줄로 이어져 경계가 분명하므로 무대 없이 둔다.
 - 단계는 3~5개. 원 r 16(기본 크기에서 렌더 지름 32px), 원 사이는 1.5px grey-500 선. 원 중심 간격은 라벨 폭에 맞춰 80~100.
 - 강조는 단계 하나만: 원 채움 blue-dark + 흰 번호 + 라벨 blue-dark + 그 단계로 들어오는 선(`data-on`, `d0-draw`). 색과 채움이 함께 바뀐다.
 - **현재 단계가 없는 흐름**(구조·절차 설명)은 강조 그룹 하나를 칠할 수 있다: '항상 거치는 단계' 묶음이면 그 원들 뒤에 `d0-s-zone` 둥근 상자 하나
@@ -374,6 +479,7 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 </figure>
 ```
 
+- **무대를 둔다.** 테두리 없는 세로선·화살표만으로 된 그림이라 무대가 없으면 어디까지가 그림인지 안 보인다.
 - 참여자는 3~4명, 메시지는 5개까지. 참여자 간격 120(4명이면 viewBox 480 + `data-size="wide"`).
 - 세로선은 grey-300 1.5px(이름이 위에 적혀 있어 자리만 잡는다). 메시지 화살표는 grey-500 1.5px, 돌아오는 응답은 점선(`data-back`).
 - 핵심 메시지 하나만 `data-on`(blue 2.5px + `d0-draw`) + 라벨 blue-dark. 화살촉은 같은 `path`의 서브패스로 그린다(`marker` 금지, 색이 CSS를 안 따른다).
@@ -382,12 +488,11 @@ document.querySelectorAll('[data-grid]').forEach(function (el) {
 ## (g) pins — 번호 핀 오버레이
 
 글자 없는 넓은 SVG(와이어프레임, 파일 구성 등) 위에 HTML 번호 핀(①②③)을 얹고, 이름과 뜻은 옆 범례 `dl`에 쓴다.
-SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)를 받지 않고 **SVG를 640px까지 키운다**. 핀 숫자와 범례는 HTML 텍스트 규칙을 따른다.
+SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)를 받지 않지만 폭 상한은 같다: **SVG는 최대 400px**(wide 상한)이고 옆 범례 열로 폭을 채운다. 핀 숫자와 범례는 HTML 텍스트 규칙을 따른다.
 **연동 동작이 기본이다.** 범례 항목·핀·SVG 영역 묶음을 같은 번호(`data-pin="n"`)로 묶고, 한 번에 한 번호만 켠다.
 
 ```html
-<figure class="d0-fig" data-stage data-variant="pins" data-active-pin="2">
-  <div class="d0-fig__stage">
+<figure class="d0-fig" data-variant="pins" data-active-pin="2">
     <div class="d0-pins">
       <svg viewBox="0 0 480 300" role="img" aria-labelledby="p1-t p1-d">
         <title id="p1-t">설명 페이지 한 장의 구성</title>
@@ -411,7 +516,6 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
       <span class="d0-pin" data-pin="2" style="left: 50%; top: 27%" aria-hidden="true">2</span>
       <span class="d0-pin" data-pin="3" style="left: 80%; top: 79%" aria-hidden="true">3</span>
     </div>
-  </div>
   <dl class="d0-pins__key">
     <div data-pin="1" tabindex="0"><dt><span class="d0-pin">1</span>머리</dt><dd>제목과 결론 한 줄이에요.</dd></div>
     <div data-pin="2" tabindex="0"><dt><span class="d0-pin">2</span>그림 무대</dt><dd>페이지의 주인공 그림이 놓여요.</dd></div>
@@ -422,7 +526,8 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
 ```
 
 ```css
-.d0-fig[data-variant="pins"] .d0-pins { position: relative; justify-self: center; width: 100%; max-width: 640px; }
+.d0-fig[data-variant="pins"] .d0-pins { position: relative; justify-self: start; width: 100%; max-width: 400px; } /* 무대 없음: 페이지 왼쪽 정렬선, 폭 상한 400 */
+.d0-fig[data-variant="pins"] .d0-fig__stage > .d0-pins { justify-self: center; } /* 무대 있음: 무대 가운데(기존 동작) */
 .d0-fig[data-variant="pins"] svg { display: block; max-width: none; }
 .d0-pin {
   display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px;
@@ -454,6 +559,7 @@ SVG에 글자가 없으므로 위 라벨 크기 게이트(렌더 11~16px 계산)
 }
 @media (min-width: 900px) {
   .d0-fig[data-variant="pins"] { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); align-items: center; column-gap: 28px; }
+  .d0-fig[data-variant="pins"]:not([data-stage]) { grid-template-columns: minmax(0, 400px) minmax(220px, 300px); justify-content: start; } /* 무대 없음: 범례가 SVG 바로 오른쪽, 남는 폭은 범례 뒤로 */
   .d0-fig[data-variant="pins"] figcaption { grid-column: 1 / -1; }
 }
 ```
@@ -470,6 +576,7 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 });
 ```
 
+- 와이어프레임 틀(`d0-s-frame`)이 경계라 무대 없이 둔다. 무대가 없으면 `.d0-pins`는 페이지 왼쪽 정렬선에 붙고(`justify-self: start`), 900px 이상에서 범례 열은 SVG(최대 400px) 바로 오른쪽에서 시작하고 남는 폭은 범례 뒤로 간다. 무대를 쓰면 `div.d0-fig__stage`가 `.d0-pins`를 감싸 무대 가운데에 놓이고, 무대가 남는 폭을 채운다. 나머지는 같다.
 - **번호로 묶기.** 범례 항목(`dt`/`dd`를 감싼 `div`), 화면 위 핀, SVG 영역 묶음 `<g>`에 같은 `data-pin="n"`을 단다. 영역 묶음 밖에는 틀(`d0-s-frame`)만 둔다.
 - **켜기.** 그림 `figure`의 `data-active-pin` 하나가 상태다. CSS가 같은 번호에 `--pin-*`·`--key-*`·`--area-*` 값을 넣어 켜고, JS는 이 속성만 바꾼다. 처음 값은 1번 또는 대표 항목이고, 이 값이 JS 없을 때의 정적 강조다. 범례 항목·핀에 `data-on`을 쓰지 않는다(SVG 안 `data-on`은 묶음 속 강조 도형 표시로 그대로 쓴다).
 - **켜진 번호.** 핀은 blue-dark 원 + 흰 숫자(5.5:1), 범례 항목은 왼쪽 2px blue 선 + `dt` blue-dark, 영역은 원래 blue·blue-light 도형 그대로다. 묶음에 blue 도형이 없으면(체크 도장, 목록 줄) `d0-s-area` 사각형을 묶음 맨 앞에 깐다. 꺼지면 보이지 않고, 켜지면 blue-light 판 + blue 점선이 된다. 의미색 도형(green 체크 등)은 켜지면 제 색이다.
@@ -483,7 +590,8 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 ## 금지
 
 - 텍스트 상자 + 화살표 줄(문장이 든 상자), 정보 없는 장식 그림, 3D·그라디언트·그림자·아이콘 일러스트, Mermaid 등 자동 배치 도식.
-- 무대 없이 맨바닥에 둔 도식(비율 막대·카드 안 격자 제외), 무대 안에 figcaption, 무대에 테두리·그림자.
+- 경계가 이미 보이는 도식에 기본값으로 두른 무대, 무대 안에 figcaption, 무대에 테두리·그림자, 무대 없이 폭 절반만 쓰고 옆을 비운 도식.
+- 페이지 전체를 structural 한 장르로만 채우기(섹션 3개 이상이면), editorial 2개 이상, 문구·대답을 쓴 editorial, 56px을 넘는 editorial 숫자, 장르를 바꾸려고 섹션 더하기, SVG `<text>`로 그린 큰 숫자, 선·축·범례를 단 editorial, 현재가 둘인 narrative, 1.5·2.5 외 굵기로 상태 나누기.
 - 1.5·2.5 외 선 굵기(썸네일 격자 머리 테두리 제외), 각진 선 끝, 강조 경로 아닌 선에 그리기 모션.
 - 회색만으로 된 도식(blue·의미색 표식 0개), 의미색 `<text>` 글자, 테두리·라벨 없이 혼자 뜻을 전하는 orange 표식.
 - 노드 7개 초과, SVG 안 문장, 375px에서 11px 아래로 줄어들거나 데스크톱에서 16px을 넘는 라벨(h2보다 큰 라벨), 블루 강조가 흩어진 그림(강조 묶음은 하나).

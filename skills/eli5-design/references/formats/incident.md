@@ -51,4 +51,23 @@ header(h1 → 히어로 또는 요약 행: 발생 / 복구 / 영향 시간 → �
 - 결과·지표 정리가 목적이면 report, 사건 경위면 incident.
 - 여러 사건을 기간으로 정리하면 timeline 변경 내역.
 
+## 덱으로 낼 때
+
+Deck Type **Retrospective**: `<main class="d0-deck" data-preset="incident">`. 규칙은 [deck](../output/deck.md).
+
+스토리라인(표지 다음 제목 목차는 공통이라 생략):
+사건 → 영향 → 타임라인 → 근본 원인 → 왜 못 막았나 → 대응 → 재발 방지
+
+| 장 | `data-kind` |
+| --- | --- |
+| 사건 | `cover`(h1 = 무슨 일이 왜 났나 한 문장, 요약 3행 `발생` / `복구` / `영향`) |
+| 영향 | `stat`(영향 시간·범위 숫자 하나) 또는 `evidence`(영향 그래프) |
+| 타임라인 | 근거(SVG 시간 막대 `data-variant="timebar"`, 발생·인지·조치·복구) |
+| 근본 원인 | `breakdown`(직접 원인 → 근본 원인) |
+| 왜 못 막았나 | `assertion`(빠진 방어선 한 문장) |
+| 대응 | 근거 또는 `screenshot`(바뀐 경보·화면에 spotlight) |
+| 재발 방지 | `summary`(담당·기한) |
+
+Impact: 영향(`stat`), 왜 못 막았나(`assertion`).
+
 블록 해부: [blocks.md](../blocks.md)

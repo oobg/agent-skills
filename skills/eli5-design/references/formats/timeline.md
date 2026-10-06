@@ -56,4 +56,23 @@
 - 날짜·목표일이 있으면 timeline, 순서만 있으면 flow.
 - 장애 하나의 경위면 incident.
 
+## 덱으로 낼 때
+
+덱은 덜 맞는다. 날짜 순서는 한 장에 펼친 시간 막대에서 가장 잘 보이고, 넘기면 전체 길이와 겹침이 끊긴다. 기본은 page다.
+로드맵을 발표해야 하면 report `proposal` 덱 안에 시간 막대 한 장으로 빌리는 쪽이 먼저다.
+단독으로 낸다면 `<main class="d0-deck" data-preset="timeline" data-variant="roadmap">`, 규칙은 [deck](../output/deck.md).
+
+스토리라인(5~6장, 표지 다음 제목 목차는 공통이라 생략):
+지금 어디 → 전체 일정 → 위험 구간 → 의존성 → 다음 마일스톤
+
+| 장 | `data-kind` |
+| --- | --- |
+| 지금 어디 | `cover`(h1 = 목표일에 맞는지 한 문장) |
+| 전체 일정 | 근거(SVG 시간 막대 `data-variant="timebar"`, 전체 폭, 오늘 표식) |
+| 위험 구간 | `evidence`(밀린 구간만 blue) |
+| 의존성 | `breakdown`(선행 작업 → 막히는 작업) |
+| 다음 마일스톤 | `summary`(결정·요청 한 가지) |
+
+Impact: 목표일이나 남은 기간 숫자 하나(`stat`). 변경 내역 `changelog`는 덱으로 내지 않는다.
+
 블록 해부: [blocks.md](../blocks.md)

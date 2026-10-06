@@ -84,4 +84,23 @@ KPI를 쓰면 숫자 + 막대만 두고 증감 배지를 달지 않는다.
 - 고를 것이 없고 바뀐 내용 기록이면 timeline(변경 내역)이 맞다.
 - 고를 옵션이 없고 아직 적용 전인 변경 제안·설명이면 report(요약 행 헤더, 수치는 `예상치`).
 
+## 덱으로 낼 때
+
+Deck Type **Decision**: `<main class="d0-deck" data-preset="compare" data-variant="decision">`. 규칙은 [deck](../output/deck.md).
+
+스토리라인(표지 다음 제목 목차는 공통이라 생략):
+결정할 것 → 판단 기준 → 선택지 → 트레이드오프 → 추천 → 결정 요청
+
+| 장 | `data-kind` |
+| --- | --- |
+| 결정할 것 | `cover`(h1 = 결정 문장, 요약 3행 `문제` / `추천` / `결정 필요`) |
+| 판단 기준 | 근거(생략, 기준 축을 그린 그림 + 요점) |
+| 선택지 | `breakdown` 또는 근거([side-by-side](../blocks/side-by-side.md) 와이어 카드) |
+| 트레이드오프 | `evidence`(옵션별 막대, 같은 축) |
+| 추천 | `assertion`(조건문 한 문장: "X가 중요하면 A") |
+| 결정 요청 | `summary`(누가, 언제까지, 무엇을) |
+
+Impact: 추천(`assertion`), 그리고 트레이드오프의 결정적 숫자가 있으면 그 `stat` 한 장.
+시안 변형을 발표하면 선택지 장을 `screenshot` 두 장(같은 구도)으로 바꾼다. 전/후 변형은 report 상태 보고 스토리라인을 빌린다.
+
 블록 해부: [blocks.md](../blocks.md)

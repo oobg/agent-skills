@@ -24,7 +24,8 @@
   - report 다음 단계에서는 모든 행에 주체가 있어야 하므로 `data-meta="none"`을 쓰지 않는다([report.md](../formats/report.md)).
 - 목록 전체에 행 끝 칸이 없으면 `.d0-check`에 `data-meta="none"`을 둬 모든 행을 `auto 1fr` 2열로 만든다.
 - **시간이 일부 행에만 있으면 시간 열을 만들지 않는다.** 그 행의 결과 한 줄 끝에 넣는다(`… 보여요. 약 20분`). 한 행에만 붙은 오른쪽 끝 숫자는 근거 없이 튀어 보인다.
-- 입력 예시가 필요한 행은 `<details>`로 행 안에 접어 둔다. 붙여 넣을 명령·설정은 그 `<details>` 안에 [code-block.md](code-block.md)로 둔다.
+- 입력 예시가 필요한 행은 `<details>`로 행 안에 접어 둔다. 붙여 넣을 명령·설정은 그 `<details>` 안에 [code-block.md](code-block.md)로 둔다(기본·owner 변형).
+  linked 변형은 행 안에 접지 않고 아래 **활성 단계 코드 영역**에 펼쳐 둔다.
 - `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다.
   - 행마다 `data-step="n"`과 `data-caption`(그 단계 그림 설명 한 줄)을 둔다. SVG는 단계마다 `g[data-step="n"]` 그룹 하나를 갖고, 그룹마다 누를 곳 하나만 blue다.
   - 행에 마우스를 올리거나(hover), 키보드 포커스가 들어오거나(focus-within), 행을 누르거나, 체크하면 무대가 그 단계 그림으로 바뀐다.
@@ -34,6 +35,12 @@
   - 그림 이름은 바뀐 단계에 맞춰 figcaption과 SVG `<desc>`를 함께 고친다(`<strong>2단계</strong> 파란 입력창에 주제를 적어요.`). 별도 `aria-live`는 두지 않는다.
   - 960px 미만: sticky를 풀고 무대 1장을 목록 위에 둔다. 행을 누르거나 체크하면 그림이 바뀐다. 무대를 한 장만 두는 이유는 같은 SVG를 행마다 복제하지 않기 위해서다.
     단계 그림이 목록에서 멀어 읽기 어려우면 대신 행 `<details>` 안 작은 그림으로 바꾼다(이때는 linked를 쓰지 않는다).
+  - **활성 단계 코드 영역.** 단계별 붙여 넣을 명령·입력 예시는 무대 `figcaption` 바로 아래 `div.d0-check__code[aria-live="polite"]` 한 곳에 둔다.
+    단계마다 항목 `.d0-check__code-item[data-step="n"]` 하나 = [code-block.md](code-block.md) `figure.d0-code` + 필요하면 보조 한 줄 `p.d0-note`. 소제목·접기 없이 펼친 채다.
+    무대의 `data-active-step`과 같은 번호 항목만 보이므로 단계를 바꾸면 코드도 바뀐다. 코드가 없는 단계는 안내 한 줄 `p.d0-check__code-item.d0-note[data-step="n"]`(예: `이 단계는 붙여 넣을 코드가 없어요.`)을 둔다.
+  - 명령은 `pre`에 `white-space: pre-wrap; overflow-wrap: anywhere`로 줄을 바꿔 가로 스크롤을 만들지 않는다(code-block의 `pre` 기본값 `white-space: pre`를 이 영역에서만 덮는다).
+  - 960px 미만: 코드 영역은 숨기고, JS가 코드 항목 노드를 각 단계 행(`.d0-check__row[data-step] > div`) 아래로 옮겨 펼쳐 붙인다(접지 않는다). 960px 이상으로 돌아오면 영역으로 되돌린다.
+    노드를 옮기므로 복사 버튼 리스너는 그대로다. 코드 없는 단계의 안내 한 줄은 옮기지 않는다(행에는 붙일 코드가 없다).
   - 무대 SVG는 diagram 그림 블록으로 센다. 단계 전환은 바로 바뀌고, 0.2초 페이드는 `prefers-reduced-motion: no-preference`일 때만 둔다.
 
 | 조건 | 열 정의 |
@@ -176,6 +183,16 @@ JS는 기본 변형과 같다.
       </svg>
     </div>
     <figcaption><strong>1단계</strong> 왼쪽 메뉴의 파란 칸이 내보내기예요.</figcaption>
+    <div class="d0-check__code" aria-live="polite">
+      <p class="d0-check__code-item d0-note" data-step="1">이 단계는 붙여 넣을 코드가 없어요. 메뉴만 눌러요.</p>
+      <div class="d0-check__code-item" data-step="2">
+        <figure class="d0-code">
+          <figcaption class="d0-code__bar"><span class="d0-code__label">터미널</span><output class="d0-code__status" aria-live="polite"></output><button type="button" class="d0-code__copy" hidden>복사</button></figcaption>
+          <pre tabindex="0" role="group" aria-label="팀 등록 명령"><code><span class="d0-code__prompt" aria-hidden="true">$ </span>npx order-export init --team "팀 A"</code></pre>
+        </figure>
+        <p class="d0-note">팀 이름은 따옴표 안만 바꿔요.</p>
+      </div>
+    </div>
   </figure>
   <div class="d0-check__list">
     <label class="d0-check__progress" for="ls-progress"><output data-count>0</output> / 2 완료</label>
@@ -191,8 +208,7 @@ JS는 기본 변형과 같다.
           data-caption="파란 입력창에 받을 팀을 적어요."
           data-desc="자동 전송 화면이에요. 받을 팀 입력창이 파란 점선으로 강조돼 있어요.">
         <input type="checkbox" class="d0-check__box" id="ls-2">
-        <div><span class="d0-check__no">2</span><label for="ls-2">받을 팀 등록하기</label><p>목록에 팀 A가 생겨요.</p>
-          <details><summary>붙여 넣을 명령</summary><!-- code-block.md 스니펫 --></details></div>
+        <div><span class="d0-check__no">2</span><label for="ls-2">받을 팀 등록하기</label><p>목록에 팀 A가 생겨요.</p></div>
       </li>
     </ol>
   </div>
@@ -218,7 +234,21 @@ JS는 기본 변형과 같다.
 .d0-check__stage figcaption strong { color: var(--d0-blue-dark); font-weight: 600; }
 .d0-check[data-variant="linked"] .d0-check__row { cursor: pointer; }
 .d0-check[data-variant="linked"] .d0-check__row > div { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 8px; }
-.d0-check[data-variant="linked"] .d0-check__row > div > :is(p, details) { flex-basis: 100%; min-width: 0; }
+.d0-check[data-variant="linked"] .d0-check__row > div > :is(p, details, .d0-check__code-item) { flex-basis: 100%; min-width: 0; }
+/* 활성 단계 코드 영역: 무대 figcaption 아래, 활성 단계 항목만 보인다 */
+.d0-check__code { display: grid; min-width: 0; }
+.d0-check__code > [data-step] { display: none; }
+.d0-check__stage[data-active-step="1"] .d0-check__code > [data-step="1"],
+.d0-check__stage[data-active-step="2"] .d0-check__code > [data-step="2"],
+.d0-check__stage[data-active-step="3"] .d0-check__code > [data-step="3"],
+.d0-check__stage[data-active-step="4"] .d0-check__code > [data-step="4"],
+.d0-check__stage[data-active-step="5"] .d0-check__code > [data-step="5"],
+.d0-check__stage[data-active-step="6"] .d0-check__code > [data-step="6"],
+.d0-check__stage[data-active-step="7"] .d0-check__code > [data-step="7"] { display: grid; }
+.d0-check__code-item { gap: 8px; min-width: 0; }
+.d0-check__row .d0-check__code-item { display: grid; margin-top: 4px; } /* 960px 미만: 행 아래에 펼쳐 붙인다 */
+.d0-check__code-item .d0-code pre { white-space: pre-wrap; overflow-wrap: anywhere; } /* 좁은 열에서도 가로 스크롤 없음 */
+@media (max-width: 959px) { .d0-check__code { display: none; } }
 .d0-check__no {
   display: inline-grid; place-content: center; flex: none; min-width: 22px; height: 22px;
   margin-top: calc((15px * var(--d0-leading-body) - 22px) / 2);
@@ -271,6 +301,27 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
 });
 ```
 
+```js
+// 활성 단계 코드 영역: 960px 이상은 무대 아래 한곳에, 미만은 각 단계 행 아래로 코드 항목 노드를 옮긴다(복사 버튼 리스너 유지)
+document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (list) {
+  var box = list.querySelector('.d0-check__code');
+  if (!box) return;
+  var all = Array.prototype.slice.call(box.querySelectorAll(':scope > .d0-check__code-item')); // 단계 순서
+  var wide = window.matchMedia('(min-width: 960px)');
+  function place() {
+    all.forEach(function (it) {
+      var row = list.querySelector('.d0-check__row[data-step="' + it.dataset.step + '"] > div');
+      if (wide.matches || !it.querySelector('.d0-code') || !row) box.appendChild(it); // 넓은 화면·코드 없는 안내는 영역에(순서대로)
+      else row.appendChild(it);
+    });
+  }
+  place();
+  if (wide.addEventListener) wide.addEventListener('change', place);
+});
+```
+
+code-block JS(복사 버튼)는 이 스크립트보다 먼저 붙여도, 나중에 붙여도 된다. 노드를 옮길 뿐 다시 만들지 않는다.
+
 linked 목록에는 기본 변형 JS를 함께 붙이지 않는다(위 JS가 진행률까지 갱신한다). 기본 변형 JS를 쓰는 페이지면 그 선택자를 `.d0-check:not([data-variant="linked"])`로 좁힌다.
 
 ## 금지
@@ -281,3 +332,4 @@ linked 목록에는 기본 변형 JS를 함께 붙이지 않는다(위 JS가 진
 - 사용자가 할 일과 시스템이 하는 일을 한 목록에 섞기(시스템 일은 결과 한 줄로만).
 - 일부 행에만 있는 시간 열, 메타 칸을 채우려는 빈 `span`·`-` 표시.
 - 주체 없이 `추후 배포 예정`처럼 쓴 할 일, 기한·조건 칸에 `추후`·`예정`·`TBD`만 두기.
+- linked 변형에서 행 안에 코드 접힘(`<details>`)을 두지 않는다. 코드는 활성 단계 코드 영역에 펼쳐 두고, 960px 미만에서도 행 아래에 펼쳐 붙인다.

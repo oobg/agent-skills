@@ -106,4 +106,25 @@ header(리드에 목적 한 문장, 먼저 알아둘 것은 리드 아래 한 �
 - 체크박스로 직접 실행하면 guide 따라하기, 흐름 이해가 목적이면 flow, 잘 쓰는 법·선택 기준이면 guide 사용 가이드.
 - 대상 두세 개를 같은 축으로 견주어 하나를 고르게 하면 compare, 내 상황에서 쓰는 법을 고르게 하면 guide 사용 가이드.
 
+## 덱으로 낼 때
+
+Deck Type **Demo**: `<main class="d0-deck" data-preset="guide">`(사용 가이드면 `data-variant="practice"`). 규칙은 [deck](../output/deck.md).
+덱은 함께 보며 시연할 때 쓴다. 독자가 혼자 체크하며 실행하면 page 따라하기가 낫다(덱에는 체크박스를 두지 않는다).
+
+따라하기 스토리라인(표지 다음 제목 목차는 공통이라 생략):
+상황 → 사용자 → Before → 제품 → 사용 흐름 → 실제 화면 → After
+
+| 장 | `data-kind` |
+| --- | --- |
+| 상황 | `cover`(h1 = 끝나면 무엇을 할 수 있나) |
+| 사용자 | 근거(누가, 무엇이 준비되어야 하나) |
+| Before | `screenshot`(시작 화면) |
+| 제품 | `assertion`(이 도구가 하는 일 한 문장) |
+| 사용 흐름 | 근거(단계 도식, 5단계까지) |
+| 실제 화면 | `screenshot`(누를 곳 spotlight + 번호 주석) |
+| After | `summary`(완료 화면과 같은지 + 다음 행동 한 줄) |
+
+Impact: 제품(`assertion`), 단계가 하나로 압축되는 핵심 화면이 있으면 그 `screenshot`.
+사용 가이드 `practice`는 목적(`assertion`) → 기본 원칙(`breakdown`) → 내 상황엔 이 길(근거: 갈림 경로 graph) → 피해야 할 것(근거: 전/후) → 다음(`summary`)로 바꾼다.
+
 블록 해부: [blocks.md](../blocks.md)

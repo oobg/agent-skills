@@ -8,14 +8,14 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - doctype → `lang="ko"` → meta viewport → 폰트 → 메인 `<style>`.
 - **폰트.** artifact로 발행할 때는 `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
   메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 일반 HTML 파일은 아래 스니펫의 jsDelivr `<link>` 하나를 허용한다(정본: SKILL.md 출력 형식).
-- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 컨테이너 → 타이포 스케일 → 섹션 → 무대 → 열 나누기 → 공용 배지 → 포커스 → 모션.
+- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 컨테이너 → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 열 나누기 → 공용 배지 → 포커스 → 모션.
   폰트 `<style>`은 이 앞의 별도 요소라 "tokens.css는 메인 `<style>` 맨 앞" 규칙과 부딪히지 않는다.
 - 컨테이너는 day0 폭 규칙을 따른다: 기본 wide `1200px`, `data-width="narrow"`면 `640px`.
 - 페이지 패딩: 데스크톱 `64px 32px 96px`, 640px 이하 `48px 16px 72px`(좌우 16px 거터).
 - 모든 블록은 페이지 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다.
 - **첫 화면 높이 예산(정본).** 판정은 하나다: 1100~1280px 폭에서 **첫 SVG 도식의 아래 끝이 y ≤ 720px**(갤러리 iframe 약 720px, 1280×800 첫 화면 공통).
-  머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 무대 300px은 **합계 560px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 무대 300 ≈ 708px).
-  머리가 짧으면 무대가 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
+  머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 그림(무대가 있으면 무대) 300px은 **합계 560px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 그림 300 ≈ 708px).
+  머리가 짧으면 그림이 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
   넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 무대 SVG의 viewBox 높이를 줄인다.
 
 ## 여백 리듬
@@ -87,6 +87,8 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 | --- | --- | --- | --- |
 | h1 (페이지 제목) | 32px / 700, display 자간·행간 | grey-900 | 26px |
 | 히어로 숫자 | 44px / 600, display 자간, 단위도 같은 크기 | grey-900(선택: blue-dark) | 36px ([hero.md](hero.md)) |
+| Impact 문장 (`.d0-impact__line`) | 32px / 700, display 자간·행간 | grey-900 | 24px (아래 강조 절) |
+| Impact 숫자 (`.d0-impact__num`) | 64px / 600, display 자간, 단위도 같은 크기 | blue-dark | 48px (아래 강조 절) |
 | h2 (섹션 제목) | 20px / 700, title 자간 | grey-900 | 18px |
 | h3 (그림·열 제목) | 16px / 650 | grey-900 | 16px |
 | 본문 | 15px / 400, 문단 행간 1.65 | grey-800 | 15px |
@@ -100,17 +102,69 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
   히어로 전 값도 grey-600이다.
 - 회색 보조문은 줄인다. 섹션 설명은 최대 1문장이고 제목과 같은 말이면 뺀다. 주 콘텐츠는 그림과 숫자, 15px 본문이다.
 
-## 그림 무대 (`.d0-fig[data-stage]`)
+## 강조 면 (`data-emphasis`)
 
-도식 figure는 무대 패널 위에 놓는다. 패널 = `div.d0-fig__stage`(배경 grey-50, `--d0-radius-card`, 패딩 28px,
+장면의 음량을 정한다. 구도·리듬과 언제 쓰는지는 [composition.md](../composition.md)가 정본이고, 이 절은 모양과 CSS다.
+`main > section`(page)이나 `.d0-slide`(deck)에 단다. 생략하면 normal이다.
+
+**Impact (`data-emphasis="impact"`).** 선택이다(페이지당 0~1개). 섹션을 하나 **더하지 않고** 기존 섹션 하나를 화면 폭 끝까지 칠한 blue-light 띠로 바꾼다.
+Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로다.
+
+- 띠는 `margin-inline: calc(50% - 50vw)`로 화면 끝까지 넓히고, 같은 값의 `padding-inline`으로 내용을 페이지 왼쪽 정렬선에 되돌린다.
+  `scrollbar-gutter: stable`이면 `100vw`가 스크롤바 폭만큼 넘치므로 `html { overflow-x: clip }`으로 자른다(1280·375 모두 가로 스크롤 0).
+- 띠 안 위아래 패딩 48px(모바일 32px). 띠 경계와 이웃 섹션 내용 사이는 16px라서, 띠 글자 ↔ 이웃 섹션 내용이 합계 64px(모바일 48px)로 일반 섹션 간격과 같다.
+  이웃 섹션의 띠 쪽 패딩을 16px로 줄여 맞춘다(앞 섹션 `padding-bottom`, 뒤 섹션 `padding-top`). 구분선은 없고 뒤 섹션의 위 구분선도 감춘다(띠 경계가 구분선이다). 마지막 섹션이어도 아래 패딩을 지킨다.
+- 안에는 하나만: 문장 하나(`h2.d0-impact__line`, 32px/700, 모바일 24px) 또는 숫자 하나(`h2` 라벨 + `p.d0-impact__num`, 64px, 모바일 48px). 카드·목록·배지·둥근 박스·editorial 도식 금지.
+- 글자는 grey-900, 강조 숫자는 blue-dark다. 보조 글자(섹션 설명·figcaption·`.d0-note`)는 grey-700로, 그림 속 grey-500 선은 grey-600으로 한 단계 진해진다(blue-light 위 grey-600 글자 4.49, grey-500 선 2.87 미달).
+- 큰 숫자 blue-dark는 페이지에 하나다. 띠에 숫자를 두면 header 히어로 숫자는 grey-900으로 두고, 같은 숫자를 되풀이하지 않는다([hero.md](hero.md)).
+- page는 페이지당 0~1개, deck은 슬라이드의 20~30%다. 어두운 배경으로 바꾸지 않는다(라이트 온리).
+
+```html
+<!-- 문장 하나 -->
+<section class="d0-section" data-emphasis="impact" data-composition="hero" aria-labelledby="sec-i">
+  <h2 id="sec-i" class="d0-impact__line">고친 파일에 닿는 검사만 다시 돌아요</h2>
+</section>
+<!-- 숫자 하나 -->
+<section class="d0-section" data-emphasis="impact" data-composition="hero" aria-labelledby="sec-n">
+  <h2 id="sec-n">밤사이 멈춘 내보내기</h2>
+  <p class="d0-impact__num"><data value="58">58</data>건</p>
+</section>
+```
+
+**Quiet (`data-emphasis="quiet"`).** 참고·부록·정리 목록처럼 뒤로 물러날 섹션이다. h2를 18px로 한 단계 낮추고 본문·목록 글자를 grey-700로 둔다(섹션 설명 `p`·figcaption은 원래 grey-600 그대로).
+진한 포인트 채움(blue 막대·노드·버튼)을 새로 두지 않는다. 완료 체크·의미색 점처럼 상태를 말하는 표식은 그대로 둔다.
+
+| 앞 / 뒤 (Impact 띠) | 비율 | 판정 |
+| --- | --- | --- |
+| grey-900 / blue-light | 14.87 | 글자 통과 |
+| blue-dark / blue-light | 4.94 | 글자 통과(큰 숫자는 3:1 기준이라 여유) |
+| grey-700 / blue-light | 6.87 | 보조 글자 통과 |
+| grey-600 / blue-light | 4.49 | 글자 미달 → grey-700, 선은 통과(3:1) |
+
+## 그림 무대 (`.d0-fig[data-stage]`) — 기본 없음, 필요할 때만
+
+**기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 페이지 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
+**무대를 쓰는 때:** 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때,
+나란히 둔 두 그림의 높이를 맞출 때(`.d0-split[data-align="stage"]`).
+**그림을 키워 폭을 채우지 않는다.** SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 옆이 비면 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열(900px 이상)로 채운다.
+전체 폭 그림은 가로로 긴 타임라인·단계 줄만 쓰고 최대 720px다([diagram.md](diagram.md) 라벨 절).
+
+무대를 쓰면 패널 = `div.d0-fig__stage`(배경 grey-50, `--d0-radius-card`, 패딩 28px,
 모바일 20px). `figcaption`은 패널 **밖** 아래에 13px grey-600으로 둔다. 테두리·그림자는 없다.
 SVG는 패널 안에서 가운데 놓이고, 패널 자체는 페이지 왼쪽 정렬선을 따른다. 선 굵기·라벨 규칙은 [diagram.md](diagram.md).
 페이지의 핵심 도식 하나는 `data-stage="blue"`로 무대를 blue-light로 칠할 수 있다. 그 무대 위 회색 선·글자는 한 단계 진하게 바뀐다([diagram.md](diagram.md) 공용 CSS).
+Impact 띠 안에서는 무대를 두지 않는다(띠가 이미 면이다).
 
 ```html
-<figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage"><svg viewBox="0 0 360 224" role="img" aria-labelledby="g1-t">…</svg></div>
+<!-- 기본: 무대 없음 -->
+<figure class="d0-fig" data-layout="side">
+  <svg viewBox="0 0 360 224" role="img" aria-labelledby="g1-t">…</svg>
   <figcaption>고친 파일에서 선을 따라간 검사만 다시 돌아요.</figcaption>
+</figure>
+<!-- 필요할 때만: 무대 -->
+<figure class="d0-fig" data-stage>
+  <div class="d0-fig__stage"><svg viewBox="0 0 360 224" role="img" aria-labelledby="g2-t">…</svg></div>
+  <figcaption>흩어진 노드가 어디까지 한 그림인지 무대가 묶어 줘요.</figcaption>
 </figure>
 ```
 
@@ -125,14 +179,19 @@ Day0의 6:3:1(배경 · 텍스트 · 포인트)을 따른다. **회색만 남은
   - **측정 정의(정본).** 채움 면적만 센다: HTML `background-color`와 SVG 도형 `fill`이 해당 색인 요소의 보이는 bbox 합 ÷ 뷰포트 면적(뷰포트로 자름, 이미 센 요소의 자손은 제외).
     `stroke`·`border`만 해당 색인 요소(점선 상자·윤곽·테두리)는 bbox로 세지 않는다. 선의 bbox는 속이 빈 상자 전체라 수치를 부풀린다.
   - 진한 포인트 = 위 정의에서 색이 `blue`·`blue-dark`·`green`·`orange`·`red`인 채움. 옅은 면 안에 있어도 센다.
-  - 전체 = 진한 포인트 채움 + 옅은 면 채움(`blue-light` 무대·썸네일 판, 각 `-bg` 배지 배경). 같은 정의다.
+  - 전체 = 진한 포인트 채움 + 내용 단위 옅은 채움(각 `-bg` 배지 배경, 표 머리 행·합계 행, 선택 카드·고른 탭). 같은 정의다.
+  - **면 단위 옅은 표면은 비율에서 뺀다.** blue-light 무대(`data-stage="blue"`), Impact 띠·Impact 슬라이드, 썸네일 판처럼 블록 배경이 되는 면은 세지 않는다.
+    대신 **장면 수**로 관리한다: page는 Impact 띠 최대 1개 + blue 무대 최대 1개, deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
+    넓은 면이 비율을 부풀려 회색 페이지를 가리거나, 반대로 Impact 띠 하나가 15% 상한을 깨는 일을 막는다.
   - 실측: 사용자가 좋다고 한 기준 톤 페이지 전체 3.56%·진한 1.53%, 회색 일색이라 혹평받은 출력 전체 1.52%·진한 0.37%, 예시 HTML 전체 10.55%·진한 1.24%.
     두 페이지를 가른 것은 전체가 아니라 진한 비율이다.
-  - 넓은 blue-light 무대로 전체 비율만 채우지 않는다. 옅은 면이 넓어도 진한 포인트가 1.2% 미만이면 회색 페이지로 읽힌다.
+  - 넓은 blue-light 무대·띠로 색감을 대신하지 않는다. 옅은 면이 넓어도 진한 포인트가 1.2% 미만이면 회색 페이지로 읽힌다.
   - 회색만으로 된 도식과, 카드가 전부 회색인 카드 묶음은 금지다(도식마다, 카드 묶음마다 blue 또는 의미색 표식이 하나 이상).
   - 수치를 채우려고 뜻 없는 면을 칠하지 않는다. 색은 상태·강조·구조(머리 행·합계·현재 단계·그림 판)가 있는 자리에만 둔다.
 - **블루 단계.** `blue` = 강조 선·채움(후 막대, 닿는 노드, 진행 막대, 썸네일 합계 칸). `blue-dark` = 글자·번호, 흰 글자 바탕(버튼, 고른 탭, 흐름 줄의 현재 단계).
-  `blue-light` = 옅은 면(썸네일 판, 반 열 도식의 무대 `data-stage="blue"`, 선택 카드, 표 머리 행·합계 행).
+  `blue-light` = 옅은 면(썸네일 판, 반 열 도식의 무대 `data-stage="blue"`, Impact 띠, 선택 카드, 표 머리 행·합계 행).
+- **강조 순서.** 크기 → 위치 → 여백 → 무게 → 색. 큰 숫자는 색이 아니라 크기로 중요하게 만든다(기본 grey-900, 큰 숫자 blue-dark는 페이지에 하나).
+  blue는 장면마다 강조 묶음 하나에만 둔다([composition.md](../composition.md) 강조).
 - **의미색.** `green` = 가능·통과·완료, `orange` = 주의·준비 중, `red` = 위험·실패. 도식 채움·막대·체크·배지 배경에 쓴다.
   페이지당 의미색 2가지까지 + blue. **의미색은 글자 색으로 쓰지 않는다**(흰 바탕 4.5:1 미달). 글자는 grey-900·blue-dark, 색은 면·점·선으로 낸다.
 - **orange 한계.** 그래픽 3:1을 green(3.17~3.47)·red(3.21~3.57)는 넘고 orange(2.30~2.47)는 못 넘는다. orange는 옅은 배경(`orange-bg`) + 글자 라벨,
@@ -237,7 +296,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
    day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
 :root { color-scheme: light; }
 /* 스크롤바 자리를 항상 비워 둔다: 긴 페이지와 짧은 페이지를 오가거나 탭·토글로 높이가 바뀌어도 가로 폭이 흔들리지 않는다 */
-html { scrollbar-gutter: stable; }
+html { scrollbar-gutter: stable; overflow-x: clip; } /* overflow-x: Impact 띠의 100vw가 스크롤바 폭만큼 넘치는 것을 자른다 */
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;
@@ -296,7 +355,25 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-section > p { color: var(--d0-grey-600); font-size: 14px; }
 .d0-note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 
-/* 그림 무대 */
+/* 강조 면: Impact = blue-light 풀블리드 띠(페이지당 1개), Quiet = 한 단계 물러남 */
+.d0-section[data-emphasis="impact"] {
+  margin-inline: calc(50% - 50vw); padding: 48px calc(50vw - 50%);
+  border-top: 0; background: var(--d0-blue-light); color: var(--d0-grey-900);
+}
+.d0-section[data-emphasis="impact"] + .d0-section,
+.d0-section[data-emphasis="impact"] + .d0-split > .d0-section { padding-top: 16px; border-top-color: transparent; } /* 띠 경계 ↔ 이웃 내용 16 → 합계 64 */
+.d0-section:has(+ .d0-section[data-emphasis="impact"]),
+.d0-split:has(+ .d0-section[data-emphasis="impact"]) > .d0-section { padding-bottom: 16px; }
+.d0-impact__line { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+.d0-impact__num, .d0-section > .d0-impact__num { color: var(--d0-blue-dark); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); }
+.d0-section[data-emphasis="impact"] :is(.d0-section > p:not(.d0-impact__num), figcaption, .d0-note) { color: var(--d0-grey-700); }
+.d0-section[data-emphasis="impact"] .d0-fig__stage { padding: 0; background: transparent; } /* 띠 안에는 무대 없음 */
+.d0-section[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
+.d0-section[data-emphasis="impact"] :is(.d0-s-muted, .d0-s-num:not([data-on])) { fill: var(--d0-grey-700); }
+.d0-section[data-emphasis="quiet"] { color: var(--d0-grey-700); }
+.d0-section[data-emphasis="quiet"] h2 { font-size: 18px; }
+
+/* 그림: 기본은 무대 없음. 무대(.d0-fig__stage)는 경계가 안 보이거나 받침 면이 필요할 때만 쓴다 */
 .d0-fig { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .d0-fig__stage { display: grid; justify-items: center; padding: 28px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
 .d0-fig__stage > :not(svg) { justify-self: stretch; } /* 카드 목록 등 SVG 아닌 내용은 무대 폭을 채운다 */
@@ -344,6 +421,9 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
   .d0-section { padding-block: 24px; }
   .d0-split:not(:last-child) > .d0-section { padding-bottom: 24px; }
   .d0-fig__stage { padding: 20px; }
+  .d0-section[data-emphasis="impact"] { padding-block: 32px; }
+  .d0-impact__line { font-size: 24px; }
+  .d0-impact__num, .d0-section > .d0-impact__num { font-size: 48px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -391,4 +471,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 - 회색만 있는 도식·카드, 의미색 글자, 의미색 3가지 이상, 카드·행 하나에 배지 2개 이상, 배지 톤 4종류 이상, 혼자 뜻을 전하는 orange 선·점.
 - `.d0-split`에 섹션 3개 이상, `align-items: stretch`로 짧은 섹션을 옆 섹션 높이까지 늘리기(두 그림 섹션의 무대 정렬 변형 `data-align="stage"`만 예외. 늘어난 높이는 무대가 받는다).
 - 그라디언트·글래스·두꺼운 그림자·장식 3D, 무대 패널에 테두리나 그림자.
+- 기본값으로 두른 무대(경계가 이미 보이는 그림에 회색 패널), 섹션마다 같은 `제목 → 무대 → SVG → 캡션` 모양.
+- Impact를 쓰려고 섹션 더하기, 그림을 키워 폭 채우기(360/400px 상한 넘기기, 전체 폭은 타임라인·단계 줄 720px까지만).
+- Impact 띠 2개 이상, 띠 안 카드·목록·배지·무대·editorial·숫자 둘 이상, 어두운 Impact 면, 띠 안 grey-600 글자·grey-500 선, `html`의 `overflow-x: clip` 없이 `100vw` 띠 두기.
 - CSS만으로 초기 숨김(`opacity: 0`을 `data-motion` 밖에 걸기), 스크롤마다 반복되는 모션, reduced-motion 무시.

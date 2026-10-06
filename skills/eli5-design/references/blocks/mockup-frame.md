@@ -21,6 +21,7 @@
 - `data-variant="modal"`: 하나씩 묻기(단계마다 fieldset 하나). `data-variant="panel"`: 오른쪽 패널(`.d0-panel`)에 모든 fieldset을 한 번에.
   `.d0-sheet`는 tab-preview의 표 클래스이므로 이 블록에서 쓰지 않는다.
 - A/B는 같은 데이터·같은 높이. 1100px 이상 2열, 그 아래 세로. 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
+- 눌러 볼 필요 없이 화면의 한 곳을 짚어 보이면 아래 [Screenshot spotlight](#screenshot-spotlight-figured0-shot)(`figure.d0-shot`)를 쓴다.
 
 ## 스니펫
 
@@ -431,6 +432,79 @@ devs.forEach(function (b) {
 
 - `box-sizing: border-box` 전제다(391px = 베젤 8px × 2 + 화면 375px). 탭을 바꿔도 기기 선택은 유지한다.
 
+## Screenshot spotlight (`figure.d0-shot`)
+
+실제 화면 한 장에서 **봐야 할 곳 하나**를 밝히고 나머지는 흐리게 한다. 화면 내용이 주인공이라 프레임 크롬(타이틀바·신호등·베젤)은 두지 않는다.
+의도적으로 크게 쓰는 장면이지만 **화면 폭은 최대 560px**이고, 900px 이상에서는 바로 옆에 주석 열을 둔다(화면을 키워 섹션 폭을 채우지 않는다).
+구도는 Spotlight([composition.md](../composition.md)), deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
+
+**해부 구조.**
+
+- `figure.d0-shot` = 화면 상자 `div.d0-shot__screen` → 주석 `p.d0-shot__note` 1~3개 → `figcaption` 한 줄.
+- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 최대 폭 560px, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
+- **spot.** 위치는 화면 상자 기준 백분율 인라인 변수 `style="--x:..%;--y:..%;--w:..%;--h:..%"`(왼쪽·위·폭·높이). 2px blue 테두리, `--d0-radius-sm`.
+  왼쪽 위 모서리에 번호 배지(`b.d0-shot__num`, 24px blue-dark 원 + 흰 숫자 5.5:1). 위치 변수는 `--d0-*`가 아니다(토큰을 새로 만들지 않는다).
+- **dim.** 주인공 spot 하나(`data-dim`)의 바깥을 반투명 막으로 덮는다. 기본은 grey 막(grey-900 14%, 12~16% 범위)이다. 대부분의 앱 화면은 바탕이 희어서 흰 막은 거의 보이지 않는다. 어둡거나 진한 화면(사진, 진한 바탕의 화면)만 흰 막(`data-dim="white"`, `#fff` 62%)을 고른다.
+  막은 spot의 `outline`이 화면 상자 끝까지 번지는 단단한 경계다. 그라디언트·blur·두꺼운 그림자, 16%보다 짙은 막은 쓰지 않는다. 화면 상자의 `overflow: hidden`이 막을 자른다.
+  **spot 안은 원래 화면 그대로 보인다.** 막은 spot 바깥(`outline`)에만 있고 spot에는 `background`를 칠하지 않는다(spot 안이 검게·회색으로 렌더되면 결함이다). 테두리와 번호만 화면 위에 얹는다.
+- **spot이 둘 이상이면** dim은 하나만 건다(막이 서로를 덮는다). 나머지 spot은 테두리와 번호만 둔다. spot은 3개까지다.
+- **주석.** `p.d0-shot__note`마다 spot과 같은 번호 배지 + 한 문장. 번호가 짝을 맺는다. 900px 이상에서는 화면 오른쪽 열(220~300px), 그 아래에서는 화면 아래에 쌓인다.
+
+**pins와의 관계.** 번호로 그림과 설명을 짝짓는 방식은 [diagram.md](diagram.md) (g) pins를 그대로 확장한다. 다른 점은 셋이다.
+pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사각 영역**이다. d0-shot은 바깥을 **흐린다**. d0-shot은 정적이다(hover 연동이 필요하면 pins를 쓴다).
+
+```html
+<figure class="d0-shot">
+  <div class="d0-shot__screen">
+    <img src="…" alt="주문 관리 화면. 위쪽 바에 내보내기 버튼, 아래에 주문 표가 있어요." width="1280" height="800">
+    <span class="d0-shot__spot" data-dim data-num="below" style="--x:74%;--y:3%;--w:22%;--h:11%" aria-hidden="true"><b class="d0-shot__num">1</b></span>
+    <span class="d0-shot__spot" style="--x:4%;--y:20%;--w:40%;--h:10%" aria-hidden="true"><b class="d0-shot__num">2</b></span>
+  </div>
+  <p class="d0-shot__note"><b class="d0-shot__num">1</b>내보내기는 오른쪽 위 버튼 하나로 시작해요.</p>
+  <p class="d0-shot__note"><b class="d0-shot__num">2</b>기간은 표 위 필터에서 먼저 골라요.</p>
+  <figcaption>버튼 하나만 누르면 돼요. 필터는 고른 그대로 따라가요.</figcaption>
+</figure>
+```
+
+```css
+.d0-shot { display: grid; gap: 12px 28px; align-content: start; min-width: 0; margin: 0; }
+.d0-shot__screen { position: relative; overflow: hidden; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card); background: #fff; }
+.d0-shot__screen > :is(img, svg) { display: block; width: 100%; height: auto; max-width: none; }
+.d0-shot__spot {
+  position: absolute; background: none; /* spot 안은 원래 화면 그대로 */ left: var(--x); top: var(--y); width: var(--w); height: var(--h);
+  border: 2px solid var(--d0-blue); border-radius: var(--d0-radius-sm); pointer-events: none;
+}
+/* dim: spot 바깥을 단단한 경계의 반투명 막으로 덮는다(blur·그라디언트 없음). 화면 상자의 overflow가 자른다 */
+.d0-shot__spot:not([data-dim]) { z-index: 1; } /* 막이 DOM 순서와 무관하게 다른 spot의 테두리·번호를 덮지 않게 */
+.d0-shot__spot[data-dim] { outline: 200vmax solid color-mix(in srgb, var(--d0-grey-900) 14%, transparent); } /* 기본: grey 막 12~16% */
+.d0-shot__spot[data-dim="white"] { outline-color: color-mix(in srgb, #fff 62%, transparent); } /* 어둡거나 진한 화면일 때만 */
+.d0-shot__num {
+  display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px;
+  background: var(--d0-blue-dark); color: #fff; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1;
+}
+.d0-shot__spot .d0-shot__num { position: absolute; left: -12px; top: -12px; }
+.d0-shot__spot[data-num="below"] .d0-shot__num { top: calc(100% + 6px); left: 0; } /* 화면 위 끝에 붙은 spot: 번호를 아래로 */
+.d0-shot__note { display: flex; align-items: baseline; gap: 10px; margin: 0; color: var(--d0-grey-800); font-size: 15px; }
+.d0-shot__note .d0-shot__num { transform: translateY(-1px); }
+.d0-shot figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
+@media (min-width: 900px) {
+  .d0-shot { grid-template-columns: minmax(0, 560px) minmax(220px, 300px); justify-content: start; grid-template-rows: repeat(3, auto) 1fr; align-items: start; } /* 남는 높이는 마지막 행이 받아 주석이 위로 붙는다 */
+  .d0-shot__screen { grid-column: 1; grid-row: 1 / span 4; }
+  .d0-shot__note { grid-column: 2; }
+  .d0-shot figcaption { grid-column: 1 / -1; }
+}
+```
+
+- **위치 재기.** spot 변수 = 화면 이미지 픽셀 좌표 ÷ 이미지 크기 × 100%(예: 1280×800 화면의 버튼 (947, 24)~(1229, 112) → `--x:74%;--y:3%;--w:22%;--h:11%`). 상자가 화면과 같은 비율로 줄어 375px에서도 같은 곳을 가리킨다.
+- **375px.** 화면은 폭 100%(약 343px)로 줄고 spot·번호는 같은 자리를 따라간다. 번호 배지는 24px 그대로다. spot 높이가 24px보다 작아지면 영역을 넓게 잡는다. 주석은 화면 아래로 내려간다. 가로 스크롤은 없다.
+  번호는 spot 왼쪽 위 모서리 밖(`left: -12px; top: -12px`)에 붙는다. spot이 화면 위 끝에 붙어(`--y` 5% 미만) 번호가 잘리면 `data-num="below"`로 번호를 spot 아래에 두고,
+  왼쪽 끝에 붙으면 spot을 안쪽으로 4% 이상 들인다. 375px에서 두 너비 모두 번호가 잘리지 않는지 본다.
+- **접근성.** 화면은 `img`면 `alt`로 화면을 한 문장 설명하고, 미니 마크업이면 `aria-hidden` + 화면 SVG면 `role="img"`와 `<title>`. spot과 그 번호는 장식이라 `aria-hidden`이다.
+  뜻은 주석 `p`가 텍스트로 순서대로 전한다(번호 숫자도 텍스트로 읽힌다). 위치를 색으로만 말하지 않는다: 주석에 "오른쪽 위"처럼 자리를 쓴다.
+- **대비.** spot 테두리 blue는 spot 안쪽(막 없는 화면) 기준 흰 바탕 3.99로 3:1을 넘는다. 번호 배지는 막에 덮이지 않는다(다른 spot은 `z-index`로 막 위에 둔다). 번호는 blue-dark 위 흰 글자 5.5다. 막에 덮인 화면 글자는 맥락일 뿐이라 정보를 싣지 않는다(정보는 주석에 쓴다).
+- **색 비율.** 번호 배지와 spot 테두리만 blue 계열이다. 막은 색 비율에 세지 않는다(옅은 면).
+- 실제 화면이 없으면 [diagram.md](diagram.md) (d) 와이어프레임 SVG를 화면 자리에 넣는다. 화면 크롬(창 타이틀바, 폰 베젤)이 필요하면 갤러리 기기 프레임을 쓰고 spotlight와 섞지 않는다.
+
 ## 금지
 
 - 눌러도 반응하지 않는 가짜 프로토타입, 프레임 밖으로 나오는 모달·막(`showModal()` 포함).
@@ -439,3 +513,4 @@ devs.forEach(function (b) {
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
 - `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.
 - 실제 파일 다운로드·외부 전송. 결과는 토스트로만 알린다. 프레임 안 `main` 요소, `div`에 `role="dialog"`(네이티브 `dialog` 우선).
+- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), 560px를 넘는 화면, 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.
