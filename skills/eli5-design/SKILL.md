@@ -253,7 +253,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 
 **deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명,
 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 본문 축·2열·줄 길이 규칙, 720px 프레임, page 도식 라벨 렌더 13~20px 게이트, Page Depth Gate 대신
-`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
+`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 그림 면적·본문 밀도, 근거 밀도(제목이 주장하는 비교 기준·분모·관계가 화면에 있다, `stat`은 숫자 + 근거 그림이 기본), Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차·closing 메타 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 ## 개행 규칙

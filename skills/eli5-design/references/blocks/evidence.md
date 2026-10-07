@@ -24,7 +24,7 @@
 ## 근거 변형 (`figure.d0-evidence[data-variant]`)
 
 Proof가 숫자 여럿일 때 쓰는 모양 셋이다. 새 블록이 아니라 그림형 `figure.d0-evidence`의 변형이고, Claim은 그대로 `figcaption`(page는 그림 위, deck은 슬라이드 제목)이다.
-deck에서는 evidence 장의 `figure.d0-slide__fig`에 같은 `data-variant`를 달고 근거 요소만 옮긴다(자리·크기는 [slide-deck](slide-deck.md) 근거 변형과 주석).
+deck에서는 evidence 장(또는 `stat` 기본형의 근거 그림 자리)의 `figure.d0-slide__fig`에 같은 `data-variant`를 달고 근거 요소만 옮긴다(자리·크기는 [slide-deck](slide-deck.md) 근거 변형과 주석).
 
 | `data-variant` | 근거 요소 | 언제 | 그림으로 세나 |
 | --- | --- | --- | --- |

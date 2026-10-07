@@ -18,7 +18,7 @@
 | `evidence` | 결론 제목 + 가로형 차트 + 해석 한 줄 | 그림 비율 하한은 덱 출력 밀도 표 |
 | `screenshot` | 결론 제목 + `figure.d0-shot` | 화면 상자가 몸 행 높이를 채운다(폭은 화면 비율, 왼쪽 정렬) |
 | `breakdown` | 결론 제목 + 전체 → 구성 요소 도식 | 그림 비율 하한은 덱 출력 밀도 표 |
-| `stat` | 숫자 하나 + 해석 한 줄 | 큰 숫자가 그림 |
+| `stat` | 숫자가 주장인 장. 기본형은 숫자 + 기준 줄 + 근거 그림 하나 | 기본형은 비대칭(왼쪽 숫자, 오른쪽 근거 그림, 아래 출처). 숫자만 두는 순수 Impact stat은 큰 숫자가 그림(아래 [핵심 수치](#핵심-수치-data-kindstat)) |
 | `summary` | 참고용 정리 목록 3행 이내 | 그림 예외, 마지막 요청 장에는 쓰지 않는다 |
 | `section` | 큰 번호 `p.d0-slide__index` + 챕터 제목 h2 | 그림 예외, 8장 이상이고 챕터가 2~3개로 뚜렷할 때만. 진한 면 가능 |
 | `closing` | 큰 마무리 한 문장 + 구분선 + 작은 `dl` 메타 행. 상위 종류이고 `data-closing`이 세부(decision·request·action·criteria·takeaway) | 그림 예외, 마지막 장 전용. 진한 면 가능 |
@@ -107,7 +107,7 @@
   안에는 문장 하나, 숫자 하나, 그림 하나 중 하나만 둔다. 카드·요점 목록·두 번째 그림 금지. Impact는 글자 크기가 아니라 한 주장에 시선을 모으는 장이다.
   제목 크기는 면 안의 하나가 무엇이냐로 정한다. 그림 없는 순수 Impact(`assertion`)만 6cqi(1280에서 약 66px)이고, 그림·숫자가 있는 Impact(screenshot·evidence·breakdown·근거·`stat`)는 일반 장 제목 크기(3.6cqi, 약 39px)다. 비대칭(`data-layout="asym"`) 장은 Impact여도 asym 제목 크기다(아래 비대칭 구도). 그림 비율 하한은 Impact라고 낮추지 않는다.
   - `assertion` + impact가 기본형이다. 제목 한 문장이 그 하나다(리드·보조 줄도 두지 않는다).
-  - `stat` + impact는 큰 숫자(10cqi, 96px 이상)가 그 하나다. 제목은 숫자를 읽는 법을 알려 주는 머리 줄이라 일반 크기로 두어 숫자와 다투지 않게 한다.
+  - `stat` + impact(순수 Impact stat)는 큰 숫자(10cqi, 96px 이상)가 그 하나다. 제목은 숫자를 읽는 법을 알려 주는 머리 줄이라 일반 크기로 두어 숫자와 다투지 않게 한다. 숫자 자체가 결론일 때만 쓰는 예외형이고, stat 기본형(숫자 + 근거 그림)은 Impact가 아니다(아래 [핵심 수치](#핵심-수치-data-kindstat)).
   - 덱의 Impact 장은 전체의 20~30%다(8~9장이면 2장, 12장이면 3장). 판정은 덱 출력의 Slide Gate.
 - **quiet.** 밀도를 낮추는 쉬는 장이다. 제목 + 한 줄, 또는 작은 그림 하나만 두고 요점 목록을 두지 않는다. 제목 굵기가 600으로 내려간다.
 - 생략 = normal.
@@ -140,10 +140,10 @@
 
 제목을 좁은 열에 작게 두고 핵심 그림을 반대편 넓은 열에 크게 둔다(제목 열 2 : 그림 열 3). 기본은 제목 왼쪽·그림 오른쪽이고 `data-flip`을 더하면 그림 왼쪽·제목 오른쪽이다.
 
-- **언제.** 그림 하나가 그 장의 근거 전부이고, 제목 줄을 위에 따로 두면 그림이 낮게 눌릴 때(세로로 긴 연결 도식, 정사각형에 가까운 그림, 주석이 붙은 그림). 근거(생략)·`evidence`·`breakdown` 장에 쓴다.
-- **어떻게.** `section.d0-slide`에 `data-layout="asym"`을 달고 머리·그림·발을 바로 자식으로 둔다(`.d0-slide__body`를 쓰지 않는다). 머리에는 제목과 보조 한 줄(`__sub`)까지만 둔다. 제목은 3.2cqi(1280 한 장에서 약 35px)다. Impact 장이어도 같다. 레이아웃의 가용 폭이 제목 크기를 정하고, Impact는 이를 덮어쓰지 않는다.
+- **언제.** 그림 하나가 그 장의 근거 전부이고, 제목 줄을 위에 따로 두면 그림이 낮게 눌릴 때(세로로 긴 연결 도식, 정사각형에 가까운 그림, 주석이 붙은 그림). 근거(생략)·`evidence`·`breakdown` 장에 쓴다. `stat` 기본형도 이 격자를 쓴다(아래 [핵심 수치](#핵심-수치-data-kindstat)).
+- **어떻게.** `section.d0-slide`에 `data-layout="asym"`을 달고 머리·그림·발을 바로 자식으로 둔다(`.d0-slide__body`를 쓰지 않는다). 머리에는 제목과 보조 한 줄(`__sub`)까지만 둔다. `stat` 기본형만 제목 아래에 큰 숫자(`p.d0-slide__stat`)와 기준 줄(`p.d0-slide__base`)을 더 둔다. 제목은 3.2cqi(1280 한 장에서 약 35px)다. Impact 장이어도 같다. 레이아웃의 가용 폭이 제목 크기를 정하고, Impact는 이를 덮어쓰지 않는다.
 - **그림 비율.** 머리가 몸 행 안으로 들어가므로 몸 영역은 슬라이드 안쪽 폭 × 첫 행 높이다. 권장 하한은 근거 split과 같은 45%다(밀도 표, breakdown·evidence여도 같다). 그림 열 SVG는 viewBox 400~480을 권장한다(800이면 1280에서 글자가 14px로 줄어든다).
-- **리듬.** 모든 장을 좌우 번갈아 놓지 않는다. 덱에 1~3장, 그림이 실제로 핵심인 장에만 쓴다. 730px 미만에서는 머리 → 그림 1열로 돌아간다.
+- **리듬.** 모든 장을 좌우 번갈아 놓지 않는다. 덱에 1~3장, 그림이 실제로 핵심인 장에만 쓴다. `stat` 기본형도 이 장수에 세고, 이웃한 비대칭 장과 붙여 두지 않는다. 730px 미만에서는 머리 → 그림 1열로 돌아간다.
 
 ```html
 <section class="d0-slide" id="s-06" data-layout="asym" aria-labelledby="s-06-t" tabindex="-1">
@@ -156,6 +156,54 @@
   <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>6 / 10</p></footer>
 </section>
 ```
+
+## 핵심 수치 `data-kind="stat"`
+
+숫자가 주장인 장이다. Impact와 다르다. Impact는 일부러 비워 두고 한 주장·숫자에 시선을 모으는 장이고, stat은 숫자 + 그 숫자를 읽게 하는 근거 그림 하나가 기본이다.
+빈 공간을 채우려고 그림을 더하지 않는다. 다만 제목이 주장하는 비교·변화를 읽는 데 필요한 근거는 화면에 둔다(근거 게이트는 [덱 출력](../output/deck.md) Slide Gate의 [Evidence]).
+
+- **기본형(비대칭).** `data-kind="stat" data-layout="asym"`. 왼쪽 머리 열에 제목 → 큰 숫자 `p.d0-slide__stat` → 작은 기준 줄 `p.d0-slide__base`(`출시 전 18%에서`처럼 비교 기준·분모·기간 중 필요한 것)를 쌓고, 오른쪽 그림 열에 근거 그림 하나, 발에 출처 줄을 둔다.
+  제목은 asym 제목(3.2cqi)이고 흰 면이다. 숫자 + 근거 그림 두 가지가 있으므로 Impact 면(`data-emphasis="impact"`)을 달지 않는다. 그림 비율 권장 하한은 비대칭 45%다(덱 출력 밀도 표).
+  큰 숫자 + 비대칭 + 근거 그림은 stat 기본형 한 벌이라 "한 장에 특징 몰아넣기"로 세지 않는다. 여기에 주석·진한 면을 더하지 않는다.
+- **순수 Impact stat(예외형).** 숫자 자체가 결론이고 비교할 기준이 없거나 기준이 숫자 옆 한 줄로 충분할 때만 `data-kind="stat" data-emphasis="impact"`로 숫자만 남긴다(아래 스니펫 s-08). 비교 기준이 있으면 해석 줄에 숨기지 않고 숫자 옆에 작은 기준 글자 `span.d0-slide__base`로 둔다(숫자 `p.d0-slide__stat` 안 마지막 자식).
+  권장(게이트 아님): 짧은 덱에서 보통 0~1장이고 두 장을 잇달아 두지 않는다.
+- **근거 그림 고르는 순서.** 위에서부터 내용에 맞는 첫 번째를 쓴다. 새 블록을 만들지 않고 이 파일의 `d0-sl-*` 차트 CSS나 근거 변형(`metric-list`·`bar-list`·`tiles`)을 그대로 쓴다.
+  1. **같은 기준·0에서 시작하는 전/후 막대.** 값이 전/후 두 개뿐이고 크기 차이를 읽어야 할 때. `rect.d0-sl-bar` 두 개(지금 값만 `data-on`) + `line.d0-sl-axis` 기준선. 보조값 `18% → 5% · −13%p`를 해석 줄에 둘 수 있다.
+  2. **slope·dumbbell.** 변화의 방향 자체가 핵심일 때. 두 점 `circle.d0-sl-bar`(지금 점만 `data-on`)를 `path.d0-sl-link`로 잇고 강조 선은 `data-on`이다.
+  3. **line·sparkline.** 실제 시계열 값이 3개 이상일 때만 쓴다. 두 점으로 추세선을 긋지 않는다(두 점이면 1·2번). 선은 `path.d0-sl-link`, 마지막 점만 `data-on`.
+  4. **100% 막대·점 격자.** "전체 중 몇 %"라는 구성비 자체가 핵심일 때. 트랙 `rect.d0-sl-total` 위에 `rect.d0-sl-bar[data-on]`(폭 = 비율), 또는 점 격자에서 해당 몫만 `circle.d0-sl-bar[data-on]`이고 나머지는 `circle.d0-sl-total`이다. 막대가 아니라 다른 모양이 필요하면 `bar-list` 구성비를 쓴다.
+  5. **metric-list.** 서로 관련된 숫자가 여럿일 때. 그림 자리에 `figure[data-variant="metric-list"]`를 둔다. 이때 머리의 큰 숫자를 목록에 다시 쓰지 않는다(한 사실은 한 번).
+- **값.** 그림의 값 라벨은 그림 라벨이라 머리 숫자와 같은 값이어도 반복으로 세지 않는다. 해석 줄은 숫자를 되풀이하지 않고 "그래서 무엇을 뜻하나"를 쓴다. 막대 높이·폭은 값에서 계산한다. 출처가 없으면 출처 줄을 지어내지 않고 뺀다.
+- **좁은 화면.** 730px 미만에서는 비대칭 규칙대로 머리(제목 → 숫자 → 기준 줄) → 그림 → 발 1열이다. 숫자 48px, 기준 줄 15px.
+
+```html
+<section class="d0-slide" id="s-05" data-kind="stat" data-layout="asym" aria-labelledby="s-05-t" tabindex="-1">
+  <header class="d0-slide__head">
+    <h2 class="d0-slide__title" id="s-05-t">알림을 통째로 끄는 사람이 <b class="d0-slide__key">줄었다</b></h2>
+    <p class="d0-slide__stat"><data value="5">5</data>%</p>
+    <p class="d0-slide__base">출시 전 18%에서</p>
+  </header>
+  <figure class="d0-slide__fig">
+    <svg viewBox="0 0 400 320" role="img" aria-labelledby="s-05-f">
+      <title id="s-05-f">알림을 모두 끈 사용자 비율. 출시 전 18%, 출시 후 5%. 13%p 줄었다.</title>
+      <line class="d0-sl-axis" x1="40" y1="260" x2="360" y2="260"/>
+      <rect class="d0-sl-bar" x="72" y="60" width="96" height="200" rx="6"/>
+      <rect class="d0-sl-bar" data-on x="232" y="204.4" width="96" height="55.6" rx="6"/>
+      <g class="d0-sl-value" aria-hidden="true"><text x="120" y="46">18%</text><text x="280" y="190" data-on>5%</text></g>
+      <g class="d0-sl-label" aria-hidden="true"><text x="120" y="296">출시 전</text><text x="280" y="296" data-on>출시 후</text></g>
+    </svg>
+    <figcaption class="d0-slide__note">끄는 비율이 출시 전의 3분의 1 아래로 내려왔다.</figcaption>
+  </figure>
+  <footer class="d0-slide__foot">
+    <p class="d0-slide__src">출처: 내부 집계(합성)</p>
+    <p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>5 / 9</p>
+  </footer>
+</section>
+```
+
+- 막대 높이: 기준선 y=260, 가장 큰 값(18%) = 200. 5%는 200 × 5 ÷ 18 ≈ 55.6이다. 값이 바뀌면 같은 식으로 다시 계산한다.
+- 그림 열 SVG는 viewBox 400 폭(세로 300~360)을 쓴다. 1280 한 장 모드에서 글자 약 26px, 그림 비율 약 50%다.
+- CSS는 기본 CSS의 "핵심 수치" 블록(`.d0-slide__stat`·`.d0-slide__base`)과 덱 강화 CSS의 "핵심 수치 기본형" 블록(비대칭 CSS 뒤)이다.
 
 ## 섹션 장 `data-kind="section"`
 
@@ -242,6 +290,8 @@ evidence 장의 그림 자리(`figure.d0-slide__fig`)에는 SVG 차트 대신 �
 
 - 그림 비율의 분자는 근거 요소(`.d0-mlist`·`.d0-barlist`·`.d0-tiles`)의 렌더 box다(screenshot의 `.d0-shot__screen`처럼). 근거 요소는 몸 행을 채운다.
 - 근거 요소 안의 값·라벨 `dd`·`li`는 그림 라벨로 보고 장당 텍스트 줄 수·불릿 수에서 뺀다. metric-list의 작은 차트는 글자 없는 SVG라 글자 크기 게이트를 받지 않는다(`role="img"` + `<title>`은 둔다).
+- **요약 근거 장(evidence overview).** 숫자 보고·성과 요약처럼 여러 지표를 동시에 봐야 가치가 있을 때만 `evidence` 장 + `metric-list` 변형으로 만든다. 새 종류·블록이 아니다. 오른쪽 차트(`svg.d0-mlist__chart`, 3fr 열)가 주인공이고 왼쪽 지표 2~4행은 보조다. 해석 한 줄과 출처 줄을 붙인다.
+  지표를 카드·pill로 감싸지 않고, 글자를 덱 하한 아래로 줄여 밀도를 높이지 않는다. 덱당 1~2장 권장. 판정은 [덱 출력](../output/deck.md)의 요약 근거 장 규칙.
 - **주석(annotation).** 그림 위 번호 표식 + 짧은 주석은 [diagram](diagram.md) annotate 변형이다. 덱에서는 근거 split의 요점 열 자리에 `ol.d0-annot__notes`(2~3개, 한 줄씩)를 두고, 그림 `figure.d0-slide__fig` 안에 `div.d0-annot`(SVG + 번호 `span.d0-pin`)을 둔다. 주석 `li`는 불릿으로 센다. 주석 SVG는 높이를 내용대로 두므로 viewBox 400×240처럼 세로 비율을 0.6 안팎으로 그려 split 하한 45%를 맞춘다(400×200이면 1280에서 약 41%).
 
 ## 언제 쓰나
@@ -395,12 +445,12 @@ evidence 장의 그림 자리(`figure.d0-slide__fig`)에는 SVG 차트 대신 �
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>7 / 9</p></footer>
   </section>
 
-  <!-- stat + impact: 큰 숫자가 하나뿐인 그림 -->
+  <!-- 순수 Impact stat(예외형): 숫자 자체가 결론일 때만. 기본형(숫자 + 근거 그림)은 위 핵심 수치 절 -->
   <section class="d0-slide" id="s-08" data-kind="stat" data-emphasis="impact" aria-labelledby="s-08-t" tabindex="-1">
     <header class="d0-slide__head"><h2 class="d0-slide__title" id="s-08-t">늦게 도착하는 알림이 절반에 가깝다</h2></header>
     <figure class="d0-slide__fig">
-      <p class="d0-slide__stat"><data value="47">47</data>%</p>
-      <figcaption class="d0-slide__note">10분 넘게 늦은 알림의 비율 · 지난달보다 12%p 늘었다</figcaption>
+      <p class="d0-slide__stat"><data value="47">47</data>%<span class="d0-slide__base">지난달 35%에서</span></p>
+      <figcaption class="d0-slide__note">10분 넘게 늦은 알림의 비율 · 한 달 사이 12%p 늘었다</figcaption>
     </figure>
     <footer class="d0-slide__foot"><p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>8 / 9</p></footer>
   </section>
@@ -557,8 +607,11 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display);
   font-variant-numeric: tabular-nums;
 }
-.d0-slide[data-kind="stat"] .d0-slide__fig { grid-template-rows: 1fr auto; align-content: center; }
+.d0-slide[data-kind="stat"] .d0-slide__fig:has(> .d0-slide__stat) { grid-template-rows: 1fr auto; align-content: center; } /* 순수 Impact stat: 숫자가 그림 자리 */
 .d0-slide[data-kind="stat"] .d0-slide__note { color: var(--d0-grey-800); }
+/* 기준 줄: 숫자를 읽게 하는 비교 기준·분모·기간. 기본형은 숫자 아래 p, 순수 Impact stat은 숫자 옆 span */
+.d0-slide__base { margin: 0; color: var(--d0-grey-700); font-size: 2cqi; font-weight: 400; line-height: var(--d0-leading-body); letter-spacing: normal; font-variant-numeric: tabular-nums; }
+.d0-slide__stat > .d0-slide__base { display: inline-block; margin-left: 1.6cqi; vertical-align: baseline; }  /* 순수 Impact stat: 숫자 옆 작은 기준 글자 */
 
 /* closing(decision·request·action·criteria·takeaway 공통): 세로 중앙의 큰 문장 하나 + 디바이더 아래 작은 사실 행 */
 .d0-slide[data-kind="closing"] { grid-template-rows: minmax(0, 1fr) auto auto; }
@@ -721,6 +774,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide__toc li::before { width: 4px; height: 4px; }
   .d0-slide__toc a { padding: 8px 0; }
   .d0-slide__stat { font-size: 48px; }
+  .d0-slide__base { font-size: 15px; }
   .d0-slide[data-kind="screenshot"] .d0-shot,
   .d0-slide[data-kind="screenshot"] .d0-shot__screen { height: auto; width: 100%; justify-self: stretch; }
   .d0-slide[data-kind="screenshot"] .d0-shot { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
@@ -777,6 +831,10 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide[data-layout="asym"] .d0-slide__title,
 .d0-slide[data-layout="asym"][data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 3.2cqi; } /* 가용 폭이 제목 크기를 정한다: 그림 있는 Impact 규칙보다 특이도를 높여 덮이지 않게 */
 .d0-slide[data-layout="asym"] .d0-slide__fig svg { max-width: 100%; }
+
+/* 핵심 수치 기본형: 왼쪽 머리 열에 제목 → 큰 숫자 → 기준 줄(.d0-slide__base, 기본 CSS), 오른쪽 근거 그림(asym 격자 그대로) */
+.d0-slide[data-kind="stat"][data-layout="asym"] > .d0-slide__head > .d0-slide__stat { margin-top: 1.6cqi; align-self: start; }
+.d0-sl-link[data-on] { stroke: var(--d0-blue); stroke-width: 3; }  /* slope·line 근거의 강조 선. 점은 circle.d0-sl-bar */
 
 /* 섹션 장: 큰 번호 + 챕터 제목 */
 .d0-slide[data-kind="section"] { grid-template-rows: minmax(0, 1fr) auto; }
@@ -1058,7 +1116,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 - [ ] 제목 하나에 `b.d0-slide__key`가 1개 이하이고 `data-tone="blue"`가 1개 이하다
 - [ ] 근거(생략)·`evidence`·`breakdown` 장마다 `figure.d0-slide__fig`가 정확히 1개이고 그 안에 `role="img"` + `<title>`을 가진 SVG가 있다.
       `evidence` 장은 SVG 대신 근거 변형(`figure[data-variant="metric-list|bar-list|tiles"]` 안 `.d0-mlist`·`.d0-barlist`·`.d0-tiles` 1개)이어도 된다(metric-list의 작은 차트는 `role="img"` + `<title>`).
-      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개. `toc`·`summary`·`section`·`closing`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
+      `screenshot`은 `figure.d0-shot` 1개, `stat`은 `.d0-slide__stat` 1개다. `stat` 기본형(`data-layout="asym"`)은 숫자가 머리 안에 있고 `figure.d0-slide__fig` 1개(SVG `role="img"` + `<title>` 또는 근거 변형)가 있으며 Impact가 아니다. 순수 Impact stat은 숫자가 `figure.d0-slide__fig` 안에 있고 다른 그림이 없다. `toc`·`summary`·`section`·`closing`·`assertion`은 그림 예외이고 `cover`에는 대표 도식이 있다
 - [ ] `data-emphasis="impact"` 장에 카드·요점 목록·두 번째 그림이 없다
 - [ ] 슬라이드당 `li` 3개 이하(`toc`와 근거 변형 `.d0-barlist`의 `li` 제외), 본문 텍스트가 [덱 출력](../output/deck.md) 밀도 표의 줄 수 이하다. 세는 범위는 [덱 출력](../output/deck.md) 밀도 표가 정본이다(몸의 `p`·`li`·`dd`. 제목·쪽수·출처와 그림 해석 줄 `figcaption.d0-slide__note`는 빼고, 해석 줄은 따로 1줄 이하)
 - [ ] 목차를 제외한 슬라이드마다 쪽수 `n / N`이 렌더 텍스트로 있고 순서가 맞다
@@ -1092,5 +1150,5 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 - 목차 없는 덱, 목차 글자와 슬라이드 제목이 다른 덱, 쪽수를 `aria-label`에만 두기.
 - Impact 면에 카드·어두운 배경, 계열마다 다른 색, 그라디언트 배경, 그림자 짙은 카드, 의미 없는 아이콘·사람 일러스트.
 - 진한 면(`data-surface="dark"`)을 본문 장·Impact·page에 쓰기, 덱에 4장 이상, 진한 면 위 blue·의미색·grey 글자, 진한 면에 그라디언트·글래스·사진·패턴.
-- 장식용 초대형 숫자·연도(숫자가 주장 자체일 때만 `stat`), 큰 원 안에 숫자를 넣어 크기로 견주기(값 비교가 부정확하다. 막대나 bar-list), 크롬의 로고·브랜드명.
+- 장식용 초대형 숫자·연도(숫자가 주장 자체일 때만 `stat`), 비교를 주장하는 stat에서 비교 기준을 해석 줄 속에만 숨기고 숫자만 크게 두기, 두 점으로 그은 추세선, 큰 원 안에 숫자를 넣어 크기로 견주기(값 비교가 부정확하다. 막대나 bar-list), 크롬의 로고·브랜드명.
 - 모든 장을 좌우 번갈아 비대칭으로 두기, 크롬 셋(태그·쪽번호·푸터)을 매 장 강제하기, 제목 기호(`+`·`/`) 장식 고정, 제목에 강조 구간 둘 이상.
