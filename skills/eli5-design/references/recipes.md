@@ -39,7 +39,7 @@ report + timeline + compare + faq.
 | 자주 묻는 것은? | `faq` | question-answer 3~5개 |
 | 무엇을 해 주길 바라나? | — | closing `request` 또는 `action` |
 
-- **덱으로 낼 때.** `<main class="d0-deck" data-pattern="report" data-variant="results" data-recipe="launch-report">`. [report](patterns/report.md)의 결과·지표 스토리라인을 따른다. FAQ는 덱에 넣지 않고 page로 둔다. 발표 없이 메일·메신저로 돌려 읽히는 출시 보고면 `data-delivery="read"`(Slidedoc)로 내고, 장마다 측정 근거·출처를 글 그릇에 담는다.
+- **덱으로 낼 때.** `<main class="d0-deck" data-pattern="report" data-variant="results" data-recipe="launch-report">`. [report](patterns/report.md)의 결과·지표 스토리라인을 따른다. FAQ는 덱에 넣지 않고 page로 둔다. 발표 없이 메일·메신저로 돌려 읽힐 덱이면 장마다 측정 근거·출처를 해석 줄과 출처 줄에 남긴다.
 
 ## 설치 가이드 `install-guide`
 

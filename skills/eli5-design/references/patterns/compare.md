@@ -46,6 +46,18 @@ mockup-frame은 HTML 목업이라 SVG 게이트를 채우지 않는다. 와이�
 
 - 다른 패턴이 이끄는 페이지에서 "어떤 대안을 견줬나", "바꾸기 전과 후는"이 질문 하나로 나오면 비교 섹션 하나로 답한다.
 - 추천 블록: 와이어 카드가 든 [side-by-side](../blocks/side-by-side.md) 또는 전/후 막대([diagram](../blocks/diagram.md)), 바뀐 행만 [diff-rows](../blocks/diff-rows.md). 구도는 Split(A | B).
+- **비교 레이아웃 고르기.** 한 줄 정의: 카드는 후보를 비교하고, 표는 기준을 비교한다.
+
+| 비교 대상 | 레이아웃 |
+| --- | --- |
+| 독립된 선택지 2~3개, 각 안이 그림·설명을 가진 '하나의 물건' | side-by-side `data-layout="card"`(split-card) |
+| 짧은 개념·문장 두 개 | side-by-side 기본(split-plain) |
+| 같은 기준을 여러 개 반복 대조 | 표([diff-rows](../blocks/diff-rows.md) 또는 table) |
+| 변화 자체가 핵심 | [before-after](../blocks/before-after.md) |
+
+  - 표 기준은 숫자 게이트가 아니라 **행 기준으로 좌우를 반복해 훑어야 하면 표**다.
+  - 실무 가이드: 기준이 6개 이상이면 표를 검토하고, 10개 이상이면 거의 표다. 선택지 3개 이상이 같은 기준을 공유하면 표를 우선한다.
+  - 각 선택지가 그림·설명이 많은 '물건'이면 기준이 좀 많아도 카드를 쓸 수 있다.
 - 섹션 머리 1문장에 비교 결론을 쓰고, 선택 이유는 아래 explanation으로 붙인다.
 
 ## 함께 자주 섞는 패턴

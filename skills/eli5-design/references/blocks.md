@@ -125,7 +125,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | kpi-cards | 근거 숫자(막대 변형은 그림) | 라벨 + 큰 숫자 + 막대(`전` 행에만 값, `후` 행은 라벨만, 큰 숫자가 후 값), 증감 배지·문단 없음, 막대 변형 `data-variant="bar"` | [kpi-cards.md](blocks/kpi-cards.md) |
 | flow-line | 그림 위 흐름 한 줄(글) | `A → B → C`, 현재만 블루. 단독으로 그림이 아니다 | [flow-line.md](blocks/flow-line.md) |
 | step-columns | 그림 아래 단계 주석 | 2~5열, 블루 단계 라벨 → 소제목 → 짧은 항목. 그림+설명 변형 `data-variant="figure"`는 그림 | [step-columns.md](blocks/step-columns.md) |
-| side-by-side | 옵션 비교 | 같은 크기 2~3열, 장점·비용·위험 또는 작은 mock, 와이어 카드 `.d0-option__wire`(수치 없는 결정의 대표 도식) | [side-by-side.md](blocks/side-by-side.md) |
+| side-by-side | 옵션 비교 | 같은 크기 2~3열, 장점·비용·위험 또는 작은 mock, 와이어 카드 `.d0-option__wire`(수치 없는 결정의 대표 도식). 기본은 카드 없는 split-plain, 독립된 선택지 2~3개는 `data-layout="card"`(split-card) | [side-by-side.md](blocks/side-by-side.md) |
 | diff-rows | 바뀐 점만, 한계 목록 | 항목 \| 전 \| → \| 후(블루), 배지 행 변형, 위험 행 변형 `data-variant="risk"`(배지 + 위험 한 문장 + dl 영향/대응) | [diff-rows.md](blocks/diff-rows.md) |
 | checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 긴 따라하기는 구간(`data-phased`: status rail 전체 지도 + 현재 구간만 펼침 + 구간 끝 checkpoint), 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건). 연동 그림 변형 `data-variant="linked"`(왼쪽 sticky 단계 화면이 행 호버·포커스·클릭·체크로 바뀜, 그림) | [checklist.md](blocks/checklist.md) |
 | code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |

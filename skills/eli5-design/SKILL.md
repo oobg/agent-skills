@@ -239,18 +239,18 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | 출력 형식 | 무엇인가 | 언제 | 연다 |
 | --- | --- | --- | --- |
 | `page`(기본) | 혼자 읽어도 이해되는 시각 문서. 구조 + 맥락 + 근거 + 조건 + 해석을 담는다 | 혼자 읽는 한 장짜리 문서. 신호가 없으면 page다 | 이 본문, 패턴 파일, `references/blocks/explanation.md` |
-| `deck` | 발표자와 함께 보는 자료. 한 장 한 주장, 최소한의 글 | 발표·화면 공유·한 장씩 넘기기 또는 혼자 읽는 슬라이드 요청 신호("발표 자료", "슬라이드로", "장표", "덱", "화면 공유용") | `references/output/deck.md`(구성·Slide Gate) + `references/blocks/slide-deck.md`(마크업) + 주 패턴 파일의 "덱으로 낼 때" 절 |
+| `deck` | 발표자와 함께 보는 자료. 한 장 한 주장, 최소한의 글 | 발표·화면 공유·한 장씩 넘기기 요청 신호("발표 자료", "슬라이드로", "장표", "덱", "화면 공유용") | `references/output/deck.md`(구성·Slide Gate) + `references/blocks/slide-deck.md`(마크업) + 주 패턴 파일의 "덱으로 낼 때" 절 |
 
 page와 deck은 같은 Pattern·Block을 쓴다. 다른 것은 밀도다: page는 explanation·evidence로 맥락까지 담고, deck은 한 장 한 주장으로 같은 블록을 줄여 쓰며(예: evidence는 `evidence` 슬라이드, closing은 마지막 장) 남는 말은 발표자가 한다.
 
 **말투.** page는 해요체, deck은 제목·본문·해석을 `-다`체로 쓴다. 한 출력 안에서 섞지 않는다. 사용자가 준 문구와 인용, deck의 마지막 장 요청 문장(`정해 주세요`)과 네비 안내(`←/→로 넘겨요`)처럼 독자에게 직접 말하는 UI 문구는 그대로 둔다.
 
-덱 하위 모드는 발표자와 함께 보는 Presentation(`data-delivery="present"`, 기본) 또는 혼자 읽는 Slidedoc(`data-delivery="read"`) 하나로 정하고 덱 안에서 섞지 않는다.
+혼자 읽히는 게 주목적이면 page를 쓴다. 발표자 없이 전달될 덱이면 필요한 맥락과 출처를 덱 안에 남긴다(별도 모드 아님).
 Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부터 통과하고 Slide·Visual·Ending과 구현 게이트를 본다.
 
-**deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명(Slidedoc 맥락 줄은 전달 모드 표의 줄 수 상한을 따른다),
+**deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명,
 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한, Page Depth Gate 대신
-`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 전달 모드별 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
+`references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차·closing 메타 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
 ## 개행 규칙
