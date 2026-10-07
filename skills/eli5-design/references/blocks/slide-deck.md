@@ -31,7 +31,7 @@
 - **Impact screenshot.** 그림이 있는 Impact라 제목은 일반 장 크기(3.6cqi, 1280에서 약 39px)다. 화면이 그 장의 하나이고 제목은 화면을 읽는 법을 알려 주는 머리 줄이다. 그림 비율 권장 하한 55%를 그대로 받고 따로 예외를 두지 않는다.
   Impact는 글자 크기가 아니라 한 주장에 시선을 모으는 장이라는 점으로 정해진다. 화면 하나 외에 요점·카드·두 번째 그림을 더하면 Impact가 아니다.
 - **그림 면적.** 실제로 그려진 그림 요소(`svg`·`img`, screenshot은 `.d0-shot__screen`)의 렌더 box ÷ 몸 영역(슬라이드 안쪽 폭 × 몸 행 높이, 머리·발·패딩 제외)으로 잰다. `figure` box나 split 열 box가 아니다. 측정 정의와 하한은 [덱 출력](../output/deck.md) 밀도 표가 정본이다.
-  split의 SVG는 그림 열을 채우므로(위 그림 글자) 열을 넓히면 그림도 커진다. 제목이 길면 보조 한 줄(`__sub`)을 달 수 있다. 몸 영역 기준이라 제목 두 줄·보조 줄이 비율을 바꾸지 않는다.
+  split의 SVG는 그림 열을 채우므로(아래 [그림 글자](#그림-글자)) 열을 넓히면 그림도 커진다. 제목이 길면 보조 한 줄(`__sub`)을 달 수 있다. 몸 영역 기준이라 제목 두 줄·보조 줄이 비율을 바꾸지 않는다.
 
 ## 커버 변형 `data-cover`
 
@@ -218,6 +218,17 @@
 | blue | 1.38 | 금지 |
 | grey-900 | 3.01 | 금지(진한 면 위 어두운 글자) |
 
+
+## 그림 글자
+
+덱 SVG 글자의 정본은 이 절이다. [diagram](diagram.md) 라벨 절의 글자 크기(`.d0-s-text` 14px, 560px 이하 20·22px)는 page(`.d0-page`) 전용이라 슬라이드 안에는 걸리지 않는다.
+
+- **글자 클래스.** 덱 그림의 라벨·값·머리 글자는 `g.d0-sl-label`·`g.d0-sl-value`·`g.d0-sl-head` 안 `text`로 쓴다. 공용 도형 글자 `.d0-s-text`는 덱에서 쓰지 않는다.
+- **크기는 `--sl-font` 하나.** 글자 크기는 viewBox 단위 `--sl-font`(기본 17px)로만 정하고, 커버·breakdown·가로형(800)·좁은 화면 규칙이 그림 단위로 이 값을 바꾼다(아래 CSS). SVG 안 `font-size` 속성이나 인라인 `style`은 쓰지 않는다.
+- **번호·주의 표식.** 공용 도형의 번호와 주의 `!`(`text.d0-s-num`)도 슬라이드 안에서는 `--sl-font`를 따른다(`.d0-slide .d0-s-num`). 같은 그림의 라벨과 번호가 한 크기로 맞는다.
+- **선 두께.** 공용 도형을 쓰는 덱은 슬라이드 SVG 도형(`path`·`circle`·`rect`·`line`)에 `vector-effect: non-scaling-stroke`를 걸어 그림 배율과 상관없이 화면 px 두께를 지킨다. 완료 체크선(`.d0-s-tick`)은 2.5px다(진한 면은 2px, 진한 면 절 CSS).
+- **붙이는 조건.** 아래 CSS의 공용 도형 세 줄(선 두께·번호 글자·체크선)은 슬라이드에 `d0-s-*` 도형을 둔 덱에 붙인다. `d0-sl-*` 차트만 쓰는 덱에는 붙이지 않는다.
+- **렌더 크기.** 렌더 글자 = `--sl-font` × SVG 렌더 폭 ÷ viewBox 폭이다. 1280에서 28px 이하, 320·375에서 11px 이상이다(덱 게이트).
 
 ## 근거 변형과 주석
 
@@ -592,6 +603,10 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-sl-head text { fill: var(--d0-grey-800); font-weight: 600; text-anchor: start; }
 /* 공용 도형(d0-s-*, diagram.md 공용 CSS)을 Impact 장에 둘 때: blue-light 위 grey-500 선은 3:1 미달이라 한 단계 진하게 */
 .d0-slide[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
+/* 공용 도형(d0-s-*)을 슬라이드에 둔 덱만(그림 글자 절): 선은 화면 px 두께, 번호·주의 ! 글자는 --sl-font */
+.d0-slide svg :is(path, circle, rect, line) { vector-effect: non-scaling-stroke; }
+.d0-slide .d0-s-num { font-size: var(--sl-font, 17px); }
+.d0-slide .d0-s-tick { stroke-width: 2.5; }
 
 /* 네비 */
 .d0-deck__nav { align-items: center; gap: 8px; min-height: 44px; }

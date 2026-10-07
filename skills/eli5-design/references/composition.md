@@ -87,7 +87,7 @@ page의 축과 섹션 뼈대(제목 → 그림 → 해석 한 줄 → 필요할 
   지난   지난  지금    남음    남음
   ```
 - **블록.** narrative 도식, steps (e), [timeline.md](blocks/timeline.md), [step-columns.md](blocks/step-columns.md), [flow-line.md](blocks/flow-line.md).
-- **page.** 375px에서는 세로로 돌리거나 단계를 줄인다.
+- **page.** 5칸 이상 단계 줄이나 점이 많은 긴 타임라인처럼 축 폭에서 칸·라벨이 하한을 못 지키는 띠는 `.d0-wide` 한 블록으로 넓힌다(2열 아님, [shell.md](blocks/shell.md) 넓은 구간 (b)). 375px에서는 세로로 돌리거나 단계를 줄인다.
 - **deck.** 기본 근거 슬라이드나 `breakdown`. 슬라이드를 넘길 때마다 현재 위치가 한 칸씩 가도 된다.
 
 ### Canvas — 큰 그림 하나

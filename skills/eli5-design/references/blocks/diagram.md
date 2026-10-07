@@ -26,7 +26,7 @@
 
 ## 라벨
 
-이 절의 글자 크기(`.d0-s-text`·`.d0-s-num`)와 렌더 게이트는 **page 규칙**이다. deck의 도식 글자는 [slide-deck.md](slide-deck.md) 타이포 절의 그림 글자 규칙(`d0-sl-label`·`d0-sl-value`, `--sl-font`, SVG 안 `font-size` 속성 금지)을 따른다. 도형 클래스는 page·deck 공용이다(아래 공용 CSS).
+이 절의 글자 크기(`.d0-s-text`·`.d0-s-num`)와 렌더 게이트는 **page 규칙**이다. deck의 도식 글자는 [slide-deck.md 그림 글자](slide-deck.md#그림-글자) 절(`d0-sl-label`·`d0-sl-value`, 번호 `.d0-s-num`까지 `--sl-font`, SVG 안 `font-size` 속성 금지)을 따른다. 도형 클래스는 page·deck 공용이다(아래 공용 CSS).
 
 - 설명 문장은 SVG 밖 `figcaption`·HTML에 둔다. 확대·번역·복사가 되기 때문이다.
 - SVG `<text>`는 짧은 노드·값 라벨(명사 1~3단어, `고친 파일`, `6분`)에만 쓴다.
@@ -230,7 +230,7 @@
 .d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
 /* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
    데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다.
-   page(.d0-page) 안에만 건다. 덱 슬라이드 SVG(.d0-sl-* 글자, 주의 ! 표식 text.d0-s-num)는 slide-deck.md 글자 규칙을 따른다 */
+   page(.d0-page) 안에만 건다. 덱 슬라이드 SVG(.d0-sl-* 글자, 번호·주의 ! 표식 text.d0-s-num)는 slide-deck.md 그림 글자 절(.d0-slide .d0-s-num { font-size: var(--sl-font, 17px) })을 따른다 */
 @media (max-width: 560px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
 }
