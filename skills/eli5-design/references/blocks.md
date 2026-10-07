@@ -59,7 +59,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
   그 아래 섹션은 핵심 구조가 있으면 그림을 권장한다. 그림 없는 섹션은 구조 블록(explanation, evidence, before-after, checkpoint, question-answer, diff-rows, checklist, step-columns, accordion, 표)으로 짓고
   연속된 일반 문단만으로 채우지 않는다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
   글 블록은 그림이 이미 보여 준 모양을 되풀이하지 않고 이유·근거·조건을 더한다.
-- 그림은 컨테이너 폭을 채우거나 옆에 짧은 설명을 붙인다. 폭 절반만 쓰고 옆을 비우지 않는다. 그림을 키우지 않고 관련 explanation을 그림 옆 열(`.d0-figtext`)에 둔다.
+- **본문 축.** 섹션은 모두 본문 축(720px, narrow 640px)의 같은 왼쪽 시작선을 쓴다. 그림은 축 폭의 75~100%를 채우고(단순 도식만 `data-fit="compact"`), 옆에 남는 폭은 채우지 않는다. 설명은 그림 아래에 둔다. 정본은 [shell.md](blocks/shell.md) 본문 축 절.
 - **그림 무대.** 회색 무대는 기본 없음이다. 필요할 때만 도식 `figure.d0-fig[data-stage]`의 SVG를 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
   figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
 - **구도와 강조.** 섹션·슬라이드의 구도(`data-composition`), 강조 3단계(`data-emphasis="quiet|impact"`), 밀도 리듬, 강조 순서(크기 → 위치 → 여백 → 무게 → 색)는
@@ -68,10 +68,10 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
   (같은 숫자 문자열 페이지당 2회 이하, SKILL.md 원칙 8번).
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
   행 목록의 행 구분선만(closing 문장 아래·checkpoint 뒤 grey-200 한 줄은 블록 부품 예외, [shell.md](blocks/shell.md) 금지 절). 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
-- **줄 길이.** 본문 한 줄은 공백 포함 50자 이하다(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md) 제외). `p`가 아니라 글 블록 컨테이너(32em)나 2열로 줄인다. 측정값·방법의 정본은 [shell.md](blocks/shell.md) 줄 길이 절이다.
-- **두 섹션 나란히.** 두 질문이 나란히 읽혀도 되면 [shell.md](blocks/shell.md)의 `.d0-split` 레이아웃을 쓴다.
-  한쪽 높이가 다른 쪽의 1.5배를 넘으면 나란히 두지 않는다([shell.md](blocks/shell.md) 높이 기준).
-  두 섹션이 모두 무대 위 그림이면 `data-align="stage"`로 머리·무대·캡션 줄을 맞춘다. 그림 없는 섹션이 섞이면 기본(`align-items: start`)이다.
+- **줄 길이.** 본문 한 줄의 길이는 축이 정한다. 글 블록은 축(또는 놓인 열) 폭을 그대로 쓰고 따로 폭 상한을 두지 않는다(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md)은 규칙 밖). 줄을 줄이려면 페이지 전체를 `data-width="narrow"`로 둔다. 정본은 [shell.md](blocks/shell.md) 줄 길이 절이다.
+- **2열은 세 경우만.** 동시 비교(A안 | B안, 전 | 후), 그림 지점과 번호로 대응하는 주석·범례, 대등한 두 덩어리(완료 | 남은 것)일 때만 `.d0-wide` 구간 안 `.d0-cols`로 쓴다.
+  분할선은 문서 전체에서 하나(6/6 또는 7/5)다. 섹션은 나란히 두지 않고 축을 따라 쌓는다. 정본은 [shell.md](blocks/shell.md) 2열 절.
+- **섹션 뼈대.** 제목(h2) → 그림 → 해석 한 줄 → 필요할 때만 "왜" 한 줄. 흐름을 끊는 세부는 `.d0-more` 접기로, 페이지 끝 기억할 사실 한 문장은 `.d0-keep`(선택)으로 둔다.
 - 상태는 `data-*` 속성으로 표현한다(`data-status`, `data-current`, `data-open`, `data-variant`, `data-selected`).
 - Card 기본은 plain이다. 리스트는 카드 스택 대신 행 + 1px 디바이더로 나눈다. pill은 배지·탭·토글에만.
 - **색은 섞는다.** Day0 6:3:1, 첫 화면 진한 포인트 채움 면적은 1% 미만·15% 초과일 때만 경고(Warning, [shell.md](blocks/shell.md) 색 절), 넓은 blue-light 무대로 전체만 채우지 않기, 회색만 있는 도식·카드 묶음 금지. blue 단계(blue·blue-dark·blue-light)와
@@ -114,11 +114,11 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 | 블록 | 언제 쓰나 | 생김새 | 파일 |
 | --- | --- | --- | --- |
-| shell | 모든 페이지의 골격 | 폰트 + 토큰 + 컨테이너 + 타이포·여백 스케일 + 배지 + 나란히 두 섹션 `.d0-split`(그림 둘이면 무대 정렬 `data-align="stage"`) | [shell.md](blocks/shell.md) |
+| shell | 모든 페이지의 골격 | 폰트 + 토큰 + 본문 축(720px, narrow 640px) + 넓은 구간 `.d0-wide` + 2열 `.d0-cols`(6/6·7/5, 문서에 하나) + 섹션 뼈대 + 접기 `details.d0-more` + 기억할 한 줄 `aside.d0-keep` + 타이포·여백 스케일 + 배지 | [shell.md](blocks/shell.md) |
 | header | 모든 페이지 첫 블록(필수) | 작업 라벨 → h1 → (히어로) → 리드(문장형 또는 요약 행) | [header.md](blocks/header.md) |
 | hero | report·compare 전/후·incident의 결론 수치 1개(수치 없으면 생략) | h1 바로 아래: 전 값(작게) → 후 값 44px/600 + 단위 + 한 줄 뜻 | [hero.md](blocks/hero.md) |
 | section-head | 구획마다 | 위 구분선 + h2 20px + 설명 최대 1문장(제목과 같으면 생략), 태그는 기본 없음 | [section-head.md](blocks/section-head.md) |
-| diagram | **그림(필수 1개 이상)** | `data-stage` 패널 위 SVG: 연결 그래프·전/후 막대(비율 `data-variant="ratio"`, 전체 폭 `data-size="wide"`)·미니 격자·화면 와이어프레임·번호 핀 오버레이 `data-variant="pins"`(preview 해부도, faq 용어 핀). 장르 `data-genre`(`structural`·`narrative`·`editorial`, 생략=structural, editorial은 선 거의 없이 숫자·문구·객체 하나를 크게). 모으기 (h) converge(문제 여럿 → 해결 하나 곡선), 번호 주석 (i) `data-variant="annotate"`(기존 그림 위 번호 2~4개 + 한 줄 주석 `ol.d0-annot__notes`, page·deck 공용) | [diagram.md](blocks/diagram.md) |
+| diagram | **그림(필수 1개 이상)** | 축 폭을 채우는 SVG(글자 있으면 viewBox 폭 560, 단순 도식은 `data-fit="compact"`, 무대는 글자 없는 그림에만): 연결 그래프·전/후 막대(비율 `data-variant="ratio"`)·미니 격자·화면 와이어프레임·번호 핀 오버레이 `data-variant="pins"`(preview 해부도, faq 용어 핀). 장르 `data-genre`(`structural`·`narrative`·`editorial`, 생략=structural, editorial은 선 거의 없이 숫자·문구·객체 하나를 크게). 모으기 (h) converge(문제 여럿 → 해결 하나 곡선), 번호 주석 (i) `data-variant="annotate"`(기존 그림 위 번호 2~4개 + 한 줄 주석 `ol.d0-annot__notes`, page·deck 공용) | [diagram.md](blocks/diagram.md) |
 | thumb-cards | 무엇이 몇 개, 각각 어떤 모양 | 3~5장, 미니 격자·와이어프레임 SVG + 이름 + 배지 | [thumb-cards.md](blocks/thumb-cards.md) |
 | mockup-frame | 결과 화면을 직접 눌러 봄 | 고정 높이 프레임 안 미니 앱: 상단 바·고스트 카드·모달/시트·토스트. 별도 페이지는 `srcdoc` 내장(`src` 금지), 여러 페이지는 `data-variant="gallery"`(뷰포트 높이 노트북 창 + 탭), 기기 프레임 `data-device="desktop|mobile"`(PC 화면은 노트북 창, 모바일 화면은 375px 폰, 둘 다면 PC/모바일 토글). 화면 캡처 spotlight `figure.d0-shot`(화면 + `.d0-shot__spot` 위치 표시 + 바깥 흐림 + 번호 주석 `.d0-shot__note`, deck의 `screenshot` 슬라이드) | [mockup-frame.md](blocks/mockup-frame.md) |
 | tab-preview | 결과물(파일·표) 모양 | pill 탭 → 파일명 바 → 표 목업 | [tab-preview.md](blocks/tab-preview.md) |
@@ -129,11 +129,11 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | side-by-side | 옵션 비교 | 같은 크기 2~3열, 장점·비용·위험 또는 작은 mock, 와이어 카드 `.d0-option__wire`(수치 없는 결정의 대표 도식). 기본은 카드 없는 split-plain, 독립된 선택지 2~3개는 `data-layout="card"`(split-card) | [side-by-side.md](blocks/side-by-side.md) |
 | diff-rows | 바뀐 점만, 한계 목록 | 항목 \| 전 \| → \| 후(블루), 배지 행 변형, 위험 행 변형 `data-variant="risk"`(배지 + 위험 한 문장 + dl 영향/대응) | [diff-rows.md](blocks/diff-rows.md) |
 | checklist | 직접 따라 하기·할 일 | 진행률 + 체크 행, 긴 따라하기는 구간(`data-phased`: 맨 위 전체 진행률 + 구간 머리 행이 지도와 결과, 현재 구간만 펼침), 할 일은 담당 변형 `data-variant="owner"`(행 끝 칸 없음 `data-meta="none"`), owner 메타 슬롯 `.d0-check__owner` + `<time>` 또는 `.d0-check__when`(조건). 연동 그림 변형 `data-variant="linked"`(왼쪽 sticky 단계 화면이 행 호버·포커스·클릭·체크로 바뀜, 그림) | [checklist.md](blocks/checklist.md) |
-| code-block | 붙여 넣을 명령·설정(그림 아님, 50자 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
+| code-block | 붙여 넣을 명령·설정(그림 아님, 줄 길이 예외) | 어두운 코드 면 + 라벨·복사 버튼 바, 클립보드 실패 시 선택 + 단축키 안내. checklist·accordion 행 `<details>` 안에 둔다 | [code-block.md](blocks/code-block.md) |
 | accordion | 선택 보조 정보, 용어 목록 | `details` 선택 펼침, 용어 목록 변형 | [accordion.md](blocks/accordion.md) |
 | faq (question-answer, 공용) | 독자가 실제로 가질 질문: faq 패턴, guide 막혔을 때, 보고·사건 끝 질문 | 항상 노출하는 답글형(들여쓴 답 + 꺾인 연결선 `.d0-faq`), 끝 한 줄 `.d0-faq__more` | [faq.md](blocks/faq.md) |
 | callout | 본문 중간의 결정 요청·다음 할 일 하나 | soft 블루 상자, **페이지당 최대 1개**, 히어로 결론을 되풀이하지 않음. 문서 끝 맺음은 closing이 맡는다 | [callout.md](blocks/callout.md) |
-| explanation (공용) | 그림이 보여 줄 수 없는 배경·이유·뜻·영향·조건·예외 | `dl.d0-explain > div[data-role] > dt + dd`, 라벨 14px/600 + 1~3문장 15px grey-700, 상자 없음. 그림 옆 열 `.d0-figtext` | [explanation.md](blocks/explanation.md) |
+| explanation (공용) | 그림이 보여 줄 수 없는 배경·이유·뜻·영향·조건·예외 | `dl.d0-explain > div[data-role] > dt + dd`, 라벨 14px/600 + 1~3문장 15px grey-700, 상자 없음. 그림 아래에 두고 축 폭을 그대로 쓴다 | [explanation.md](blocks/explanation.md) |
 | evidence (공용) | 주장과 근거의 짝 | `dl.d0-evidence > div[data-proof]` 주장 한 줄 + 근거(number·source·before-after·example), 그림형 `figure.d0-evidence`, 근거 변형 `data-variant="metric-list|bar-list|tiles"`(`.d0-mlist`·`.d0-barlist`·`.d0-tiles`, 덱 evidence 장 그림 자리에도) | [evidence.md](blocks/evidence.md) |
 | before-after (공용) | 같은 대상의 전과 후 | `div.d0-ba[data-kind="change|fix|improve|forecast"]` 두 쪽 + 화살표. 여러 항목은 diff-rows, 숫자는 막대 | [before-after.md](blocks/before-after.md) |
 | checkpoint (공용) | 여기까지 하면 완성되는 결과 | `p.d0-checkpoint` 라벨 + 결과 한 줄 + 얇은 선, 완료면 green ✓ | [checkpoint.md](blocks/checkpoint.md) |

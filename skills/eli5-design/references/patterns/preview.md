@@ -38,7 +38,7 @@
 
 ## explanation 쓰는 곳
 
-- 목업·해부도 옆 열에 `interpretation`(각 칸이 무엇을 뜻하나)과 `constraint`(실제와 다를 수 있는 점). 포함되지 않는 것은 explanation `exception` 또는 diff-rows 배지 행으로 쓴다.
+- 목업·해부도 아래에 `interpretation`(각 칸이 무엇을 뜻하나)과 `constraint`(실제와 다를 수 있는 점). 포함되지 않는 것은 explanation `exception` 또는 diff-rows 배지 행으로 쓴다.
 
 ## 추천 조합
 

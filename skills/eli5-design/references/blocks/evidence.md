@@ -16,7 +16,7 @@
   | `example` | 실제 한 건 | 14px grey-700 한 줄, 값은 합성 |
 
 - 형태는 `dl.d0-evidence > div[data-proof]`(짝이 여럿) 또는 `figure.d0-evidence`(근거가 그림 하나: Claim은 `figcaption`을 그림 위에, Proof는 SVG·kpi-cards 막대 변형).
-- 짝은 섹션당 1~3개. 여럿이면 세로로, 전체 폭이면 `.d0-cols` 2열. 짝 사이 24px.
+- 짝은 섹션당 1~3개. 여럿이면 세로로 쌓는다(짝수라서 2열로 나누지 않는다). 짝 사이 24px. 묶음은 축 폭을 그대로 쓴다.
 - 카드·배경·테두리 상자 금지. 묶음은 여백과 글자 굵기로만 만든다.
 - **한 사실은 한 번.** 히어로·요약 행에 있는 숫자를 Proof에 다시 쓰지 않는다. 그 숫자가 정본이면 Proof는 출처나 예시로 받친다.
 - 숫자 Proof에는 단위·기간·기준을 붙인다. 예상치는 글자 라벨 `(예상치)`를 단다. 측정값과 섞지 않는다.
@@ -89,7 +89,7 @@ deck에서는 evidence 장의 `figure.d0-slide__fig`에 같은 `data-variant`를
 .d0-mlist__rows > div[data-on] { border-left-color: var(--d0-blue); }
 .d0-mlist__rows dt { color: var(--d0-grey-600); font-size: 14px; }
 .d0-mlist__rows dd { margin: 0; color: var(--d0-grey-900); font-size: 28px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
-svg.d0-mlist__chart { display: block; width: 100%; max-width: 360px; height: auto; }
+svg.d0-mlist__chart { display: block; width: 100%; height: auto; } /* 지표 목록 옆 열 폭을 채운다(블록 부품 2열) */
 /* bar-list: 라벨 + 값 한 줄, 그 아래 막대 */
 .d0-barlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
 .d0-barlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: baseline; }
@@ -155,7 +155,6 @@ dl.d0-evidence dd { display: grid; gap: 2px; margin: 0; color: var(--d0-grey-700
 dl.d0-evidence data { color: var(--d0-grey-900); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: var(--d0-tracking-title); }
 dl.d0-evidence dd > span, dl.d0-evidence small { color: var(--d0-grey-600); }
 dl.d0-evidence small { font-size: var(--d0-meta); }
-.d0-evidence.d0-cols { column-gap: 48px; }
 figure.d0-evidence > figcaption:first-child { color: var(--d0-grey-900); font-size: 15px; font-weight: 600; } /* 그림형: 주장이 그림 위 */
 ```
 

@@ -19,7 +19,7 @@ incident + timeline + evidence + before-after + closing.
 | --- | --- | --- |
 | 무슨 일이 있었고 지금 어떤가? | `incident` | 첫 화면 영향 그래프, 히어로 또는 요약 행([header](blocks/header.md) 라벨 표), explanation `impact` |
 | 무슨 순서로 일어났나? | `timeline` | SVG 시간 막대 + 세로 타임라인, 원인이 확정된 지점에 checkpoint(`여기서 원인 확정`), 인지가 늦은 이유는 explanation `reason` |
-| 왜 생겼고 왜 못 막았나? | `incident` | 직접 → 근본 원인 graph, 옆 열에 evidence(어떻게 확인했나), explanation `constraint` |
+| 왜 생겼고 왜 못 막았나? | `incident` | 직접 → 근본 원인 graph, 그 아래 evidence(어떻게 확인했나), explanation `constraint` |
 | 무엇을 고쳤나? | — | before-after `fix`(문제 → 수정) |
 | 다음에 무엇을 하나? | — | checklist 담당 변형 + closing `takeaway` |
 

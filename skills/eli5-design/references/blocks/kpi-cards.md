@@ -64,7 +64,6 @@
 .d0-kpi__label { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
 .d0-kpi dd { margin: 0; min-width: 0; }
 .d0-kpi__value { color: var(--d0-grey-900); font-size: 28px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
-.d0-split .d0-kpi__value { font-size: 24px; }
 .d0-kpi__bars { display: grid; grid-template-columns: max-content 1fr; align-items: center; gap: 6px 10px; margin-top: 8px; }
 .d0-kpi__tag { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .d0-kpi__track { display: block; height: 6px; border-radius: 999px; overflow: hidden; }
@@ -80,8 +79,8 @@
 }
 ```
 
-반 열(`.d0-split` 안, 약 552px)에서도 카드 3장이 한 줄에 놓이도록 최소 폭을 150px로 둔다(안쪽 24px씩 빼면 내용 약 120px).
-숫자 28px은 `약 10분`까지 들어간다. 더 길면 `.d0-split .d0-kpi__value { font-size: 24px; }`로 낮춘다.
+축 720px에서 카드 3장은 각 약 232px, `.d0-wide` 6/6 열(약 544px)에서도 한 줄에 놓이도록 최소 폭을 150px로 둔다(안쪽 24px씩 빼면 내용 약 120px).
+숫자 28px은 `약 10분`까지 들어간다. 더 길면 그 블록에서만 `.d0-kpi__value`를 24px로 낮춘다.
 375px(343px)에서 2장·4장은 2열로 접힌다. 3장은 2+1(외톨이 카드)이 되지 않게 520px 이하에서 1열로 쌓는다.
 막대 폭은 숫자에서 계산한다(6 ÷ 14 = 42.9%, 4 ÷ 58 = 6.9%). 숫자를 지어 맞추지 않는다.
 

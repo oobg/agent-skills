@@ -27,6 +27,7 @@
 
 - **결정은 한 곳.** header 요약 행에 결정 행(`data-tone="decision"`)이 있으면 page closing을 `decision`으로 두지 않는다(요약 행이 정본). 이때 closing이 필요하면 `action`·`takeaway`로 짧게 쓰거나 생략한다.
 - **문서 끝은 closing.** 문서 끝의 다음 행동·결정은 closing이 맡는다. [callout](callout.md)은 본문 중간용이고, 같은 결정·다음 할 일을 callout과 closing에 함께 두지 않는다.
+- **기억할 한 줄(`.d0-keep`)과.** 지킬 행동·결정이면 closing, 기억할 사실 한 문장이면 [shell.md](shell.md)의 `.d0-keep`이다. 둘을 함께 두면 `.d0-keep`이 closing 앞에 오고 같은 문장을 되풀이하지 않는다.
 - **checklist 담당 변형과.** 할 일이 여럿이면 [checklist](checklist.md) 담당 변형이 정본이고, closing은 그중 가장 중요한 하나를 문장으로 올린다. 같은 문장을 되풀이하지 않는다.
 
 ## 스니펫 (page)

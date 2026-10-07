@@ -8,15 +8,16 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - doctype → `lang="ko"` → meta viewport → 폰트 → 메인 `<style>`.
 - **폰트.** 결과물 HTML을 넘길 때는(파일·artifact 모두, 발행 여부와 무관) `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
   메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 아래 스니펫의 jsDelivr `<link>`는 작업 중 초안용이고, 도구를 못 쓸 때만 남긴다(정본: SKILL.md 출력 형식).
-- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 컨테이너 → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 열 나누기 → 공용 배지 → 포커스 → 모션.
+- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 본문 축·넓은 구간·그림 폭·2열·접기·기억할 한 줄(정본 CSS) → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 공용 배지 → 포커스 → 모션.
   폰트 `<style>`은 이 앞의 별도 요소라 "tokens.css는 메인 `<style>` 맨 앞" 규칙과 부딪히지 않는다.
-- 컨테이너는 day0 폭 규칙을 따른다: 기본 wide `1200px`, `data-width="narrow"`면 `640px`.
+- **본문 축(content track).** `.d0-page` 안쪽 폭은 720px, `data-width="narrow"`면 640px다. 이 축이 페이지의 읽기 축이고 모든 섹션이 같은 왼쪽 시작선에서 시작한다(아래 본문 축 절).
 - 페이지 패딩: 데스크톱 `64px 32px 96px`, 640px 이하 `48px 16px 72px`(좌우 16px 거터).
-- 모든 블록은 페이지 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다.
-- **첫 화면 높이 예산(정본).** 판정은 하나다: 1100~1280px 폭에서 **첫 SVG 도식의 아래 끝이 y ≤ 720px**(갤러리 iframe 약 720px, 1280×800 첫 화면 공통).
-  머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 그림(무대가 있으면 무대) 300px은 **합계 560px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 그림 300 ≈ 708px).
+- 모든 블록은 축의 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다. 축 밖으로 나가는 것은 `.d0-wide` 구간뿐이다.
+- **첫 화면 높이 예산(정본).** 판정은 둘이다: 1280×800에서 **첫 SVG 도식의 아래 끝이 y ≤ 800px**(전부 보인다, SKILL.md 원칙 2번), 높이 약 720px 프레임(갤러리 iframe, 1280×720)에서는 **첫 SVG 도식의 위쪽 절반 이상이 y ≤ 720px 안**에 든다.
+  머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 그림(무대가 있으면 무대) 렌더 높이 390px이 **합계 650px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 그림 390 ≈ 798px).
+  그림은 축 폭을 채우므로 렌더 높이 = 렌더 폭 × viewBox 높이 ÷ viewBox 폭이다. 축 720px에서 viewBox 폭 560이면 viewBox 높이 300 이하(렌더 약 386px)가 기준이다.
   머리가 짧으면 그림이 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
-  넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 무대 SVG의 viewBox 높이를 줄인다.
+  넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 첫 그림의 viewBox 높이를 줄이거나 `data-fit="compact"`로 둔다.
 
 ## 여백 리듬
 
@@ -32,62 +33,84 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - 블록 안 테두리는 최소로 둔다. 행 목록의 행 구분선(`grey-100`)만 허용한다. 섹션에 카드 상자를 두르지 않는다.
 - 섹션 안 행은 위로 붙는다(`align-content: start`). 섹션이 늘어나도 블록 사이가 벌어지지 않는다.
 
-## 나란히 두 섹션 (`.d0-split`)
+## 본문 축과 넓은 구간 (`.d0-wide`)
 
-짧은 섹션 둘(숫자 카드 + 도식, 그림 + 목록)을 한 줄에 놓을 때 쓴다. `<div class="d0-split">` 안에 `section.d0-section` 두 개.
+page는 넓은 캔버스를 채우지 않고, **하나의 읽기 축을 따라 그림을 크게** 보여 준다.
 
-- 960px 이상에서 2열, 그 아래는 1열. 열 사이 48px.
-- 기본은 `align-items: start`라 짧은 섹션은 제 높이만 차지한다. 옆 섹션 높이에 맞춰 늘어나 아래가 비지 않는다.
-  두 섹션이 모두 무대 위 그림이면 아래 무대 정렬 변형(`data-align="stage"`)이 기본이다.
-- 마지막이 아닌 `.d0-split` 안 섹션은 둘 다 아래 패딩 32px(모바일 24px)을 지킨다. 오른쪽 섹션이 `:last-child`라 `padding-bottom: 0`을 받는 것을
-  `.d0-split:not(:last-child) > .d0-section`이 되돌린다(이 규칙이 없으면 split 아래 여백이 왼쪽 열만큼만 남는다).
-- 페이지 끝 `.d0-split`은 2열(960px 이상)에서 두 섹션 모두, 1열에서는 마지막 섹션만 `padding-bottom: 0`이다. 1열에서 왼쪽(위) 섹션의 아래 패딩까지 없애지 않는다.
-- 각 섹션은 자기 `border-top`을 그대로 둔다. 데스크톱에서는 구분선이 열 사이에서 끊겨 보이는데, 의도한 모양이다.
-- 세 개 이상 나란히 두지 않는다.
-- **높이 기준(정본).** 데스크톱에서 한쪽 섹션 높이가 다른 쪽의 1.5배를 넘으면 나란히 두지 않고 위아래로 쌓는다.
-  작은 차(예: 수십 px)는 허용하고, 짧은 쪽 아래에 큰 빈 공간이 생기면 금지다. 균형을 맞추려고 내용을 다른 섹션으로 옮기지 않는다.
-  무대 정렬 변형(아래)에서는 두 섹션 높이가 같아지므로, 비는 정렬을 끈 자연 높이(또는 두 무대 안 SVG 높이)로 잰다.
+- **축.** `.d0-page` 안쪽 폭 720px(`data-width="narrow"` 640px). 섹션·그림·글 블록은 모두 이 축 안에서 같은 왼쪽 시작선을 쓴다. 1280px에서 모든 섹션의 h2 왼쪽 끝 x가 같다.
+- **빈 공간은 채울 공간이 아니다.** 그림 옆이나 짧은 글 뒤에 남는 폭은 그대로 둔다. 여백이 덩어리를 묶어 준다. 빈자리를 채우려고 그림 옆에 설명 문단·목록을 붙이지 않는다.
+- **넓은 구간.** 넓은 폭은 페이지 전체 옵션이 아니라 구간이다. `.d0-wide` 블록 하나만 축 밖으로 최대 1136px(뷰포트 − 64px 이하)까지 넓어지고, 다음 블록·섹션은 다시 축으로 돌아온다. 넓은 구간은 섹션 안 블록이고 섹션 머리(h2)는 축에 둔다.
+  `.d0-wide`는 2열(`.d0-cols`)을 담을 때 쓴다. 한 열짜리 그림을 넓히려고 쓰지 않는다(그림은 축 폭으로 충분하다).
+- **640px 이하.** 페이지 거터가 16px로 줄어 `.d0-wide`도 축 폭 그대로(`--d0-wide: 100%`)다. 모바일에서 넓은 구간도 축과 같은 x에서 시작한다.
 
-### 무대 정렬 변형 (`.d0-split[data-align="stage"]`)
+## 2열 (`.d0-cols`)
 
-두 섹션이 모두 [섹션 머리 + 무대 위 그림 `figure` + figcaption]이면 이 변형이 기본이다. 좌우의 h2 줄, 무대 위·아래 끝, figcaption 줄이 같은 높이에 맞는다.
-한쪽이라도 그림 없는 섹션(diff-rows·checklist·숫자 카드·explanation 등)이면 쓰지 않고 기본 `align-items: start`를 둔다.
+2열은 세 경우에만 쓴다. 그 밖은 1열이다.
 
-- 960px 이상에서만 건다. `.d0-split`이 행 3개(`auto 1fr auto`)를 만들고, 각 섹션은 `grid-row: span 3` + `grid-template-rows: subgrid`,
-  `figure`는 `grid-row: span 2` + `subgrid`로 무대·캡션 행을 이어받는다. 낮은 쪽 무대가 늘어나고 SVG는 무대 세로 가운데에 놓인다.
-- 섹션 직계 자식은 섹션 머리 `header` 하나와 `figure` 하나뿐이다. 섹션 설명 `p`는 `header` 안에 둔다(섹션 직계에 두면 행이 어긋난다).
-- 섹션의 `border-top`·패딩은 그대로다. 960px 미만(1열)에서는 변형이 풀려 기본 쌓기로 돌아간다.
-- subgrid를 못 쓰는 브라우저는 `@supports` 폴백으로 섹션을 늘리고(`align-items: stretch`) 무대가 남는 높이를 채운다. 무대 아래 끝과 캡션 줄은 맞고, 머리 높이가 다르면 무대 위 끝이 그 차만큼 어긋난다.
+| 경우 | 예 | 분할 |
+| --- | --- | --- |
+| (a) 동시 비교가 핵심 | A안 \| B안, 전 \| 후 | 6/6 |
+| (b) 그림 지점과 번호로 직접 대응하는 주석·범례 열 | 그림 \| ①②③ 주석, 화면 \| 번호 범례 | 7/5(그림/주석) |
+| (c) 대등한 두 덩어리 | 완료 \| 남은 것, 문제 \| 해결, 주의 \| 할 일 | 6/6 |
+
+- **1열로 두는 것.** "그림 | 그냥 설명 문단", "작은 그림 | 빈자리 채우는 목록", 짝수라서 반으로 나눈 한 목록. 설명(explanation)은 그림 아래에 둔다.
+- **자리.** `.d0-cols`는 `.d0-wide` 안에만 둔다: `<div class="d0-wide"><div class="d0-cols">…</div></div>`. 축(720px) 안에서 2열로 나누지 않는다.
+- **분할선은 문서 전체에서 하나.** 12열 중 6/6(기본) 또는 7/5(`data-split="7-5"`, 그림/주석)다. 한 문서에 둘을 섞지 않는다. (a)·(c)가 있는 문서에서 (b)가 필요하면 6/6을 그대로 쓰거나 주석을 그림 아래 1열로 둔다.
+  960px 이상에서만 2열이고 그 아래는 1열로 쌓인다. 열 사이는 48px이다.
+- **글 열은 트랙 끝까지 쓴다.** 열 칸에 따로 폭 상한(em·px)을 두지 않는다. 트랙 자체가 좁다(6/6 열 약 544px, 7/5의 5열 약 445px).
+- 두 열에 그림을 하나씩 둘 때(전 | 후)는 같은 viewBox 크기로 그린다. 그러면 무대 위 끝·아래 끝과 figcaption 줄이 저절로 맞는다.
+- 블록 안 같은 크기 칸(side-by-side 옵션, kpi-cards 카드, thumb-cards, step-columns)은 블록 부품이다. 축 폭을 같은 몫으로 나누고 이 2열 규칙을 따르지 않는다.
 
 ```html
-<div class="d0-split" data-align="stage">
-  <section class="d0-section" aria-labelledby="sec-b">
-    <header class="d0-section-head"><h2 id="sec-b">전에는 이렇게 돌았어요</h2></header>
-    <figure class="d0-fig" data-stage><div class="d0-fig__stage"><svg …>…</svg></div><figcaption>…</figcaption></figure>
-  </section>
-  <section class="d0-section" aria-labelledby="sec-c">
-    <header class="d0-section-head"><h2 id="sec-c">지금은 이렇게 돌아요</h2></header>
-    <figure class="d0-fig" data-stage><div class="d0-fig__stage"><svg …>…</svg></div><figcaption>…</figcaption></figure>
-  </section>
-</div>
+<section class="d0-section" data-pattern="compare" aria-labelledby="sec-b">
+  <header class="d0-section-head"><h2 id="sec-b">전에는 한 줄, 지금은 두 줄로 돌아요</h2></header>
+  <div class="d0-wide">
+    <div class="d0-cols">
+      <figure class="d0-fig"><svg viewBox="0 0 560 240" role="img" aria-labelledby="b1-t">…</svg><figcaption>전: 요청이 한 줄로 기다려요.</figcaption></figure>
+      <figure class="d0-fig"><svg viewBox="0 0 560 240" role="img" aria-labelledby="b2-t">…</svg><figcaption>후: 큰 요청은 따로 줄을 서요.</figcaption></figure>
+    </div>
+  </div>
+  <dl class="d0-explain">…</dl> <!-- 다시 축으로 -->
+</section>
+```
+
+## 섹션 뼈대
+
+원칙이다(게이트가 아니다). 섹션은 **제목(h2) → 그림 → 해석 한 줄 → 필요할 때만 "왜" 한 줄** 순서로 읽힌다.
+
+- 해석 한 줄은 figcaption이나 explanation `interpretation` 한 항목, "왜" 한 줄은 explanation `reason` 한 항목이다.
+- 라벨 글 블록·표·목록은 이해에 필요한 만큼만 본 흐름에 둔다. 흐름을 끊는 세부(계산 과정, 전체 표, 긴 예외 목록)는 섹션 끝 `.d0-more` 접기로 보낸다.
+- 페이지 끝에 "기억할 한 줄" 상자(`.d0-keep`)를 하나 둘 수 있다(선택).
+
+## 접기 (`.d0-more`)와 기억할 한 줄 (`.d0-keep`)
+
+- **`.d0-more`.** `details.d0-more > summary` + 내용. grey-50 면, radius 12, 패딩 16·20. summary는 14px/600 blue-dark로 무엇이 접혀 있는지 말한다(`단계별 시간 전체 보기`).
+  섹션마다 최대 1개이고 섹션 끝에 둔다. 섹션의 핵심 답·결정·정본 숫자는 접지 않는다. 여러 선택 보조 항목을 목록으로 접는 것은 [accordion](accordion.md)이고, `.d0-more`는 본 흐름에서 빼낸 세부 한 덩어리다.
+- **`.d0-keep`.** `aside.d0-keep` = 라벨(`.d0-keep__label`, 13px/600 blue-dark, 예 `기억할 한 줄`) + 문장 `p` 하나(18px/700 grey-900). blue-light 면, radius 16, 패딩 20·24.
+  페이지당 0~1개, 마지막 섹션 안 끝(closing이 있으면 그 앞)에 둔다. 기억할 사실 한 문장이다. 독자에게 행동·결정을 요구하면 [closing](closing.md)이 맡고, 같은 문장을 둘에 쓰지 않는다. 같은 숫자 반복 셈(SKILL.md 원칙 8번)에 들어간다.
+  면 단위 옅은 표면이라 진한 포인트 비율에서 빼고 장면 수로 센다(아래 색 절).
+
+```html
+<details class="d0-more">
+  <summary>단계별 시간 전체 보기</summary>
+  <table>…</table>
+</details>
+
+<aside class="d0-keep" aria-labelledby="keep-l">
+  <span class="d0-keep__label" id="keep-l">기억할 한 줄</span>
+  <p>큰 요청을 따로 세우면 작은 요청은 기다리지 않아요.</p>
+</aside>
 ```
 
 ## 줄 길이 (정본)
 
-본문 텍스트 블록 한 줄은 **공백 포함 실제 글자 수 50자 이하**다(`code`·`pre`·명령어 줄·[code-block](code-block.md) 제외). 판정은 렌더된 줄마다 공백까지 센 글자 수로 하고, 폭에서 글자 수를 추정하는 근사식은 쓰지 않는다.
+본문 한 줄의 길이는 **축이 정한다**. 글 블록(리드 `p`, explanation·evidence·faq `dl`, 행 목록)은 축 폭이나 놓인 `.d0-wide` 열 폭을 그대로 쓰고, 그 안에서 따로 폭 상한을 두지 않는다. 글 블록마다 다른 상한을 두면 오른쪽 끝이 섹션마다 들쭉날쭉해진다.
 
-- **폭 기준은 32em이다.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px(32.1~35.2em)이다.
-  그래서 글 블록 컨테이너가 32em(15px에서 480px) 이하이면 한글 위주 문장은 한 줄 50자를 넘지 못한다. 행간(1.55~1.65)은 이 값에 영향이 없다.
-  숫자·라틴 문자·공백이 많은 줄은 글자 폭이 좁아 같은 폭에 더 들어갈 수 있으므로 실제 글자 수로 확인한다.
-  같은 측정에서 650px 열은 최대 66자, 1200px 페이지의 반 열(약 552px)은 54자였다. 2열로 나누는 것만으로는 50자를 지키지 못한다.
-- **좁히는 곳은 컨테이너다.** `p`·`dd`에 `max-width`를 걸지 않고(개행 규칙), 글 블록 컨테이너(explanation `dl`, evidence `dl`, faq `dl`)에 `max-width: 32em`을 건다. 2열(`.d0-cols`)로 쓴 글 블록은 묶음 대신 열 칸(`.d0-cols > *`)마다 32em이 걸린다. 960px 미만 1열에서도 같다.
-  em 단위라 14px 보조문 블록에서도 같은 기준이 된다. 그 안 문단은 컨테이너 폭을 그대로 쓰므로 "옆 영역이 남는데 줄이 바뀐 문단" 게이트의 대상이 아니다(32em 바깥 빈 폭은 남는 영역으로 세지 않는다).
-- **한 줄짜리 글**(요약 행 값, 행 설명, checklist 결과 한 줄, checkpoint)은 문장 길이로 지킨다. 50자를 넘는 문장은 줄인다.
-- **리드 `p`**(header 리드, 섹션 리드)는 컨테이너를 좁히지 않는다. 리드가 한 줄 50자를 넘으면 문장 단위 개행(`.d0-sentence`)이 **필수**다(아래 개행 절의 "선택" 조건보다 이 규칙이 우선한다). 문장마다 줄을 나누고 문장 하나를 50자 이내로 쓴다.
-- **2열(`.d0-cols`).** 960px 이상에서 열 트랙이 각각 `minmax(0, 32em)`인 2열 grid(열 사이 48px), 그 아래는 1열이다. 글 블록의 열 칸은 어느 폭에서나 `max-width: 32em`이다(그림 칸은 그림 폭 상한을 따른다).
-  그림 + 짧은 설명, 행 목록 둘(주의 | 할 일), 짝수 개 행 목록에 쓴다. 행 목록 2열 변형은 [diff-rows.md](diff-rows.md).
-- 홀수 개 항목을 2열로 나눠 마지막 하나가 외톨이로 남으면 쓰지 않는다. 섹션 둘이면 `.d0-split`을 쓴다.
-- 그림 옆 설명 열(`.d0-figtext`, `data-layout="side"`)도 글 열을 `minmax(220px, 32em)`으로 둔다([explanation.md](explanation.md), [diagram.md](diagram.md)).
+- **폭 기준.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px다. 그래서 축 720px은 한 줄 약 68~75자, narrow 640px은 약 60~66자, `.d0-wide` 6/6 열(약 544px)은 약 51~56자다.
+- **좁히는 곳은 축이다.** `p`·`dd`나 글 블록에 `max-width`를 걸지 않는다(개행 규칙). 글이 주인공이라 줄을 더 짧게 읽혀야 하면 페이지 전체를 `data-width="narrow"`로 둔다.
+- **한 줄짜리 글**(요약 행 값, 행 설명, checklist 결과 한 줄, checkpoint)은 축 한 줄 안에서 끝나게 쓴다. 넘치면 문장을 줄인다.
+- **리드 `p`**(header 리드, 섹션 리드)는 컨테이너를 좁히지 않는다. 2문장 이상이고 데스크톱에서 2줄을 넘으면 문장 단위 개행(`.d0-sentence`)을 쓴다(아래 개행 절).
+- `code`·`pre`·명령어 줄·[code-block](code-block.md)은 줄 길이 규칙 밖이다.
 
 ## 타이포 스케일
 
@@ -142,28 +165,28 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 
 ## 그림 무대 (`.d0-fig[data-stage]`) — 기본 없음, 필요할 때만
 
-**기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 페이지 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
-**무대를 쓰는 때:** 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때,
-나란히 둔 두 그림의 높이를 맞출 때(`.d0-split[data-align="stage"]`).
-**그림을 키워 폭을 채우지 않는다.** SVG는 글자가 없어도(와이어프레임·핀 그림 포함) 기본 360px, `data-size="wide"` 400px에서 멈춘다. 옆이 비면 관련 explanation을 그림 옆 열(`.d0-figtext`, [explanation.md](explanation.md))에 두거나 `.d0-split` 2열(우선), `data-layout="side"`, `.d0-cols` 한 열, 그림 옆 짧은 주석·범례 열(900px 이상)로 채운다.
-전체 폭 그림은 가로로 긴 타임라인·단계 줄만 쓰고 최대 720px다([diagram.md](diagram.md) 라벨 절).
+**기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 축의 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
+**그림은 축 폭을 채운다.** SVG 렌더 폭은 놓인 자리(축, 무대 안쪽, `.d0-wide` 열) 폭의 100%가 기본이고, 축 폭에서 너무 커 보이는 단순 도식만 `data-fit="compact"`(75%, 가운데)로 둔다. 75% 아래로 줄이지 않는다.
+글자 크기 하한은 viewBox 대비 렌더 배율로 검사한다([diagram.md](diagram.md) 라벨 절).
+**무대를 쓰는 때:** 글자 없는 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때.
+**무대 패딩 때문에 렌더 라벨이 하한(1280px 13px, 375·320px 11px) 아래로 내려가면 무대를 쓰지 않는다.** 글자 있는 도식(viewBox 560)은 375px에서 무대 안쪽 303px이라 라벨이 11px 아래로 줄므로 무대 없이 두고, 경계는 그림 안 선·면으로 만든다.
 
 무대를 쓰면 패널 = `div.d0-fig__stage`(배경 grey-50, `--d0-radius-card`, 패딩 28px,
 모바일 20px). `figcaption`은 패널 **밖** 아래에 13px grey-600으로 둔다. 테두리·그림자는 없다.
-SVG는 패널 안에서 가운데 놓이고, 패널 자체는 페이지 왼쪽 정렬선을 따른다. 선 굵기·라벨 규칙은 [diagram.md](diagram.md).
+SVG는 패널 안에서 가운데 놓이고, 패널 자체는 축의 왼쪽 정렬선을 따른다. 선 굵기·라벨 규칙은 [diagram.md](diagram.md).
 페이지의 핵심 도식 하나는 `data-stage="blue"`로 무대를 blue-light로 칠할 수 있다. 그 무대 위 회색 선·글자는 한 단계 진하게 바뀐다([diagram.md](diagram.md) 공용 CSS).
 Impact 안에서는 무대를 두지 않는다.
 
 ```html
-<!-- 기본: 무대 없음 -->
-<figure class="d0-fig" data-layout="side">
-  <svg viewBox="0 0 360 224" role="img" aria-labelledby="g1-t">…</svg>
+<!-- 기본: 무대 없음, 축 폭을 채운다 -->
+<figure class="d0-fig">
+  <svg viewBox="0 0 560 280" role="img" aria-labelledby="g1-t">…</svg>
   <figcaption>고친 파일에서 선을 따라간 검사만 다시 돌아요.</figcaption>
 </figure>
-<!-- 필요할 때만: 무대 -->
+<!-- 필요할 때만: 무대(글자 없는 그림) -->
 <figure class="d0-fig" data-stage>
-  <div class="d0-fig__stage"><svg viewBox="0 0 360 224" role="img" aria-labelledby="g2-t">…</svg></div>
-  <figcaption>흩어진 노드가 어디까지 한 그림인지 무대가 묶어 줘요.</figcaption>
+  <div class="d0-fig__stage"><svg viewBox="0 0 560 300" role="img" aria-labelledby="g2-t">…</svg></div>
+  <figcaption>흩어진 화면 조각이 어디까지 한 그림인지 무대가 묶어 줘요.</figcaption>
 </figure>
 ```
 
@@ -175,13 +198,13 @@ Day0의 6:3:1(배경 · 텍스트 · 포인트)을 따른다. **회색만 남은
   색 면적 때문에 출력을 실패시키지 않고, 게이트를 맞추려고 색 면적을 늘리지 않는다. 색은 상태·강조·구조가 있는 자리에만 둔다.
   - **측정 정의(정본).** 진한 포인트 = `blue`·`blue-dark`·`green`·`orange`·`red` 채움. HTML `background-color`와 SVG 도형 `fill`이 해당 색인 요소의 보이는 bbox 합 ÷ 뷰포트 면적(뷰포트로 자름, 이미 센 요소의 자손은 제외)으로 잰다.
     `stroke`·`border`만 해당 색인 요소는 세지 않는다. 진한 포인트는 옅은 면 안에 있어도 센다.
-  - 내용 단위 옅은 채움과 **면 단위 옅은 표면**(blue-light 무대, 덱 Impact 슬라이드, 썸네일 판)은 이 진한 포인트 경고 비율에서 뺀다.
-    장면 수는 별도로 유지한다: page는 blue 무대 최대 1개(Impact는 면이 없다), deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
+  - 내용 단위 옅은 채움과 **면 단위 옅은 표면**(blue-light 무대, `.d0-keep`, 덱 Impact 슬라이드, 썸네일 판)은 이 진한 포인트 경고 비율에서 뺀다.
+    장면 수는 별도로 유지한다: page는 blue 무대 최대 1개와 기억할 한 줄 상자(`.d0-keep`) 최대 1개(Impact는 면이 없다), deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
   - 덱의 **진한 면 장**(`data-surface="dark"`, 표지·섹션·마무리)도 면 단위 표면이라 진한 포인트 비율에서 빼고 장면 수(덱당 1~3장)로 관리한다. 대비표는 [slide-deck.md](slide-deck.md) 진한 면 절.
   - 회색만으로 된 도식·카드 묶음 금지는 유지한다. 의미 있는 blue 또는 의미색 표식 하나를 두되 경고 비율을 채우려고 뜻 없는 면을 칠하지 않는다.
 - **Hard 유지.** 대비와 WCAG 2.2 AA, 의미색 글자 금지는 색 면적 Warning과 별개로 반드시 통과한다.
 - **블루 단계.** `blue` = 강조 선·채움(후 막대, 닿는 노드, 진행 막대, 썸네일 합계 칸). `blue-dark` = 글자·번호, 흰 글자 바탕(버튼, 고른 탭, 흐름 줄의 현재 단계).
-  `blue-light` = 옅은 면(썸네일 판, 반 열 도식의 무대 `data-stage="blue"`, 덱 Impact 슬라이드, 선택 카드, 표 머리 행·합계 행).
+  `blue-light` = 옅은 면(썸네일 판, 핵심 도식 하나의 무대 `data-stage="blue"`, 기억할 한 줄 `.d0-keep`, 덱 Impact 슬라이드, 선택 카드, 표 머리 행·합계 행).
 - **강조 순서.** 크기 → 위치 → 여백 → 무게 → 색. 큰 숫자는 색이 아니라 크기로 중요하게 만든다(기본 grey-900, 큰 숫자 blue-dark는 페이지에 하나).
   blue는 장면마다 강조 묶음 하나에만 둔다([composition.md](../composition.md) 강조).
 - **의미색.** `green` = 가능·통과·완료, `orange` = 주의·준비 중, `red` = 위험·실패. 도식 채움·막대·체크·배지 배경에 쓴다.
@@ -235,8 +258,8 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 
 ## 개행
 
-- 리드·설명 문단은 부모 폭을 그대로 쓴다. `p`에 컨테이너보다 좁은 `max-width`를 걸지 않는다. 줄이 길면 위 줄 길이 절대로 글 블록 컨테이너를 32em으로 두거나 `.d0-cols`로 나눈다.
-- 문장 단위 개행(선택, 단 리드가 한 줄 50자를 넘으면 필수 — 위 줄 길이 절): 리드·설명이 2문장 이상이고 데스크톱 폭에서 2줄을 넘기거나 문장마다 역할이 다르면
+- 리드·설명 문단은 부모 폭을 그대로 쓴다. `p`에 컨테이너보다 좁은 `max-width`를 걸지 않는다. 줄이 길면 위 줄 길이 절대로 페이지 전체를 `data-width="narrow"`로 둔다.
+- 문장 단위 개행(선택): 리드·설명이 2문장 이상이고 데스크톱 폭에서 2줄을 넘기거나 문장마다 역할이 다르면
   문장마다 `<span class="d0-sentence">`로 감싼다(`display: block`). `<br>`을 늘어놓지 않는다.
 
 ## 모션 (선택)
@@ -271,10 +294,11 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
     <header class="d0-section-head"><h2 id="sec-a">파일은 이렇게 생겼어요</h2></header>
     <!-- 무대 위 그림 하나 + 그림 설명 한 줄 -->
   </section>
-  <div class="d0-split">
-    <section class="d0-section" aria-labelledby="sec-b"><header class="d0-section-head"><h2 id="sec-b">어디서 줄었나</h2></header><!-- 숫자 카드 --></section>
-    <section class="d0-section" aria-labelledby="sec-c"><header class="d0-section-head"><h2 id="sec-c">어디가 다시 도나</h2></header><!-- 도식 --></section>
-  </div>
+  <section class="d0-section" aria-labelledby="sec-b">
+    <header class="d0-section-head"><h2 id="sec-b">전과 후는 이렇게 달라요</h2></header>
+    <div class="d0-wide"><div class="d0-cols"><!-- 전 그림 --><!-- 후 그림 --></div></div> <!-- 2열은 넓은 구간 안에만 -->
+    <!-- 해석 한 줄 → 다시 축 -->
+  </section>
 </main>
 <script>
 /* 모션 JS + 인터랙션 블록의 JS를 여기 붙인다 */
@@ -302,8 +326,6 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
-.d0-page { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; }
-.d0-page[data-width="narrow"] { max-width: 640px; }
 h1, h2, h3 {
   margin: 0;
   color: var(--d0-grey-900);
@@ -320,33 +342,33 @@ svg { display: block; max-width: 100%; height: auto; }
 button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer; }
 .d0-sentence { display: block; }
 
-/* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px */
-.d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); }
-.d0-section:last-child { padding-bottom: 0; } /* 1열 split이면 마지막(아래) 섹션만 0 */
-.d0-split:not(:last-child) > .d0-section { padding-bottom: 32px; } /* 오른쪽 섹션도 :last-child라 0이 되는 것을 막는다 */
-.d0-split { display: grid; gap: 0 48px; }
-.d0-split > * { min-width: 0; }
+/* 본문 축: 안쪽 폭 720px(narrow 640px). 넓은 구간만 .d0-wide로 축 밖까지 */
+.d0-page { max-width: calc(720px + 64px); margin: 0 auto; padding: 64px 32px 96px; }
+.d0-page[data-width="narrow"] { max-width: calc(640px + 64px); }
+.d0-wide { --d0-wide: min(1136px, calc(100vw - 64px)); width: var(--d0-wide); margin-inline: calc((100% - var(--d0-wide)) / 2); }
+/* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
+.d0-fig svg { width: 100%; height: auto; }
+.d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
+/* 2열: 페이지 공통 분할선 하나. 6/6 또는 7/5 */
 .d0-cols { display: grid; gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
-/* 줄 길이(정본: 줄 길이 절): 글 블록 컨테이너 32em = 15px 본문 공백 포함 50자 이하. p·dd에는 걸지 않는다 */
-:is(.d0-explain, dl.d0-evidence, .d0-faq):not(.d0-cols) { max-width: 32em; } /* 근거 변형 figure.d0-evidence[data-variant]는 그림이라 폭을 줄이지 않는다 */
-:is(.d0-explain, dl.d0-evidence, .d0-faq).d0-cols > * { max-width: 32em; } /* 2열 글 블록: 열 칸마다, 960px 미만 1열에서도 */
 @media (min-width: 960px) {
-  .d0-split { grid-template-columns: 1fr 1fr; align-items: start; }
-  .d0-cols { grid-template-columns: repeat(2, minmax(0, 32em)); }
-  .d0-split:last-child > .d0-section { padding-bottom: 0; } /* 2열에서만 두 섹션 모두 0 */
-  /* 무대 정렬: 두 그림 섹션의 머리·무대·캡션 줄을 맞춘다 */
-  .d0-split[data-align="stage"] { grid-template-rows: auto 1fr auto; align-items: stretch; }
-  .d0-split[data-align="stage"] > .d0-section { grid-row: span 3; grid-template-rows: subgrid; align-content: stretch; }
-  .d0-split[data-align="stage"] > .d0-section > .d0-fig { grid-row: span 2; grid-template-rows: subgrid; align-content: stretch; }
-  .d0-split[data-align="stage"] .d0-fig__stage { align-content: center; }
-  .d0-split[data-align="stage"] .d0-section-head { align-content: start; } /* 낮은 쪽 머리의 h2가 행 높이로 늘어나지 않게 */
-  @supports not (grid-template-rows: subgrid) {
-    .d0-split[data-align="stage"] { grid-template-rows: none; }
-    .d0-split[data-align="stage"] > .d0-section { grid-row: auto; grid-template-rows: auto 1fr; }
-    .d0-split[data-align="stage"] > .d0-section > .d0-fig { grid-row: auto; grid-template-rows: 1fr auto; }
-  }
+  .d0-cols { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .d0-cols > * { grid-column: span 6; }
+  .d0-cols[data-split="7-5"] > :first-child { grid-column: span 7; }
+  .d0-cols[data-split="7-5"] > :last-child { grid-column: span 5; }
 }
+/* 접기와 기억할 한 줄 */
+.d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
+.d0-more > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--d0-blue-dark); }
+.d0-more[open] > summary { margin-bottom: 12px; }
+.d0-keep { border-radius: 16px; background: var(--d0-blue-light); padding: 20px 24px; display: grid; gap: 6px; }
+.d0-keep > .d0-keep__label { font-size: 13px; font-weight: 600; color: var(--d0-blue-dark); }
+.d0-keep > p { font-size: 18px; font-weight: 700; color: var(--d0-grey-900); }
+
+/* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px */
+.d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); }
+.d0-section:last-child { padding-bottom: 0; }
 .d0-section > p { color: var(--d0-grey-600); font-size: 14px; }
 .d0-note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 
@@ -400,10 +422,11 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 
 @media (max-width: 640px) {
   .d0-page { padding: 48px 16px 72px; }
+  .d0-wide { --d0-wide: 100%; } /* 모바일: 넓은 구간도 축 폭 그대로 */
+  .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
   .d0-section { padding-block: 24px; }
-  .d0-split:not(:last-child) > .d0-section { padding-bottom: 24px; }
   .d0-fig__stage { padding: 20px; }
   .d0-impact__line { font-size: 24px; }
   .d0-impact__num, .d0-section > .d0-impact__num { font-size: 48px; }
@@ -445,7 +468,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 ## 금지
 
 - 다크 팔레트·`prefers-color-scheme: dark` 분기 추가, `body` 배경 생략. 덱 표지·섹션·마무리의 `data-surface="dark"`는 다크 테마가 아니라 장면 전환 면이라 예외다.
-- `p`나 리드에 컨테이너보다 좁은 `max-width`·`width`·`ch`. 줄이 길면 글 블록 컨테이너 32em(줄 길이 절)이나 `.d0-cols`, 페이지 전체를 좁히려면 `data-width="narrow"`.
+- `p`나 리드, 글 블록(explanation·evidence·faq `dl`, 열 칸)에 축보다 좁은 `max-width`·`width`·`ch`. 줄이 길면 페이지 전체를 `data-width="narrow"`로 둔다.
 - Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, 넘긴 결과물 HTML에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
 - 글자에 `--d0-blue`·`--d0-grey-500` 이하·시맨틱 전경색 사용(흰 바탕 대비 4.5:1 미달). 글자는 `--d0-blue-dark`, `--d0-grey-600` 이상.
   예외는 18.66px/700 이상 큰 글자(3:1)뿐이다.
@@ -453,9 +476,11 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 - 배지 높이를 행 높이에 맡기기(늘어난 배지), 섹션마다 카드 상자, 섹션 안 블록마다 테두리, 섹션·행 사이 `grey-200` 이상 진한 구분선.
   예외는 블록 안 한 줄 표식인 closing 문장 아래 구분선(page `.d0-closing__meta`, deck `.d0-slide__meta`)과 checkpoint 뒤 선이다. 이 둘은 1px grey-200이고 섹션·행 구분선으로 세지 않는다.
 - 회색만 있는 도식·카드, 의미색 글자, 의미색 3가지 이상, 카드·행 하나에 배지 2개 이상, 배지 톤 4종류 이상, 혼자 뜻을 전하는 orange 선·점.
-- `.d0-split`에 섹션 3개 이상, `align-items: stretch`로 짧은 섹션을 옆 섹션 높이까지 늘리기(두 그림 섹션의 무대 정렬 변형 `data-align="stage"`만 예외. 늘어난 높이는 무대가 받는다).
+- 섹션을 나란히 두기(섹션은 축을 따라 위아래로 쌓는다), 축 안의 2열, 세 경우(동시 비교·번호 주석·대등한 두 덩어리) 밖의 2열, 한 문서에 6/6과 7/5 섞기, 섹션마다 다른 분할선, 2열 열 칸에 따로 건 폭 상한.
+- 빈자리를 채우려고 그림 옆에 설명 문단·목록 붙이기, 그림을 축 폭의 75% 아래로 줄이기, 한 열짜리 그림을 `.d0-wide`로 넓히기.
 - 그라디언트·글래스·두꺼운 그림자·장식 3D, 무대 패널에 테두리나 그림자.
-- 기본값으로 두른 무대(경계가 이미 보이는 그림에 회색 패널), 섹션마다 같은 `제목 → 무대 → SVG → 캡션` 모양.
-- Impact를 쓰려고 섹션 더하기, 그림을 키워 폭 채우기(360/400px 상한 넘기기, 전체 폭은 타임라인·단계 줄 720px까지만).
+- 기본값으로 두른 무대(경계가 이미 보이는 그림에 회색 패널), 섹션마다 회색 무대를 둘러 모든 그림을 같은 모양으로 만들기, 무대 패딩 때문에 라벨이 하한 아래로 내려가는 글자 있는 도식에 무대 두기.
+- Impact를 쓰려고 섹션 더하기.
+- `.d0-keep` 2개 이상, 행동·결정 요청을 `.d0-keep`에 쓰기(closing이 맡는다), 섹션의 핵심 답·결정·정본 숫자를 `.d0-more`에 접기.
 - page Impact 2개 이상, Impact 안 카드·목록·배지·무대·editorial·숫자 둘 이상, page Impact에 배경 면·풀블리드 띠 칠하기, 어두운 Impact 면.
 - CSS만으로 초기 숨김(`opacity: 0`을 `data-motion` 밖에 걸기), 스크롤마다 반복되는 모션, reduced-motion 무시.

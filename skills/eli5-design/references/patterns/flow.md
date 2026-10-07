@@ -44,7 +44,7 @@ flow는 흐름을 이해하고 다음 행동을 아는 페이지다. 독자가 �
 
 ## explanation 쓰는 곳
 
-- 단계 도식 옆 열에 `reason`(왜 이 순서인가)과 `exception`(어디서 갈라지나). 구조 그래프 아래에는 `interpretation`(한 부품을 고치면 어디까지 닿나).
+- 단계 도식 아래에 `reason`(왜 이 순서인가)과 `exception`(어디서 갈라지나). 구조 그래프 아래에는 `interpretation`(한 부품을 고치면 어디까지 닿나).
 
 ## 추천 조합
 

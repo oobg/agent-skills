@@ -34,17 +34,19 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드,
 3. **첫 화면은 보여 준다.** 결과물·화면·데이터가 있으면 설명하지 말고 목업이나 눌러 보는 프로토타입으로 보인다.
    **첫 화면(1280×800) 안에서** 그림·목업 면적이 글 면적보다 크다. 이 면적 규칙은 첫 화면에만 적용한다.
    그 아래 섹션은 그림이 필수가 아니다. 핵심 구조(관계·순서·크기·모양)가 있는 섹션은 그림을 권장하고, 구조를 글로 길게 풀지 않는다.
-   그림이 컨테이너 폭의 절반만 쓰고 옆을 비우지 않는다. **그림을 키워서 채우지 않고** 관련 explanation을 그림 옆 열에 두거나(`references/blocks/explanation.md`),
-   `.d0-split`(2열 split 우선), `data-layout="side"`, `.d0-cols` 2열, 짧은 주석 열로 채운다(`references/composition.md` 무대와 상자).
-   단 **첫 화면 섹션**(`.d0-split`으로 시작하면 짝 섹션 포함)에서는 explanation을 그림 옆 열·옆 섹션에 두지 않고 그림 아래에 둔다. 옆은 figcaption·짧은 주석·범례만 채운다(옆 글 열이 그림 면적을 이기지 않게).
-   글자 없는 SVG·와이어프레임도 기본 360px(`data-size="wide"` 400px) 상한이다. 전체 폭 그림은 가로로 긴 타임라인·단계 줄만, 최대 720px이다.
+   **한 줄 읽기 축을 따라 그림을 크게 보여 준다.** 모든 섹션은 본문 축(안쪽 720px, `data-width="narrow"` 640px)의 같은 왼쪽 시작선에서 시작한다.
+   그림은 축 폭의 75~100%를 쓰고(단순 도식만 `data-fit="compact"` 75%), 옆에 남는 폭은 채우지 않는다. 여백은 덩어리를 묶어 준다. 설명은 그림 아래에 둔다.
+   2열은 동시 비교(A안 | B안, 전 | 후), 그림 지점과 번호로 대응하는 주석·범례 열, 대등한 두 덩어리(완료 | 남은 것, 문제 | 해결)일 때만 `.d0-wide` 구간 안 `.d0-cols`로 쓰고,
+   분할선은 문서 전체에서 하나(12열 중 6/6 또는 7/5)다. 정본: `references/blocks/shell.md` 본문 축·2열 절.
 4. **섹션은 독자 질문으로 정한다.** 섹션 하나는 독자 질문 하나에 답한다. 다른 질문은 별도 섹션으로 나누고, 같은 질문에 답하는 블록은 한 섹션에 합친다.
    섹션 수에 목표나 하한은 없다. 핵심 질문에 답하지 못하면 실패이고, 7개를 넘으면 묶을 수 있는 질문이 있는지 재검토한다(경고).
    구도 다양화·Editorial·Impact는 섹션을 늘리지 않는다. 기존 섹션을 **대체**할 때만 쓴다.
    **그림 없는 섹션**은 허용한다. 단 구조를 가진다: 질문→답, 라벨→설명, 주장→근거, 조건→영향, 단계→설명 중 하나 이상
    (explanation·evidence·before-after·checkpoint·question-answer·diff-rows·checklist·step-columns·accordion·표 같은 구조 블록). 연속된 일반 문단만으로 섹션을 채우지 않는다.
-   **페이지 섹션**은 `main > section`과 `main > .d0-split > section`이다. 블록 안 `section`(mockup-frame의 `.d0-app__body` 등)은 세지 않는다.
+   **페이지 섹션**은 `main > section`이다. 섹션은 나란히 두지 않고 축을 따라 쌓는다. 블록 안 `section`(mockup-frame의 `.d0-app__body` 등)은 세지 않는다.
    패턴 문서의 권장 블록을 전부 채우지 않고 그 질문에 필요한 블록만 쓴다.
+   **섹션 뼈대(원칙).** 제목(h2) → 그림 → 해석 한 줄 → 필요할 때만 "왜" 한 줄. 라벨 글 블록·표·목록은 이해에 필요한 만큼만 본 흐름에 두고, 흐름을 끊는 세부는 `details.d0-more` 접기로 보낸다.
+   페이지 끝에 "기억할 한 줄" 상자(`aside.d0-keep`, blue-light 면, 라벨 + 한 문장)를 하나 둘 수 있다(선택).
 5. **위계가 보인다.** 13px 회색 문장을 주 콘텐츠로 쓰지 않는다. 섹션 태그 pill은 기본 없음, callout은 페이지당 최대 1개.
    섹션 머리 설명 `p`는 최대 1문장이고 제목과 같은 말이면 생략한다. 스케일 값은 아래 9번이 정본이다.
 6. **글은 짧게, 맥락은 남긴다.** 본문 설명은 라벨을 단 explanation 블록으로 쓰고 **한 라벨 아래 1~3문장**이다(4문장 이상이면 질문을 나눈다).
@@ -65,18 +67,18 @@ Day0 시각 언어로 만든다. 시안 문서, 설명서, 보고서, 가이드,
    - **결론 히어로.** 결론 수치가 있는 보고·전/후 비교·사건 페이지는 h1 바로 아래(요약 행 위)에 결론 수치 1개를
      `d0-hero`로 둔다. 전 값(작게, grey-600, 취소선 없음) → 후 값(44px/600, 모바일 36, 단위는 숫자와 같은 크기) + 단위 + 한 줄 뜻(15px grey-600).
      수치가 없으면 생략한다. 정본: `references/blocks/hero.md`.
-   - **줄 길이는 레이아웃으로.** 본문 텍스트 블록 한 줄은 공백 포함 50자 이하다(`code`·`pre`·명령어 줄·code-block은 제외). `p`를 좁히지 않고 글 블록 컨테이너를 32em으로 두거나 2열로 나눈다.
-     개행 규칙의 `p` `max-width` 금지는 그대로다. 측정값과 방법의 정본은 `references/blocks/shell.md` 줄 길이 절이다.
+   - **줄 길이는 축으로.** 본문 한 줄의 길이는 본문 축(720px, 15px 본문 공백 포함 약 68~75자)이 정한다. 글 블록은 축(또는 놓인 `.d0-wide` 열) 폭을 그대로 쓰고 `p`·`dd`·글 블록에 따로 폭 상한을 두지 않는다.
+     더 짧은 줄이 필요하면 페이지 전체를 `data-width="narrow"`로 둔다. 개행 규칙의 `p` `max-width` 금지는 그대로다. 정본은 `references/blocks/shell.md` 줄 길이 절이다.
    - **타이포 대비.** h1 32px/700(display 자간·행간), h2 20px/700(title 자간), 본문 15px/400 grey-800(`p` 행간 1.65, 토큰 규칙의 예외로 `references/blocks/shell.md` 행간 예외),
      보조 14px/400 grey-600, 라벨 12px/600 grey-600(대문자 변환 없음; grey-500은 선·화살표 같은 그래픽에만). 숫자는 전부 `tabular-nums`.
      explanation은 라벨 14px/600 grey-900 + 설명 15px grey-700이다. 모바일(≤640px) h1 26, h2 18, 히어로 숫자 36.
    - **여백 리듬.** 섹션 사이 64px(모바일 48), 섹션 안 블록 간 24px, 제목↔설명 8px, 페이지 상단 패딩 64.
      page Impact는 선택이고 페이지당 0~1개다. 배경 면·풀블리드 띠 없이 큰 글자와 여백만 쓰고 섹션 사이는 일반과 같은 64px(모바일 48)이다(덱 Impact 슬라이드는 그대로 blue-light 면). 안에는 문장 하나(32/700, 모바일 24) 또는 숫자 하나(64, 모바일 48)만 두고 editorial을 넣지 않는다(`references/blocks/shell.md` 강조 절).
      디바이더는 섹션 경계 1px grey-100과 행 목록의 행 구분선만 쓴다. closing 문장 아래·checkpoint 뒤 1px grey-200 한 줄은 블록 부품이라 예외다(`references/blocks/shell.md` 금지 절).
-   - **그림 무대.** 회색 무대는 기본 없음이다. 무대가 필요할 때만 도식 SVG를 `figure.d0-fig[data-stage]` 안 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
+   - **그림 무대.** 회색 무대는 기본 없음이다. 무대 패딩 때문에 렌더 라벨이 하한 아래로 내려가면 무대를 쓰지 않는다(글자 있는 도식은 무대 없음). 무대가 필요할 때만 도식 SVG를 `figure.d0-fig[data-stage]` 안 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
      figcaption은 그림(무대) 밖 아래 13px grey-600. 쓰는 기준은 `references/composition.md`. SVG 선은 기본 1.5·강조 2.5, round cap/join, 노드 그림자 없음.
    - **강조 순서.** 크기 → 위치 → 여백 → 무게 → 색. 색은 마지막 수단이다. 구도·강조 3단계·밀도 리듬은 `references/composition.md`가 정본이다.
-   - **색 면적은 lint Warning이다.** 첫 화면(1280×800·375×812) 진한 포인트 채움이 1% 미만이면 "강조가 너무 약한지 확인", 1~15%는 정상, 15% 초과면 "포인트 색이 배경처럼 쓰이는지 확인" 경고를 낸다. 게이트를 맞추려고 색 면적을 늘리지 않는다. 대비·WCAG 2.2 AA·의미색 글자 금지는 Hard로 유지한다. 옅은 채움은 경고 비율에서 빼고 면 단위 옅은 표면은 장면 수로 관리한다: page는 blue 무대 최대 1개(page Impact는 면이 없다), deck은 Impact 슬라이드 20~30%(`references/blocks/shell.md` 색 절). 회색만으로 된 도식·카드 묶음 금지는 유지한다.
+   - **색 면적은 lint Warning이다.** 첫 화면(1280×800·375×812) 진한 포인트 채움이 1% 미만이면 "강조가 너무 약한지 확인", 1~15%는 정상, 15% 초과면 "포인트 색이 배경처럼 쓰이는지 확인" 경고를 낸다. 게이트를 맞추려고 색 면적을 늘리지 않는다. 대비·WCAG 2.2 AA·의미색 글자 금지는 Hard로 유지한다. 옅은 채움은 경고 비율에서 빼고 면 단위 옅은 표면은 장면 수로 관리한다: page는 blue 무대 최대 1개와 기억할 한 줄 상자 `.d0-keep` 최대 1개(page Impact는 면이 없다), deck은 Impact 슬라이드 20~30%(`references/blocks/shell.md` 색 절). 회색만으로 된 도식·카드 묶음 금지는 유지한다.
      blue는 단계(blue 선·채움 / blue-dark 글자·번호 / blue-light 옅은 면)로, 의미색(green 가능·완료, orange 주의·준비, red 위험·실패)은
      면·점·선·배지 배경으로만 쓰고 글자 색으로 쓰지 않는다. 페이지당 의미색 2가지 + blue. 정본: `references/blocks/shell.md` 색 절.
      KPI는 숫자 + 막대(`전` 행에만 값, `후` 행은 라벨만)만 두고 증감 배지를 달지 않는다.
@@ -157,13 +159,13 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | 질문별 패턴을 고른 뒤 | 아래 패턴 판별 §3 표의 패턴 파일(섹션에 쓰는 패턴마다 하나) |
 | 요청이 장애 회고·기능 출시 보고·설치 가이드·기능 소개·의사결정·상태 보고에 가까울 때 | `references/recipes.md` (Pattern + Block 조합 출발점, 선택) |
 | 블록을 고를 때 | `references/blocks.md` (인덱스) → 쓸 블록 파일만 (예: `references/blocks/header.md`) |
-| 라벨 단 짧은 설명(배경·이유·뜻·영향·조건·예외)을 쓸 때, 그림 옆 빈 열을 채울 때 | `references/blocks/explanation.md` |
+| 라벨 단 짧은 설명(배경·이유·뜻·영향·조건·예외)을 쓸 때 | `references/blocks/explanation.md` |
 | 주장에 근거(숫자·출처·전/후·예시)를 붙일 때 | `references/blocks/evidence.md` |
 | 전과 후(문제→수정, 기존→개선, 예상→실제)를 보일 때 | `references/blocks/before-after.md` |
 | 지금 위치(완료·진행·예정)를 보일 때 / 여기까지 하면 완성되는 결과를 남길 때 | `references/blocks/timeline.md` status rail 절 / `references/blocks/checkpoint.md` |
 | 문서 끝에 결정·요청·행동·기준·지킬 것을 남길 때(page·deck) | `references/blocks/closing.md` |
-| 페이지 골격·타이포·배지·나란히 두 섹션(`.d0-split`, 그림 둘이면 무대 정렬 `data-align="stage"`)·첫 화면 높이 예산 | `references/blocks/shell.md` |
-| SVG 도식을 그릴 때(항상; 비율 `data-variant="ratio"`, 폭 `data-size="wide"`) | `references/blocks/diagram.md` |
+| 페이지 골격·타이포·배지·본문 축과 넓은 구간(`.d0-wide`)·2열(`.d0-cols`)·섹션 뼈대·접기(`.d0-more`)·기억할 한 줄(`.d0-keep`)·줄 길이·첫 화면 높이 예산 | `references/blocks/shell.md` |
+| SVG 도식을 그릴 때(항상; 라벨 크기 표·viewBox 폭 560, 작게 `data-fit="compact"`, 비율 `data-variant="ratio"`) | `references/blocks/diagram.md` |
 | 보고·전/후 비교·사건에 결론 수치가 있을 때 | `references/blocks/hero.md` |
 | 화면을 눌러 보게 할 때 | `references/blocks/mockup-frame.md` |
 | 따라하기 단계를 그림과 함께 보일 때(왼쪽 단계 화면이 행에 따라 바뀜, `data-variant="linked"`), 긴 따라하기를 구간으로 나눌 때(`data-phased`) | `references/blocks/checklist.md` |
@@ -225,7 +227,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 ### 이름표
 
-- **page.** 섹션마다 `data-pattern="compare|flow|preview|report|guide|timeline|incident|faq"`를 단다(`main > section`, `main > .d0-split > section`).
+- **page.** 섹션마다 `data-pattern="compare|flow|preview|report|guide|timeline|incident|faq"`를 단다(`main > section`).
   패턴 변형은 같은 섹션의 `data-variant`로 단다. 레시피를 썼으면 `<main class="d0-page" data-recipe="...">`(선택). 패턴이 없는 섹션은 `data-pattern`을 생략한다.
 - **deck.** 덱은 스토리라인 하나가 필요하므로 루트에 주 패턴 하나를 단다: `<main class="d0-deck" data-pattern="..." data-variant="...">`(필수). 레시피로 짠 덱이면 `data-recipe`를 더한다.
   루트 `data-pattern`은 스토리라인을 이끄는 주 패턴의 이름표일 뿐이다. 다른 패턴의 내용도 장 단위로 섞어 넣는다(`references/output/deck.md` 루트 마크업).
@@ -250,7 +252,7 @@ page와 deck은 같은 Pattern·Block을 쓴다. 다른 것은 밀도다: page�
 Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부터 통과하고 Slide·Visual·Ending과 구현 게이트를 본다.
 
 **deck 출력 예외.** deck은 한 장짜리 문서가 아니라 16:9 슬라이드 5~12장(표지·제목 목차 포함)을 한 장씩 넘기는 덱이다. 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명,
-원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한, Page Depth Gate 대신
+원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px·첫 화면 색 비중, 본문 축·2열·줄 길이 규칙, 720px 프레임, page 도식 라벨 렌더 13~20px 게이트, Page Depth Gate 대신
 `references/output/deck.md`의 덱 구성·Slide Gate(한 장 한 주장, 결론 제목, 그림 면적·본문 밀도, Impact 20~30%, 마지막 장(closing: decision·request·action·criteria·takeaway))와 `references/blocks/slide-deck.md` 덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지 원칙(글은 적게, 한 사실은 한 번(제목 목차·closing 메타 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)은 그대로다.
 
@@ -283,7 +285,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 - **라이트 온리.** `:root { color-scheme: light; }`와 `body` 배경색을 명시해 다크 호스트에서도 깨지지 않게 한다. 다크 팔레트를 추가하지 않는다.
   예외는 덱의 장면 전환 장뿐이다: 표지·섹션·마무리 장(`data-kind="cover|section|closing"`)에만 `data-surface="dark"`(blue-dark 풀블리드 면 + 흰 글자, 덱당 1~3장)를 쓸 수 있다. 본문 장·Impact·page에는 쓰지 않는다(`references/blocks/slide-deck.md` 진한 면 절).
 - 모바일 폭에서 좌우 16px 거터, 가로 스크롤 없음.
-- **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임에 넣을 페이지는 첫 SVG 도식의 아래 끝이 720px 안에 든다. 머리 260 + 첫 무대 300은 합계 기준이다(정본: `references/blocks/shell.md` 첫 화면 높이 예산).
+- **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임(1280×720)에 넣을 페이지는 첫 SVG 도식의 위쪽 절반 이상이 720px 안에 든다(1280×800에서는 원칙 2번대로 전부 보인다). 머리 260 + 첫 그림 렌더 높이 390이 합계 기준이다(정본: `references/blocks/shell.md` 첫 화면 높이 예산).
 - **한 artifact 안 여러 페이지.** 탭으로 고른 페이지를 iframe으로 보여 줄 때 같은 artifact의 다른 파일을 `src`로 부르지 않는다(뷰어 샌드박스에서 연결이 끊긴다).
   각 페이지 HTML을 base64 JSON으로 내장하고, 탭을 고르면 `TextDecoder`로 풀어 `iframe.srcdoc`에 넣는다. iframe은 `sandbox="allow-scripts"`이고 `allow-same-origin`은 주지 않는다.
   새 탭 열기는 같은 HTML로 만든 Blob URL을 쓰고, 막히면 "새 탭을 열 수 없어요. 이 화면에서 보세요" 같은 안내 문구를 보여 준다.
@@ -303,7 +305,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
    - 복합 질문 → Pattern을 거쳐: 두 선택지 중 무엇이 나은가 → compare → evidence + before-after + closing. 무슨 일이 있었고 왜 → incident → status rail·timeline + evidence + explanation + checkpoint.
    첫 화면에 들어갈 SVG 도식을 먼저 정하고(첫 섹션 패턴의 대표 도식), 핵심 구조가 있는 섹션마다 그림을 고른다. 그림이 보여 줄 수 없는 이유·조건·영향은 explanation, 근거는 evidence로 붙인다.
    리드가 역할로 나뉘면 header 요약 행을 쓴다. 결론 수치가 있으면 히어로에 두고, 다른 곳은 그 숫자를 되풀이하지 않는다. 처음이면 예시 HTML로 톤을 맞춘다.
-5. **Layout 구성.** 섹션마다 구도를 고르고(`references/composition.md`), 그림 옆이 비면 explanation을 옆 열에 둔다.
+5. **Layout 구성.** 섹션마다 구도를 고르고(`references/composition.md`), 섹션 뼈대(제목 → 그림 → 해석 한 줄 → 필요할 때 "왜" 한 줄)를 따른다. 그림은 축 폭을 채우고 옆 빈자리는 그대로 둔다. 2열은 세 경우에만 `.d0-wide` 안에 두고, 문서의 분할선(6/6 또는 7/5)을 하나로 정한다.
 6. **Output 조정.** 신호가 없으면 page. 발표·화면 공유 신호가 있으면 deck으로 정하고 `references/output/deck.md`를 연다. deck은 주 패턴 하나의 스토리라인으로 제목 목차를 먼저 쓰고 같은 블록을 덱 밀도로 줄인다.
 7. **토큰 인라인.** 탐색 순서(의존 절)로 찾은 tokens.css 전체를 수정 없이 메인 `<style>` 맨 앞에 붙인다. 모두 실패하면 멈춘다.
 8. **작성.** `references/blocks/shell.md` 스니펫에서 시작해 고른 블록 파일의 스니펫을 붙인다. 블록 해부대로 짓고, 섹션마다 `data-pattern`을 단다.
@@ -330,15 +332,18 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 
 **HARD (코드로 확인)**
 
-렌더 DOM 기준(JS 실행 후)으로 판정한다. 페이지 섹션은 `main > section, main > .d0-split > section`이다.
+렌더 DOM 기준(JS 실행 후)으로 판정한다. 페이지 섹션은 `main > section`이다.
 deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output/deck.md` Slide Gate(Story 먼저, 이어서 Slide·Visual·Ending)와 `references/blocks/slide-deck.md` 덱 게이트로 판정하고, 나머지 항목은 그대로 적용한다.
 
-- [ ] 설명 `p`에 컨테이너보다 좁은 `max-width`·`width`·`ch` 제약이 없다
+- [ ] 설명 `p`와 글 블록(explanation·evidence·faq `dl`, `.d0-cols` 열 칸)에 축·열보다 좁은 `max-width`·`width`·`ch` 제약이 없다
+- [ ] `.d0-page`·`.d0-wide`·`.d0-fig svg`·`.d0-cols`의 CSS가 `references/blocks/shell.md` 정본 CSS 그대로다(안쪽 폭 720px, narrow 640px)
+- [ ] `.d0-cols`가 `.d0-wide` 안에만 있고, 문서의 모든 2열이 같은 분할이다(`data-split="7-5"`가 전부 있거나 전부 없다. 번호 범례 2열인 pins·annotate·`d0-shot`의 `data-split`도 함께 센다)
+- [ ] `.d0-keep`이 페이지당 1개 이하이고 마지막 섹션 끝(closing 앞)에 있다. `.d0-more`는 섹션마다 1개 이하이고 안에 그 섹션의 결정·정본 숫자가 없다
 - [ ] `text-wrap: balance`가 제목 셀렉터(h1~h3)에만 있다
 - [ ] 개수 상한(카드 5·단계 5, guide 체크리스트는 구간 규칙·옵션 3·질문 6·표 열 7 = 데이터 열 6 + 행 번호 열)을 넘지 않는다
 - [ ] `role="img"`와 `<title>`을 가진 인라인 SVG 도식(kpi-cards 막대 변형, Editorial 장르의 SVG 객체 포함)이 1개 이상 있다. Editorial의 숫자는 SVG `<text>`가 아니라 HTML이다(SVG `<text>`로 그린 큰 숫자는 FAIL)
 - [ ] Editorial(`figure.d0-fig[data-genre="editorial"]`)이 페이지당 1개 이하이고, 큰 글자가 실제 숫자이며(문구 FAIL), SVG 객체가 120px 이하다. 96px 이상 숫자는 Impact 안에만 있고, page Impact는 0~1개이며 안에 editorial이 없다
-- [ ] header 다음 첫 페이지 섹션(첫 화면 섹션, `.d0-split`으로 시작하면 그 안 두 섹션 중 하나 이상)에 그림 블록이 있다. checklist linked 변형의 무대 SVG는 그림 블록으로 세고, code-block은 그림으로 세지 않는다
+- [ ] header 다음 첫 페이지 섹션(첫 화면 섹션)에 그림 블록이 있다. checklist linked 변형의 무대 SVG는 그림 블록으로 세고, code-block은 그림으로 세지 않는다
 - [ ] 그림 블록이 없는 페이지 섹션은 구조 블록(`dl.d0-explain`, `.d0-evidence`, `.d0-ba`, `.d0-checkpoint`, `.d0-closing`, faq, diff-rows, checklist, step-columns, accordion, `table`, `dl`·`ol`·`ul` 행 목록) 중 하나 이상을 담고, 섹션 머리 밖 내용이 연속된 일반 `p`만으로 이루어지지 않는다
 - [ ] explanation(`dl.d0-explain > div > dd`) 하나가 4문장 이상이 아니고, 라벨 `dt`가 비어 있지 않으며, 묶음에 배경·테두리·그림자가 없다
 - [ ] 도식 `figure.d0-fig`마다 안에 SVG가 있고, SVG `<text>` 하나가 4어절(공백 3개) 이상이 아니다(넘으면 텍스트 상자 도식으로 보고 FAIL)
@@ -348,7 +353,7 @@ deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output
 - [ ] 배지(`.d0-pill`)에 고정 `height`와 `flex: none`이 있다
 - [ ] 배지 톤 종류(`span.d0-pill`의 `data-tone`, 없으면 회색)가 3가지 이하, 카드·행 하나에 배지가 1개 이하, 의미색(`--d0-green`·`--d0-red`·`--d0-orange`)을 글자 `color`로 쓴 곳이 없다
 - [ ] 같은 숫자 문자열(숫자+단위, 예 `26분`)이 화면에 보이는 텍스트(`body.innerText` 기준. SVG `<text>`는 이미 포함되므로 따로 더하지 않고, SVG `<title>`·`<desc>`는 제외)에 2회 이하다. closing 메타 `dd`와 덱 제목 목차는 빼고 센다
-- [ ] 무대를 쓴 도식 `figure.d0-fig[data-stage]`는 SVG가 `.d0-fig__stage` 패널 안에 있고 figcaption은 패널 밖에 있다(회색 무대는 기본 없음, 쓰는 기준은 `references/composition.md`)
+- [ ] 무대를 쓴 도식 `figure.d0-fig[data-stage]`는 SVG가 `.d0-fig__stage` 패널 안에 있고 figcaption은 패널 밖에 있다. 무대 안 SVG에 `<text>`가 없다(글자 있는 도식은 무대 없음, 375px 무대 안쪽에서 라벨이 11px 아래로 준다. 회색 무대는 기본 없음, 쓰는 기준은 `references/composition.md`)
 - [ ] kpi-cards에 증감 배지가 없다
 - [ ] 화면에 보이는 글(제목·라벨·설명·캡션·SVG `<text>`)에 직역투 표현이 없다(읽어서 확인, `references/writing.md` 점검 목록. 영어식 은유·무생물 주어 + 의지 동사·압축 대구·모호한 조건절이 하나라도 있으면 FAIL)
 - [ ] `data-pattern` 값이 있으면 패턴 8개 중 하나다
@@ -381,15 +386,15 @@ WCAG 3.0은 아직 Working Draft라 방향 참고로만 보고, 판정은 WCAG 2
 
 - [ ] 1280×800에서 SVG 도식의 bounding box가 첫 화면 안에 전부 보인다(잘리면 FAIL), 375×812에서는 첫 그림 블록 높이의 절반 이상이 첫 화면 안이다(윗부분만 걸치면 FAIL). 320×568은 첫 그림 블록의 위 끝이 첫 화면 안이면 통과다
 - [ ] 첫 화면(1280×800) 안에서 그림·목업 면적이 글 면적보다 크다(그림 = `figure`·`svg`·목업 프레임 box, 글 = `p`·`li`·`dd` 텍스트 블록 box의 첫 화면 안 면적 합. 그림 안 글은 그림으로 센다). 첫 화면 아래 섹션은 이 면적 비교를 하지 않는다
-- [ ] 그림이 컨테이너 폭의 절반만 쓰고 옆이 빈 배치가 없다(그림 `figure` box 폭이 부모 폭의 60% 미만이고 같은 줄 옆에 내용이 없으면 FAIL). 채우는 방법은 그림 확대가 아니라 관련 explanation을 그림 옆 열에 두기(`.d0-figtext`, 첫 화면 섹션 제외), `data-layout="side"`(그림 + 옆 설명), `.d0-split`·`.d0-cols` 2열(그 열 폭을 부모로 잰다), 짧은 주석 열, 비율 막대(`data-variant="ratio"`, 폭 꽉 채움)다. 글자 없는 SVG·와이어프레임도 렌더 폭 360px(`data-size="wide"` 400px) 이하이고, 그보다 넓은 그림은 가로로 긴 타임라인·단계 줄만 최대 720px다(화면 미리보기 `.d0-shot`·목업 프레임은 제외, `references/blocks/diagram.md` 폭 상한). Editorial은 SVG 객체가 작아도 같은 줄에 숫자가 있으므로 `figure` 전체로 잰다. Narrative는 일반 도식과 같다
+- [ ] 1280px에서 모든 페이지 섹션의 h2 왼쪽 끝 x가 같다(±1px, 하나의 축). 축 밖으로 넓어진 것은 `.d0-wide` 블록뿐이고, 그 안 2열 분할선(두 열 사이 틈의 가운데 x)이 문서 전체에서 하나다(±1px)
+- [ ] 도식 `figure.d0-fig`의 SVG 렌더 폭이 놓인 자리(축, 무대 안쪽, `.d0-wide` 열) 폭의 75% 이상이다(`data-fit="compact"`가 정확히 75%. editorial의 120px 객체, 썸네일·와이어 카드·단계 열 그림 같은 블록 부품은 제외)
+- [ ] 2열(`.d0-cols`, 번호 범례 2열)이 동시 비교·그림 지점과 번호로 대응하는 주석·범례·대등한 두 덩어리 중 하나다(읽어서 확인. "그림 | 그냥 설명 문단", "작은 그림 | 빈자리 채우는 목록"이면 FAIL)
 - [ ] 옅은 면의 장면 수를 지킨다(blue 무대 1개 이하, deck Impact 20~30%). 색 면적은 아래 Warning으로만 판정한다
 - [ ] 회색만 있는 도식이 없다(도식 `svg`마다 blue 계열 또는 의미색 `fill`·`stroke` 요소가 1개 이상)
 - [ ] 배지가 세로로 늘어나지 않고 제목 첫 줄에 맞춰져 있다(배지 높이 = 22px 또는 20px, 배지 중심과 제목 첫 줄 중심 차 2px 이하)
-- [ ] SVG 안 글자의 렌더 크기가 11px 이상 16px 이하다(375px과 1280px 모두). 데스크톱에서 h2 18px보다 작다.
-  렌더 글자 크기 = font-size × (SVG 렌더 폭 ÷ viewBox 폭)로 잰다. 글자 박스 높이는 쓰지 않는다(정본: `references/blocks/diagram.md` 라벨 절)
-- [ ] `.d0-split`으로 나란히 둔 두 섹션의 높이 비(긴 쪽 ÷ 짧은 쪽)가 1.5 이하다(1280px에서 두 `section` 높이. 무대 정렬 변형은 두 무대 안 SVG 높이로 잰다. 정본: `references/blocks/shell.md`)
-- [ ] 나란히 둔 두 섹션이 모두 무대 위 그림이면 `data-align="stage"`이고, 1280px에서 좌우 h2 위 끝·무대 위 끝·무대 높이·figcaption 위 끝의 차가 각각 2px 이하다. 375px에서는 1열로 쌓인다
-- [ ] 본문 텍스트 블록 한 줄이 공백 포함 50자 이하다(렌더된 줄마다 공백까지 센 실제 글자 수. 폭 근사식은 쓰지 않는다. `code`·`pre`·명령어 줄은 제외. 정본: `references/blocks/shell.md` 줄 길이 절)
+- [ ] SVG 안 글자의 렌더 크기가 1280px에서 13px 이상 20px 이하, 375·320px에서 11px 이상이다.
+  렌더 글자 크기 = font-size × (SVG 렌더 폭 ÷ viewBox 폭)로 잰다(무대가 있으면 무대 안쪽 폭). 글자 박스 높이는 쓰지 않는다(정본: `references/blocks/diagram.md` 라벨 절)
+- [ ] 축 안 글 블록(리드 `p`, explanation·evidence·faq `dl`, 행 목록)의 box 폭이 축 폭과 같다(±1px. `.d0-wide` 열 안이면 그 열 폭). 글 블록마다 오른쪽 끝이 다르지 않다(정본: `references/blocks/shell.md` 줄 길이 절)
 - [ ] 히어로가 있으면 히어로 수치가 1280×800 첫 화면 상단 1/3(y ≤ 267px) 안에 있다
 - [ ] 페이지 섹션 사이 세로 간격이 64px(모바일 48px)이다(앞 섹션 마지막 블록 아래 끝 ~ 다음 섹션 `header` 위 끝, 오차 ±4px). page Impact(`data-emphasis="impact"`) 앞뒤도 같은 64px(모바일 48px)이다(배경 면 없이 일반 섹션 패딩 그대로)
 - [ ] 옆 영역이 남는데 줄이 바뀐 설명 문단이 없다(문단 폭이 부모의 content box 폭(패딩 제외), grid 안이면 그 열 폭보다 24px 이상 좁은데 2줄 이상이면 FAIL. callout·카드 패딩이나 열 폭을 남는 영역으로 세지 않는다)

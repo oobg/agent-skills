@@ -78,7 +78,29 @@
 :root { color-scheme: light; }
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: #fff; color: var(--d0-grey-800); font-family: var(--d0-font); font-size: 15px; line-height: var(--d0-leading-body); letter-spacing: var(--d0-tracking-body); font-variant-numeric: tabular-nums; word-break: keep-all; overflow-wrap: break-word; }
-.d0-page { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; }
+/* 본문 축: 안쪽 폭 720px(narrow 640px). 넓은 구간만 .d0-wide로 축 밖까지 */
+.d0-page { max-width: calc(720px + 64px); margin: 0 auto; padding: 64px 32px 96px; }
+.d0-page[data-width="narrow"] { max-width: calc(640px + 64px); }
+.d0-wide { --d0-wide: min(1136px, calc(100vw - 64px)); width: var(--d0-wide); margin-inline: calc((100% - var(--d0-wide)) / 2); }
+/* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
+.d0-fig svg { width: 100%; height: auto; }
+.d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
+/* 2열: 페이지 공통 분할선 하나. 6/6 또는 7/5 */
+.d0-cols { display: grid; gap: 24px 48px; align-items: start; }
+.d0-cols > * { min-width: 0; }
+@media (min-width: 960px) {
+  .d0-cols { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .d0-cols > * { grid-column: span 6; }
+  .d0-cols[data-split="7-5"] > :first-child { grid-column: span 7; }
+  .d0-cols[data-split="7-5"] > :last-child { grid-column: span 5; }
+}
+/* 접기와 기억할 한 줄 */
+.d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
+.d0-more > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--d0-blue-dark); }
+.d0-more[open] > summary { margin-bottom: 12px; }
+.d0-keep { border-radius: 16px; background: var(--d0-blue-light); padding: 20px 24px; display: grid; gap: 6px; }
+.d0-keep > .d0-keep__label { font-size: 13px; font-weight: 600; color: var(--d0-blue-dark); }
+.d0-keep > p { font-size: 18px; font-weight: 700; color: var(--d0-grey-900); }
 h1, h2, h3, h4 { margin: 0; color: var(--d0-grey-900); line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
 h1, h2, h3 { text-wrap: balance; }
 h1 { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
@@ -167,8 +189,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: tra
 .d0-tabprev { margin: 0; }
 
 /* ③ mockup-frame */
-.d0-demos { display: grid; gap: 28px; }
-@media (min-width: 1100px) { .d0-demos { grid-template-columns: 1fr 1fr; } }
+/* A/B 2열은 .d0-wide 안 .d0-cols(위 정본 CSS)가 만든다 */
 .d0-demo { display: grid; gap: 12px; min-width: 0; }
 .d0-demo__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .d0-link { min-height: 24px; padding: 2px 4px; border: 0; background: none; color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
@@ -260,6 +281,8 @@ legend { padding: 0; }
 
 @media (max-width: 640px) {
   .d0-page { padding: 48px 16px 72px; }
+  .d0-wide { --d0-wide: 100%; } /* 모바일: 넓은 구간도 축 폭 그대로 */
+  .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
   .d0-section { padding-block: 24px; }
@@ -271,13 +294,7 @@ legend { padding: 0; }
   .d0-thumb:hover { transform: none; }
 }
 
-/* ①·② are one compact two-column scene; diagram sizes never fill the column. */
-.d0-split { display: grid; gap: 0 48px; }
-.d0-split > * { min-width: 0; }
-.d0-split:not(:last-child) > .d0-section { padding-bottom: 32px; }
-@media (min-width: 960px) { .d0-split { grid-template-columns: 1fr 1fr; align-items: start; } }
-.d0-fig > svg { width: 100%; max-width: 360px; }
-.d0-fig[data-size="wide"] > svg { max-width: 400px; }
+/* 도식: 섹션은 축을 따라 쌓고, 그림은 축 폭(단순 도식은 compact 75%)을 쓴다 */
 .d0-s-edge { fill: none; stroke: var(--d0-blue); stroke-width: 2.5; }
 .d0-s-edge[data-ahead] { stroke: var(--d0-grey-500); stroke-width: 1.5; stroke-dasharray: 4 5; }
 .d0-s-node { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
@@ -285,6 +302,14 @@ legend { padding: 0; }
 .d0-s-ring { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 1.5; }
 .d0-s-text { fill: var(--d0-grey-600); font-size: 14px; }
 .d0-s-text[data-on] { fill: var(--d0-blue-dark); font-weight: 600; }
+/* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
+   데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다 */
+@media (max-width: 560px) {
+  .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
+}
+@media (max-width: 340px) {
+  .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
+}
 svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 .d0-notes { display: grid; gap: 16px; }
 .d0-notes > div { display: grid; gap: 4px; }
@@ -298,7 +323,6 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 .d0-acc details > p { padding-bottom: 14px; color: var(--d0-grey-700); }
 .d0-demo__note { color: var(--d0-grey-700); font-size: 14px; }
 @media (max-width: 640px) {
-  .d0-split:not(:last-child) > .d0-section { padding-bottom: 24px; }
   .d0-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .d0-thumb { padding: 12px; }
   .d0-sheet th, .d0-sheet td { padding: 4px; font-size: 12px; }
@@ -314,61 +338,59 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
     <p class="d0-header__lead">받을 자료부터 골라요. A는 하나씩 묻고, B는 한 화면에서 골라요.</p>
   </header>
 
-  <div class="d0-split">
-    <!-- ① 순서와 표 모양: 회색 무대 없이 직접 놓는다. -->
-    <section class="d0-section" data-pattern="flow" data-composition="sequence" aria-labelledby="sec-pick">
-      <header class="d0-section-head"><h2 id="sec-pick">내보내기는 고르고 받기</h2></header>
-      <figure class="d0-fig" data-genre="narrative">
-        <svg viewBox="0 0 360 100" role="img" aria-labelledby="flow-t flow-d">
-          <title id="flow-t">내보내기에서 파일 받기까지 세 단계</title>
-          <desc id="flow-d">내보내기를 눌렀고, 지금 자료 묶음을 골라요. 파일 받기는 다음 단계예요. 지난 단계는 채움, 현재는 큰 고리, 다음은 빈 원과 점선으로 구분해요.</desc>
-          <path class="d0-s-edge" d="M36 38 H180"/>
-          <path class="d0-s-edge" data-ahead d="M180 38 H324"/>
-          <circle class="d0-s-node" data-on cx="36" cy="38" r="6"/>
-          <circle class="d0-s-ring" cx="180" cy="38" r="17"/>
-          <circle class="d0-s-node" data-on cx="180" cy="38" r="11"/>
-          <circle class="d0-s-node" cx="324" cy="38" r="6"/>
-          <text class="d0-s-text" x="36" y="80" text-anchor="middle">내보내기</text>
-          <text class="d0-s-text" data-on x="180" y="80" text-anchor="middle">묶음 선택</text>
-          <text class="d0-s-text" x="324" y="80" text-anchor="middle">파일 받기</text>
-        </svg>
-        <figcaption>눌렀으면 고르고, 고른 자료만 받아요.</figcaption>
-      </figure>
-      <figure class="d0-fig">
-        <ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"><li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-0-t grid-0-d"><title id="grid-0-t">팀별 합계 표 미리보기</title><desc id="grid-0-d">9행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v8H3zM34 3h29v8H34zM65 3h29v8H65zM97 3h29v8H97zM128 3h29v8H128z"/><path class="d0-s-key" d="M3 13h29v8H3zM3 23h29v8H3zM3 34h29v8H3zM3 44h29v8H3zM3 54h29v8H3zM3 64h29v8H3zM3 75h29v8H3zM3 85h29v8H3z"/><path class="d0-s-cell" d="M34 13h29v8H34zM65 13h29v8H65zM97 13h29v8H97zM128 13h29v8H128zM34 23h29v8H34zM65 23h29v8H65zM97 23h29v8H97zM128 23h29v8H128zM34 34h29v8H34zM65 34h29v8H65zM97 34h29v8H97zM128 34h29v8H128zM34 44h29v8H34zM65 44h29v8H65zM97 44h29v8H97zM128 44h29v8H128zM34 54h29v8H34zM65 54h29v8H65zM97 54h29v8H97zM128 54h29v8H128zM34 64h29v8H34zM65 64h29v8H65zM97 64h29v8H97zM128 64h29v8H128zM34 75h29v8H34zM65 75h29v8H65zM97 75h29v8H97zM128 75h29v8H128z"/><path class="d0-s-sum" d="M34 85h29v8H34zM65 85h29v8H65zM97 85h29v8H97zM128 85h29v8H128z"/></svg><strong>팀별 합계</strong><span class="d0-pill" data-tone="green">지금 가능</span></li>
+  <!-- ① 순서와 표 모양: 회색 무대 없이 축에 직접 놓는다. 점 셋뿐인 흐름이라 compact(75%). -->
+  <section class="d0-section" data-pattern="flow" data-composition="sequence" aria-labelledby="sec-pick">
+    <header class="d0-section-head"><h2 id="sec-pick">내보내기는 고르고 받기</h2></header>
+    <figure class="d0-fig" data-genre="narrative" data-fit="compact">
+      <svg viewBox="0 0 560 156" role="img" aria-labelledby="flow-t flow-d">
+        <title id="flow-t">내보내기에서 파일 받기까지 세 단계</title>
+        <desc id="flow-d">내보내기를 눌렀고, 지금 자료 묶음을 골라요. 파일 받기는 다음 단계예요. 지난 단계는 채움, 현재는 큰 고리, 다음은 빈 원과 점선으로 구분해요.</desc>
+        <path class="d0-s-edge" d="M56 59 H280"/>
+        <path class="d0-s-edge" data-ahead d="M280 59 H504"/>
+        <circle class="d0-s-node" data-on cx="56" cy="59" r="9.5"/>
+        <circle class="d0-s-ring" cx="280" cy="59" r="26"/>
+        <circle class="d0-s-node" data-on cx="280" cy="59" r="17"/>
+        <circle class="d0-s-node" cx="504" cy="59" r="9.5"/>
+        <text class="d0-s-text" x="56" y="124" text-anchor="middle">내보내기</text>
+        <text class="d0-s-text" data-on x="280" y="124" text-anchor="middle">묶음 선택</text>
+        <text class="d0-s-text" x="504" y="124" text-anchor="middle">파일 받기</text>
+      </svg>
+      <figcaption>눌렀으면 고르고, 고른 자료만 받아요.</figcaption>
+    </figure>
+    <figure class="d0-fig">
+      <ul class="d0-thumbs" id="thumbs" aria-label="자료 묶음 다섯 가지"><li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-0-t grid-0-d"><title id="grid-0-t">팀별 합계 표 미리보기</title><desc id="grid-0-d">9행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v8H3zM34 3h29v8H34zM65 3h29v8H65zM97 3h29v8H97zM128 3h29v8H128z"/><path class="d0-s-key" d="M3 13h29v8H3zM3 23h29v8H3zM3 34h29v8H3zM3 44h29v8H3zM3 54h29v8H3zM3 64h29v8H3zM3 75h29v8H3zM3 85h29v8H3z"/><path class="d0-s-cell" d="M34 13h29v8H34zM65 13h29v8H65zM97 13h29v8H97zM128 13h29v8H128zM34 23h29v8H34zM65 23h29v8H65zM97 23h29v8H97zM128 23h29v8H128zM34 34h29v8H34zM65 34h29v8H65zM97 34h29v8H97zM128 34h29v8H128zM34 44h29v8H34zM65 44h29v8H65zM97 44h29v8H97zM128 44h29v8H128zM34 54h29v8H34zM65 54h29v8H65zM97 54h29v8H97zM128 54h29v8H128zM34 64h29v8H34zM65 64h29v8H65zM97 64h29v8H97zM128 64h29v8H128zM34 75h29v8H34zM65 75h29v8H65zM97 75h29v8H97zM128 75h29v8H128z"/><path class="d0-s-sum" d="M34 85h29v8H34zM65 85h29v8H65zM97 85h29v8H97zM128 85h29v8H128z"/></svg><strong>팀별 합계</strong><span class="d0-pill" data-tone="green">지금 가능</span></li>
 <li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-1-t grid-1-d"><title id="grid-1-t">일자별 추이 표 미리보기</title><desc id="grid-1-d">8행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v10H3zM34 3h29v10H34zM65 3h29v10H65zM97 3h29v10H97zM128 3h29v10H128z"/><path class="d0-s-key" d="M3 14h29v10H3zM3 26h29v10H3zM3 38h29v10H3zM3 49h29v10H3zM3 60h29v10H3zM3 72h29v10H3zM3 84h29v10H3z"/><path class="d0-s-cell" d="M34 14h29v10H34zM65 14h29v10H65zM97 14h29v10H97zM128 14h29v10H128zM34 26h29v10H34zM65 26h29v10H65zM97 26h29v10H97zM128 26h29v10H128zM34 38h29v10H34zM65 38h29v10H65zM97 38h29v10H97zM128 38h29v10H128zM34 49h29v10H34zM65 49h29v10H65zM97 49h29v10H97zM128 49h29v10H128zM34 60h29v10H34zM65 60h29v10H65zM97 60h29v10H97zM128 60h29v10H128zM34 72h29v10H34zM65 72h29v10H65zM97 72h29v10H97zM128 72h29v10H128z"/><path class="d0-s-sum" d="M34 84h29v10H34zM65 84h29v10H65zM97 84h29v10H97zM128 84h29v10H128z"/></svg><strong>일자별 추이</strong><span class="d0-pill" data-tone="green">지금 가능</span></li>
 <li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-2-t grid-2-d"><title id="grid-2-t">팀 × 일자 표 미리보기</title><desc id="grid-2-d">9행과 12열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h11v8H3zM16 3h11v8H16zM29 3h11v8H29zM42 3h11v8H42zM55 3h11v8H55zM68 3h11v8H68zM81 3h11v8H81zM94 3h11v8H94zM107 3h11v8H107zM120 3h11v8H120zM133 3h11v8H133zM146 3h11v8H146z"/><path class="d0-s-key" d="M3 13h11v8H3zM3 23h11v8H3zM3 34h11v8H3zM3 44h11v8H3zM3 54h11v8H3zM3 64h11v8H3zM3 75h11v8H3zM3 85h11v8H3z"/><path class="d0-s-cell" d="M16 13h11v8H16zM29 13h11v8H29zM42 13h11v8H42zM55 13h11v8H55zM68 13h11v8H68zM94 13h11v8H94zM107 13h11v8H107zM120 13h11v8H120zM133 13h11v8H133zM16 23h11v8H16zM29 23h11v8H29zM42 23h11v8H42zM55 23h11v8H55zM81 23h11v8H81zM94 23h11v8H94zM107 23h11v8H107zM120 23h11v8H120zM133 23h11v8H133zM16 34h11v8H16zM29 34h11v8H29zM42 34h11v8H42zM68 34h11v8H68zM81 34h11v8H81zM94 34h11v8H94zM107 34h11v8H107zM120 34h11v8H120zM133 34h11v8H133zM16 44h11v8H16zM29 44h11v8H29zM55 44h11v8H55zM68 44h11v8H68zM81 44h11v8H81zM94 44h11v8H94zM107 44h11v8H107zM120 44h11v8H120zM16 54h11v8H16zM42 54h11v8H42zM55 54h11v8H55zM68 54h11v8H68zM81 54h11v8H81zM94 54h11v8H94zM107 54h11v8H107zM133 54h11v8H133zM29 64h11v8H29zM42 64h11v8H42zM55 64h11v8H55zM68 64h11v8H68zM81 64h11v8H81zM94 64h11v8H94zM120 64h11v8H120zM133 64h11v8H133zM16 75h11v8H16zM29 75h11v8H29zM42 75h11v8H42zM55 75h11v8H55zM68 75h11v8H68zM81 75h11v8H81zM107 75h11v8H107zM120 75h11v8H120zM133 75h11v8H133zM16 85h11v8H16zM29 85h11v8H29zM42 85h11v8H42zM55 85h11v8H55zM68 85h11v8H68zM94 85h11v8H94zM107 85h11v8H107zM120 85h11v8H120zM133 85h11v8H133z"/><path class="d0-s-sum" d="M146 13h11v8H146zM146 23h11v8H146zM146 34h11v8H146zM146 44h11v8H146zM146 54h11v8H146zM146 64h11v8H146zM146 75h11v8H146zM146 85h11v8H146z"/></svg><strong>팀 × 일자</strong><span class="d0-pill" data-tone="orange">오래 걸려요</span></li>
 <li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-3-t grid-3-d"><title id="grid-3-t">채널별 요약 표 미리보기</title><desc id="grid-3-d">4행과 5열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h29v21H3zM34 3h29v21H34zM65 3h29v21H65zM97 3h29v21H97zM128 3h29v21H128z"/><path class="d0-s-key" d="M3 26h29v21H3zM3 49h29v21H3zM3 72h29v21H3z"/><path class="d0-s-cell" d="M34 26h29v21H34zM65 26h29v21H65zM97 26h29v21H97zM34 49h29v21H34zM65 49h29v21H65zM97 49h29v21H97z"/><path class="d0-s-sum" d="M128 26h29v21H128zM128 49h29v21H128zM34 72h29v21H34zM65 72h29v21H65zM97 72h29v21H97zM128 72h29v21H128z"/></svg><strong>채널별 요약</strong><span class="d0-pill" data-tone="orange">준비 중</span></li>
 <li class="d0-thumb"><svg viewBox="0 0 160 96" role="img" aria-labelledby="grid-4-t grid-4-d"><title id="grid-4-t">월별 요약 표 미리보기</title><desc id="grid-4-d">6행과 4열의 격자예요. 머리 행은 옅은 파랑, 합계 칸은 진한 파랑이에요.</desc><path class="d0-s-head" d="M3 3h37v13H3zM42 3h37v13H42zM81 3h37v13H81zM120 3h37v13H120z"/><path class="d0-s-key" d="M3 18h37v13H3zM3 34h37v13H3zM3 49h37v13H3zM3 64h37v13H3zM3 80h37v13H3z"/><path class="d0-s-cell" d="M42 18h37v13H42zM81 18h37v13H81zM120 18h37v13H120zM42 34h37v13H42zM81 34h37v13H81zM120 34h37v13H120zM42 49h37v13H42zM81 49h37v13H81zM120 49h37v13H120zM42 64h37v13H42zM81 64h37v13H81zM120 64h37v13H120z"/><path class="d0-s-sum" d="M42 80h37v13H42zM81 80h37v13H81zM120 80h37v13H120z"/></svg><strong>월별 요약</strong><span class="d0-pill" data-tone="green">지금 가능</span></li></ul>
-        <figcaption>합성 표 미리보기예요. 파란 합계 칸의 위치를 비교해요.</figcaption>
-      </figure>
-    </section>
+      <figcaption>합성 표 미리보기예요. 파란 합계 칸의 위치를 비교해요.</figcaption>
+    </figure>
+  </section>
 
-    <!-- ② 표 목업과 짧은 주석: 열 안에서는 캡션을 아래에 둔다. -->
-    <section class="d0-section" data-pattern="preview" data-composition="spotlight" aria-labelledby="sec-file">
-      <header class="d0-section-head"><h2 id="sec-file">받은 파일은 이렇게 보여요</h2></header>
-      <figure class="d0-tabprev">
-        <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
-        <div class="d0-tabprev__panel" role="tabpanel" id="xlPanel" tabindex="0">
-          <div class="d0-tabprev__bar"><b id="xlFile">주문내보내기.xlsx</b><small>합성 예시 데이터</small></div>
-          <div class="d0-sheet__wrap"><table class="d0-sheet" id="xlTable"><caption>팀별 합계 표 미리보기</caption><thead><tr><th scope="col">팀</th><th scope="col">주문</th><th scope="col">금액</th></tr></thead><tbody><tr><th scope="row">팀 A</th><td>34</td><td>408,000</td></tr></tbody></table></div>
-          <div class="d0-sheet__tabs" id="xlSheets" role="group" aria-label="시트"></div>
-        </div>
-        <figcaption><dl class="d0-tabprev__notes" id="xlNotes"></dl></figcaption>
-      </figure>
-      <dl class="d0-notes">
-        <div><dt>안내 시트</dt><dd>기간, 집계 기준, 빈칸 뜻이 첫 장에 붙어요.</dd></div>
-        <div><dt>데이터 시트</dt><dd>행은 묶음의 대상, 열은 주문 수와 금액이에요.</dd></div>
-        <div><dt>빈칸과 합계</dt><dd>빈칸은 주문이 없는 칸, 마지막 줄은 전체 합계예요.</dd></div>
-      </dl>
-      <div class="d0-acc"><details><summary>고른 뒤 바꿀 수 있는 것</summary><p>기간과 빈칸 표기를 골라요. 팀 묶음은 정렬도 바꿔요. 지난번처럼 받기는 기간만 바꿔 다시 써요.</p></details></div>
-    </section>
-  </div>
+<!-- ② 표 목업과 짧은 주석: 축 폭 목업 아래에 설명을 둔다. -->
+  <section class="d0-section" data-pattern="preview" data-composition="spotlight" aria-labelledby="sec-file">
+    <header class="d0-section-head"><h2 id="sec-file">받은 파일은 이렇게 보여요</h2></header>
+    <figure class="d0-tabprev">
+      <div class="d0-tabprev__tabs" id="xlTabs" role="tablist" aria-label="자료 묶음"></div>
+      <div class="d0-tabprev__panel" role="tabpanel" id="xlPanel" tabindex="0">
+        <div class="d0-tabprev__bar"><b id="xlFile">주문내보내기.xlsx</b><small>합성 예시 데이터</small></div>
+        <div class="d0-sheet__wrap"><table class="d0-sheet" id="xlTable"><caption>팀별 합계 표 미리보기</caption><thead><tr><th scope="col">팀</th><th scope="col">주문</th><th scope="col">금액</th></tr></thead><tbody><tr><th scope="row">팀 A</th><td>34</td><td>408,000</td></tr></tbody></table></div>
+        <div class="d0-sheet__tabs" id="xlSheets" role="group" aria-label="시트"></div>
+      </div>
+      <figcaption><dl class="d0-tabprev__notes" id="xlNotes"></dl></figcaption>
+    </figure>
+    <dl class="d0-notes">
+      <div><dt>안내 시트</dt><dd>기간, 집계 기준, 빈칸 뜻이 첫 장에 붙어요.</dd></div>
+      <div><dt>데이터 시트</dt><dd>행은 묶음의 대상, 열은 주문 수와 금액이에요.</dd></div>
+      <div><dt>빈칸과 합계</dt><dd>빈칸은 주문이 없는 칸, 마지막 줄은 전체 합계예요.</dd></div>
+    </dl>
+    <div class="d0-acc"><details><summary>고른 뒤 바꿀 수 있는 것</summary><p>기간과 빈칸 표기를 골라요. 팀 묶음은 정렬도 바꿔요. 지난번처럼 받기는 기간만 바꿔 다시 써요.</p></details></div>
+  </section>
 
-  <!-- ③ 같은 크기·같은 데이터의 프레임. -->
+  <!-- ③ 같은 크기·같은 데이터의 프레임: 동시 비교라 넓은 구간 안 2열(6/6). -->
   <section class="d0-section" data-pattern="compare" data-variant="prototype" data-composition="split" aria-labelledby="sec-demo">
     <header class="d0-section-head"><h2 id="sec-demo">두 시안을 직접 눌러 보세요</h2><p>합성 데이터이며, 파일 받기는 데모로만 동작하고 설정은 저장되지 않아요.</p></header>
-    <div class="d0-demos">
+    <div class="d0-wide"><div class="d0-demos d0-cols">
       <article class="d0-demo" aria-labelledby="demoA-title" data-demo data-variant="modal" data-state="idle">
         <header class="d0-demo__head"><h3 id="demoA-title">A. 설문형</h3><button type="button" class="d0-link" id="resetA" aria-label="A 설문형 처음부터">처음부터</button></header>
         <p class="d0-demo__note">차례로 골라 처음 쓰기 쉬워요. 설정을 함께 보려면 이전으로 돌아가요.</p>
@@ -379,7 +401,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
         <p class="d0-demo__note">한 화면에서 설정을 고쳐 반복하기 쉬워요. 처음에는 선택할 것이 많아요.</p>
         <div class="d0-frame" id="frameB"></div>
       </article>
-    </div>
+    </div></div>
     <p>처음 따라 고르려면 A, 설정을 한눈에 바꾸려면 B를 눌러 보세요.</p>
     <noscript><p>눌러 보는 시안은 자바스크립트를 켜야 열려요.</p></noscript>
   </section>

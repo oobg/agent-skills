@@ -210,7 +210,7 @@ Deck Type은 덱의 쓰임을 부르는 문서용 이름이다. 속성으로 쓰
 ## page 원칙 중 덱에서 바뀌는 것
 
 원칙 4번 섹션 규칙, 원칙 2·3번 첫 화면 규칙, 원칙 6번 explanation 설명, Page Depth Gate, 원칙 9번 히어로·h1 32/h2 20 고정 타이포·섹션 사이 64px,
-줄 길이 50자, 720px 프레임, 도식 라벨 데스크톱 16px 상한 대신 이 파일의 구성과 Slide Gate, [slide-deck](../blocks/slide-deck.md)의 덱 규칙·덱 게이트를 따른다.
+본문 축(720px)·2열·줄 길이 규칙, 720px 프레임, page 도식 라벨 렌더 13~20px 게이트 대신 이 파일의 구성과 Slide Gate, [slide-deck](../blocks/slide-deck.md)의 덱 규칙·덱 게이트를 따른다.
 결론 수치는 히어로 대신 `stat` 슬라이드에 둔다. 나머지(글은 적게, 한 사실은 한 번(제목 목차·closing 메타 반복은 빼고 센다), 시맨틱, 토큰, 색, 접근성)는 그대로다.
 
 ## Slide Gate (의미 검사 우선)

@@ -4,7 +4,7 @@
 
 - 맨 위 진행률(완료 수 / 전체 + 막대). 그 아래 행 + 1px `grey-100` 디바이더. 행에 상자·배경을 두지 않는다.
 - 행 = 체크박스(실제 `input type="checkbox"`, 24px 원) → 제목 label(15px/600, 사용자가 하는 동작) → 결과 한 줄(14px grey-600, 끝나면 보이는 것) → 행 끝 칸(기본: 소요 시간, owner: 담당·기한, 없으면 생략).
-- 결과 한 줄은 공백 포함 50자 이내 한 문장이다([shell.md](shell.md) 줄 길이 절). 넘치면 문장을 줄인다.
+- 결과 한 줄은 축 한 줄 안에서 끝나는 한 문장이다([shell.md](shell.md) 줄 길이 절). 넘치면 문장을 줄인다.
 - 결정 본문이 header 요약 행에 있으면 할 일 행은 짧게 가리킨다(`PR로 올릴지 답하기` + `위 결정 1`). 결정 문장을 다시 쓰지 않는다.
 - 행 안 요소는 첫 줄 기준으로 맞춘다(`align-items: start`). 체크박스·시간·배지가 행 높이로 늘어나지 않는다.
 - 체크하면 행이 `data-status="done"`이 되고 진행률(네이티브 `<progress>`)이 갱신된다. 소요 시간은 `<time datetime="PT3M">`.
@@ -26,7 +26,7 @@
 - **시간이 일부 행에만 있으면 시간 열을 만들지 않는다.** 그 행의 결과 한 줄 끝에 넣는다(`… 보여요. 약 20분`). 한 행에만 붙은 오른쪽 끝 숫자는 근거 없이 튀어 보인다.
 - 입력 예시가 필요한 행은 `<details>`로 행 안에 접어 둔다. 붙여 넣을 명령·설정은 그 `<details>` 안에 [code-block.md](code-block.md)로 둔다(기본·owner 변형).
   linked 변형은 행 안에 접지 않고 아래 **활성 단계 코드 영역**에 펼쳐 둔다.
-- `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다.
+- `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다. 그림 지점과 번호로 대응하는 2열((b))이라 `.d0-wide` 안에 두고 `.d0-cols` 분할선(문서 공통 6/6 또는 7/5)을 따른다([shell.md](shell.md) 2열 절).
   - 행마다 `data-step="n"`과 `data-caption`(그 단계 그림 설명 한 줄)을 둔다. SVG는 단계마다 `g[data-step="n"]` 그룹 하나를 갖고, 그룹마다 누를 곳 하나만 blue다.
   - 행 위에서 마우스를 움직이거나(hover), 키보드 포커스가 들어오거나(focus-within), 행을 누르면 무대가 그 단계 그림으로 바뀐다. 체크하면 다음 미완료 단계의 무대·캡션·코드를 함께 보여 준다.
     hover는 실제 포인터 이동(`pointermove`, 좌표 변화)일 때만 받는다. 구간이 접혀 가만히 있는 포인터 밑으로 다른 행이 올라와도 체크로 옮겨 간 단계가 그대로다.
@@ -189,27 +189,28 @@ JS는 기본 변형과 같다.
 무대 SVG의 클래스(`d0-s-frame`, `d0-s-accent`, `d0-s-tick` 등)와 무대 CSS는 [diagram.md](diagram.md)·[shell.md](shell.md)를 따른다. 아래는 2단계만 줄였다.
 
 ```html
-<div class="d0-check" data-variant="linked">
+<div class="d0-wide">
+<div class="d0-check d0-cols" data-variant="linked">
   <figure class="d0-fig d0-check__stage" data-stage data-active-step="1">
     <div class="d0-fig__stage">
-      <svg viewBox="0 0 360 220" role="img" aria-labelledby="ls-t ls-d">
+      <svg viewBox="0 0 560 342" role="img" aria-labelledby="ls-t ls-d">
         <title id="ls-t">단계별 화면</title>
         <desc id="ls-d">설정 화면이에요. 왼쪽 메뉴의 내보내기가 파랗게 강조돼 있어요.</desc>
         <g data-step="1">
-          <rect class="d0-s-frame" x="1" y="1" width="358" height="218" rx="12"/>
-          <rect class="d0-s-fill" x="16" y="20" width="80" height="12" rx="6"/>
-          <rect class="d0-s-accent" x="16" y="44" width="80" height="16" rx="6"/>
-          <rect class="d0-s-fill" x="16" y="72" width="80" height="12" rx="6"/>
-          <rect class="d0-s-fill" x="116" y="20" width="226" height="180" rx="10"/>
-          <g class="d0-check__ok"><circle class="d0-s-node" cx="330" cy="30" r="11" data-tone="green"/><path class="d0-s-tick" d="M325 30 L329 34 L335.5 26.5"/></g>
+          <rect class="d0-s-frame" x="1.5" y="1.5" width="557" height="339" rx="19"/>
+          <rect class="d0-s-fill" x="25" y="31" width="124" height="19" rx="9.5"/>
+          <rect class="d0-s-accent" x="25" y="68" width="124" height="25" rx="9.5"/>
+          <rect class="d0-s-fill" x="25" y="112" width="124" height="19" rx="9.5"/>
+          <rect class="d0-s-fill" x="180" y="31" width="352" height="280" rx="16"/>
+          <g class="d0-check__ok"><circle class="d0-s-node" cx="513" cy="47" r="17" data-tone="green"/><path class="d0-s-tick" d="M506 47 L512 53 L522 41"/></g>
         </g>
         <g data-step="2">
-          <rect class="d0-s-frame" x="1" y="1" width="358" height="218" rx="12"/>
-          <rect class="d0-s-fill" x="16" y="20" width="200" height="12" rx="6"/>
-          <rect class="d0-s-zone" x="16" y="48" width="326" height="40" rx="10"/>
-          <rect class="d0-s-accent" x="28" y="62" width="120" height="12" rx="6"/>
-          <rect class="d0-s-fill" x="16" y="104" width="240" height="12" rx="6"/>
-          <g class="d0-check__ok"><circle class="d0-s-node" cx="330" cy="30" r="11" data-tone="green"/><path class="d0-s-tick" d="M325 30 L329 34 L335.5 26.5"/></g>
+          <rect class="d0-s-frame" x="1.5" y="1.5" width="557" height="339" rx="19"/>
+          <rect class="d0-s-fill" x="25" y="31" width="311" height="19" rx="9.5"/>
+          <rect class="d0-s-zone" x="25" y="75" width="507" height="62" rx="16"/>
+          <rect class="d0-s-accent" x="44" y="96" width="187" height="19" rx="9.5"/>
+          <rect class="d0-s-fill" x="25" y="162" width="373" height="19" rx="9.5"/>
+          <g class="d0-check__ok"><circle class="d0-s-node" cx="513" cy="47" r="17" data-tone="green"/><path class="d0-s-tick" d="M506 47 L512 53 L522 41"/></g>
         </g>
       </svg>
     </div>
@@ -244,13 +245,12 @@ JS는 기본 변형과 같다.
     </ol>
   </div>
 </div>
+</div>
 ```
 
 ```css
-.d0-check[data-variant="linked"] { display: grid; gap: 24px 48px; align-items: start; }
-.d0-check[data-variant="linked"] > * { min-width: 0; }
+/* 2열 격자는 .d0-cols(shell.md 정본 CSS)가 만든다 */
 @media (min-width: 960px) {
-  .d0-check[data-variant="linked"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .d0-check__stage { position: sticky; top: 24px; }
 }
 .d0-check__stage g[data-step], .d0-check__ok { display: none; }

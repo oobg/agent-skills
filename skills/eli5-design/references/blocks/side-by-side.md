@@ -15,7 +15,7 @@
 - **split-plain(기본, 속성 없음).** 카드 없는 2~3열. 열마다 위쪽 선(1px grey-200)으로 시작 줄을 맞추고, 고른 열은 그 선이 2px blue가 된다. 면·radius·그림자 없음. 짧은 개념·문장 둘을 견줄 때 쓴다.
 - **split-card(`data-layout="card"`).** 선택지 카드. 각 안이 그림·설명을 가진 '하나의 물건'일 때만 쓴다.
   **외곽선 카드**다. 면(배경색)은 없고 1px `--d0-grey-200` 테두리 + `--d0-radius-card`, 패딩 24px(640px 이하 20px), 그림자 없음. 그림 안쪽 면(`d0-s-fill` grey-100 등)이 카드 배경과 겹치지 않는다.
-  카드 폭 상한은 **410px**(테두리 2 + 패딩 48 + 안쪽 360px = 그림 기본 상한, 글줄도 32em 아래. 400px 그림은 가격표처럼 커 보인다)이고 카드끼리 폭이 같다.
+  카드는 축 폭을 같은 몫으로 나누고(2장이면 각 약 348px) 폭 상한은 **410px**이다(넓은 구간에서도 가격표처럼 커 보이지 않게). 카드끼리 폭이 같다.
   카드 묶음은 섹션 폭 안에서 **가운데**(`justify-content: center`), 카드 안 내용(그림·행·배지·이유)은 **왼쪽 정렬**이다. 섹션 제목·리드는 그대로 왼쪽에 둔다.
   고른 카드는 테두리 색만 `--d0-blue`로 바꾸고(두께 1px 그대로라 레이아웃이 흔들리지 않는다) `고른 안` 배지를 단다. `data-recommended`는 테두리를 그대로 두고 `추천` 배지만 둔다. 카드 안에서는 `data-selected="fill"`도 면을 칠하지 않고 같은 blue 테두리로 표시한다.
 
@@ -63,8 +63,7 @@
 
 ```css
 /* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
-.d0-option__wire { display: block; width: 100%; max-width: 360px; height: auto; } /* 폭 상한: diagram.md 폭 상한 절(기본 360) */
-.d0-sbs[data-layout="card"] .d0-option__wire { max-width: 360px; } /* 카드 안쪽 폭 = 기본 360. 400이면 가격표처럼 커 보인다 */
+.d0-option__wire { display: block; width: 100%; height: auto; } /* 열(카드 안쪽) 폭을 채운다. 카드 폭 상한 410이 크기를 묶는다 */
 .d0-option .d0-section-head__title .d0-pill { margin-block: calc((15px * var(--d0-leading-title) - 22px) / 2); } /* pill(22px)이 h3 줄(15px×leading)보다 높아 제목 행을 키우지 않게. 안 사이 제목·그림·행 top을 맞춘다 */
 .d0-option[data-selected="fill"] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
 ```
@@ -107,7 +106,7 @@
 .d0-sbs[data-layout="card"] { grid-auto-columns: minmax(0, 410px); justify-content: center; } /* split-card: 같은 폭 카드, 묶음은 가운데 */
 .d0-sbs[data-layout="card"] .d0-option {
   gap: 16px; padding: 24px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card);
-  background: none; /* 외곽선 카드: 면 없음, 그림자 없음. 폭 410 = 테두리 2 + 패딩 48 + 안쪽 360 */
+  background: none; /* 외곽선 카드: 면 없음, 그림자 없음. 폭 상한 410 */
 }
 .d0-sbs[data-layout="card"] .d0-option:is([data-selected], [data-selected="fill"]) { /* 고른 안: 같은 1px 두께에서 색만 blue */
   border-color: var(--d0-blue); padding: 24px; background: none;

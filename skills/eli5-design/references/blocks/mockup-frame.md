@@ -20,13 +20,13 @@
 - compare 시안 변형, preview에서 "이 화면에서 어떻게 받나"를 보여 줄 때. 와이어프레임으로 충분하면 [diagram.md](diagram.md) (d).
 - `data-variant="modal"`: 하나씩 묻기(단계마다 fieldset 하나). `data-variant="panel"`: 오른쪽 패널(`.d0-panel`)에 모든 fieldset을 한 번에.
   `.d0-sheet`는 tab-preview의 표 클래스이므로 이 블록에서 쓰지 않는다.
-- A/B는 같은 데이터·같은 높이. 1100px 이상 2열, 그 아래 세로. 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
+- A/B는 같은 데이터·같은 높이. 동시 비교라 `.d0-wide` 안 `.d0-cols`(문서 공통 분할선)로 960px 이상 2열, 그 아래 세로다([shell.md](shell.md) 2열 (a)). 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
 - 눌러 볼 필요 없이 화면의 한 곳을 짚어 보이면 아래 [Screenshot spotlight](#screenshot-spotlight-figured0-shot)(`figure.d0-shot`)를 쓴다.
 
 ## 스니펫
 
 ```html
-<div class="d0-demos">
+<div class="d0-wide"><div class="d0-demos d0-cols">
   <article class="d0-demo" data-demo data-variant="modal" data-state="idle">
     <header class="d0-demo__head"><h3>A. 하나씩 묻기</h3><button type="button" class="d0-link" data-reset>처음부터</button></header>
     <div class="d0-frame">
@@ -56,12 +56,11 @@
        article data-variant="panel" · h3 "B. 한 화면에서 고르기" · dialog class="d0-modal d0-panel"
        · progress.d0-modal__bar 줄과 <small data-step-label> 삭제 · aria-labelledby/h4 id를 mB-t로 · 라디오 name을 b-range·b-kind로.
        data-open·data-close·data-back·data-next·data-reset은 그대로 둔다(JS가 찾는다). -->
-</div>
+</div></div>
 ```
 
 ```css
-.d0-demos { display: grid; gap: 28px; }
-@media (min-width: 1100px) { .d0-demos { grid-template-columns: 1fr 1fr; } }
+/* .d0-demos의 2열 격자는 .d0-cols(shell.md 정본 CSS)가 만든다 */
 .d0-demo { display: grid; gap: 12px; min-width: 0; }
 .d0-demo__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .d0-link { min-height: 24px; padding: 2px 4px; border: 0; background: none; color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
@@ -435,21 +434,21 @@ devs.forEach(function (b) {
 ## Screenshot spotlight (`figure.d0-shot`)
 
 실제 화면 한 장에서 **봐야 할 곳 하나**를 밝히고 나머지는 흐리게 한다. 화면 내용이 주인공이라 프레임 크롬(타이틀바·신호등·베젤)은 두지 않는다.
-의도적으로 크게 쓰는 장면이지만 page에서 **화면 폭은 최대 560px**이고, 900px 이상에서는 바로 옆에 주석 열을 둔다(화면을 키워 섹션 폭을 채우지 않는다).
+page에서 화면 상자는 축 폭을 채우고 주석은 그 아래에 둔다. 주석을 화면 옆 열에 두려면 figure를 `.d0-wide` 바로 안에 두고 2열 분할선을 따른다(960px 이상, 화면 7 | 주석 5는 `data-split="7-5"`, [shell.md](shell.md) 2열 (b)).
 구도는 Spotlight([composition.md](../composition.md)), deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
-**560px 상한과 900px 2열 격자는 page 전용이다.** 덱 슬라이드에서는 [slide-deck.md](slide-deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
+**축 폭 화면과 넓은 구간 2열 격자는 page 전용이다.** 덱 슬라이드에서는 [slide-deck.md](slide-deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
 
 **해부 구조.**
 
 - `figure.d0-shot` = 화면 상자 `div.d0-shot__screen` → 주석 `p.d0-shot__note` 1~3개 → `figcaption` 한 줄.
-- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 최대 폭 560px(page), 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
+- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 폭은 놓인 자리(축 또는 `.d0-wide` 열)를 채우고, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
 - **spot.** 위치는 화면 상자 기준 백분율 인라인 변수 `style="--x:..%;--y:..%;--w:..%;--h:..%"`(왼쪽·위·폭·높이). 2px blue 테두리, `--d0-radius-sm`.
   왼쪽 위 모서리에 번호 배지(`b.d0-shot__num`, 24px blue-dark 원 + 흰 숫자 5.5:1). 위치 변수는 `--d0-*`가 아니다(토큰을 새로 만들지 않는다).
 - **dim.** 주인공 spot 하나(`data-dim`)의 바깥을 반투명 막으로 덮는다. 기본은 grey 막(grey-900 14%, 12~16% 범위)이다. 대부분의 앱 화면은 바탕이 희어서 흰 막은 거의 보이지 않는다. 어둡거나 진한 화면(사진, 진한 바탕의 화면)만 흰 막(`data-dim="white"`, `#fff` 62%)을 고른다.
   막은 spot의 `outline`이 화면 상자 끝까지 번지는 단단한 경계다. 그라디언트·blur·두꺼운 그림자, 16%보다 짙은 막은 쓰지 않는다. 화면 상자의 `overflow: hidden`이 막을 자른다.
   **spot 안은 원래 화면 그대로 보인다.** 막은 spot 바깥(`outline`)에만 있고 spot에는 `background`를 칠하지 않는다(spot 안이 검게·회색으로 렌더되면 결함이다). 테두리와 번호만 화면 위에 얹는다.
 - **spot이 둘 이상이면** dim은 하나만 건다(막이 서로를 덮는다). 나머지 spot은 테두리와 번호만 둔다. spot은 3개까지다.
-- **주석.** `p.d0-shot__note`마다 spot과 같은 번호 배지 + 한 문장. 번호가 짝을 맺는다. 900px 이상에서는 화면 오른쪽 열(220~300px), 그 아래에서는 화면 아래에 쌓인다.
+- **주석.** `p.d0-shot__note`마다 spot과 같은 번호 배지 + 한 문장. 번호가 짝을 맺는다. 화면 아래에 쌓이고, `.d0-wide` 안 960px 이상에서만 화면 오른쪽 열에 놓인다.
 
 **pins와의 관계.** 번호로 그림과 설명을 짝짓는 방식은 [diagram.md](diagram.md) (g) pins를 그대로 확장한다. 다른 점은 셋이다.
 pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사각 영역**이다. d0-shot은 바깥을 **흐린다**. d0-shot은 정적이다(hover 연동이 필요하면 pins를 쓴다).
@@ -488,11 +487,14 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 .d0-shot__note { display: flex; align-items: baseline; gap: 10px; margin: 0; color: var(--d0-grey-800); font-size: 15px; }
 .d0-shot__note .d0-shot__num { transform: translateY(-1px); }
 .d0-shot figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
-@media (min-width: 900px) {
-  .d0-shot { grid-template-columns: minmax(0, 560px) minmax(220px, 300px); justify-content: start; grid-template-rows: repeat(3, auto) 1fr; align-items: start; } /* page 전용. 남는 높이는 마지막 행이 받아 주석이 위로 붙는다. 덱은 slide-deck.md 덱 격자가 덮는다 */
-  .d0-shot__screen { grid-column: 1; grid-row: 1 / span 4; }
-  .d0-shot__note { grid-column: 2; }
-  .d0-shot figcaption { grid-column: 1 / -1; }
+@media (min-width: 960px) {
+  /* page 전용: .d0-wide 바로 안에서만 화면 | 주석. 분할선은 .d0-cols와 같다(12열, 열 사이 48px). 남는 높이는 마지막 행이 받아 주석이 위로 붙는다. 덱은 slide-deck.md 덱 격자가 덮는다 */
+  .d0-wide > .d0-shot { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 48px; grid-template-rows: repeat(3, auto) 1fr; align-items: start; }
+  .d0-wide > .d0-shot .d0-shot__screen { grid-column: 1 / span 6; grid-row: 1 / span 4; }
+  .d0-wide > .d0-shot .d0-shot__note { grid-column: 7 / span 6; }
+  .d0-wide > .d0-shot[data-split="7-5"] .d0-shot__screen { grid-column: 1 / span 7; }
+  .d0-wide > .d0-shot[data-split="7-5"] .d0-shot__note { grid-column: 8 / span 5; }
+  .d0-wide > .d0-shot figcaption { grid-column: 1 / -1; }
 }
 ```
 
@@ -514,4 +516,4 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
 - `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.
 - 실제 파일 다운로드·외부 전송. 결과는 토스트로만 알린다. 프레임 안 `main` 요소, `div`에 `role="dialog"`(네이티브 `dialog` 우선).
-- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), page에서 560px를 넘는 화면, 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.
+- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), 축 안에서 화면 옆에 주석 열 두기(옆 열은 `.d0-wide` 안에서만), 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.

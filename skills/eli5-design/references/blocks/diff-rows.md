@@ -5,7 +5,7 @@
 - 바뀐 항목만 행으로 나열한다. 행 = 항목명 | 전 | → | 후.
 - 전 값은 `<del>`, 후 값은 `<ins>`로 감싸 바뀜을 마크업으로도 알린다(밑줄·취소선은 CSS로 끈다). 후 값만 블루로 강조한다. 머리 행의 `전`·`후` 라벨과 화살표가 색 없이도 방향을 알려 준다.
 - 행 사이는 1px `grey-100` 디바이더 하나뿐이다. 행에 배경·테두리 상자를 두지 않는다.
-- 보조문(행 설명, 후 값 주석)은 14px grey-600, 한 줄이다. 공백 포함 50자를 넘으면 문장을 줄인다([shell.md](shell.md) 줄 길이 절).
+- 보조문(행 설명, 후 값 주석)은 14px grey-600, 한 줄이다. 축 한 줄을 넘으면 문장을 줄인다([shell.md](shell.md) 줄 길이 절).
 
 ## 언제 쓰나 / 변형
 
@@ -24,9 +24,7 @@
 행은 `subgrid`로 물려받아 가장 긴 배지 폭이 열 폭이 된다. `subgrid`를 못 쓰는 브라우저는 고정 64px 열로 떨어진다.
 배지는 열 안에서 왼쪽 정렬(`justify-self: start`)이다.
 
-**2열 변형(`ul.d0-rows.d0-cols`).** 행이 짝수이고 전체 폭에 한 줄 목록이 길게 늘어지면 목록을 2열로 나눈다. 열마다 32em이라 행 설명이 한 줄 50자를 넘지 않는다([shell.md](shell.md) `.d0-cols`).
-960px 이상에서만 2열이고, 행은 왼쪽 열부터 차례로 채운다. 행 수가 짝수(4·6)일 때만 쓴다. 3·5행이면 외톨이 행이 생기므로
-1열로 두고 문장을 줄인다. 2열에서는 각 열 첫 행의 구분선을 지운다. 글 열은 960px 이상에서 `minmax(0, 32em)` 트랙이다.
+**목록은 1열이다.** 한 목록을 짝수라서 두 열로 나누지 않는다. 성격이 다른 두 목록(주의 | 할 일, 완료 | 남은 것)을 나란히 견줄 때만 `.d0-wide` 안 `.d0-cols`에 `ul.d0-rows`를 하나씩 둔다([shell.md](shell.md) 2열 (c)).
 
 ```html
 <ul class="d0-rows">
@@ -34,8 +32,8 @@
   <li><span class="d0-pill">참고</span><div><strong>파일은 30일 뒤 지워져요</strong></div></li>
 </ul>
 
-<!-- 2열 변형: 짝수 행일 때만 -->
-<ul class="d0-rows d0-cols">…</ul>
+<!-- 대등한 두 목록: 넓은 구간 안 2열 -->
+<div class="d0-wide"><div class="d0-cols"><ul class="d0-rows">…</ul><ul class="d0-rows">…</ul></div></div>
 ```
 
 ```css
@@ -52,16 +50,7 @@
 .d0-rows .d0-pill[data-size="sm"] { margin-top: calc((15px * var(--d0-leading-body) - 20px) / 2); }
 .d0-rows strong { display: block; font-size: 15px; line-height: var(--d0-leading-body); font-weight: 600; }
 .d0-rows p { color: var(--d0-grey-600); font-size: 14px; }
-.d0-rows.d0-cols { row-gap: 0; } /* .d0-cols의 row-gap이 행 구분선 사이로 새지 않게 */
 .d0-rows[data-badge="head"], .d0-rows[data-badge="head"] li { grid-template-columns: minmax(0, 1fr); } /* 같은 상태: 배지는 섹션 머리에 한 번, 목록은 배지 열 없음(subgrid 폴백 포함) */
-@media (min-width: 960px) {
-  .d0-rows.d0-cols { grid-template-columns: max-content minmax(0, 32em) max-content minmax(0, 32em); column-gap: 12px; } /* 글 열 32em: shell.md 줄 길이 */
-  .d0-rows.d0-cols li { grid-column: span 2; }
-  .d0-rows.d0-cols[data-badge="head"] { grid-template-columns: repeat(2, minmax(0, 32em)); } /* 배지 열 없음: 글 열 둘 */
-  .d0-rows.d0-cols[data-badge="head"] li { grid-column: span 1; }
-  .d0-rows.d0-cols li:nth-child(odd) { margin-right: 36px; } /* 열 사이 48px = 12 + 36 */
-  .d0-rows.d0-cols li:nth-child(2) { border-top: 0; padding-top: 0; }
-}
 ```
 
 ## 위험 행 변형 (`data-variant="risk"`, report 이슈·위험)
@@ -73,7 +62,7 @@
 - 영향은 숫자나 날짜로 쓴다(`출시가 3일 늦어져요`). `큰 영향`처럼 크기를 말로만 하지 않는다.
 - 대응은 주체 + 짧은 구다. 기한·조건까지 다 쓴 할 일은 다음 단계 checklist 행 하나가 정본이고, 여기서는 같은 문장을 되풀이하지 않는다.
 - `dt`는 13px/600 grey-600, `dd`는 14px grey-800, 쌍 간격 4px. 한 `dd`는 한 줄(약 40자)이다.
-- 행이 여러 줄이라 2열 변형(`.d0-cols`)과 함께 쓰지 않는다. 3행 이내.
+- 3행 이내.
 - **모든 행이 같은 상태면 행 배지를 빼고 섹션 머리에 한 번만 단다**(`data-badge="head"`, [shell.md](shell.md) 배지 수 규칙). 상태 배지 하나를 h2 옆(`.d0-section-head__title`)에 두고, 목록은 배지 열 없이 제목·`dl`만 둔다.
   상태가 섞이면(`위험`과 `차단`) 행마다 배지를 단다. 배지 행 변형(한계·참고)도 같다.
 
@@ -165,6 +154,6 @@
 - 색만으로 전후 구분(라벨·화살표를 함께 둔다).
 - 배지 행을 `div` 나열로 만들기(행 목록은 `ul > li`), 배지 `margin-top`을 줄 높이와 무관한 고정값으로 두기.
 - 행마다 `auto` 배지 열을 따로 둬 배지 길이에 따라 제목 시작 위치가 들쭉날쭉한 목록.
-- 행 상자·배경, `grey-200` 이상 구분선, 한 줄 50자를 넘는 행 설명을 그대로 두기, 홀수 행 목록에 2열 변형.
+- 행 상자·배경, `grey-200` 이상 구분선, 축 한 줄을 넘는 행 설명을 그대로 두기, 한 목록을 두 열로 나누기.
 - 행 하나에 배지 2개 이상, 페이지 배지 톤 4종류 이상, 모든 행에 같은 배지 되풀이(같은 상태면 `data-badge="head"`, [shell.md](shell.md) 배지 절).
 - 위험 행에서 `영향`이나 `대응`을 빼기, `대응` 칸에 `검토 중`·`추후 대응`만 쓰기, 대응 문장을 다음 단계 행에 그대로 되풀이하기.
