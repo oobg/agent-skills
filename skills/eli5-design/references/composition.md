@@ -41,8 +41,8 @@
   │ 한 줄 뜻                      │
   └──────────────────────────────┘
   ```
-- **블록.** [hero.md](blocks/hero.md), Impact 띠([shell.md](blocks/shell.md)), editorial 도식.
-- **page.** header(h1 → 히어로 → 요약 행)가 첫 Hero다. 본문에서는 기존 섹션 하나를 Impact 띠(문장 32px 또는 숫자 64px)로 바꿀 때만 쓴다.
+- **블록.** [hero.md](blocks/hero.md), Impact([shell.md](blocks/shell.md)), editorial 도식.
+- **page.** header(h1 → 히어로 → 요약 행)가 첫 Hero다. 본문에서는 기존 섹션 하나를 Impact(문장 32px 또는 숫자 64px)로 바꿀 때만 쓴다.
 - **deck.** 표지(`cover`)는 주 패턴 대표 도식의 모양에 맞춰 contrast·bottom·side·center·map 배치를 고른다([slide-deck](blocks/slide-deck.md)). 주장(`assertion`)·큰 숫자(`stat`)는 하나를 크게 두며 주장 슬라이드는 Impact가 기본이다.
 
 ### Spotlight — 화면 한 곳
@@ -164,18 +164,18 @@
 | --- | --- | --- | --- |
 | Quiet | `quiet` | 진한 포인트 채움 없음(완료 체크·의미색 점만), h2 한 단계 작게(18px), 본문·목록 글자 grey-700 | 참고, 부록, 정리 목록, deck 목차 |
 | Normal | 생략 | 흰 바탕 + 기존 규칙 | 대부분의 섹션 |
-| Impact | `impact` | blue-light 풀블리드 면 + 초대형 글자. 글자 grey-900, 강조 숫자 blue-dark | 주장 한 문장, 결론 숫자 하나 |
+| Impact | `impact` | page: 배경 없이 초대형 글자 + 여백(면·풀블리드 없음). deck: blue-light 면 + 초대형 글자. 글자 grey-900, 강조 숫자 blue-dark | 주장 한 문장, 결론 숫자 하나 |
 
 - **Impact 안에는 하나만** 둔다: page는 문장 하나 또는 숫자 하나(+ 짧은 라벨)이고, editorial 도식을 넣지 않는다. deck은 그림 하나도 된다. 카드·목록·배지·둥근 박스 금지.
-- **page**는 Impact 띠를 선택으로 페이지당 0~1개 둔다(기존 본문 섹션 하나가 화면 폭 끝까지 칠한 띠가 된다. 섹션을 더하지 않는다). 띠 안 패딩 48px, 이웃 내용까지 합계 64px로 일반 섹션 간격과 같다. header 히어로와 같은 숫자를 띠에서 되풀이하지 않는다.
+- **page**는 Impact를 선택으로 페이지당 0~1개 둔다(기존 본문 섹션 하나가 큰 문장·숫자만 남긴다. 섹션을 더하지 않는다). 배경 면·풀블리드 띠 없이 글자 크기와 여백만 쓰고, 섹션 간격은 일반과 같은 64px(모바일 48px)다. header 히어로와 같은 숫자를 되풀이하지 않는다.
 - **deck**은 Impact 슬라이드를 전체의 20~30%로 둔다(10장이면 2~3장). 연속 두 장을 Impact로 두지 않는다.
-- 어두운 배경은 쓰지 않는다(Day0 라이트 온리). Impact의 무게는 면의 넓이와 글자 크기에서 온다.
+- 어두운 배경은 쓰지 않는다(Day0 라이트 온리). Impact의 무게는 글자 크기와 여백에서 온다(deck은 면도 쓴다).
 - CSS와 대비는 [shell.md](blocks/shell.md) 강조 절이 정본이다.
 
 ### 색 비율과 옅은 표면
 
 - 커버·마지막 closing 장을 포함한 색 면적은 [shell.md](blocks/shell.md)의 진한 포인트 lint Warning(<1%·1~15%·>15%)을 따른다. 게이트를 맞추려고 색 면적을 늘리지 않는다.
-- **면 단위 옅은 표면**(blue-light 무대, Impact 띠, 썸네일 판)은 비율 계산에서 빼고 **장면 수**로 관리한다: page는 Impact 띠 1개 + blue 무대 1개까지, deck은 Impact 20~30%.
+- **면 단위 옅은 표면**(blue-light 무대, deck Impact 슬라이드, 썸네일 판)은 비율 계산에서 빼고 **장면 수**로 관리한다: page는 blue 무대 1개까지(page Impact는 면이 없다), deck은 Impact 20~30%.
 - 정본은 [shell.md](blocks/shell.md) 색 절이다.
 
 ## 무대와 상자
@@ -187,18 +187,18 @@
   **첫 화면 섹션은 예외다.** 첫 화면 섹션(header 다음 첫 페이지 섹션, `.d0-split`으로 시작하면 짝 섹션 포함, SKILL.md 원칙 3번)에서는 explanation을 그림 아래에 두고, 그림 옆은 figcaption(`data-layout="side"`)·짧은 주석·범례만 둔다. 옆 설명 열이 첫 화면 면적 규칙(그림 > 글)을 깨지 않게 하기 위해서다.
   그림 폭 상한(기본 360 / wide 400 / 가로로 긴 타임라인·단계 줄 720)은 [diagram.md](blocks/diagram.md) 폭 상한 절이 정본이다.
 - **카드·둥근 박스를 기본값으로 쓰지 않는다.** 묶음은 여백·정렬·행 구분선으로 만든다. 카드는 하나씩 눌러 보거나 나란히 견주는 독립 대상(썸네일, 시안)일 때만 쓴다.
-  예외: 선택지 비교([side-by-side](blocks/side-by-side.md))의 **split-card 변형(`data-layout="card"`)만** 카드 예외다. 각 안이 그림·설명을 가진 선택 단위일 때 카드(grey-50 면, 보더리스)로 묶고, 카드 묶음은 가운데, 카드 안은 왼쪽 정렬한다. 기본 split-plain은 카드가 없다.
+  예외: 선택지 비교([side-by-side](blocks/side-by-side.md))의 **split-card 변형(`data-layout="card"`)만** 카드 예외다. 각 안이 그림·설명을 가진 선택 단위일 때 외곽선 카드(1px grey-200 테두리, 면·그림자 없음)로 묶고, 카드 묶음은 가운데, 카드 안은 왼쪽 정렬한다. 기본 split-plain은 카드가 없다.
 
 ## 패턴별 권장 구도 순서
 
-page 기준 예시다. 그 패턴이 페이지 대부분을 차지할 때의 순서이고, 패턴을 섞으면 섹션마다 그 패턴의 장면을 빌린다. 첫 칸은 header다. 섹션 수는 독자 질문이 정하고, Impact 띠·editorial은 기존 섹션을 대체한다. 나란히 둘 수 있는 두 장면은 `.d0-split` 2열로 묶는다. 독자 질문에 필요 없는 장면은 뺀다.
+page 기준 예시다. 그 패턴이 페이지 대부분을 차지할 때의 순서이고, 패턴을 섞으면 섹션마다 그 패턴의 장면을 빌린다. 첫 칸은 header다. 섹션 수는 독자 질문이 정하고, Impact·editorial은 기존 섹션을 대체한다. 나란히 둘 수 있는 두 장면은 `.d0-split` 2열로 묶는다. 독자 질문에 필요 없는 장면은 뺀다.
 
 | 패턴 | 권장 순서 |
 | --- | --- |
 | compare | Hero(결정 질문) → Split(A \| B, 전/후) → Spotlight(차이 한 곳) → Summary(결정·할 일) |
 | flow | Hero → Sequence(narrative 단계) → Canvas(구조) → Summary(막히면) |
 | preview | Hero → Canvas(결과물 전체, pins) → Spotlight(핵심 화면 한 곳) → Summary |
-| report | Hero(결론 수치) → Evidence(차트 + 해석) → Hero(Impact 띠, 주장 한 문장) → Summary(할 일, Quiet) |
+| report | Hero(결론 수치) → Evidence(차트 + 해석) → Hero(Impact, 주장 한 문장) → Summary(할 일, Quiet) |
 | guide | Hero → Spotlight(어디를 누르나) → Sequence(단계) → Summary(막히면) |
 | timeline | Hero → Sequence(narrative: 지난 것·지금·남은 것) → Evidence(변경 규모) → Summary |
 | incident | Hero(영향 수치) → Sequence(경위) → Canvas(원인 그래프) → Summary(재발 방지) |
@@ -211,5 +211,5 @@ deck은 같은 순서를 슬라이드로 늘리되 cover → toc 뒤에 시작�
 - 모든 섹션이 같은 구도(제목 → 무대 → SVG → 캡션), 같은 구도 연속, 같은 밀도 셋 연속.
 - 구도를 바꾸려고 섹션 더하기, 그림을 키워 폭 채우기, 2열로 두던 구성을 1열로 풀어 길게 늘이기.
 - 색으로만 강조하기, 큰 숫자를 전부 blue로 칠하기, 장면마다 blue 강조 묶음 둘 이상.
-- page에 Impact 띠 2개 이상, deck Impact 30% 초과, Impact 안 카드·목록·둘 이상의 숫자, 어두운 Impact 면.
+- page에 Impact 2개 이상, deck Impact 30% 초과, Impact 안 카드·목록·둘 이상의 숫자, 어두운 Impact 면.
 - 기본값으로 두른 회색 무대·카드·둥근 박스.

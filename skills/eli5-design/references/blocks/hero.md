@@ -18,10 +18,10 @@
 큰 숫자가 중요한 이유는 크기에서 온다. 색은 강조 순서(크기 → 위치 → 여백 → 무게 → 색, [composition.md](../composition.md))의 마지막이다.
 
 - 히어로·editorial 숫자는 **grey-900이 기본**이다. 44px(히어로), 56px(editorial) 크기가 이미 강조다. 문서의 기본 밀도는 그대로이고 큰 숫자는 이 정해진 자리에서만 커진다.
-  예외는 Impact 띠 숫자(64px, 모바일 48px)다. 96px 이상 숫자는 쓰지 않는다. 띠의 강조 숫자라 blue-dark가 기본이고, 그 페이지의 blue-dark 큰 숫자 하나를 차지한다.
-- **큰 숫자 blue-dark는 페이지에 하나**다. 히어로(`data-tone="blue"`), Impact 띠 숫자(`.d0-impact__num`), editorial(`data-tone="blue"`) 중 가장 중요한 하나에만 쓴다.
-  Impact 띠 숫자는 띠의 강조 숫자라 blue-dark가 기본이므로, 띠에 숫자를 두면 히어로는 grey-900으로 둔다.
-- **히어로는 header 안 하나다.** 본문에서 숫자 하나를 크게 말하고 싶으면 히어로를 하나 더 두지 않고 Impact 띠([shell.md](shell.md) 강조 면)나 editorial 도식([diagram.md](diagram.md) 장르)을 쓴다.
+  예외는 page Impact 숫자(64px, 모바일 48px)다. 96px 이상 숫자는 쓰지 않는다. Impact의 강조 숫자라 blue-dark가 기본이고, 그 페이지의 blue-dark 큰 숫자 하나를 차지한다.
+- **큰 숫자 blue-dark는 페이지에 하나**다. 히어로(`data-tone="blue"`), Impact 숫자(`.d0-impact__num`), editorial(`data-tone="blue"`) 중 가장 중요한 하나에만 쓴다.
+  Impact 숫자는 강조 숫자라 blue-dark가 기본이므로, Impact에 숫자를 두면 히어로는 grey-900으로 둔다.
+- **히어로는 header 안 하나다.** 본문에서 숫자 하나를 크게 말하고 싶으면 히어로를 하나 더 두지 않고 Impact([shell.md](shell.md) 강조 절)나 editorial 도식([diagram.md](diagram.md) 장르)을 쓴다.
   둘 다 섹션을 더하지 않고 기존 섹션을 대체할 때만 쓰며, editorial은 실제 숫자일 때만이다.
   셋은 같은 숫자를 나눠 갖지 않는다. 한 숫자는 한 곳에만 크게 둔다.
 

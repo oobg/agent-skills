@@ -125,7 +125,7 @@
 ```
 
 ```css
-.d0-diff { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.d0-diff { width: 100%; max-width: 720px; table-layout: fixed; border-collapse: collapse; } /* 넓은 화면에서 전·후 값이 화살표에서 멀어지지 않게 */
 .d0-diff caption { text-align: left; padding-bottom: 8px; color: var(--d0-grey-600); font-size: 14px; }
 .d0-diff th, .d0-diff td {
   padding: 12px 8px 12px 0;
@@ -141,7 +141,14 @@
 }
 .d0-diff th[scope="row"] { color: var(--d0-grey-900); font-weight: 600; }
 .d0-diff td:nth-child(2) { color: var(--d0-grey-600); }
+.d0-diff thead th:nth-child(1) { width: 20%; }
+.d0-diff thead th:nth-child(2) { width: 120px; }
 .d0-diff td:nth-child(3), .d0-diff thead th:nth-child(3) { width: 28px; color: var(--d0-grey-600); }
+@media (max-width: 640px) { /* 후 값 주석이 좁은 열에서 3줄로 접히지 않게 라벨·전 열을 줄인다 */
+  .d0-diff thead th:nth-child(1) { width: 72px; }
+  .d0-diff thead th:nth-child(2) { width: 104px; }
+  .d0-diff td:nth-child(3), .d0-diff thead th:nth-child(3) { width: 20px; }
+}
 .d0-diff td:last-child { color: var(--d0-blue-dark); font-weight: 600; }
 .d0-diff del, .d0-diff ins { text-decoration: none; }
 .d0-diff__note {

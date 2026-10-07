@@ -9,7 +9,7 @@
 - 행 안 요소는 첫 줄 기준으로 맞춘다(`align-items: start`). 체크박스·시간·배지가 행 높이로 늘어나지 않는다.
 - 체크하면 행이 `data-status="done"`이 되고 진행률(네이티브 `<progress>`)이 갱신된다. 소요 시간은 `<time datetime="PT3M">`.
 - 색: 진행 막대는 blue, 끝난 체크는 green 원 + 흰 체크선(흰 바탕 위 green 3.47, green 위 흰 선 3.47로 그래픽 3:1 통과). 체크 모양과 취소선이 색 없이도 완료를 말한다.
-  green은 글자에 쓰지 않는다(완료 행 글자는 grey-600).
+  green은 글자에 쓰지 않는다(완료 행 글자는 grey-600). linked 변형은 번호 원도 완료를 말하므로 취소선을 빼고 제목을 그대로 읽히게 둔다.
 
 ## 언제 쓰나 / 변형
 
@@ -33,6 +33,7 @@
     figure의 `data-active-step`이 보이는 그룹을 고르고, 현재 행은 `data-current`로 번호 원이 blue-dark(흰 숫자 5.5)가 된다.
   - 마지막 hover·focus·click 단계는 목록을 떠나도 유지한다. 처음 로드할 때는 첫 미완료 단계를 보여 주고, 모두 완료하면 마지막 단계를 유지한다. 체크 해제 시에는 해제한 단계를 보여 준다.
   - 체크한 단계는 그룹에 `data-done`이 붙어 green 원 + 흰 체크선(`.d0-s-tick`, 3.47)이 나타난다. 행 번호 원은 green-bg + grey-900 숫자(15.12)다.
+    체크 원·번호 원이 이미 완료를 말하므로 제목에 취소선을 긋지 않는다(grey-600만). 끝난 단계도 다시 읽으러 오는 곳이라 글자를 지우지 않는다.
   - 그림 이름은 바뀐 단계에 맞춰 figcaption과 SVG `<desc>`를 함께 고친다(`<strong>2단계</strong> 파란 입력창에 주제를 적어요.`). 별도 `aria-live`는 두지 않는다.
   - 960px 미만: sticky를 풀고 무대 1장을 목록 위에 둔다. 행을 누르거나 체크하면 그림이 바뀐다. 무대를 한 장만 두는 이유는 같은 SVG를 행마다 복제하지 않기 위해서다.
     단계 그림이 목록에서 멀어 읽기 어려우면 대신 행 `<details>` 안 작은 그림으로 바꾼다(이때는 linked를 쓰지 않는다).
@@ -54,18 +55,21 @@
   - 6단계인데 설명이 길다 → 2~3구간.
   - 10단계 이상 → 거의 항상 구간으로 나눈다.
   - 단계마다 화면·코드·주의가 붙는다 → 더 일찍 나눈다.
-- **구간 이름은 결과로.** `준비`·`설정` 같은 추상어보다 끝나면 얻는 결과를 우선한다(`쓸 수 있는 상태`, `초안 완성`). 구간마다 이름 + 단계 수 + 끝에 공용 [checkpoint](checkpoint.md) 한 줄(`여기까지 하면 초안이 완성돼요.`)을 둔다. rail은 지금 위치, checkpoint는 그 구간이 끝나면 완성되는 결과다.
-- **화면(권장 조합 셋).**
-  1. **전체 지도.** 진행률(`전체 n / N 완료` + 막대) 바로 아래, 구간 이름을 잇는 공용 [status rail](timeline.md) `ol.d0-rail`을 항상 둔다(정의는 timeline.md 한 곳). 현재 구간은 blue-dark 점 + 굵은 이름, 끝난 구간은 green 점 + `✓`, 예정은 빈 원이다.
-     끝난 구간에는 현재 표시(`aria-current`)를 달지 않는다. 모두 끝나면 현재 구간 없이 모든 점이 green `✓`다.
-  2. **현재 구간만 펼침.** 현재 구간 머리는 `만들기 · 2 / 3`(이름 · 지금 단계 / 구간 단계 수)이고 아래에 단계 행과 결과 한 줄이 펼쳐진다.
-  3. **나머지는 한 줄.** 끝난 구간은 `✓ 준비 · 2단계`, 바로 다음 구간은 `다음: 발행 · 2단계`, 그 뒤 구간은 `이름 · k단계` 한 줄 머리만 남긴다. 머리를 누르면 그 구간을 펼쳐 볼 수 있다.
-  375px에서도 같은 원칙이다. 지도는 이름이 두 줄로 감겨도 점·선은 한 줄을 지킨다.
+- **구간 이름은 결과로.** `준비`·`설정` 같은 추상어보다 끝나면 얻는 결과를 우선한다(`쓸 수 있는 상태`, `첫 초안`). 구간마다 머리 행 하나에 이름 + 상태 + 끝나면 얻는 결과 한 줄(약 25자 이내, `에이전트가 eli5-design을 불러 써요.`)을 둔다.
+- **화면 = 진행률 한 줄 + 구간 머리 행.** 같은 정보를 두 곳에 쓰지 않는다. 구간 이름·결과는 머리 행에만, 진행 수는 맨 위 전체 수와 머리 행의 구간 수에만 있다.
+  1. **맨 위 진행률.** `전체 n / N 완료` + 막대 한 줄. 이것이 전체 진행의 유일한 표시다.
+  2. **구간 머리 행 = 지도.** `상태 표시 · 이름 · 진행 수` 한 줄 + 그 아래 작은 결과 한 줄. 머리 행을 위에서 아래로 읽으면 그대로 전체 구간 지도다.
+     구간 이름을 잇는 [status rail](timeline.md)을 진행률 아래에 또 두지 않고, 구간 끝에 결과를 되풀이하는 [checkpoint](checkpoint.md) 줄도 두지 않는다.
+     - 끝남: green 원 + 흰 `✓`, 진행 수 없음. 진행: blue-dark 테두리 원 + `k / n`(그 구간에서 **체크한** 단계 수 / 구간 단계 수). 예정: grey 테두리 원 + `n단계`.
+     - 구간 단계를 모두 체크하면 펼쳐져 있어도 `✓`다(펼침은 위치, ✓는 체크 결과). 진행 중 구간은 첫 미완료 단계가 있는 구간 하나다. 그 밖에 일부만 체크한 구간도 `k / n`으로 센다.
+     - 상태 표시 원은 `role="img"`와 `aria-label`(`완료`·`진행 중`·`예정`)로 상태를 읽어 준다. 색만으로 구분하지 않는다(✓ 모양, 테두리만 있는 원).
+  3. **현재 구간만 펼침.** 펼친 구간도 같은 머리 행 아래에 단계 행이 붙을 뿐 별도 머리를 두지 않는다. 끝났거나 예정인 구간은 머리 행 한 줄로 접히고, 누르면 펼친다.
+  375px에서도 같다. 결과 한 줄은 이름 아래 줄이라 좁아져도 진행 수와 겹치지 않는다.
 - **동작.** 체크하면 다음 미완료 단계로 가고, 구간을 넘으면 다음 구간을 펼치고 이전 구간을 한 줄로 접는다. linked 변형의 왼쪽 무대(현재 단계 그림 + 짧은 설명 + 코드 영역), 마지막 hover·focus·click 단계 유지는 그대로다.
-  현재 구간 머리 `n / k`와 지도의 현재 점은 활성 단계(체크로 옮겨 간 단계, hover·focus·click으로 고른 단계)를 따른다. hover·focus·click은 펼침·접힘을 바꾸지 않고, 진행률 `전체 n / N 완료`는 체크한 수만 센다(linked JS가 선택을 바꿀 때마다 `d0-step` 이벤트를 보낸다).
-  구간의 단계를 모두 체크하면 그 구간 끝 checkpoint에 `data-status="done"`이 붙어 green `✓`가 나타나고, 하나라도 해제하면 빠진다.
+  펼칠 구간은 활성 단계(체크로 옮겨 간 단계, 해제한 단계)가 있는 구간이다. hover·focus·click은 펼침·접힘도 머리 행 수도 바꾸지 않는다. 진행 수(전체 n / N, 구간 k / n)는 체크한 수만 센다.
   접히는 구간 안에 키보드 포커스가 있으면 새 현재 단계의 체크박스로 포커스를 옮긴다.
-- **JS 없을 때·인쇄.** 접힘은 JS가 붙이는 `data-collapsed`로만 생기므로 JS가 없으면 모든 구간이 펼쳐진다. 숨김 규칙은 `@media screen` 안에만 있어 인쇄에서도 전 구간이 원래 표시로 펼쳐진다(`display: revert`로 되살리면 checkpoint의 flex·선이 브라우저 기본값으로 돌아가 사라진다).
+- **JS 없을 때·인쇄.** 접힘은 JS가 붙이는 `data-collapsed`로만 생기므로 JS가 없으면 모든 구간이 펼쳐진다. 숨김 규칙은 `@media screen` 안에만 있어 인쇄에서도 전 구간이 펼쳐진다.
+  JS 없는 머리 행은 정적 글자(이름 · `n단계` · 결과)를 그대로 보여 준다. 결과는 HTML에 정적으로 쓰고 JS는 진행 수와 상태만 바꾼다.
 - 시각 톤은 기본 체크리스트와 같다. 구간마다 카드·배경·박스를 두지 않고 구간 경계도 행과 같은 1px grey-100 선이다.
 
 **긴 절차일 때 고려.** 구간 접기 대신 현재 단계 ±1만 크게 보이고 나머지를 작게 줄이는 방식, 보이는 단계 창을 옮겨 가는 윈도잉, 왼쪽 미니 목차 + 오른쪽 한 단계 상세 방식도 있다. 단계가 15개를 넘거나 단계마다 화면이 크게 바뀌면 이 방식들을 검토하되, 같은 페이지에서 구간 접기와 섞지 않는다.
@@ -301,6 +305,7 @@ JS는 기본 변형과 같다.
 }
 .d0-check__row[data-current] .d0-check__no { background: var(--d0-blue-dark); color: #fff; }
 .d0-check__row[data-status="done"] .d0-check__no { background: var(--d0-green-bg); color: var(--d0-grey-900); }
+.d0-check[data-variant="linked"] .d0-check__row[data-status="done"] label { text-decoration: none; } /* 체크 원·번호 원이 완료를 말한다 */
 @media (prefers-reduced-motion: no-preference) {
   .d0-check__stage g[data-step] { animation: d0-step-in var(--d0-dur) var(--d0-ease); }
   @keyframes d0-step-in { from { opacity: 0; } to { opacity: 1; } }
@@ -322,7 +327,7 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
     cap.replaceChildren(strong, ' ' + row.dataset.caption);
     desc.textContent = row.dataset.desc;
     rows.forEach(function (r) { r.toggleAttribute('data-current', r === row); });
-    list.dispatchEvent(new CustomEvent('d0-step')); // 구간 JS가 머리 n / k·지도를 활성 단계에 맞춘다
+    list.dispatchEvent(new CustomEvent('d0-step')); // 선택 변경 알림. 구간 JS는 받아도 펼침·진행 수를 바꾸지 않는다
   }
   function sync() {
     var n = 0;
@@ -389,8 +394,8 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
 
 ### 구간 스니펫
 
-기본·linked 변형 모두에 붙는다. `.d0-check`(linked는 `.d0-check__list` 안)에 진행률 → 지도 → 구간 목록 순서로 둔다. 아래는 linked 목록 쪽만 2구간 4단계로 줄였다.
-구간을 쓰면 진행률 라벨은 `전체 n / N 완료`로 쓴다. 구간 머리 `h3`의 `data-name`이 이름 정본이고, 정적 글자는 JS 없을 때 보이는 머리다.
+기본·linked 변형 모두에 붙는다. `.d0-check`(linked는 `.d0-check__list` 안)에 진행률 → 구간 목록 순서로 둔다. 진행률과 구간 사이에 status rail을 두지 않는다. 아래는 linked 목록 쪽만 2구간 4단계로 줄였다.
+구간을 쓰면 진행률 라벨은 `전체 n / N 완료`로 쓴다. 머리 행 `h3` 안 네 칸(상태 원·이름·진행 수·결과)이 정본이고, 정적 글자는 JS 없을 때 보이는 머리다.
 
 ```html
 <div class="d0-check" data-variant="linked" data-phased>
@@ -398,51 +403,77 @@ document.querySelectorAll('.d0-check[data-variant="linked"]').forEach(function (
   <div class="d0-check__list">
     <label class="d0-check__progress" for="ph-progress">전체 <output data-count>0</output> / 4 완료</label>
     <progress class="d0-check__bar" id="ph-progress" max="4" value="0">0 / 4</progress>
-    <ol class="d0-rail" aria-label="전체 구간">
-      <li data-phase="1" aria-current="step"><span class="d0-rail__mark" aria-hidden="true"></span>쓸 수 있는 상태</li>
-      <li data-phase="2"><span class="d0-rail__mark" aria-hidden="true"></span>첫 파일 받기</li>
-    </ol>
     <ol class="d0-check__phases">
       <li class="d0-check__phase" data-phase="1">
-        <h3 class="d0-check__phase-head" data-name="쓸 수 있는 상태">쓸 수 있는 상태 · 2단계</h3>
+        <h3 class="d0-check__phase-head">
+          <span class="d0-check__phase-mark" aria-hidden="true"></span>
+          <span class="d0-check__phase-name">쓸 수 있는 상태</span>
+          <span class="d0-check__phase-count">2단계</span>
+          <span class="d0-check__phase-result">내보내기 메뉴를 쓸 수 있어요.</span>
+        </h3>
         <ol>
           <li class="d0-check__row" data-step="1" data-current data-meta="none" data-caption="…" data-desc="…">…</li>
           <li class="d0-check__row" data-step="2" data-meta="none" data-caption="…" data-desc="…">…</li>
         </ol>
-        <p class="d0-checkpoint"><span class="d0-checkpoint__label">여기까지 하면</span>내보내기 메뉴를 쓸 수 있어요.</p>
       </li>
       <li class="d0-check__phase" data-phase="2">
-        <h3 class="d0-check__phase-head" data-name="첫 파일 받기">첫 파일 받기 · 2단계</h3>
+        <h3 class="d0-check__phase-head">
+          <span class="d0-check__phase-mark" aria-hidden="true"></span>
+          <span class="d0-check__phase-name">첫 파일 받기</span>
+          <span class="d0-check__phase-count">2단계</span>
+          <span class="d0-check__phase-result">첫 파일을 받아요.</span>
+        </h3>
         <ol>
           <li class="d0-check__row" data-step="3" data-meta="none" data-caption="…" data-desc="…">…</li>
           <li class="d0-check__row" data-step="4" data-meta="none" data-caption="…" data-desc="…">…</li>
         </ol>
-        <p class="d0-checkpoint"><span class="d0-checkpoint__label">여기까지 하면</span>첫 파일을 받아요.</p>
       </li>
     </ol>
   </div>
 </div>
 ```
 
-단계가 짧고 적어 모두 펼쳐 둘 때는 `data-phased="open"`을 쓴다. 지도·머리는 같고 접지 않는다.
+단계가 짧고 적어 모두 펼쳐 둘 때는 `data-phased="open"`을 쓴다. 머리 행은 같고 접지 않는다.
 
 ```css
-/* 지도는 공용 status rail(.d0-rail) CSS를 쓴다: timeline.md. 구간 끝 결과 줄은 checkpoint CSS: checkpoint.md */
+/* 구간: 머리 행이 지도다(상태 원 · 이름 · 진행 수 / 결과 한 줄). status rail·checkpoint는 쓰지 않는다 */
 .d0-check__phase { border-top: 1px solid var(--d0-grey-100); }
-.d0-check__phase-head { margin: 0; padding: 12px 0 4px; color: var(--d0-grey-900); font-size: 15px; font-weight: 600; }
-.d0-check__phase-toggle { display: flex; align-items: center; width: 100%; min-height: 32px; padding: 0; border: 0; background: none; color: inherit; font-weight: inherit; text-align: left; }
+.d0-check__phase-head {
+  display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; column-gap: 12px; align-items: start;
+  margin: 0; padding: 12px 0; color: var(--d0-grey-900); font-size: 15px; font-weight: 600; line-height: var(--d0-leading-body);
+}
+.d0-check__phase-head:has(> .d0-check__phase-toggle) { padding: 0; } /* JS가 넣은 버튼이 같은 격자·여백을 이어받는다 */
+.d0-check__phase-toggle {
+  grid-column: 1 / -1; display: grid; grid-template-columns: inherit; column-gap: inherit; align-items: start;
+  width: 100%; padding: 12px 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
 .d0-check__phase-toggle:focus-visible { outline: 2px solid var(--d0-blue); outline-offset: 2px; border-radius: var(--d0-radius-sm); }
-.d0-check__phase[data-collapsed] .d0-check__phase-head { padding-bottom: 12px; color: var(--d0-grey-600); font-weight: 500; }
-/* JS가 붙일 때만, 화면에서만 접힌다. 인쇄는 이 규칙이 없어 전 구간이 원래 표시(checkpoint flex 포함)로 펼쳐진다 */
+.d0-check__phase-mark {
+  grid-column: 1; grid-row: 1; justify-self: center; display: grid; place-content: center; box-sizing: border-box;
+  width: 18px; height: 18px; margin-top: calc((15px * var(--d0-leading-body) - 18px) / 2);
+  border: 2px solid var(--d0-grey-500); border-radius: 999px; background: #fff; color: #fff; font-size: 11px; line-height: 1;
+}
+.d0-check__phase-name { grid-column: 2; grid-row: 1; min-width: 0; }
+.d0-check__phase-count { grid-column: 3; grid-row: 1; color: var(--d0-grey-600); font-size: var(--d0-text-compact); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; line-height: calc(15px * var(--d0-leading-body)); }
+.d0-check__phase-count:empty { display: none; }
+.d0-check__phase-result { grid-column: 2 / -1; grid-row: 2; color: var(--d0-grey-600); font-size: var(--d0-text-compact); font-weight: 500; }
+.d0-check__phase[data-state="current"] .d0-check__phase-mark { border-color: var(--d0-blue-dark); }
+.d0-check__phase[data-state="done"] .d0-check__phase-mark { border-color: var(--d0-green); background: var(--d0-green); }
+.d0-check__phase[data-state="done"] .d0-check__phase-mark::after { content: "✓"; }
+.d0-check__phase:is([data-state="done"], [data-state="planned"]) .d0-check__phase-name { color: var(--d0-grey-700); font-weight: 500; }
+/* JS가 붙일 때만, 화면에서만 접힌다. 인쇄는 이 규칙이 없어 전 구간이 펼쳐진다 */
 @media screen { .d0-check__phase[data-collapsed] > :not(.d0-check__phase-head) { display: none; } }
 ```
 
+green 원 위 흰 `✓`는 체크박스와 같은 3.47:1(그래픽 3:1)이다. grey-500 테두리는 흰 바탕 위 3.2:1이다.
+
 ```js
-// 구간: linked·기본 JS보다 뒤에 붙인다. 진행률·무대는 그 JS가, 지도·머리·접힘은 이 JS가 맡는다.
+// 구간: linked·기본 JS보다 뒤에 붙인다. 진행률·무대는 그 JS가, 머리 행 상태·접힘은 이 JS가 맡는다.
 document.querySelectorAll('.d0-check[data-phased]').forEach(function (list, li) {
   var phases = Array.prototype.slice.call(list.querySelectorAll('.d0-check__phase'));
   if (!phases.length) return;
   var keepOpen = list.dataset.phased === 'open';
+  var LABEL = { done: '완료', current: '진행 중', planned: '예정' };
   function rowsOf(el) { return Array.prototype.slice.call(el.querySelectorAll('.d0-check__row')); }
   function isDone(r) { return r.querySelector('.d0-check__box').checked; }
   function setOpen(ph, open) {
@@ -456,37 +487,27 @@ document.querySelectorAll('.d0-check[data-phased]').forEach(function (list, li) 
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'd0-check__phase-toggle';
     btn.setAttribute('aria-controls', steps.id);
-    while (head.firstChild) btn.appendChild(head.firstChild);
+    while (head.firstChild) btn.appendChild(head.firstChild); // 네 칸을 버튼 안으로 옮길 뿐 다시 쓰지 않는다
     head.appendChild(btn);
+    var mark = head.querySelector('.d0-check__phase-mark');
+    mark.removeAttribute('aria-hidden'); mark.setAttribute('role', 'img');
     btn.addEventListener('click', function () { setOpen(ph, ph.hasAttribute('data-collapsed')); });
   });
-  // relayout: 체크 변화(change)·첫 로드에만 펼침·접힘과 포커스를 바꾼다.
-  // hover·focus·click 선택(d0-step)은 머리 n / k·지도만 활성 단계에 맞춘다(펼침 유지, 진행률은 체크 기준 그대로).
+  // 머리 행 상태·진행 수는 체크만 센다. relayout(체크 변화·첫 로드)일 때만 펼침·접힘과 포커스를 바꾼다.
   function update(relayout) {
     var all = rowsOf(list);
-    var active = list.querySelector('.d0-check__row[data-current]') ||
-      all.find(function (r) { return !isDone(r); }) || all[all.length - 1];
-    var ci = phases.indexOf(active.closest('.d0-check__phase'));
+    var first = all.find(function (r) { return !isDone(r); });
+    var cur = first ? phases.indexOf(first.closest('.d0-check__phase')) : -1; // 진행 중 구간: 첫 미완료 단계가 있는 구간
+    var active = list.querySelector('.d0-check__row[data-current]') || first || all[all.length - 1];
+    var open = phases.indexOf(active.closest('.d0-check__phase'));
     phases.forEach(function (ph, i) {
-      var rs = rowsOf(ph), k = rs.length, done = rs.every(isDone);
-      var name = ph.querySelector('.d0-check__phase-head').dataset.name;
-      var state = i === ci ? 'current' : done ? 'done' : i === ci + 1 ? 'next' : 'later';
-      var label = state === 'current' ? name + ' · ' + (rs.indexOf(active) + 1) + ' / ' + k
-        : state === 'done' ? '✓ ' + name + ' · ' + k + '단계'
-        : state === 'next' ? '다음: ' + name + ' · ' + k + '단계'
-        : name + ' · ' + k + '단계';
+      var rs = rowsOf(ph), k = rs.length, n = rs.filter(isDone).length;
+      var state = n === k ? 'done' : i === cur ? 'current' : 'planned';
       ph.dataset.state = state;
-      ph.querySelector('.d0-check__phase-toggle').textContent = label;
-      if (relayout) setOpen(ph, keepOpen || i === ci);
-      var cp = ph.querySelector(':scope > .d0-checkpoint'); // 구간 단계가 모두 체크되면 결과 줄에 ✓
-      if (cp) { if (done) cp.dataset.status = 'done'; else delete cp.dataset.status; }
-      var dot = list.querySelector('.d0-rail li[data-phase="' + ph.dataset.phase + '"]');
-      if (dot) {
-        dot.dataset.state = done ? 'done' : i === ci ? 'current' : 'planned';
-        dot.querySelector('.d0-rail__mark').textContent = done ? '✓' : '';
-        // 끝난 구간은 현재 표시를 달지 않는다(파란 점 + ✓ 어긋남 방지). 모두 끝나면 현재 구간이 없다
-        if (i === ci && !done) dot.setAttribute('aria-current', 'step'); else dot.removeAttribute('aria-current');
-      }
+      ph.querySelector('.d0-check__phase-count').textContent =
+        state === 'done' ? '' : (state === 'current' || n) ? n + ' / ' + k : k + '단계';
+      ph.querySelector('.d0-check__phase-mark').setAttribute('aria-label', LABEL[state]);
+      if (relayout) setOpen(ph, keepOpen || i === open);
     });
     var f = document.activeElement;
     if (relayout && f && list.contains(f) && f.closest('[data-collapsed]')) active.querySelector('.d0-check__box').focus();
@@ -494,7 +515,7 @@ document.querySelectorAll('.d0-check[data-phased]').forEach(function (list, li) 
   list.addEventListener('change', function (e) {
     if (e.target.matches('.d0-check__box')) setTimeout(function () { update(true); }, 0); // linked JS가 다음 단계를 고른 뒤
   });
-  list.addEventListener('d0-step', function () { update(false); }); // linked 변형의 선택 변경
+  list.addEventListener('d0-step', function () { update(false); }); // linked 선택 변경: 펼침·진행 수는 그대로
   setTimeout(function () { update(true); }, 0);
 });
 ```
@@ -511,5 +532,6 @@ linked 목록에는 기본 변형 JS를 함께 붙이지 않는다(위 JS가 진
 - 사용자가 할 일과 시스템이 하는 일을 한 목록에 섞기(시스템 일은 결과 한 줄로만).
 - 일부 행에만 있는 시간 열, 메타 칸을 채우려는 빈 `span`·`-` 표시.
 - 주체 없이 `추후 배포 예정`처럼 쓴 할 일, 기한·조건 칸에 `추후`·`예정`·`TBD`만 두기.
-- 총 단계 수로 기계적으로 접기, 구간마다 카드·배경 상자, 추상어 이름만 있고 결과 한 줄이 없는 구간, JS 없이도 접혀 있는 구간.
+- 총 단계 수로 기계적으로 접기, 구간마다 카드·배경 상자, 추상어 이름만 있고 머리 행에 결과 한 줄이 없는 구간, JS 없이도 접혀 있는 구간.
+- 구간 이름·결과·진행 수를 두 곳 이상에 쓰기: 진행률 아래 구간 status rail, 펼친 구간의 별도 머리(`보낼 링크 · 1 / 4`), 구간 끝 checkpoint 줄. 진행 수를 활성 단계 위치로 세기(모두 끝났는데 `1 / 4`).
 - linked 변형에서 행 안에 코드 접힘(`<details>`)을 두지 않는다. 코드는 활성 단계 코드 영역에 펼쳐 두고, 960px 미만에서도 행 아래에 펼쳐 붙인다.

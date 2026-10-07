@@ -43,7 +43,7 @@ report + timeline + compare + faq.
 
 ## 설치 가이드 `install-guide`
 
-guide + preview + checklist(단계) + checkpoint + question-answer.
+guide + preview + checklist(단계, 긴 경우 구간) + question-answer.
 
 - **독자·목적.** 처음 설치하는 사용자. 끝나면 무엇이 보이는지 알고, 구간마다 결과를 확인하며 혼자 끝까지 설치하게 한다.
 
@@ -51,7 +51,7 @@ guide + preview + checklist(단계) + checkpoint + question-answer.
 | --- | --- | --- |
 | 끝나면 어떻게 보이나? | `preview` | 첫 화면 완료 화면 와이어프레임 또는 기기 프레임, 범위 고지 |
 | 무엇을 준비하나, 왜 필요한가? | — | 준비물 한 줄 행 + explanation `reason`·`constraint` |
-| 어떻게 설치하나? | `guide` | checklist linked 변형 + 구간(`data-phased`: status rail 전체 지도, 현재 구간만 펼침), 구간 끝 checkpoint, 단계별 code-block |
+| 어떻게 설치하나? | `guide` | checklist linked 변형 + 구간(`data-phased`: 맨 위 `전체 n / N 완료` + 구간 머리 행이 지도와 결과, 현재 구간만 펼침), 단계별 code-block |
 | 막히면 왜 그런가? | — | question-answer(`왜 여기서 멈추나요?`), 고친 설정은 before-after `fix` |
 | 다 끝나면 무엇을 하나? | — | closing `criteria` 또는 `action` |
 

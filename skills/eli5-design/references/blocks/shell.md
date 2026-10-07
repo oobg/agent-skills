@@ -116,17 +116,14 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 장면의 음량을 정한다. 구도·리듬과 언제 쓰는지는 [composition.md](../composition.md)가 정본이고, 이 절은 모양과 CSS다.
 `main > section`(page)이나 `.d0-slide`(deck)에 단다. 생략하면 normal이다.
 
-**Impact (`data-emphasis="impact"`).** 선택이다(페이지당 0~1개). 섹션을 하나 **더하지 않고** 기존 섹션 하나를 화면 폭 끝까지 칠한 blue-light 띠로 바꾼다.
+**Impact (`data-emphasis="impact"`).** 선택이다(페이지당 0~1개). 섹션을 하나 **더하지 않고** 기존 섹션 하나를 큰 글자와 여백만으로 크게 말하는 장면으로 바꾼다. **page만 이 모양이다.** 배경 면·풀블리드 띠·카드 없이 글자 크기와 여백이 무게를 만든다. deck Impact 슬라이드는 이 절이 아니라 [slide-deck.md](slide-deck.md)(blue-light 면)를 따르며 바뀌지 않았다.
 Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로다.
 
-- 띠는 `margin-inline: calc(50% - 50vw)`로 화면 끝까지 넓히고, 같은 값의 `padding-inline`으로 내용을 페이지 왼쪽 정렬선에 되돌린다.
-  `scrollbar-gutter: stable`이면 `100vw`가 스크롤바 폭만큼 넘치므로 `html { overflow-x: clip }`으로 자른다(1280·375 모두 가로 스크롤 0).
-- 띠 안 위아래 패딩 48px(모바일 32px). 띠 경계와 이웃 섹션 내용 사이는 16px라서, 띠 글자 ↔ 이웃 섹션 내용이 합계 64px(모바일 48px)로 일반 섹션 간격과 같다.
-  이웃 섹션의 띠 쪽 패딩을 16px로 줄여 맞춘다(앞 섹션 `padding-bottom`, 뒤 섹션 `padding-top`). 구분선은 없고 뒤 섹션의 위 구분선도 감춘다(띠 경계가 구분선이다). 마지막 섹션이어도 아래 패딩을 지킨다.
-- 안에는 하나만: 문장 하나(`h2.d0-impact__line`, 32px/700, 모바일 24px) 또는 숫자 하나(`h2` 라벨 + `p.d0-impact__num`, 64px, 모바일 48px). 카드·목록·배지·둥근 박스·editorial 도식 금지.
-- 글자는 grey-900, 강조 숫자는 blue-dark다. 보조 글자(섹션 설명·figcaption·`.d0-note`)는 grey-700로, 그림 속 grey-500 선은 grey-600으로 한 단계 진해진다(blue-light 위 grey-600 글자 4.49, grey-500 선 2.87 미달).
-- 큰 숫자 blue-dark는 페이지에 하나다. 띠에 숫자를 두면 header 히어로 숫자는 grey-900으로 두고, 같은 숫자를 되풀이하지 않는다([hero.md](hero.md)).
-- page는 페이지당 0~1개, deck은 슬라이드의 20~30%다. 어두운 배경으로 바꾸지 않는다(라이트 온리).
+- 배경색·`margin-inline`·`100vw` 확장·`:has()` 간격 보정이 없다. 섹션 안 위아래 패딩과 위쪽 구분선은 일반 섹션과 같아(32px + 32px) 이웃 섹션과의 간격이 일반과 똑같이 64px(모바일 48px)다. 더 또렷한 경계가 필요하면 위쪽 구분선만 `var(--d0-grey-200)`로 한 단계 진하게 쓸 수 있다.
+- 안에는 하나만: 문장 하나(`h2.d0-impact__line`, 32px/700, 모바일 24px) 또는 숫자 하나(`h2` 라벨 + `p.d0-impact__num`, 64px, 모바일 48px). 카드·목록·배지·둥근 박스·editorial 도식·무대 금지.
+- 글자는 grey-900, 강조 숫자는 blue-dark다. 바탕이 흰색이라 보조 글자(섹션 설명·figcaption·`.d0-note`)는 일반 섹션 그대로 grey-600이다.
+- 큰 숫자 blue-dark는 페이지에 하나다. Impact에 숫자를 두면 header 히어로 숫자는 grey-900으로 두고, 같은 숫자를 되풀이하지 않는다([hero.md](hero.md)).
+- page는 페이지당 0~1개다. 어두운 배경으로 바꾸지 않는다(라이트 온리).
 
 ```html
 <!-- 문장 하나 -->
@@ -143,13 +140,6 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 **Quiet (`data-emphasis="quiet"`).** 참고·부록·정리 목록처럼 뒤로 물러날 섹션이다. h2를 18px로 한 단계 낮추고 본문·목록 글자를 grey-700로 둔다(섹션 설명 `p`·figcaption은 원래 grey-600 그대로).
 진한 포인트 채움(blue 막대·노드·버튼)을 새로 두지 않는다. 완료 체크·의미색 점처럼 상태를 말하는 표식은 그대로 둔다.
 
-| 앞 / 뒤 (Impact 띠) | 비율 | 판정 |
-| --- | --- | --- |
-| grey-900 / blue-light | 14.87 | 글자 통과 |
-| blue-dark / blue-light | 4.94 | 글자 통과(큰 숫자는 3:1 기준이라 여유) |
-| grey-700 / blue-light | 6.87 | 보조 글자 통과 |
-| grey-600 / blue-light | 4.49 | 글자 미달 → grey-700, 선은 통과(3:1) |
-
 ## 그림 무대 (`.d0-fig[data-stage]`) — 기본 없음, 필요할 때만
 
 **기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 페이지 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
@@ -162,7 +152,7 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 모바일 20px). `figcaption`은 패널 **밖** 아래에 13px grey-600으로 둔다. 테두리·그림자는 없다.
 SVG는 패널 안에서 가운데 놓이고, 패널 자체는 페이지 왼쪽 정렬선을 따른다. 선 굵기·라벨 규칙은 [diagram.md](diagram.md).
 페이지의 핵심 도식 하나는 `data-stage="blue"`로 무대를 blue-light로 칠할 수 있다. 그 무대 위 회색 선·글자는 한 단계 진하게 바뀐다([diagram.md](diagram.md) 공용 CSS).
-Impact 띠 안에서는 무대를 두지 않는다(띠가 이미 면이다).
+Impact 안에서는 무대를 두지 않는다.
 
 ```html
 <!-- 기본: 무대 없음 -->
@@ -185,12 +175,12 @@ Day0의 6:3:1(배경 · 텍스트 · 포인트)을 따른다. **회색만 남은
   색 면적 때문에 출력을 실패시키지 않고, 게이트를 맞추려고 색 면적을 늘리지 않는다. 색은 상태·강조·구조가 있는 자리에만 둔다.
   - **측정 정의(정본).** 진한 포인트 = `blue`·`blue-dark`·`green`·`orange`·`red` 채움. HTML `background-color`와 SVG 도형 `fill`이 해당 색인 요소의 보이는 bbox 합 ÷ 뷰포트 면적(뷰포트로 자름, 이미 센 요소의 자손은 제외)으로 잰다.
     `stroke`·`border`만 해당 색인 요소는 세지 않는다. 진한 포인트는 옅은 면 안에 있어도 센다.
-  - 내용 단위 옅은 채움과 **면 단위 옅은 표면**(blue-light 무대, Impact 띠·슬라이드, 썸네일 판)은 이 진한 포인트 경고 비율에서 뺀다.
-    장면 수는 별도로 유지한다: page는 Impact 띠 최대 1개 + blue 무대 최대 1개, deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
+  - 내용 단위 옅은 채움과 **면 단위 옅은 표면**(blue-light 무대, 덱 Impact 슬라이드, 썸네일 판)은 이 진한 포인트 경고 비율에서 뺀다.
+    장면 수는 별도로 유지한다: page는 blue 무대 최대 1개(Impact는 면이 없다), deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
   - 회색만으로 된 도식·카드 묶음 금지는 유지한다. 의미 있는 blue 또는 의미색 표식 하나를 두되 경고 비율을 채우려고 뜻 없는 면을 칠하지 않는다.
 - **Hard 유지.** 대비와 WCAG 2.2 AA, 의미색 글자 금지는 색 면적 Warning과 별개로 반드시 통과한다.
 - **블루 단계.** `blue` = 강조 선·채움(후 막대, 닿는 노드, 진행 막대, 썸네일 합계 칸). `blue-dark` = 글자·번호, 흰 글자 바탕(버튼, 고른 탭, 흐름 줄의 현재 단계).
-  `blue-light` = 옅은 면(썸네일 판, 반 열 도식의 무대 `data-stage="blue"`, Impact 띠, 선택 카드, 표 머리 행·합계 행).
+  `blue-light` = 옅은 면(썸네일 판, 반 열 도식의 무대 `data-stage="blue"`, 덱 Impact 슬라이드, 선택 카드, 표 머리 행·합계 행).
 - **강조 순서.** 크기 → 위치 → 여백 → 무게 → 색. 큰 숫자는 색이 아니라 크기로 중요하게 만든다(기본 grey-900, 큰 숫자 blue-dark는 페이지에 하나).
   blue는 장면마다 강조 묶음 하나에만 둔다([composition.md](../composition.md) 강조).
 - **의미색.** `green` = 가능·통과·완료, `orange` = 주의·준비 중, `red` = 위험·실패. 도식 채움·막대·체크·배지 배경에 쓴다.
@@ -297,7 +287,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
    day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
 :root { color-scheme: light; }
 /* 스크롤바 자리를 항상 비워 둔다: 긴 페이지와 짧은 페이지를 오가거나 탭·토글로 높이가 바뀌어도 가로 폭이 흔들리지 않는다 */
-html { scrollbar-gutter: stable; overflow-x: clip; } /* overflow-x: Impact 띠의 100vw가 스크롤바 폭만큼 넘치는 것을 자른다 */
+html { scrollbar-gutter: stable; }
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;
@@ -359,21 +349,10 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-section > p { color: var(--d0-grey-600); font-size: 14px; }
 .d0-note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 
-/* 강조 면: Impact = blue-light 풀블리드 띠(페이지당 1개), Quiet = 한 단계 물러남 */
-.d0-section[data-emphasis="impact"] {
-  margin-inline: calc(50% - 50vw); padding: 48px calc(50vw - 50%);
-  border-top: 0; background: var(--d0-blue-light); color: var(--d0-grey-900);
-}
-.d0-section[data-emphasis="impact"] + .d0-section,
-.d0-section[data-emphasis="impact"] + .d0-split > .d0-section { padding-top: 16px; border-top-color: transparent; } /* 띠 경계 ↔ 이웃 내용 16 → 합계 64 */
-.d0-section:has(+ .d0-section[data-emphasis="impact"]),
-.d0-split:has(+ .d0-section[data-emphasis="impact"]) > .d0-section { padding-bottom: 16px; }
+/* 강조: page Impact = 배경 없이 큰 글자와 여백(섹션 간격 64 그대로), Quiet = 한 단계 물러남. 덱 Impact는 slide-deck.md */
+.d0-section[data-emphasis="impact"] .d0-fig__stage { padding: 0; background: transparent; } /* Impact 안에는 무대 없음 */
 .d0-impact__line { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
 .d0-impact__num, .d0-section > .d0-impact__num { color: var(--d0-blue-dark); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); }
-.d0-section[data-emphasis="impact"] :is(.d0-section > p:not(.d0-impact__num), figcaption, .d0-note) { color: var(--d0-grey-700); }
-.d0-section[data-emphasis="impact"] .d0-fig__stage { padding: 0; background: transparent; } /* 띠 안에는 무대 없음 */
-.d0-section[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
-.d0-section[data-emphasis="impact"] :is(.d0-s-muted, .d0-s-num:not([data-on])) { fill: var(--d0-grey-700); }
 .d0-section[data-emphasis="quiet"] { color: var(--d0-grey-700); }
 .d0-section[data-emphasis="quiet"] h2 { font-size: 18px; }
 
@@ -425,7 +404,6 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
   .d0-section { padding-block: 24px; }
   .d0-split:not(:last-child) > .d0-section { padding-bottom: 24px; }
   .d0-fig__stage { padding: 20px; }
-  .d0-section[data-emphasis="impact"] { padding-block: 32px; }
   .d0-impact__line { font-size: 24px; }
   .d0-impact__num, .d0-section > .d0-impact__num { font-size: 48px; }
 }
@@ -478,5 +456,5 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 - 그라디언트·글래스·두꺼운 그림자·장식 3D, 무대 패널에 테두리나 그림자.
 - 기본값으로 두른 무대(경계가 이미 보이는 그림에 회색 패널), 섹션마다 같은 `제목 → 무대 → SVG → 캡션` 모양.
 - Impact를 쓰려고 섹션 더하기, 그림을 키워 폭 채우기(360/400px 상한 넘기기, 전체 폭은 타임라인·단계 줄 720px까지만).
-- Impact 띠 2개 이상, 띠 안 카드·목록·배지·무대·editorial·숫자 둘 이상, 어두운 Impact 면, 띠 안 grey-600 글자·grey-500 선, `html`의 `overflow-x: clip` 없이 `100vw` 띠 두기.
+- page Impact 2개 이상, Impact 안 카드·목록·배지·무대·editorial·숫자 둘 이상, page Impact에 배경 면·풀블리드 띠 칠하기, 어두운 Impact 면.
 - CSS만으로 초기 숨김(`opacity: 0`을 `data-motion` 밖에 걸기), 스크롤마다 반복되는 모션, reduced-motion 무시.

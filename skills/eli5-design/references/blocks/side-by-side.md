@@ -14,10 +14,10 @@
 
 - **split-plain(기본, 속성 없음).** 카드 없는 2~3열. 열마다 위쪽 선(1px grey-200)으로 시작 줄을 맞추고, 고른 열은 그 선이 2px blue가 된다. 면·radius·그림자 없음. 짧은 개념·문장 둘을 견줄 때 쓴다.
 - **split-card(`data-layout="card"`).** 선택지 카드. 각 안이 그림·설명을 가진 '하나의 물건'일 때만 쓴다.
-  면 `--d0-grey-50`, `--d0-radius-card`, 패딩 24px(640px 이하 20px), 테두리·그림자 없음.
-  카드 폭 상한은 **448px**(안쪽 400px = 그림 wide 상한, 글줄도 32em 아래)이고 카드끼리 폭이 같다.
+  **외곽선 카드**다. 면(배경색)은 없고 1px `--d0-grey-200` 테두리 + `--d0-radius-card`, 패딩 24px(640px 이하 20px), 그림자 없음. 그림 안쪽 면(`d0-s-fill` grey-100 등)이 카드 배경과 겹치지 않는다.
+  카드 폭 상한은 **410px**(테두리 2 + 패딩 48 + 안쪽 360px = 그림 기본 상한, 글줄도 32em 아래. 400px 그림은 가격표처럼 커 보인다)이고 카드끼리 폭이 같다.
   카드 묶음은 섹션 폭 안에서 **가운데**(`justify-content: center`), 카드 안 내용(그림·행·배지·이유)은 **왼쪽 정렬**이다. 섹션 제목·리드는 그대로 왼쪽에 둔다.
-  고른 카드는 위쪽 안쪽 2px blue 선(좌우 패딩만큼 들여 그음) + `고른 안` 배지다. `data-recommended`는 선 없이 `추천` 배지만 둔다.
+  고른 카드는 테두리 색만 `--d0-blue`로 바꾸고(두께 1px 그대로라 레이아웃이 흔들리지 않는다) `고른 안` 배지를 단다. `data-recommended`는 테두리를 그대로 두고 `추천` 배지만 둔다. 카드 안에서는 `data-selected="fill"`도 면을 칠하지 않고 같은 blue 테두리로 표시한다.
 
 ## 언제 쓰나 / 변형
 
@@ -64,7 +64,8 @@
 ```css
 /* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
 .d0-option__wire { display: block; width: 100%; max-width: 360px; height: auto; } /* 폭 상한: diagram.md 폭 상한 절(기본 360) */
-.d0-sbs[data-layout="card"] .d0-option__wire { max-width: 400px; } /* 카드 안쪽 폭 = wide 400 */
+.d0-sbs[data-layout="card"] .d0-option__wire { max-width: 360px; } /* 카드 안쪽 폭 = 기본 360. 400이면 가격표처럼 커 보인다 */
+.d0-option .d0-section-head__title .d0-pill { margin-block: calc((15px * var(--d0-leading-title) - 22px) / 2); } /* pill(22px)이 h3 줄(15px×leading)보다 높아 제목 행을 키우지 않게. 안 사이 제목·그림·행 top을 맞춘다 */
 .d0-option[data-selected="fill"] .d0-s-frame { stroke: var(--d0-grey-600); } /* blue-light 위 grey-500 2.87 미달 */
 ```
 
@@ -103,17 +104,14 @@
 }
 .d0-option[data-selected] { border-top: 2px solid var(--d0-blue); padding-top: 15px; } /* 기본: 위쪽 선 강조 */
 .d0-option[data-selected="fill"] { background: var(--d0-blue-light); border-top-color: var(--d0-blue-light); padding: 15px 16px 16px; border-radius: var(--d0-radius-card); } /* 작은 열만: 면으로 강조 */
-.d0-sbs[data-layout="card"] { grid-auto-columns: minmax(0, 448px); justify-content: center; } /* split-card: 같은 폭 카드, 묶음은 가운데 */
+.d0-sbs[data-layout="card"] { grid-auto-columns: minmax(0, 410px); justify-content: center; } /* split-card: 같은 폭 카드, 묶음은 가운데 */
 .d0-sbs[data-layout="card"] .d0-option {
-  gap: 16px; padding: 24px; border-top: 0; border-radius: var(--d0-radius-card);
-  background: var(--d0-grey-50); /* 보더리스: 테두리·그림자 없음 */
+  gap: 16px; padding: 24px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card);
+  background: none; /* 외곽선 카드: 면 없음, 그림자 없음. 폭 410 = 테두리 2 + 패딩 48 + 안쪽 360 */
 }
-.d0-sbs[data-layout="card"] .d0-option[data-selected]::before { /* 위쪽 안쪽 blue 선 */
-  content: ""; position: absolute; inset-inline: 24px; top: 0; height: 2px;
-  border-radius: 0 0 2px 2px; background: var(--d0-blue);
+.d0-sbs[data-layout="card"] .d0-option:is([data-selected], [data-selected="fill"]) { /* 고른 안: 같은 1px 두께에서 색만 blue */
+  border-color: var(--d0-blue); padding: 24px; background: none;
 }
-.d0-sbs[data-layout="card"] .d0-option[data-selected="fill"] { background: var(--d0-blue-light); }
-.d0-sbs[data-layout="card"] .d0-option[data-selected="fill"]::before { content: none; }
 .d0-option h3 { font-size: 15px; font-weight: 650; }
 .d0-mock { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--d0-radius-control); background: #fff; }
 .d0-mock__btn { order: -1; }
@@ -131,8 +129,8 @@
 .d0-option__why { color: var(--d0-blue-dark); font-weight: 600; }
 @media (max-width: 640px) {
   .d0-sbs, .d0-sbs[data-layout="card"] { grid-auto-flow: row; grid-auto-columns: minmax(0, 1fr); gap: 16px; }
-  .d0-sbs[data-layout="card"] .d0-option { padding: 20px; }
-  .d0-sbs[data-layout="card"] .d0-option[data-selected]::before { inset-inline: 20px; }
+  .d0-sbs:not([data-layout]) .d0-option:first-child:not([data-selected]) { border-top: 0; padding-top: 0; } /* 쌓이면 첫 안의 선이 섹션 구분선보다 진해 보이지 않게 */
+  .d0-sbs[data-layout="card"] .d0-option, .d0-sbs[data-layout="card"] .d0-option[data-selected] { padding: 20px; }
 }
 ```
 
@@ -158,7 +156,7 @@ document.querySelectorAll('.d0-sbs').forEach(function (group) {
 ## 금지
 
 - 이유 없는 추천 배지, 추천안만 크고 자세한 열, 4열 이상.
-- split-card에서: 카드 테두리·그림자, 카드마다 다른 폭, 카드 묶음을 섹션 왼쪽에 붙이기, 카드 안 내용 가운데 정렬.
+- split-card에서: 카드 그림자·배경 면 칠하기, 2px 이상 테두리, 카드마다 다른 폭, 카드 묶음을 섹션 왼쪽에 붙이기, 카드 안 내용 가운데 정렬.
 - 짧은 개념·문장 비교나 같은 기준을 여러 개 반복 대조하는 비교에 split-card(그 경우 split-plain 또는 표).
 - 차이를 문단으로만 설명, 눌러도 반응하지 않는 가짜 프로토타입.
 - 와이어 카드 SVG 안 글자, 카드마다 다른 viewBox·프레임 크기, `<title>` 없는 와이어.

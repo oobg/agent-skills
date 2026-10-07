@@ -68,7 +68,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 기존 공용 블록으로 표현할 수 있으면 새 블록을 만들지 않습니다. 새 모양은 변형으로, 새 배치는 구도로, 새 조합은 레시피로
 더하고, 둘 이상 패턴에서 반복되는 새 의미 구조만 새 공용 블록이 됩니다. 긴 따라하기는 작업 목적이 바뀌는 지점에서 구간으로 나누고,
-현재 구간만 펼친 채 status rail로 전체 위치를, 구간 끝 checkpoint로 결과를 보여 줍니다.
+현재 구간만 펼치고, 맨 위 전체 진행 한 줄과 구간 머리 행(상태·이름·진행 수·결과 한 줄)으로 전체 위치와 결과를 함께 보여 줍니다.
 
 ### 레시피는 선택입니다
 
@@ -160,7 +160,7 @@ page는 혼자 읽어도 이해되는 시각 문서로 구조, 맥락, 근거, �
 | `references/blocks/diff-rows.md` | 바뀐 항목만 전후로 보여 주는 행, 배지 행·위험 행 변형 |
 | `references/blocks/tab-preview.md` | 시트 탭, 파일명 바, 표 목업, 탭 전환 JS |
 | `references/blocks/timeline.md` | 가로 마일스톤과 세로 기록, 오늘 표식, SVG 시간 막대, 공용 status rail |
-| `references/blocks/checklist.md` | 진행률과 체크 행, 담당 변형, 연동 그림 변형, 긴 따라하기의 구간(전체 지도, 현재 구간 펼침, 구간 끝 checkpoint), 체크 JS |
+| `references/blocks/checklist.md` | 진행률과 체크 행, 담당 변형, 연동 그림 변형, 긴 따라하기의 구간(머리 행 지도, 현재 구간 펼침), 체크 JS |
 | `references/blocks/code-block.md` | 붙여 넣을 명령·설정 코드 블록과 복사 버튼(그림 블록 아님, 줄 길이 예외) |
 | `references/blocks/slide-deck.md` | 덱 출력의 마크업·CSS·JS: 16:9 한 장 보기, 결론 제목·근거 그림·해석·쪽수, 제목 목차, 네비와 키보드 이동, 인쇄, 덱 게이트 |
 | `references/blocks/accordion.md` | 선택 펼침과 용어 목록(`details`/`summary`, JS 없음) |
