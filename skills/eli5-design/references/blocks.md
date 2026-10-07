@@ -5,18 +5,20 @@
 
 ## 용어 계층 (개념 계층, 작업 순서 아님)
 
-| 층 | 뜻 | 어디 |
-| --- | --- | --- |
-| Principle | 변하지 않는 원칙 | SKILL.md ELI5 원칙 |
-| Pattern | 정보를 설명하는 방식(compare·flow·preview·report·guide·timeline·incident·faq) | [patterns/](patterns/compare.md) |
-| Block | 공용 부품(explanation·evidence·checkpoint·…) | 이 파일 |
-| Layout | 배치 = 구도 | [composition.md](composition.md) |
-| Recipe | 목적별 Pattern + Block 조합(선택 출발점) | [recipes.md](recipes.md) |
-| Output | page · deck | SKILL.md 출력 형식 판별, [output/deck.md](output/deck.md) |
+여섯 층은 **개념 계층**이다. 작업 순서가 아니다(작업 순서는 SKILL.md 작업 순서 절).
+
+| 층 | 성격 | 뜻 | 어디 |
+| --- | --- | --- | --- |
+| Principle | 강제 | 변하지 않는 원칙: ELI5 원칙, Day0 토큰·규칙, 개행 규칙, 개수 상한 | SKILL.md 핵심 원칙, [day0.md](day0.md), [writing.md](writing.md), 아래 개수 상한 |
+| Pattern | 기준 | 정보를 설명하는 방식 8개(compare·flow·preview·report·guide·timeline·incident·faq). 독자 질문 하나에 답하는 섹션 단위로 고르고, 한 페이지에 여러 패턴을 섞는다 | [patterns.md](patterns.md), [patterns/](patterns/compare.md) |
+| Block | 선택 | 공용 부품(explanation·evidence·before-after·checkpoint·status rail·question-answer·closing과 그림·목록 블록). 패턴이 소유하지 않고 어느 패턴에서나 빌려 쓴다. 쓰면 해부 구조를 따른다 | 이 파일 |
+| Layout | 기준 | 배치 = 구도 | [composition.md](composition.md) |
+| Recipe | 선택 | 목적별 Pattern + Block 조합. 규칙 층이 아니라 출발점 조합이다 | [recipes.md](recipes.md) |
+| Output | 별도 축 | page는 혼자 읽는 시각 문서, deck은 발표자와 함께 보는 자료. **Pattern·Block을 공유할 수 있지만, 정보 구조·밀도·구도는 출력 형식에 맞게 다시 구성한다** | [output/page.md](output/page.md), [output/deck.md](output/deck.md) |
 
 Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은 어디에 놓을지, Recipe는 무엇을 함께 쓰면 좋은지를 정한다.
 
-**블록은 패턴이 소유하지 않는다.** 패턴 문서의 블록 목록은 "추천 블록"일 뿐이고, 어느 패턴에서나 아래 모든 블록을 빌려 쓴다. page와 deck도 같은 블록을 쓰고 밀도 규칙만 다르다.
+**블록은 패턴이 소유하지 않는다.** 패턴 문서의 블록 목록은 "추천 블록"일 뿐이고, 어느 패턴에서나 아래 모든 블록을 빌려 쓴다. page와 deck도 블록을 공유할 수 있지만, 정보 구조·밀도·구도는 출력 형식에 맞게 다시 구성한다.
 
 ## 공용 정보 블록
 
@@ -30,7 +32,23 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | checkpoint | 여기까지 하면 무엇이 완성되나 | [checkpoint.md](blocks/checkpoint.md) |
 | status rail | 지금 어디에 있나(완료·진행·예정) | [timeline.md](blocks/timeline.md) status rail 절 |
 | question-answer | 독자가 실제로 가질 질문과 답 | [faq.md](blocks/faq.md) |
-| closing | 남길 일 하나(결정·요청·행동·기준·지킬 것) + 메타 행 | [closing.md](blocks/closing.md) |
+| closing | 남길 일 하나(결정·요청·행동·기준·지킬 것) + 메타 행. 다음 행동·결정 요청은 closing(또는 checklist 담당 변형·요약 행 결정 행)이 맡는다 | [closing.md](blocks/closing.md) |
+
+## 개수 상한 (원칙 10번)
+
+아래 상한을 넘으면 묶거나 페이지를 나눈다. 페이지 섹션 수는 상한이 아니라 원칙 4번(독자 질문, [patterns.md](patterns.md))으로 정한다.
+
+| 항목 | 상한 |
+| --- | --- |
+| 카드 | 5 |
+| 단계 | 5 (guide 체크리스트는 총 단계 수 대신 구간 하나에 보통 3~5단계, [checklist.md](blocks/checklist.md) 구간 절) |
+| 옵션 | 3 |
+| 질문 | 6 |
+| 표 열 | 7 (데이터 열 6 + 행 번호 열 1) |
+| explanation 한 라벨 아래 문장 | 3 |
+| callout | 1 |
+| 상태 배지(`span.d0-pill`) 카드·행 하나에 | 1 |
+| 배지 톤 종류(`data-tone`, 없으면 회색) / 의미색 종류, 페이지당 | 3 / 2 |
 
 ## 블록 추가 판별
 
@@ -47,7 +65,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 ## 공통 규칙
 
 - 페이지는 [shell.md](blocks/shell.md)에서 시작한다. day0-design의 `tokens.css` 전체를 수정 없이
-  메인 `<style>` 맨 앞에 인라인하고(폰트 `@font-face` `<style>`은 그 앞 별도 요소), day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 `<link>`로 걸지 않는다.
+  메인 `<style>` 맨 앞에 인라인하고(폰트 `@font-face` `<style>`은 그 앞 별도 요소), day0-design 위치는 [day0.md](day0.md)의 탐색 순서를 따른다. 토큰을 외부 `<link>`로 걸지 않는다.
 - 색·radius·그림자·모션·자간·행간·글꼴은 `var(--d0-*)`만 쓴다. tokens.css에 없는 이름을 만들지 않는다(표면 `#fff`만 예외).
   글(본문) 행간의 예외는 설명 문단(`p`, explanation `dd`)의 1.65다([shell.md](blocks/shell.md) 행간 예외).
   tokens.css에 없는 간격·폭·제목 크기는 shell.md의 타이포·여백 스케일을 px로 쓴다.
@@ -57,15 +75,15 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
   evidence tiles는 막대 없는 kpi-cards처럼 그림이 아니다.
   막대 없는 kpi-cards, CSS 타임라인(가로·세로), status rail, code-block은 그림이 아니다. 첫 화면 섹션(header 다음 첫 페이지 섹션)은 그림 블록을 먼저 고르고,
   그 아래 섹션은 핵심 구조가 있으면 그림을 권장한다. 그림 없는 섹션은 구조 블록(explanation, evidence, before-after, checkpoint, question-answer, diff-rows, checklist, step-columns, accordion, 표)으로 짓고
-  연속된 일반 문단만으로 채우지 않는다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
+  연속된 일반 문단만으로 채우지 않는다(정본: 원칙 4번, [patterns.md](patterns.md) 섹션 절). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
   글 블록은 그림이 이미 보여 준 모양을 되풀이하지 않고 이유·근거·조건을 더한다.
 - **본문 축.** 섹션은 모두 가운데 프레임 안 왼쪽 읽기 축(폭 단계 `data-width`: narrow 640px, 기본 720px, report 960px·글 720px)의 같은 왼쪽 시작선을 쓴다. 그림은 축 폭의 75~100%를 채우고(단순 도식만 `data-fit="compact"`), 옆에 남는 폭은 채우지 않는다. 설명은 그림 아래에 둔다. 정본은 [shell.md](blocks/shell.md) 본문 축 절.
 - **그림 무대.** 회색 무대는 기본 없음이다. 필요할 때만 도식 `figure.d0-fig[data-stage]`의 SVG를 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
-  figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
+  figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 [shell.md](blocks/shell.md) 그림 무대 절, 스니펫은 [diagram.md](blocks/diagram.md).
 - **구도와 강조.** 섹션·슬라이드의 구도(`data-composition`), 강조 3단계(`data-emphasis="quiet|impact"`), 밀도 리듬, 강조 순서(크기 → 위치 → 여백 → 무게 → 색)는
   [composition.md](composition.md)가 정본이다. 블록 고르기 전에 섹션마다 구도를 먼저 정한다.
 - **한 사실은 한 번.** 결론 수치는 [hero.md](blocks/hero.md) 한 곳에 두고 요약 행·섹션 제목·KPI·callout에서 되풀이하지 않는다
-  (같은 숫자 문자열 페이지당 2회 이하, SKILL.md 원칙 8번).
+  (같은 숫자 문자열 페이지당 2회 이하, 정본: [writing.md](writing.md) 한 사실은 한 번).
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
   행 목록의 행 구분선만(closing 문장 아래·checkpoint 뒤 grey-200 한 줄은 블록 부품 예외, [shell.md](blocks/shell.md) 금지 절). 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
 - **줄 길이.** 본문 한 줄의 길이는 축이 정한다. 글 블록은 축(또는 놓인 열) 폭을 그대로 쓰고 따로 폭 상한을 두지 않는다(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md)은 규칙 밖). 줄을 줄이려면 페이지 전체를 `data-width="narrow"`로 둔다. 정본은 [shell.md](blocks/shell.md) 줄 길이 절이다.
@@ -81,7 +99,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
   (`align-items: start` + 배지 `margin-top`). 버튼·탭으로 쓰는 pill만 포인터 하한 때문에 32px.
 - 배지 색: 글자는 grey-900(시맨틱 톤) 또는 blue-dark(블루 톤), 배경은 해당 `-bg`/`-light`, 시맨틱 톤은 앞에 8px 의미색 점.
   대비 계산표는 shell.md 색 절에 있다. 회색 배지만 늘어놓지 않는다.
-- 블록 안 설명 문단은 부모 폭을 그대로 쓴다. 좁히려면 블록 컨테이너를 좁힌다(SKILL.md 개행 규칙).
+- 블록 안 설명 문단은 부모 폭을 그대로 쓴다. 좁히려면 블록 컨테이너를 좁힌다([writing.md](writing.md) 개행 규칙).
 - **시맨틱 태그.** 구조(`section`·`header`·`figure`·`ol`/`ul`·`dl`·`table`·`time`·`data`·`progress`·`details`·`dialog`·
   `button`/`a`)는 아래 표의 태그로 짓는다. 시맨틱 구조 안의 스타일 훅용 `span`·`div`(배지 `span`, 라벨 `span`)는
   허용하고, 빈 간격용 요소는 금지다. 동작은 `button`, 이동은 `a`로 가른다.

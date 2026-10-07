@@ -87,6 +87,6 @@ Deck Type **Retrospective**: `<main class="d0-deck" data-pattern="incident">`. �
 | 대응 | 근거 또는 `screenshot`(바뀐 경보·화면에 spotlight) |
 | 재발 방지 | `closing`(`takeaway`: 지킬 것 + 담당·기한) |
 
-Impact: 영향(`stat`), 왜 못 막았나(`assertion`).
+Impact: 왜 못 막았나(`assertion`). 영향은 `stat` 기본형(숫자 + 기준 줄 + 근거 그림, Impact 아님)이고, 영향 숫자 자체가 결론일 때만 순수 Impact stat이다.
 
 블록 해부: [blocks.md](../blocks.md)

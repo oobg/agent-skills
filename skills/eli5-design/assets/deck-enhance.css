@@ -1,0 +1,134 @@
+/* 제목 문법: 결론어 하나만 굵게(선택) */
+.d0-slide__title:has(.d0-slide__key) { font-weight: 400; color: var(--d0-grey-700); }
+.d0-slide__key { font-weight: 700; color: var(--d0-grey-900); }
+.d0-slide__key[data-tone="blue"] { color: var(--d0-blue-dark); }
+
+/* 크롬: 섹션 태그 pill, 출처가 있을 때만 얇은 푸터 선 */
+.d0-slide__tag {
+  justify-self: start; display: inline-flex; align-items: center;
+  margin: 0; padding: 0.3cqi 1cqi; border-radius: 999px;
+  background: var(--d0-blue-light); color: var(--d0-blue-dark);
+  font-size: 1.3cqi; font-weight: 600; line-height: 1.4;
+}
+.d0-slide__foot:has(.d0-slide__src):not(:has(kbd)) { padding-top: 1cqi; border-top: 1px solid var(--d0-grey-100); }
+
+/* 비대칭 구도: 제목 열 2 : 그림 열 3, data-flip이면 반대 */
+.d0-slide[data-layout="asym"] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr) auto; column-gap: 4cqi; }
+.d0-slide[data-layout="asym"] > .d0-slide__head { grid-column: 1; grid-row: 1; align-self: center; }
+.d0-slide[data-layout="asym"] > .d0-slide__fig { grid-column: 2; grid-row: 1; height: 100%; }
+.d0-slide[data-layout="asym"] > .d0-slide__foot { grid-column: 1 / -1; }
+.d0-slide[data-layout="asym"][data-flip] { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.d0-slide[data-layout="asym"][data-flip] > .d0-slide__head { grid-column: 2; }
+.d0-slide[data-layout="asym"][data-flip] > .d0-slide__fig { grid-column: 1; }
+.d0-slide[data-layout="asym"] .d0-slide__title,
+.d0-slide[data-layout="asym"][data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 3.2cqi; } /* 가용 폭이 제목 크기를 정한다: 그림 있는 Impact 규칙보다 특이도를 높여 덮이지 않게 */
+.d0-slide[data-layout="asym"] .d0-slide__fig svg { max-width: 100%; }
+
+/* 핵심 수치 기본형: 왼쪽 머리 열에 제목 → 큰 숫자 → 기준 줄(.d0-slide__base, 기본 CSS), 오른쪽 근거 그림(asym 격자 그대로) */
+.d0-slide[data-kind="stat"][data-layout="asym"] > .d0-slide__head > .d0-slide__stat { margin-top: 1.6cqi; align-self: start; }
+.d0-sl-value[data-anchor="start"] text, .d0-sl-label[data-anchor="start"] text { text-anchor: start; } /* 가로 막대: 라벨은 왼쪽 끝, 값은 막대 끝에서 시작(인라인 style 대신) */
+.d0-sl-link[data-on] { stroke: var(--d0-blue); stroke-width: 3; }  /* slope·line 근거의 강조 선. 점은 circle.d0-sl-bar */
+
+/* 섹션 장: 큰 번호 + 챕터 제목 */
+.d0-slide[data-kind="section"] { grid-template-rows: minmax(0, 1fr) auto; }
+.d0-slide[data-kind="section"] .d0-slide__head { align-self: center; gap: 1.6cqi; max-width: 80cqi; }
+.d0-slide__index {
+  margin: 0; color: var(--d0-blue-dark);
+  font-size: 7cqi; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display);
+  font-variant-numeric: tabular-nums;
+}
+.d0-slide[data-kind="section"] .d0-slide__title { font-size: 4.5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+.d0-slide__toc li[data-section] a { font-weight: 600; }
+
+/* 진한 면: cover·section·closing만. blue-dark 위 #fff 5.50, blue-light 4.94 */
+.d0-slide[data-surface="dark"] { background: var(--d0-blue-dark); box-shadow: none; }
+.d0-slide[data-surface="dark"]:focus-visible { outline-color: #fff; outline-offset: -8px; } /* 키보드 포커스만: 슬라이드 안쪽 흰 링 5.50 */
+.d0-slide[data-surface="dark"] :is(.d0-slide__title, .d0-slide__key, .d0-slide__index) { color: #fff; }
+.d0-slide[data-surface="dark"] .d0-slide__title:has(.d0-slide__key) { color: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] :is(.d0-slide__eyebrow, .d0-slide__sub, .d0-slide__lead, .d0-slide__note, .d0-slide__src, .d0-slide__num,
+  .d0-slide__meta dt, .d0-slide__meta dd, .d0-slide__summary dt, .d0-slide__summary dd) { color: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] :is(.d0-slide__meta, .d0-slide__summary > div, .d0-slide__foot) { border-color: color-mix(in srgb, #fff 32%, transparent); }
+.d0-slide[data-surface="dark"] .d0-slide__tag { background: transparent; box-shadow: inset 0 0 0 1px var(--d0-blue-light); color: #fff; }
+.d0-slide[data-surface="dark"] kbd { border-color: var(--d0-blue-light); color: #fff; }
+/* 진한 면 위 대표 도식: 선·빈 노드 blue-light, 강조 흰색. blue·의미색 표식은 두지 않는다 */
+.d0-slide[data-surface="dark"] :is(.d0-s-edge, .d0-s-ring, .d0-s-line, .d0-s-life, .d0-sl-link, .d0-sl-axis) { stroke: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step, .d0-s-frame) { fill: var(--d0-blue-dark); stroke: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-on] { fill: #fff; stroke: #fff; }
+.d0-slide[data-surface="dark"] .d0-s-edge[data-on] { stroke: #fff; }
+/* 값 막대는 색 하나에 기대지 않는다: 기준 막대 = blue-light 테두리만(배경 4.94, 흰색 24% 트랙 위 3.08), 강조 막대 = 흰 채움(5.50, 트랙 위 3.43) + 굵은 값 라벨 */
+.d0-slide[data-surface="dark"] :is(.d0-sl-bar, .d0-s-bar) { fill: none; stroke: var(--d0-blue-light); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.d0-slide[data-surface="dark"] :is(.d0-sl-label, .d0-sl-value, .d0-sl-head) text,
+.d0-slide[data-surface="dark"] .d0-s-text { fill: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] .d0-sl-value text[data-on] { fill: #fff; font-weight: 700; }
+.d0-slide[data-surface="dark"] :is(.d0-sl-label, .d0-sl-head) text[data-on],
+.d0-slide[data-surface="dark"] .d0-s-text[data-on] { fill: #fff; }
+.d0-slide[data-surface="dark"] .d0-s-muted { fill: var(--d0-blue-light); }
+/* 면·자리: 옅은 자리 흰색 24%, 진한 자리 grey-300(3.48), 강조 면 흰색(5.50), 영역은 면 없는 blue-light 점선 */
+.d0-slide[data-surface="dark"] :is(.d0-s-fill, .d0-s-track, .d0-s-cell, .d0-sl-total) { fill: color-mix(in srgb, #fff 24%, transparent); }
+.d0-slide[data-surface="dark"] .d0-s-key { fill: var(--d0-grey-300); }
+.d0-slide[data-surface="dark"] :is(.d0-s-accent, .d0-s-sum) { fill: #fff; }
+.d0-slide[data-surface="dark"] :is(.d0-s-zone, .d0-s-head) { fill: none; stroke: var(--d0-blue-light); }
+/* 번호: 빈 원 위 blue-light, 흰 원(data-on) 위 blue-dark. 흰 원 위 흰 숫자가 사라지지 않게 */
+.d0-slide[data-surface="dark"] .d0-s-num { fill: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] .d0-s-num[data-on] { fill: var(--d0-blue-dark); }
+/* 의미색은 기호로: 완료 green = 흰 원 + blue-dark ✓(d0-s-tick), 실패 red = 흰 테두리 원 + 흰 ×(d0-s-stop), orange = blue-light 테두리 원 + !(d0-s-num). 기호는 빼지 않는다(완료 라벨 생략 조건은 본문) */
+.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="green"] { fill: #fff; stroke: #fff; }
+.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="red"] { fill: var(--d0-blue-dark); stroke: #fff; stroke-width: 2.5; }    /* 안에 흰 × (d0-s-stop) */
+.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="orange"] { fill: var(--d0-blue-dark); stroke: var(--d0-blue-light); } /* 안에 ! (text.d0-s-num, blue-light 4.94) */
+.d0-slide[data-surface="dark"] .d0-s-tick { stroke: var(--d0-blue-dark); stroke-width: 2; }                                         /* 흰 원 위 ✓ 5.50 */
+.d0-slide[data-surface="dark"] :is(.d0-s-edge[data-tone="red"], .d0-s-stop) { stroke: #fff; }                                        /* 원 안 ×·원 밖 막힘 표시 5.50 */
+.d0-slide[data-surface="dark"] :is(.d0-s-bar, .d0-sl-bar)[data-tone] { fill: none; stroke: var(--d0-blue-light); }  /* 의미색 막대도 기준 막대처럼 테두리만 */
+.d0-slide[data-surface="dark"] :is(.d0-s-bar, .d0-sl-bar)[data-on] { fill: #fff; stroke: none; }                      /* 강조 막대: 흰 채움(의미색 규칙보다 뒤) */
+/* 배지: 면을 빼고 blue-light 테두리 + 흰 글자, 의미색 점은 흰색 */
+.d0-slide[data-surface="dark"] .d0-pill { background: transparent; box-shadow: inset 0 0 0 1px var(--d0-blue-light); color: #fff; }
+.d0-slide[data-surface="dark"] .d0-pill::before { background: #fff; }
+/* 덱에서 새로 만든 로컬 도형 클래스는 진한 면 색을 직접 정한다(위 역할대로) */
+
+/* 근거 변형(evidence.md)을 evidence 장 그림 자리에: 근거 요소가 몸 행을 채운다 */
+.d0-slide__fig > :is(.d0-mlist, .d0-barlist, .d0-tiles) { min-height: 0; height: 100%; }
+.d0-slide__fig .d0-mlist { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 4cqi; }
+.d0-slide__fig .d0-mlist__rows { gap: 2.4cqi; align-content: center; }
+.d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dd { font-size: 4.4cqi; }
+.d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dt { font-size: 1.8cqi; }
+.d0-slide[data-kind] .d0-slide__fig svg.d0-mlist__chart { justify-self: stretch; width: 100%; max-width: none; height: 100%; max-height: 100%; }
+.d0-slide__fig .d0-barlist { align-content: center; gap: 2.4cqi; }
+.d0-slide__fig .d0-barlist li { gap: 0.8cqi 2cqi; }
+.d0-slide__fig .d0-barlist :is(.d0-barlist__label, .d0-barlist__value) { font-size: 2.2cqi; }
+.d0-slide__fig .d0-barlist__track { height: 1.4cqi; }
+.d0-slide__fig .d0-tiles { grid-auto-rows: 1fr; gap: 1.6cqi; }
+.d0-slide__fig .d0-tiles > div { padding: 2.4cqi; align-content: center; }
+
+/* 주석(diagram.md annotate)을 덱 그림에: SVG 높이를 내용대로 두어 번호 위치가 맞게 */
+.d0-slide__fig .d0-annot { align-self: center; justify-self: center; max-width: 100%; }
+.d0-slide .d0-slide__fig .d0-annot svg { height: auto; max-height: none; max-width: 100%; }
+.d0-slide__fig .d0-annot > .d0-pin { width: 2.8cqi; height: 2.8cqi; font-size: 1.5cqi; }
+.d0-slide .d0-annot__notes { gap: 1.6cqi; }
+.d0-slide .d0-annot__notes li { grid-template-columns: 2.6cqi minmax(0, 1fr); column-gap: 1.2cqi; font-size: 2cqi; }
+.d0-slide .d0-annot__notes .d0-pin { width: 2.6cqi; height: 2.6cqi; font-size: 1.4cqi; }
+
+@container (max-width: 730px) {
+  .d0-slide__tag { padding: 2px 10px; font-size: 12px; }
+  .d0-slide__foot:has(.d0-slide__src):not(:has(kbd)) { padding-top: 8px; }
+  .d0-slide[data-layout="asym"],
+  .d0-slide[data-layout="asym"][data-flip] { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(3, max-content); }
+  .d0-slide[data-layout="asym"] > :is(.d0-slide__head, .d0-slide__fig, .d0-slide__foot),
+  .d0-slide[data-layout="asym"][data-flip] > :is(.d0-slide__head, .d0-slide__fig) { grid-column: 1; grid-row: auto; height: auto; }
+  .d0-slide[data-layout="asym"] .d0-slide__title,
+  .d0-slide[data-layout="asym"][data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 20px; } /* 위 데스크톱 asym 규칙과 같은 특이도로 */
+  .d0-slide[data-kind="section"] { min-height: min(420px, calc(100dvh - 116px)); }
+  .d0-slide__index { font-size: 40px; }
+  .d0-slide[data-kind="section"] .d0-slide__title { font-size: 24px; }
+  .d0-slide__fig > :is(.d0-mlist, .d0-barlist, .d0-tiles) { height: auto; }
+  .d0-slide__fig .d0-mlist { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .d0-slide[data-kind] .d0-slide__fig svg.d0-mlist__chart { height: auto; max-height: 200px; }
+  .d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dd { font-size: 26px; }
+  .d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dt { font-size: 13px; }
+  .d0-slide__fig .d0-mlist__rows, .d0-slide__fig .d0-barlist { gap: 12px; }
+  .d0-slide__fig .d0-barlist :is(.d0-barlist__label, .d0-barlist__value) { font-size: 15px; }
+  .d0-slide__fig .d0-barlist__track { height: 8px; }
+  .d0-slide__fig .d0-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; gap: 8px; }
+  .d0-slide__fig .d0-tiles > div { padding: 14px; }
+  .d0-slide__fig .d0-annot > .d0-pin, .d0-slide .d0-annot__notes .d0-pin { width: 24px; height: 24px; font-size: 13px; }
+  .d0-slide .d0-annot__notes { gap: 8px; }
+  .d0-slide .d0-annot__notes li { grid-template-columns: 24px minmax(0, 1fr); column-gap: 8px; font-size: 15px; }
+}

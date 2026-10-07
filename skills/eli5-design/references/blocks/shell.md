@@ -7,17 +7,21 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 
 - doctype → `lang="ko"` → meta viewport → 폰트 → 메인 `<style>`.
 - **폰트.** 결과물 HTML을 넘길 때는(파일·artifact 모두, 발행 여부와 무관) `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
-  메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 아래 스니펫의 jsDelivr `<link>`는 작업 중 초안용이고, 도구를 못 쓸 때만 남긴다(정본: SKILL.md 출력 형식).
-- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 프레임과 읽기 축·폭 단계·넓은 구간·그림 폭·2열·여백 주석·접기·기억할 한 줄(정본 CSS) → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 공용 배지 → 포커스 → 모션.
+  메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 아래 스니펫의 jsDelivr `<link>`는 작업 중 초안용이고, 도구를 못 쓸 때만 남긴다(정본: [output/page.md](../output/page.md) 파일 형식).
+- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 프레임과 읽기 축·폭 단계·넓은 구간·그림 폭·2열·여백 주석·접기·기억할 한 줄(정본 CSS `assets/page.css`) → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 공용 배지 → 포커스 → 모션.
   폰트 `<style>`은 이 앞의 별도 요소라 "tokens.css는 메인 `<style>` 맨 앞" 규칙과 부딪히지 않는다.
 - **프레임과 읽기 축.** `.d0-page` 안쪽 폭이 가운데 프레임(기본 1136px)이고, 읽기 축(기본 720px)은 프레임 왼쪽에 붙는다. 폭 단계 `data-width`가 narrow(축 640px)·기본(720px)·report(축 960px·프레임 1280px·글 720px)를 정한다. 모든 섹션이 프레임 왼쪽 같은 시작선에서 시작한다(아래 프레임과 왼쪽 읽기 축 절).
 - 페이지 패딩: 데스크톱 `64px 32px 96px`, 640px 이하 `48px 16px 72px`(좌우 16px 거터).
 - 모든 블록은 프레임 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다. 축 오른쪽으로 나가는 것은 `.d0-wide` 구간과 여백 주석 `.d0-margin`뿐이다.
-- **첫 화면 높이 예산(정본).** 판정은 둘이다: 1280×800에서 **첫 SVG 도식의 아래 끝이 y ≤ 800px**(전부 보인다, SKILL.md 원칙 2번), 높이 약 720px 프레임(갤러리 iframe, 1280×720)에서는 **첫 SVG 도식의 위쪽 절반 이상이 y ≤ 720px 안**에 든다.
+- **첫 화면 높이 예산(정본).** 판정은 둘이다: 1280×800에서 **첫 SVG 도식의 아래 끝이 y ≤ 800px**(전부 보인다, 원칙 2번·아래 첫 화면의 정의), 높이 약 720px 프레임(갤러리 iframe, 1280×720)에서는 **첫 SVG 도식의 위쪽 절반 이상이 y ≤ 720px 안**에 든다.
   머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 그림(무대가 있으면 무대) 렌더 높이 390px이 **합계 650px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 그림 390 ≈ 798px).
   그림은 축 폭을 채우므로 렌더 높이 = 렌더 폭 × viewBox 높이 ÷ viewBox 폭이다. 축 720px에서 viewBox 폭 560이면 viewBox 높이 300 이하(렌더 약 386px)가 기준이다. report 축 960px에서 viewBox 폭 750이면 같은 배율(약 1.28)이라 viewBox 높이 300 이하가 같은 기준이다.
   머리가 짧으면 그림이 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
   넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 첫 그림의 viewBox 높이를 줄이거나 `data-fit="compact"`로 둔다.
+- **첫 화면의 정의(정본).** 1280×800 뷰포트에서 도식의 bounding box가 전부 보이는 것(잘리면 실패), 375×812에서는
+  첫 그림 블록 높이의 절반 이상이 첫 화면 안에 보이는 것이다(윗부분만 걸치면 실패). 320×568은 첫 그림 블록의 위 끝이 첫 화면 안에 들어오면 충분하다(면적 규칙은 1280×800에만 적용).
+- **첫 화면 면적.** 결과물·화면·데이터가 있으면 설명하지 말고 목업이나 눌러 보는 프로토타입으로 보인다. **첫 화면(1280×800) 안에서** 그림·목업 면적이 글 면적보다 크다. 이 면적 규칙은 첫 화면에만 적용한다.
+  그 아래 섹션은 그림이 필수가 아니다. 핵심 구조(관계·순서·크기·모양)가 있는 섹션은 그림을 권장하고, 구조를 글로 길게 풀지 않는다.
 
 ## 여백 리듬
 
@@ -39,7 +43,7 @@ page는 넓은 캔버스를 채우지 않는다. **가운데 프레임 안에서
 
 - **프레임.** `.d0-page` 안쪽 폭이 프레임이다(기본 1136px, 12열 기준). 프레임은 화면 가운데에 놓인다.
 - **읽기 축.** 축은 프레임 **왼쪽**에 붙는다(기본 720px, 8열 상당). 섹션 제목과 모든 블록의 왼쪽 시작선은 항상 프레임 왼쪽이다. 1366·1440·1920px에서 h2·축 안 블록·`.d0-wide`·축 안 2열 첫 열의 왼쪽 x가 하나다.
-  헤더·섹션의 직계 자식이 폭 상한을 받는다(정본 CSS). 블록마다 들여쓰기를 따로 두지 않는다.
+  헤더·섹션의 직계 자식이 폭 상한을 받는다(정본 CSS `assets/page.css`, 아래 스니펫 절 발췌). 블록마다 들여쓰기를 따로 두지 않는다.
 - **오른쪽 여백.** 축 오른쪽(약 4열)은 기본 비어 있다. 빈 공간은 채울 공간이 아니다. 여백이 덩어리를 묶어 준다. 빈자리를 채우려고 그림 옆에 설명 문단·목록을 붙이지 않는다. 이 자리에 둘 수 있는 것은 선택 블록인 여백 주석(`.d0-margin`, 아래)뿐이다.
 
 ### 폭 단계 (`data-width`)
@@ -140,7 +144,7 @@ page는 넓은 캔버스를 채우지 않는다. **가운데 프레임 안에서
 - **`.d0-more`.** `details.d0-more > summary` + 내용. grey-50 면, radius 12, 패딩 16·20. summary는 14px/600 blue-dark로 무엇이 접혀 있는지 말한다(`단계별 시간 전체 보기`).
   섹션마다 최대 1개이고 섹션 끝에 둔다. 섹션의 핵심 답·결정·정본 숫자는 접지 않는다. 여러 선택 보조 항목을 목록으로 접는 것은 [accordion](accordion.md)이고, `.d0-more`는 본 흐름에서 빼낸 세부 한 덩어리다.
 - **`.d0-keep`.** `aside.d0-keep` = 라벨(`.d0-keep__label`, 13px/600 blue-dark, 예 `기억할 한 줄`) + 문장 `p` 하나(18px/700 grey-900). blue-light 면, radius 16, 패딩 20·24.
-  페이지당 0~1개, 마지막 섹션 안 끝(closing이 있으면 그 앞)에 둔다. 기억할 사실 한 문장이다. 독자에게 행동·결정을 요구하면 [closing](closing.md)이 맡고, 같은 문장을 둘에 쓰지 않는다. 같은 숫자 반복 셈(SKILL.md 원칙 8번)에 들어간다.
+  페이지당 0~1개, 마지막 섹션 안 끝(closing이 있으면 그 앞)에 둔다. 기억할 사실 한 문장이다. 독자에게 행동·결정을 요구하면 [closing](closing.md)이 맡고, 같은 문장을 둘에 쓰지 않는다. 같은 숫자 반복 셈(원칙 8번, [writing.md](../writing.md) 한 사실은 한 번)에 들어간다.
   면 단위 옅은 표면이라 진한 포인트 비율에서 빼고 장면 수로 센다(아래 색 절).
 
 ```html
@@ -160,7 +164,7 @@ page는 넓은 캔버스를 채우지 않는다. **가운데 프레임 안에서
 본문 한 줄의 길이는 **폭 단계의 글 폭(`--d0-measure`)이 정한다**. 기본·narrow는 축 폭, report는 720px이다. 글 블록(리드 `p`, explanation·evidence·faq `dl`, 행 목록)은 글 폭이나 놓인 2열 열 폭을 그대로 쓰고, 그 안에서 따로 폭 상한을 두지 않는다. 글 블록마다 다른 상한을 두면 오른쪽 끝이 섹션마다 들쭉날쭉해진다.
 
 - **폭 기준.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px다. 그래서 글 폭 720px(기본·report)은 한 줄 약 68~75자, narrow 640px은 약 60~66자, 넓은 구간 6/6 열(약 544px)은 약 51~56자, 축 안 6/6 열(336px)은 약 32~35자다.
-- **좁히는 곳은 축이다.** `p`·`dd`나 글 블록에 `max-width`를 걸지 않는다(개행 규칙). 글이 주인공이라 줄을 더 짧게 읽혀야 하면 페이지 전체를 `data-width="narrow"`로 둔다.
+- **좁히는 곳은 축이다.** `p`·`dd`나 글 블록에 `max-width`를 걸지 않는다([writing.md](../writing.md) 개행 규칙). 글이 주인공이라 줄을 더 짧게 읽혀야 하면 페이지 전체를 `data-width="narrow"`로 둔다.
 - **한 줄짜리 글**(요약 행 값, 행 설명, checklist 결과 한 줄, checkpoint)은 축 한 줄 안에서 끝나게 쓴다. 넘치면 문장을 줄인다.
 - **리드 `p`**(header 리드, 섹션 리드)는 컨테이너를 좁히지 않는다. 2문장 이상이고 데스크톱에서 2줄을 넘으면 문장 단위 개행(`.d0-sentence`)을 쓴다(아래 개행 절).
 - `code`·`pre`·명령어 줄·[code-block](code-block.md)은 줄 길이 규칙 밖이다.
@@ -185,7 +189,8 @@ page는 넓은 캔버스를 채우지 않는다. **가운데 프레임 안에서
 - **행간 예외(정본).** 행간은 토큰(`--d0-leading-*`)이 기본이다. 단 설명 문단(`p`, explanation `dd`)의 행간 1.65는 긴 설명을 읽기 위한 이 스킬의 타이포 값이고 글(본문) 행간에서 토큰 규칙의 예외다(배지·큰 숫자·핀처럼 한 줄 요소의 `line-height: 1`은 글 행간이 아니다). 다른 글자(본문 `body`, 목록, 슬라이드)는 `--d0-leading-body`(1.55)를 쓴다.
 - 12px 라벨 글자는 grey-600(흰 바탕 5.0, grey-50 위 4.71)이다. grey-500은 흰 바탕 3.19라 작은 글자에 쓰지 않는다.
   히어로 전 값도 grey-600이다.
-- 회색 보조문은 줄인다. 섹션 설명은 최대 1문장이고 제목과 같은 말이면 뺀다. 주 콘텐츠는 그림과 숫자, 15px 본문이다.
+- 회색 보조문은 줄인다. 13px 회색 문장을 주 콘텐츠로 쓰지 않는다. 섹션 설명은 최대 1문장이고 제목과 같은 말이면 뺀다. 주 콘텐츠는 그림과 숫자, 15px 본문이다.
+- grey-500은 선·화살표 같은 그래픽에만 쓴다.
 
 ## 강조 면 (`data-emphasis`)
 
@@ -311,9 +316,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 
 ## 개행
 
-- 리드·설명 문단은 부모 폭을 그대로 쓴다. `p`에 컨테이너보다 좁은 `max-width`를 걸지 않는다. 줄이 길면 위 줄 길이 절대로 페이지 전체를 `data-width="narrow"`로 둔다.
-- 문장 단위 개행(선택): 리드·설명이 2문장 이상이고 데스크톱 폭에서 2줄을 넘기거나 문장마다 역할이 다르면
-  문장마다 `<span class="d0-sentence">`로 감싼다(`display: block`). `<br>`을 늘어놓지 않는다.
+개행 규칙(부모 폭 그대로, `p` `max-width` 금지, `keep-all`·`pretty`, `balance`는 제목만, 문장 단위 개행 `.d0-sentence`)의 정본은 [writing.md](../writing.md) 개행 규칙 절이다. 이 파일의 스니펫 CSS가 그 규칙을 구현한다.
 
 ## 모션 (선택)
 
@@ -337,7 +340,9 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 <!-- 넘기기 전(파일·artifact 모두): 이 <link> 대신 scripts/subset_font.py 출력(<style>@font-face…</style>)을 여기 둔다 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* (아래 css 블록 + 고른 블록 css) */
+/* eli5:tokens.css */
+/* eli5:page.css */
+/* 고른 블록의 CSS를 여기 붙인다 */
 </style>
 </head>
 <body>
@@ -354,183 +359,28 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
   </section>
 </main>
 <script>
-/* 모션 JS + 인터랙션 블록의 JS를 여기 붙인다 */
+/* eli5:page.js */
+/* 인터랙션 블록의 JS를 여기 붙인다 */
 </script>
 </body>
 </html>
 ```
 
-```css
-/* ../day0-design/references/tokens.css 파일 전체를 수정 없이 여기(메인 <style> 맨 앞)에 붙인다.
-   day0-design 위치는 SKILL.md의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
-:root { color-scheme: light; }
-/* 스크롤바 자리를 항상 비워 둔다: 긴 페이지와 짧은 페이지를 오가거나 탭·토글로 높이가 바뀌어도 가로 폭이 흔들리지 않는다 */
-html { scrollbar-gutter: stable; }
-*, *::before, *::after { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: #fff;
-  color: var(--d0-grey-800);
-  font-family: var(--d0-font);
-  font-size: 15px;
-  line-height: var(--d0-leading-body);
-  letter-spacing: var(--d0-tracking-body);
-  font-variant-numeric: tabular-nums;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-}
-h1, h2, h3 {
-  margin: 0;
-  color: var(--d0-grey-900);
-  line-height: var(--d0-leading-title);
-  letter-spacing: var(--d0-tracking-title);
-  text-wrap: balance;
-}
-h1 { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-h2 { font-size: 20px; font-weight: 700; }
-h3 { font-size: 16px; font-weight: 650; }
-p { margin: 0; line-height: 1.65; text-wrap: pretty; }
-ul, ol, dl, dd, figure { margin: 0; padding: 0; list-style: none; }
-svg { display: block; max-width: 100%; height: auto; }
-button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer; }
-.d0-sentence { display: block; }
+### 정본 CSS·JS (`assets/`)
 
-/* 본문 축: 가운데 프레임 안에서 왼쪽에 붙은 읽기 축. 폭 단계(data-width) 기본 축 720/프레임 1136, narrow 640/1136, report 960/1280(글은 720) */
+- **정본: `assets/page.css`(이 파일의 골격 CSS + [diagram](diagram.md) 도식 공용 클래스), `assets/page.js`(모션).** 일반 생성에서는 읽지 말고 그대로 인라인한다. 수정할 때만 읽는다.
+- **인라인.** 위 스켈레톤의 자리표시자 주석(`/* eli5:tokens.css */`, `/* eli5:page.css */`, `/* eli5:page.js */`)을 그대로 두고 `python3 scripts/inline_assets.py page out.html`을 실행하면 tokens.css([day0.md](../day0.md) 탐색 순서)와 assets가 채워진다.
+  도구를 못 쓰면 파일 내용을 수정 없이 같은 자리에 붙인다(순서: tokens.css → page.css → 고른 블록 CSS, 스크립트는 page.js → 인터랙션 블록 JS).
+- 블록 문서의 작은 CSS 스니펫은 그 블록을 쓸 때만 붙인다. 같은 규칙이 assets에도 있으면 assets가 정본이다.
+- 규칙 설명용 발췌(축·폭 단계. 고치면 `assets/page.css`를 고친다):
+
+```css
 .d0-page { --d0-frame: 1136px; --d0-axis: 720px; --d0-measure: 720px; max-width: calc(var(--d0-frame) + 64px); margin: 0 auto; padding: 64px 32px 96px; }
 .d0-page[data-width="narrow"] { --d0-axis: 640px; --d0-measure: 640px; }
 .d0-page[data-width="report"] { --d0-frame: 1280px; --d0-axis: 960px; }
-/* 블록은 모두 프레임 왼쪽에서 시작한다. 글은 --d0-measure, 그림·표·지표·축 안 2열은 --d0-axis까지. 넓은 구간과 여백 주석 묶음만 예외 */
 .d0-page :is(.d0-header, .d0-section, .d0-margined) > :not(.d0-wide, .d0-margined, .d0-margin) { max-width: var(--d0-measure); }
 .d0-page :is(.d0-header, .d0-section, .d0-margined) > :is(figure, table, .d0-cols, .d0-kpis, .d0-steps, .d0-timeline, .d0-ba, .d0-sbs, .d0-thumbs, .d0-demos):not(.d0-wide) { max-width: var(--d0-axis); }
-/* 넓은 구간: 왼쪽 시작선은 그대로 두고 오른쪽만 프레임 끝까지 */
 .d0-wide { width: 100%; max-width: none; }
-/* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
-.d0-fig svg { width: 100%; height: auto; }
-.d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
-/* 2열: 축 안은 6/6(각 열 300px 이상일 때만, 아니면 쌓는다). 넓은 구간 안은 12열 6/6 또는 7/5. 축 안과 넓은 구간이 각각 분할선 하나 */
-.d0-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 24px 48px; align-items: start; }
-.d0-cols > * { min-width: 0; }
-:where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 960px) {
-  :where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  :where(.d0-wide) .d0-cols > *, .d0-cols:where(.d0-wide) > * { grid-column: span 6; }
-  :where(.d0-wide) .d0-cols[data-split="7-5"] > :first-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :first-child { grid-column: span 7; }
-  :where(.d0-wide) .d0-cols[data-split="7-5"] > :last-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :last-child { grid-column: span 5; }
-}
-/* 여백 주석(선택): 본문 블록 하나 + aside.d0-margin. 1200px 이상(report는 1344px 이상)에서만 축 오른쪽 열, 그 아래는 본문 바로 아래 */
-.d0-margined { display: grid; gap: 12px 48px; align-items: start; }
-.d0-margined > * { min-width: 0; }
-.d0-margin { max-width: var(--d0-measure); color: var(--d0-grey-600); font-size: 14px; line-height: 1.6; }
-@media (min-width: 1200px) {
-  .d0-page:not([data-width="report"]) .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
-}
-@media (min-width: 1344px) {
-  .d0-page[data-width="report"] .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
-}
-/* 접기와 기억할 한 줄 */
-.d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
-.d0-more > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--d0-blue-dark); }
-.d0-more[open] > summary { margin-bottom: 12px; }
-.d0-keep { border-radius: 16px; background: var(--d0-blue-light); padding: 20px 24px; display: grid; gap: 6px; }
-.d0-keep > .d0-keep__label { font-size: 13px; font-weight: 600; color: var(--d0-blue-dark); }
-.d0-keep > p { font-size: 18px; font-weight: 700; color: var(--d0-grey-900); }
-
-/* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px */
-.d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); }
-.d0-section:last-child { padding-bottom: 0; }
-.d0-section > p { color: var(--d0-grey-600); font-size: 14px; }
-.d0-note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
-
-/* 강조: page Impact = 배경 없이 큰 글자와 여백(섹션 간격 64 그대로), Quiet = 한 단계 물러남. 덱 Impact는 slide-deck.md */
-.d0-section[data-emphasis="impact"] .d0-fig__stage { padding: 0; background: transparent; } /* Impact 안에는 무대 없음 */
-.d0-impact__line { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-.d0-impact__num, .d0-section > .d0-impact__num { color: var(--d0-blue-dark); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); }
-.d0-section[data-emphasis="quiet"] { color: var(--d0-grey-700); }
-.d0-section[data-emphasis="quiet"] h2 { font-size: 18px; }
-
-/* 그림: 기본은 무대 없음. 무대(.d0-fig__stage)는 경계가 안 보이거나 받침 면이 필요할 때만 쓴다 */
-.d0-fig { display: grid; gap: 12px; align-content: start; min-width: 0; }
-.d0-fig__stage { display: grid; justify-items: center; padding: 28px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
-.d0-fig__stage > :not(svg) { justify-self: stretch; } /* 카드 목록 등 SVG 아닌 내용은 무대 폭을 채운다 */
-.d0-fig figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
-.d0-fig[data-stage="blue"] > .d0-fig__stage { background: var(--d0-blue-light); } /* 핵심 도식 하나만 */
-
-.d0-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  flex: none; align-self: flex-start; justify-self: start;
-  height: 22px; padding: 0 9px; border: 0; border-radius: 999px;
-  background: var(--d0-grey-100); color: var(--d0-grey-700);
-  font-size: var(--d0-meta); font-weight: 600; line-height: 1; white-space: nowrap;
-}
-.d0-pill[data-size="sm"] { height: 20px; padding: 0 8px; }
-button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px; font-size: var(--d0-text-compact); }
-.d0-pill[data-tone="blue"] { background: var(--d0-blue-light); color: var(--d0-blue-dark); }
-.d0-pill[data-tone="green"] { background: var(--d0-green-bg); color: var(--d0-grey-900); }
-.d0-pill[data-tone="red"] { background: var(--d0-red-bg); color: var(--d0-grey-900); }
-.d0-pill[data-tone="orange"] { background: var(--d0-orange-bg); color: var(--d0-grey-900); }
-.d0-pill[data-tone="green"]::before,
-.d0-pill[data-tone="red"]::before,
-.d0-pill[data-tone="orange"]::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 999px; }
-.d0-pill[data-tone="green"]::before { background: var(--d0-green); }
-.d0-pill[data-tone="red"]::before { background: var(--d0-red); }
-.d0-pill[data-tone="orange"]::before { background: var(--d0-orange); }
-
-.d0-sr-only {
-  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
-  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-}
-:focus-visible { outline: 2px solid var(--d0-blue-dark); outline-offset: 2px; }
-
-/* 모션: data-motion은 JS가 reduced-motion이 아닐 때만 붙인다. 없으면 전부 그대로 보인다. */
-html[data-motion="on"] [data-reveal] {
-  transition: opacity calc(var(--d0-dur) * 2) var(--d0-ease), transform calc(var(--d0-dur) * 2) var(--d0-ease);
-}
-html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: translateY(8px); }
-html[data-motion="on"] .d0-draw { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 600ms var(--d0-ease) 120ms; }
-html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset: 1; }
-
-@media (max-width: 640px) {
-  .d0-page { padding: 48px 16px 72px; }
-  .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
-  h1 { font-size: 26px; }
-  h2 { font-size: 18px; }
-  .d0-section { padding-block: 24px; }
-  .d0-fig__stage { padding: 20px; }
-  .d0-impact__line { font-size: 24px; }
-  .d0-impact__num, .d0-section > .d0-impact__num { font-size: 48px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-```
-
-```js
-// 모션: 섹션 직계 블록을 한 번 드러내고(60ms 순차), 안의 .d0-draw 경로를 그린다.
-(function () {
-  if (!('IntersectionObserver' in window)) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var groups = document.querySelectorAll('.d0-header, .d0-section');
-  if (!groups.length) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.setAttribute('data-in', '');
-      io.unobserve(e.target);
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  groups.forEach(function (g) {
-    Array.prototype.forEach.call(g.children, function (el, i) {
-      el.setAttribute('data-reveal', '');
-      el.style.transitionDelay = (i * 60) + 'ms';
-      io.observe(el);
-    });
-  });
-  document.documentElement.setAttribute('data-motion', 'on');
-})();
 ```
 
 ## 금지
@@ -540,7 +390,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 - Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, 넘긴 결과물 HTML에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
 - 글자에 `--d0-blue`·`--d0-grey-500` 이하·시맨틱 전경색 사용(흰 바탕 대비 4.5:1 미달). 글자는 `--d0-blue-dark`, `--d0-grey-600` 이상.
   예외는 18.66px/700 이상 큰 글자(3:1)뿐이다.
-- tokens.css에 없는 `--d0-*` 변수 만들기(표면 `#fff`와 정본 CSS의 레이아웃 변수 `--d0-frame`·`--d0-axis`·`--d0-measure`만 예외). 반투명 막은 `color-mix(in srgb, var(--d0-grey-900) 32%, transparent)`.
+- tokens.css에 없는 `--d0-*` 변수 만들기(표면 `#fff`와 `assets/page.css`의 레이아웃 변수 `--d0-frame`·`--d0-axis`·`--d0-measure`만 예외). 반투명 막은 `color-mix(in srgb, var(--d0-grey-900) 32%, transparent)`.
 - 배지 높이를 행 높이에 맡기기(늘어난 배지), 섹션마다 카드 상자, 섹션 안 블록마다 테두리, 섹션·행 사이 `grey-200` 이상 진한 구분선.
   예외는 블록 안 한 줄 표식인 closing 문장 아래 구분선(page `.d0-closing__meta`, deck `.d0-slide__meta`)과 checkpoint 뒤 선이다. 이 둘은 1px grey-200이고 섹션·행 구분선으로 세지 않는다.
 - 회색만 있는 도식·카드, 의미색 글자, 의미색 3가지 이상, 카드·행 하나에 배지 2개 이상, 배지 톤 4종류 이상, 혼자 뜻을 전하는 orange 선·점.

@@ -79,7 +79,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 ### page와 deck
 
 page는 혼자 읽어도 이해되는 시각 문서로 구조, 맥락, 근거, 조건, 해석을 함께 담습니다. deck은 발표자와 함께 보는 자료로
-한 장에 주장 하나와 최소한의 글만 둡니다. 혼자 읽히는 게 주목적이면 page를 쓰고, 발표자 없이 전달될 덱이면 필요한 맥락과 출처를 덱 안에 남깁니다. 둘은 같은 패턴과 블록을 쓰고 밀도 규칙만 다릅니다. 덱은 주 패턴 하나의 스토리라인을 따르고
+한 장에 주장 하나와 최소한의 글만 둡니다. 혼자 읽히는 게 주목적이면 page를 쓰고, 발표자 없이 전달될 덱이면 필요한 맥락과 출처를 덱 안에 남깁니다. 둘은 패턴과 블록을 공유할 수 있지만, 정보 구조·밀도·구도는 출력 형식에 맞게 다시 구성합니다. 덱은 주 패턴 하나의 스토리라인을 따르고
 표지·목차 포함 5~12장이며, 결론 문장 제목, 그림 면적, 전체의 20~30%인 강조 장면, closing 마지막 장 규칙을 지킵니다.
 장마다 구도는 달라도 제목 문법과 쪽번호·섹션 태그 같은 크롬을 같은 자리에 둬 한 덱으로 읽히게 합니다. 진한 blue-dark 면은 표지·섹션·마무리 장에서 장면을 바꿀 때만 덱당 1~3장 쓰고, 본문 장과 page는 라이트 그대로입니다.
 
@@ -125,17 +125,25 @@ page는 넓은 캔버스를 채우지 않고 가운데 프레임 안에서 왼�
 
 `day0-design` 스킬을 함께 설치하는 것을 권장합니다. 이 스킬은 토큰 값을 갖지 않고
 `day0-design`의 `tokens.css` 파일 전체를 HTML `<style>`에 그대로 인라인합니다.
-`day0-design`을 어디서 찾는지는 `SKILL.md`의 탐색 순서를 따릅니다. 로컬에 없으면 공개
+`day0-design`을 어디서 찾는지는 `references/day0.md`의 탐색 순서를 따릅니다. 로컬에 없으면 공개
 저장소 원본을 읽으므로 네트워크가 필요하고, 그마저 실패하면 토큰을 추측하지 않고 멈춥니다.
 결과물 HTML을 넘길 때는 파일이든 artifact 발행이든 `scripts/subset_font.py`로 페이지에 쓴 글자만 담은
 서브셋 폰트를 인라인해 외부 요청을 없앱니다. 도구를 쓸 수 없을 때만 Pretendard Variable 웹폰트 링크 하나를 남기고 그 사실을 알립니다.
+골격·도식·덱의 정본 CSS와 JS는 `assets/`에 두고, 생성할 때는 읽지 않고 `scripts/inline_assets.py`로 HTML의 자리표시자 주석에 그대로 채웁니다.
+이 도구는 파이썬 표준 라이브러리만 씁니다.
 
 ## 파일 구성
 
 | 파일 | 내용 |
 | --- | --- |
-| `SKILL.md` | 원칙(그림과 글의 역할, 첫 화면 규칙, 독자 질문으로 섹션 나누기, 라벨 단 짧은 설명, 한 사실은 한 번과 맥락 보존, 타이포·여백·색), 용어 계층, day0-design 탐색 순서, 모듈 라우팅, 패턴 판별(질문 나누기 → 질문별 패턴 → 선택 레시피), 출력 형식 판별(page·deck), 개행 규칙, 작업 순서, 출력 게이트(Page Depth Gate 포함) |
-| `references/writing.md` | 문구 확정 전 직역투 점검: 영어식 은유, 무생물 주어, 압축 대구, 분열문, 번역 조사, 명사 나열 압축, 모호한 조건절과 고친 예시 |
+| `SKILL.md` | 매번 읽는 라우터: 핵심 원칙 10개 요약과 말투, 판별 절차(독자 질문 → 패턴 → 선택 레시피 → page·deck)와 패턴 표, 상황별 읽을 파일, 단계마다 읽을 파일을 적은 작업 순서 |
+| `references/gates.md` | 출력 게이트 인덱스: 출력별로 읽을 파일과 순서, 항목 ID 규칙, 공통 HARD·접근성·VISUAL |
+| `references/gates/page.md` | page 전용 게이트: Page Depth Gate, page 전용 HARD·VISUAL, WARNING |
+| `references/gates/deck.md` | deck 전용 게이트: deck 출력 예외, Slide Gate와 덱 게이트의 순서와 위치 |
+| `references/day0.md` | `day0-design` 탐색 순서(형제 경로, 전역 경로, 공개 저장소 원본, 실패 시 멈춤), 토큰 전체 인라인과 우선순위 |
+| `references/patterns.md` | 패턴 판별 세부: 독자 질문으로 섹션 나누기, 섞는 법, 단일 정보 요구와 블록, 패턴이 남기는 것, 자연스러운 깊이, 헷갈리는 쌍, 이름표 |
+| `references/output/page.md` | page 출력 규칙: 언제 page인가, 루트 마크업과 이름표, 단일 HTML·폰트 인라인·라이트 온리·720px 프레임·여러 페이지 artifact, 게이트 순서 |
+| `references/writing.md` | 글쓰기 규칙: 용어 풀이, 한 사실은 한 번과 숫자 반복 세는 법, 개행 규칙과 요약 행, 문구 확정 전 직역투 점검(영어식 은유, 무생물 주어, 압축 대구, 분열문, 번역 조사, 명사 나열 압축, 모호한 조건절)과 고친 예시 |
 | `references/recipes.md` | 레시피 6개: 장애 회고, 기능 출시 보고, 설치 가이드, 기능 소개, 의사결정 문서, 상태 보고. 질문별 패턴과 추천 블록, 덱으로 낼 때 |
 | `references/patterns/compare.md` | 비교 패턴: 시안·결정·전/후 변형, 섹션으로 쓸 때, 결정 덱 순서 |
 | `references/patterns/flow.md` | 절차·구조 패턴: 연결 그래프, 단계 도식, 설명 덱 순서 |
@@ -145,7 +153,7 @@ page는 넓은 캔버스를 채우지 않고 가운데 프레임 안에서 왼�
 | `references/patterns/timeline.md` | 일정 패턴: 로드맵과 변경 내역, 덱이 덜 맞는 이유와 짧은 덱 순서 |
 | `references/patterns/incident.md` | 사건 패턴: 경위와 원인, 회고 덱 순서 |
 | `references/patterns/faq.md` | FAQ 패턴: 용어 카드와 질문, 덱이 맞지 않는 이유와 짧은 덱 순서 |
-| `references/blocks.md` | 블록 인덱스: 용어 계층, 공용 정보 블록, 블록 추가 판별, 공통 규칙(그림 우선, 무대, 구도와 강조, 여백, 배지, 시맨틱 태그), 블록 표 |
+| `references/blocks.md` | 블록 인덱스: 용어 계층, 공용 정보 블록, 개수 상한, 블록 추가 판별, 공통 규칙(그림 우선, 무대, 구도와 강조, 여백, 배지, 시맨틱 태그), 블록 표 |
 | `references/blocks/explanation.md` | 공용: 라벨 단 짧은 설명(배경·이유·뜻·영향·조건·예외), 그림 아래 배치와 섹션 뼈대 안의 역할 |
 | `references/blocks/evidence.md` | 공용: 주장과 근거의 짝(숫자·출처·전/후·예시), 근거 변형(지표 목록 + 작은 차트, 가로 막대 목록, 옅은 면 타일) |
 | `references/blocks/before-after.md` | 공용: 전과 후 두 쪽(문제→수정, 기존→개선, 예상→실제)과 다른 전/후 모양 고르기 |
@@ -153,7 +161,7 @@ page는 넓은 캔버스를 채우지 않고 가운데 프레임 안에서 왼�
 | `references/blocks/closing.md` | 공용: 마무리 한 문장과 메타 행(page는 마지막 섹션 끝, deck은 마지막 장) |
 | `references/composition.md` | 구도 층: 섹션·슬라이드 구도, 강조 3단계(quiet·normal·impact), 밀도 리듬, 강조 순서, 회색 무대를 쓰는 기준, 패턴별 권장 구도 |
 | `references/output/deck.md` | 덱 출력 규칙: 언제 덱인가, 루트 마크업, 덱 유형과 패턴 대응, 슬라이드 종류, 강조 장면 비율, 의미 검사 우선 Slide Gate |
-| `references/blocks/shell.md` | 페이지 골격 스니펫: 웹폰트, 토큰 인라인 자리, 가운데 프레임과 왼쪽 읽기 축, 폭 단계, 넓은 구간, 여백 주석, 반응형, 2열 세 경우와 분할선, 섹션 뼈대, 접기와 기억할 한 줄, 줄 길이, 타이포·여백 스케일, 첫 화면 높이 예산, 색 정본, 배지와 대비 계산표, 포커스·모션 축소 기본값 |
+| `references/blocks/shell.md` | 페이지 골격 스니펫(정본 CSS·JS는 `assets/page.css`·`page.js`): 웹폰트, 토큰·assets 자리표시자, 가운데 프레임과 왼쪽 읽기 축, 폭 단계, 넓은 구간, 여백 주석, 반응형, 2열 세 경우와 분할선, 섹션 뼈대, 접기와 기억할 한 줄, 줄 길이, 타이포·여백 스케일, 첫 화면 높이 예산, 색 정본, 배지와 대비 계산표, 포커스·모션 축소 기본값 |
 | `references/blocks/header.md` | 작업 라벨, 제목, 리드(문장 단위 개행), 요약 행 변형 |
 | `references/blocks/hero.md` | 제목 바로 아래 결론 수치 하나: 전 값, 큰 후 값과 단위, 한 줄 뜻 |
 | `references/blocks/section-head.md` | 섹션 구분선, 제목, 설명 최대 한 문장, 정보가 있을 때만 태그, 섹션 리드 변형 |
@@ -169,11 +177,18 @@ page는 넓은 캔버스를 채우지 않고 가운데 프레임 안에서 왼�
 | `references/blocks/timeline.md` | 가로 마일스톤과 세로 기록, 오늘 표식, SVG 시간 막대, 공용 status rail |
 | `references/blocks/checklist.md` | 진행률과 체크 행, 담당 변형, 연동 그림 변형, 긴 따라하기의 구간(머리 행 지도, 현재 구간 펼침), 체크 JS |
 | `references/blocks/code-block.md` | 붙여 넣을 명령·설정 코드 블록과 복사 버튼(그림 블록 아님, 줄 길이 예외) |
-| `references/blocks/slide-deck.md` | 덱 출력의 마크업·CSS·JS: 16:9 한 장 보기, 결론 제목·근거 그림·해석·쪽수, 제목 목차, 제목 문법과 크롬, 비대칭 구도, 섹션 장, 진한 면, 네비와 키보드 이동, 인쇄, 덱 게이트 |
+| `references/blocks/slide-deck.md` | 덱 출력의 마크업과 CSS·JS 규칙(정본 파일은 `assets/deck*.css`·`deck.js`): 16:9 한 장 보기, 결론 제목·근거 그림·해석·쪽수, 제목 목차, 제목 문법과 크롬, 비대칭 구도, 섹션 장, 진한 면, 네비와 키보드 이동, 인쇄, 덱 게이트 |
 | `references/blocks/accordion.md` | 선택 펼침과 용어 목록(`details`/`summary`, JS 없음) |
 | `references/blocks/faq.md` | 공용 question-answer: 질문 아래 들여 쓴 답과 연결선, 항상 펼침 |
 | `references/blocks/callout.md` | 결정 요청이나 다음 할 일 상자(페이지당 최대 1개, closing과 중복 금지) |
 | `references/examples/preview-compare.html` | 합성 데이터로 만든 완성 예시: 흐름과 격자 카드, 결과물 목업, 눌러 보는 A/B 프레임(섹션별 `data-pattern`) |
+| `assets/page.css` | page 정본 CSS: 골격·읽기 축·폭 단계·2열·타이포·섹션·강조·무대·배지·포커스·모션 축소, 도식 공용 클래스(`d0-s-*`). 덱도 먼저 붙입니다 |
+| `assets/page.js` | page 모션 JS: 섹션 블록을 한 번 드러내고 경로를 그립니다(모션 축소면 꺼짐) |
+| `assets/deck.css` | 덱 기본 CSS: 16:9 한 장, 슬라이드 종류와 크롬, 진한 면, 덱 차트(`d0-sl-*`), 한 장 모드 네비, 좁은 화면, 인쇄 |
+| `assets/deck-shapes.css` | 슬라이드에 공용 도형(`d0-s-*`)을 둔 덱에만 붙이는 세 줄(선 두께, 번호 글자, 체크선) |
+| `assets/deck-enhance.css` | 덱 강화 CSS: 제목 문법, 비대칭 구도, 핵심 수치 기본형, 근거 변형·주석 자리. 블록 CSS 뒤에 붙입니다 |
+| `assets/deck.js` | 덱 JS: 한 장 모드, 이전·다음·목차 네비, 키보드·스와이프 이동, 해시와 쪽수 |
+| `scripts/inline_assets.py` | HTML의 `/* eli5:page.css */` 같은 자리표시자를 `tokens.css`(`day0-design` 탐색 순서)와 `assets/` 파일 내용으로 채웁니다. `python3 scripts/inline_assets.py page out.html`처럼 `page`·`deck` 모드를 고르며 표준 라이브러리만 씁니다 |
 | `scripts/subset_font.py` | 완성한 페이지에서 쓰는 글자만 담은 Pretendard 서브셋을 base64 `@font-face`로 인라인해 외부 요청을 없앱니다. `fonttools`와 `brotli`가 필요합니다 |
 
 설치와 검증 방법은 저장소의 [루트 README](../../README.md)에서 확인할 수 있습니다.

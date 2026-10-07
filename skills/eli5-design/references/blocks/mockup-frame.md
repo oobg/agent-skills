@@ -60,7 +60,7 @@
 ```
 
 ```css
-/* .d0-demos의 2열 격자는 .d0-cols(shell.md 정본 CSS)가 만든다 */
+/* .d0-demos의 2열 격자는 .d0-cols(정본 assets/page.css)가 만든다 */
 .d0-demo { display: grid; gap: 12px; min-width: 0; }
 .d0-demo__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .d0-link { min-height: 24px; padding: 2px 4px; border: 0; background: none; color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }

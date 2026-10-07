@@ -1,0 +1,4 @@
+/* 공용 도형(d0-s-*)을 슬라이드에 둔 덱만(그림 글자 절): 선은 화면 px 두께, 번호·주의 ! 글자는 --sl-font */
+.d0-slide svg :is(path, circle, rect, line) { vector-effect: non-scaling-stroke; }
+.d0-slide .d0-s-num { font-size: var(--sl-font, 17px); }
+.d0-slide .d0-s-tick { stroke-width: 2.5; }

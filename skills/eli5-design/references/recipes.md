@@ -2,10 +2,25 @@
 
 레시피는 목적별로 자주 나오는 독자 질문 묶음에 Pattern과 공용 Block을 미리 짝지어 둔 **선택 출발점**이다. 규칙 층이 아니고 강제가 아니다.
 요청이 레시피에 가까우면 섹션 순서를 빌리고, 독자 질문에 없는 섹션은 빼고 필요한 질문은 더한다. 레시피 없이 만들어도 된다.
-섹션 수는 레시피가 아니라 독자 질문이 정한다(SKILL.md 원칙 4번). 레시피를 썼으면 `<main class="d0-page" data-recipe="...">`로 표시한다(선택).
+섹션 수는 레시피가 아니라 독자 질문이 정한다(원칙 4번, [patterns.md](patterns.md) 섹션 절). 레시피를 썼으면 `<main class="d0-page" data-recipe="...">`로 표시한다(선택).
+
+## 읽을 파일 (레시피별)
+
+고른 레시피 행의 파일만 연다. 규칙은 각 파일이 정본이고 이 표는 경로만 적는다. 경로는 `references/` 기준이다.
+
+| 레시피 | patterns | blocks | output | layout |
+| --- | --- | --- | --- | --- |
+| `postmortem` | `patterns/incident.md`, `patterns/timeline.md` | `blocks/diagram.md`, `blocks/hero.md`, `blocks/header.md`, `blocks/explanation.md`, `blocks/timeline.md`, `blocks/checkpoint.md`, `blocks/evidence.md`, `blocks/before-after.md`, `blocks/checklist.md`, `blocks/closing.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+| `launch-report` | `patterns/report.md`, `patterns/timeline.md`, `patterns/compare.md`, `patterns/faq.md` | `blocks/header.md`, `blocks/diagram.md`, `blocks/evidence.md`, `blocks/timeline.md`, `blocks/explanation.md`, `blocks/before-after.md`, `blocks/faq.md`, `blocks/closing.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+| `install-guide` | `patterns/preview.md`, `patterns/guide.md` | `blocks/mockup-frame.md`, `blocks/diagram.md`, `blocks/explanation.md`, `blocks/checklist.md`, `blocks/code-block.md`, `blocks/faq.md`, `blocks/before-after.md`, `blocks/closing.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+| `feature-intro` | `patterns/preview.md`, `patterns/flow.md`, `patterns/compare.md`, `patterns/faq.md` | `blocks/mockup-frame.md`, `blocks/diagram.md`, `blocks/step-columns.md`, `blocks/explanation.md`, `blocks/before-after.md`, `blocks/faq.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+| `decision-doc` | `patterns/compare.md`, `patterns/report.md` | `blocks/header.md`, `blocks/side-by-side.md`, `blocks/diagram.md`, `blocks/explanation.md`, `blocks/evidence.md`, `blocks/kpi-cards.md`, `blocks/closing.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+| `status-report` | `patterns/report.md`, `patterns/timeline.md` | `blocks/header.md`, `blocks/diagram.md`, `blocks/evidence.md`, `blocks/explanation.md`, `blocks/timeline.md`, `blocks/diff-rows.md`, `blocks/checklist.md`, `blocks/closing.md` | `output/page.md` 또는 `output/deck.md` + `blocks/slide-deck.md` | `blocks/shell.md`, `composition.md` |
+
+output은 출력 형식 하나만 연다. `composition.md`는 기본 구도로 해결되지 않을 때만 연다. 레시피 섹션에서 빼는 질문의 파일은 열지 않는다.
 
 각 섹션은 `질문 → Pattern(섹션 data-pattern) → 추천 Block` 순서로 적는다. Pattern 칸이 `—`이면 단일 정보 요구라 Block으로 바로 답한다.
-**표의 첫 행이 첫 화면 섹션이다.** 첫 행에는 첫 화면 규칙(SKILL.md 원칙 2·3번: 도식이 첫 화면 안, 그림 면적 > 글 면적)을 통과할 그림이 있는 질문을 둔다. 순서를 바꿀 때도 이 조건을 지킨다.
+**표의 첫 행이 첫 화면 섹션이다.** 첫 행에는 첫 화면 규칙(원칙 2·3번: 도식이 첫 화면 안, 그림 면적 > 글 면적, [shell.md](blocks/shell.md) 첫 화면 정의)을 통과할 그림이 있는 질문을 둔다. 순서를 바꿀 때도 이 조건을 지킨다.
 높이 12px 비율 막대(`data-variant="ratio"`)만으로는 면적이 모자라므로 첫 화면에서는 전/후 막대·그래프·와이어프레임처럼 면이 있는 그림을 주 그림으로 둔다.
 공용 Block: [explanation](blocks/explanation.md) · [evidence](blocks/evidence.md) · [before-after](blocks/before-after.md) · [checkpoint](blocks/checkpoint.md) · [status rail](blocks/timeline.md) · [question-answer](blocks/faq.md) · [closing](blocks/closing.md).
 

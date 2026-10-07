@@ -77,9 +77,13 @@
 @media (max-width: 520px) {
   .d0-kpis:has(> .d0-kpi:nth-child(3):last-child) { grid-template-columns: 1fr; }
 }
+/* 축 안 2열 열(336px, report 456px)은 3장 한 줄에 필요한 474px보다 좁다. 2+1로 접히지 않게 쌓는다 */
+.d0-section > .d0-cols:not(.d0-wide) .d0-kpis:has(> .d0-kpi:nth-child(3):last-child) { grid-template-columns: 1fr; }
 ```
 
-축 720px에서 카드 3장은 각 약 232px, `.d0-wide` 6/6 열(약 544px)에서도 한 줄에 놓이도록 최소 폭을 150px로 둔다(안쪽 24px씩 빼면 내용 약 120px).
+카드 최소 폭은 150px다(안쪽 24px씩 빼면 내용 약 120px). 3장이 한 줄에 놓이려면 474px(150 × 3 + 간격 12 × 2)가 필요하다.
+축(기본 720px 각 232px, narrow 640px 각 약 205px, report 960px 각 312px)과 넓은 구간 6/6 열(544px 각 약 173px, report 616px 각 약 197px)에서는 한 줄에 놓인다.
+축 안 2열 열(기본 336px, report 456px)은 474px보다 좁아 2+1로 접히므로 3장이면 1열로 쌓는다(위 CSS). 2장·4장은 그 열에서 2열로 놓인다.
 숫자 28px은 `약 10분`까지 들어간다. 더 길면 그 블록에서만 `.d0-kpi__value`를 24px로 낮춘다.
 375px(343px)에서 2장·4장은 2열로 접힌다. 3장은 2+1(외톨이 카드)이 되지 않게 520px 이하에서 1열로 쌓는다.
 막대 폭은 숫자에서 계산한다(6 ÷ 14 = 42.9%, 4 ÷ 58 = 6.9%). 숫자를 지어 맞추지 않는다.

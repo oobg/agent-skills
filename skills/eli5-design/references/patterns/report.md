@@ -135,7 +135,7 @@ header → ① 달라진 것 → ② 진행 중·일정(있을 때) → ③ 이�
 
 ## report 전용 게이트
 
-SKILL.md 출력 게이트에 더해 확인한다.
+[gates.md](../gates.md) 출력 게이트에 더해 확인한다.
 
 **코드로 확인**
 
@@ -190,7 +190,7 @@ Deck Type **Executive Update**(`status`·`executive`)와 **Proposal**(`proposal`
 | 대응 | `breakdown`(대응을 부품으로) 또는 근거 |
 | 다음 | `closing`(`decision`: 결정·요청 한 문장 + 담당·기한 메타) |
 
-Impact: 핵심 지표(`stat`), 차단 리스크가 있으면 그 `assertion`.
+Impact: 차단 리스크가 있으면 그 `assertion`. 핵심 지표는 `stat` 기본형(숫자 + 기준 줄 + 근거 그림, Impact 아님)이고, 지표 숫자 자체가 결론일 때만 순수 Impact stat이다.
 
 **제안 `proposal`:**
 문제 → 사용자 영향 → 원인 → 제안 → 예상 효과 → 범위·리스크 → 결정 요청
@@ -205,7 +205,7 @@ Impact: 핵심 지표(`stat`), 차단 리스크가 있으면 그 `assertion`.
 | 범위·리스크 | 근거(범위 비율 막대 + 요점) |
 | 결정 요청 | `closing`(`decision`) |
 
-Impact: 문제(`assertion`), 예상 효과(`stat`).
+Impact: 문제(`assertion`). 예상 효과는 현재 값과 견주는 `stat` 기본형이고 Impact로 세지 않는다.
 결과·지표 보고 `results`는 결론 → `stat` → 전/후 `evidence` → 어떻게 했나 `breakdown` → 다음 `closing`(`decision`) 순서로 줄인다.
 
 블록 해부: [blocks.md](../blocks.md)

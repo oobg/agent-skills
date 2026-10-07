@@ -92,6 +92,6 @@
 | 의존성 | `breakdown`(선행 작업 → 막히는 작업) |
 | 다음 마일스톤 | `closing`(`decision`: 결정·요청 한 가지) |
 
-Impact: 목표일이나 남은 기간 숫자 하나(`stat`). 변경 내역 `changelog`는 덱으로 내지 않는다.
+Impact: 목표일이나 남은 기간 숫자 하나가 그 자체로 결론이면 순수 Impact stat이다(비교할 기준이 있으면 `stat` 기본형이고 Impact로 세지 않는다). 변경 내역 `changelog`는 덱으로 내지 않는다.
 
 블록 해부: [blocks.md](../blocks.md)

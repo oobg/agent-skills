@@ -134,7 +134,7 @@ Deck Type **Decision**: `<main class="d0-deck" data-pattern="compare" data-varia
 | 추천 | `assertion`(조건문 한 문장: "X가 중요하면 A") |
 | 결정 요청 | `closing`(`decision`: 누가, 언제까지, 무엇을) |
 
-Impact: 추천(`assertion`), 그리고 트레이드오프의 결정적 숫자가 있으면 그 `stat` 한 장.
+Impact: 추천(`assertion`). 트레이드오프의 결정적 숫자가 있으면 `stat` 기본형(숫자 + 근거 그림, Impact 아님) 한 장으로 두고, 그 숫자 자체가 결론일 때만 순수 Impact stat이다.
 시안 변형을 발표하면 선택지 장을 `screenshot` 두 장(같은 구도)으로 바꾼다. 전/후 변형은 report 상태 보고 스토리라인을 빌린다.
 
 블록 해부: [blocks.md](../blocks.md)

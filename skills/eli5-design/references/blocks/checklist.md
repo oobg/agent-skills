@@ -249,7 +249,7 @@ JS는 기본 변형과 같다.
 ```
 
 ```css
-/* 2열 격자는 .d0-cols(shell.md 정본 CSS)가 만든다 */
+/* 2열 격자는 .d0-cols(정본 assets/page.css)가 만든다 */
 @media (min-width: 960px) {
   .d0-check__stage { position: sticky; top: 24px; }
 }

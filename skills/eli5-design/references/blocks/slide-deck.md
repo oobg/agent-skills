@@ -5,7 +5,7 @@
 
 덱을 만들기 전에 [output/deck.md](../output/deck.md)의 Audience × Purpose와 Story Gate부터 통과한다.
 
-**전제.** 덱도 [shell.md](shell.md) 공통 CSS(tokens.css 인라인, `color-scheme`, `box-sizing: border-box` 리셋, `body` 기본 타이포)를 먼저 붙이고 그 뒤에 이 파일의 CSS를 붙인다. 리셋이 없으면 슬라이드 폭에 패딩이 더해져 화면 밖으로 넘친다(1280에서 1216px 장이 약 1338px가 된다).
+**전제.** 덱도 [shell.md](shell.md) 공통 CSS(tokens.css 인라인, `color-scheme`, `box-sizing: border-box` 리셋, `body` 기본 타이포. 정본 `assets/page.css`)를 먼저 붙이고 그 뒤에 덱 CSS(`assets/deck.css` 등, 아래 스니펫 절)를 붙인다. 리셋이 없으면 슬라이드 폭에 패딩이 더해져 화면 밖으로 넘친다(1280에서 1216px 장이 약 1338px가 된다).
 
 ## 슬라이드 종류 `data-kind`
 
@@ -50,7 +50,7 @@
 - **side(생략 포함).** 세로·정사각형에 가까운 작은 그림(viewBox 400 안팎) 전용이다. 그림과 해석 줄을 한 묶음으로 열의 세로 가운데에 두어(그림 행 `auto auto`) 해석 줄이 그림 바로 아래에 붙는다.
   가로로 긴 도식(예: viewBox 800 흐름·시간 막대)은 side 열에 넣지 않는다. 좁은 열에서 그림이 납작해지고 글자가 작아진다. `bottom`·`contrast`·`center`처럼 제목 아래 전체 폭으로 두거나, 표지용으로 줄인 400 폭 도식을 다시 그린다.
 - **map.** 그림 열이 좁다(1280에서 약 370px). 800 폭 지도를 그대로 넣으면 1280에서 글자가 약 7.5px로 줄어 읽히지 않는다. 표지용으로 줄인 viewBox 400 지도(항목을 줄이고 라벨을 짧게)를 기본으로 하고, 800 폭이 꼭 필요하면 `bottom`처럼 그림 열이 넓은 구도로 옮긴다.
-  아래 CSS의 `--sl-font: 30px`(800 지도, 731px 이상에서 약 14px)는 그대로 둔 지도를 위한 안전망이지 권장 경로가 아니다. 판정은 같은 장의 해석 줄 옆에서 그림 라벨이 읽히는가로 한다.
+  `assets/deck.css`의 `--sl-font: 30px`(800 지도, 731px 이상에서 약 14px)는 그대로 둔 지도를 위한 안전망이지 권장 경로가 아니다. 판정은 같은 장의 해석 줄 옆에서 그림 라벨이 읽히는가로 한다.
 
 ```html
 <section class="d0-slide" id="cover-example" data-kind="cover" data-cover="bottom" aria-labelledby="cover-example-t" tabindex="-1">
@@ -162,22 +162,22 @@
 숫자가 주장인 장이다. Impact와 다르다. Impact는 일부러 비워 두고 한 주장·숫자에 시선을 모으는 장이고, stat은 숫자 + 그 숫자를 읽게 하는 근거 그림 하나가 기본이다.
 빈 공간을 채우려고 그림을 더하지 않는다. 다만 제목이 주장하는 비교·변화를 읽는 데 필요한 근거는 화면에 둔다(근거 게이트는 [덱 출력](../output/deck.md) Slide Gate의 [Evidence]).
 
-- **기본형(비대칭).** `data-kind="stat" data-layout="asym"`. 왼쪽 머리 열에 제목 → 큰 숫자 `p.d0-slide__stat` → 작은 기준 줄 `p.d0-slide__base`(`출시 전 18%에서`처럼 비교 기준·분모·기간 중 필요한 것)를 쌓고, 오른쪽 그림 열에 근거 그림 하나, 발에 출처 줄을 둔다.
+- **기본형(비대칭).** `data-kind="stat" data-layout="asym" data-composition="hero"`(구도 이름표는 Hero, Impact 면은 아니다). 왼쪽 머리 열에 제목 → 큰 숫자 `p.d0-slide__stat` → 작은 기준 줄 `p.d0-slide__base`(`출시 전 18%에서`처럼 비교 기준·분모·기간 중 필요한 것)를 쌓고, 오른쪽 그림 열에 근거 그림 하나, 발에 출처 줄을 둔다. 출처 줄에는 page·원자료에 있는 지표 이름·기간·출처 표현만 옮기고, 원자료에 출처가 없으면 줄을 생략한다(지어내지 않는다).
   제목은 asym 제목(3.2cqi)이고 흰 면이다. 숫자 + 근거 그림 두 가지가 있으므로 Impact 면(`data-emphasis="impact"`)을 달지 않는다. 그림 비율 권장 하한은 비대칭 45%다(덱 출력 밀도 표).
   큰 숫자 + 비대칭 + 근거 그림은 stat 기본형 한 벌이라 "한 장에 특징 몰아넣기"로 세지 않는다. 여기에 주석·진한 면을 더하지 않는다.
 - **순수 Impact stat(예외형).** 숫자 자체가 결론이고 비교할 기준이 없거나 기준이 숫자 옆 한 줄로 충분할 때만 `data-kind="stat" data-emphasis="impact"`로 숫자만 남긴다(아래 스니펫 s-08). 비교 기준이 있으면 해석 줄에 숨기지 않고 숫자 옆에 작은 기준 글자 `span.d0-slide__base`로 둔다(숫자 `p.d0-slide__stat` 안 마지막 자식).
   권장(게이트 아님): 짧은 덱에서 보통 0~1장이고 두 장을 잇달아 두지 않는다.
 - **근거 그림 고르는 순서.** 위에서부터 내용에 맞는 첫 번째를 쓴다. 새 블록을 만들지 않고 이 파일의 `d0-sl-*` 차트 CSS나 근거 변형(`metric-list`·`bar-list`·`tiles`)을 그대로 쓴다.
-  1. **같은 기준·0에서 시작하는 전/후 막대.** 값이 전/후 두 개뿐이고 크기 차이를 읽어야 할 때. `rect.d0-sl-bar` 두 개(지금 값만 `data-on`) + `line.d0-sl-axis` 기준선. 보조값 `18% → 5% · −13%p`를 해석 줄에 둘 수 있다.
+  1. **같은 0에서 시작하는 전/후 가로 막대.** 값이 전/후 두 개뿐이고 크기 차이를 읽어야 할 때. 왼쪽에 라벨, 같은 0 기준선(세로 `path.d0-sl-axis`)에서 오른쪽으로 뻗는 `rect.d0-sl-bar` 두 개(지금 값만 `data-on`), 막대 끝에 값 라벨. 보조값 `18% → 5% · −13%p`를 해석 줄에 둘 수 있다.
   2. **slope·dumbbell.** 변화의 방향 자체가 핵심일 때. 두 점 `circle.d0-sl-bar`(지금 점만 `data-on`)를 `path.d0-sl-link`로 잇고 강조 선은 `data-on`이다.
   3. **line·sparkline.** 실제 시계열 값이 3개 이상일 때만 쓴다. 두 점으로 추세선을 긋지 않는다(두 점이면 1·2번). 선은 `path.d0-sl-link`, 마지막 점만 `data-on`.
   4. **100% 막대·점 격자.** "전체 중 몇 %"라는 구성비 자체가 핵심일 때. 트랙 `rect.d0-sl-total` 위에 `rect.d0-sl-bar[data-on]`(폭 = 비율), 또는 점 격자에서 해당 몫만 `circle.d0-sl-bar[data-on]`이고 나머지는 `circle.d0-sl-total`이다. 막대가 아니라 다른 모양이 필요하면 `bar-list` 구성비를 쓴다.
   5. **metric-list.** 서로 관련된 숫자가 여럿일 때. 그림 자리에 `figure[data-variant="metric-list"]`를 둔다. 이때 머리의 큰 숫자를 목록에 다시 쓰지 않는다(한 사실은 한 번).
 - **값.** 그림의 값 라벨은 그림 라벨이라 머리 숫자와 같은 값이어도 반복으로 세지 않는다. 해석 줄은 숫자를 되풀이하지 않고 "그래서 무엇을 뜻하나"를 쓴다. 막대 높이·폭은 값에서 계산한다. 출처가 없으면 출처 줄을 지어내지 않고 뺀다.
-- **좁은 화면.** 730px 미만에서는 비대칭 규칙대로 머리(제목 → 숫자 → 기준 줄) → 그림 → 발 1열이다. 숫자 48px, 기준 줄 15px.
+- **좁은 화면.** 730px 미만에서는 비대칭 규칙대로 머리(제목 → 숫자 → 기준 줄) → 그림 → 발 1열이다. 숫자 48px, 기준 줄 15px. 그림 글자는 evidence·breakdown과 같은 `--sl-font: 30px`이다(390 폭에서 viewBox 400 그림 약 24px, evidence 480 그림 약 20px).
 
 ```html
-<section class="d0-slide" id="s-05" data-kind="stat" data-layout="asym" aria-labelledby="s-05-t" tabindex="-1">
+<section class="d0-slide" id="s-05" data-kind="stat" data-layout="asym" data-composition="hero" aria-labelledby="s-05-t" tabindex="-1">
   <header class="d0-slide__head">
     <h2 class="d0-slide__title" id="s-05-t">알림을 통째로 끄는 사람이 <b class="d0-slide__key">줄었다</b></h2>
     <p class="d0-slide__stat"><data value="5">5</data>%</p>
@@ -185,25 +185,26 @@
   </header>
   <figure class="d0-slide__fig">
     <svg viewBox="0 0 400 320" role="img" aria-labelledby="s-05-f">
-      <title id="s-05-f">알림을 모두 끈 사용자 비율. 출시 전 18%, 출시 후 5%. 13%p 줄었다.</title>
-      <line class="d0-sl-axis" x1="40" y1="260" x2="360" y2="260"/>
-      <rect class="d0-sl-bar" x="72" y="60" width="96" height="200" rx="6"/>
-      <rect class="d0-sl-bar" data-on x="232" y="204.4" width="96" height="55.6" rx="6"/>
-      <g class="d0-sl-value" aria-hidden="true"><text x="120" y="46">18%</text><text x="280" y="190" data-on>5%</text></g>
-      <g class="d0-sl-label" aria-hidden="true"><text x="120" y="296">출시 전</text><text x="280" y="296" data-on>출시 후</text></g>
+      <title id="s-05-f">알림을 모두 끈 사람의 비율. 같은 0에서 시작하는 가로 막대 두 개로, 출시 전 18%, 출시 뒤 5%다.</title>
+      <path class="d0-sl-axis" d="M96 48 V272"/>
+      <rect class="d0-sl-bar" x="96" y="72" width="200" height="64" rx="6"/>
+      <rect class="d0-sl-bar" data-on x="96" y="184" width="55.6" height="64" rx="6"/>
+      <g class="d0-sl-value" data-anchor="start" aria-hidden="true"><text x="308" y="110">18%</text><text x="163.6" y="222" data-on>5%</text></g>
+      <g class="d0-sl-label" data-anchor="start" aria-hidden="true"><text x="0" y="110">출시 전</text><text x="0" y="222" data-on>출시 뒤</text></g>
     </svg>
-    <figcaption class="d0-slide__note">끄는 비율이 출시 전의 3분의 1 아래로 내려왔다.</figcaption>
+    <figcaption class="d0-slide__note">다시 볼 만한 알림이 됐다는 뜻이다.</figcaption>
   </figure>
   <footer class="d0-slide__foot">
-    <p class="d0-slide__src">출처: 내부 집계(합성)</p>
+    <p class="d0-slide__src">알림을 모두 끈 사람의 비율 · 출시 전후 3주씩 · 출처: 알림 발송 기록(합성)</p>
     <p class="d0-slide__num"><span class="d0-sr-only">쪽 </span>5 / 9</p>
   </footer>
 </section>
 ```
 
-- 막대 높이: 기준선 y=260, 가장 큰 값(18%) = 200. 5%는 200 × 5 ÷ 18 ≈ 55.6이다. 값이 바뀌면 같은 식으로 다시 계산한다.
-- 그림 열 SVG는 viewBox 400 폭(세로 300~360)을 쓴다. 1280 한 장 모드에서 글자 약 26px, 그림 비율 약 50%다.
-- CSS는 기본 CSS의 "핵심 수치" 블록(`.d0-slide__stat`·`.d0-slide__base`)과 덱 강화 CSS의 "핵심 수치 기본형" 블록(비대칭 CSS 뒤)이다.
+- 막대 길이: 0 기준선 x=96, 가장 큰 값(18%) = 200. 5%는 200 × 5 ÷ 18 ≈ 55.6이다. 값 라벨은 막대 끝 + 12에서 시작한다. 값이 바뀌면 같은 식으로 다시 계산한다.
+- 최대 막대를 200으로 두는 이유: 좁은 화면 `--sl-font: 30px`에서도 왼쪽 라벨(약 90)과 값 라벨(약 55)이 viewBox 400 안에 든다.
+- 그림 열 SVG는 viewBox 400 폭(세로 300~360)을 쓴다. 1280 한 장 모드에서 글자 약 27px, 그림 비율 약 50%다.
+- CSS는 `assets/deck.css`의 "핵심 수치" 블록(`.d0-slide__stat`·`.d0-slide__base`)과 `assets/deck-enhance.css`의 "핵심 수치 기본형" 블록(비대칭 CSS 뒤)이다.
 
 ## 섹션 장 `data-kind="section"`
 
@@ -234,7 +235,7 @@
 - **몇 장.** 덱당 1~3장이다. 표지·마무리를 먼저 고르고 남는 몫만 섹션 장에 쓴다. 섹션 장을 모두 같게 두는 까닭은 챕터마다 면이 다르면 박자가 깨지기 때문이다. 그래서 섹션 장이 2개면 표지 + 섹션 2장, 또는 섹션 없이 표지·마무리다.
 - **모양.** 슬라이드 전체 면이 `var(--d0-blue-dark)`이고 그림자가 없다. 제목·결론어·번호는 `#fff`, 보조 글자(eyebrow·리드·보조 줄·해석·출처·쪽번호·메타)는 `var(--d0-blue-light)`다. 구분선은 `color-mix(in srgb, #fff 32%, transparent)`다. 그라디언트·글래스·사진·패턴을 깔지 않는다.
 - **글자.** 큰 글자 위주로 둔다. 작은 본문은 표지 요약 한 행과 closing 메타 정도로 줄인다.
-- **대표 도식(표지).** 아래 덱 강화 CSS가 공용 도형(`d0-s-*`)과 덱 차트(`d0-sl-*`)를 자동으로 바꾼다. blue와 의미색(green·orange·red) 칠은 진한 면에 남지 않는다(blue 1.38:1). 강조는 채움/빈 모양 차이로 말한다.
+- **대표 도식(표지).** 덱 강화 CSS(`assets/deck-enhance.css`)의 진한 면 규칙이 공용 도형(`d0-s-*`)과 덱 차트(`d0-sl-*`)를 자동으로 바꾼다. blue와 의미색(green·orange·red) 칠은 진한 면에 남지 않는다(blue 1.38:1). 강조는 채움/빈 모양 차이로 말한다.
   - 선·빈 노드·프레임 테두리·축은 blue-light, 강조(`data-on`) 노드·단계·선·막대·`d0-s-accent`는 흰색이다.
   - 의미 없는 자리·자리 표시 채움(`d0-s-fill`·`d0-s-track`·`d0-s-cell`·`d0-sl-total`, 화면 모형 속 글 줄 등)은 흰색 24% 면이다. `d0-s-zone`은 면 없이 blue-light 점선이다.
   - 선택·상태·구성 차이처럼 뜻이 있는 영역(`d0-s-key` 등)은 기존 토큰(blue-light·grey-300·흰색)만 쓴다. 임의 색·불투명도를 새로 만들지 않고, 그 뜻을 라벨이나 모양으로도 말한다. 진한 자리(`d0-s-key`) 기본은 grey-300이다.
@@ -272,10 +273,10 @@
 덱 SVG 글자의 정본은 이 절이다. [diagram](diagram.md) 라벨 절의 글자 크기(`.d0-s-text` 14px, 560px 이하 20·22px)는 page(`.d0-page`) 전용이라 슬라이드 안에는 걸리지 않는다.
 
 - **글자 클래스.** 덱 그림의 라벨·값·머리 글자는 `g.d0-sl-label`·`g.d0-sl-value`·`g.d0-sl-head` 안 `text`로 쓴다. 공용 도형 글자 `.d0-s-text`는 덱에서 쓰지 않는다.
-- **크기는 `--sl-font` 하나.** 글자 크기는 viewBox 단위 `--sl-font`(기본 17px)로만 정하고, 커버·breakdown·가로형(800)·좁은 화면 규칙이 그림 단위로 이 값을 바꾼다(아래 CSS). SVG 안 `font-size` 속성이나 인라인 `style`은 쓰지 않는다.
+- **크기는 `--sl-font` 하나.** 글자 크기는 viewBox 단위 `--sl-font`(기본 17px)로만 정하고, 커버·breakdown·가로형(800)·좁은 화면 규칙이 그림 단위로 이 값을 바꾼다(`assets/deck.css`). SVG 안 `font-size` 속성이나 인라인 `style`은 쓰지 않는다.
 - **번호·주의 표식.** 공용 도형의 번호와 주의 `!`(`text.d0-s-num`)도 슬라이드 안에서는 `--sl-font`를 따른다(`.d0-slide .d0-s-num`). 같은 그림의 라벨과 번호가 한 크기로 맞는다.
-- **선 두께.** 공용 도형을 쓰는 덱은 슬라이드 SVG 도형(`path`·`circle`·`rect`·`line`)에 `vector-effect: non-scaling-stroke`를 걸어 그림 배율과 상관없이 화면 px 두께를 지킨다. 완료 체크선(`.d0-s-tick`)은 2.5px다(진한 면은 2px, 진한 면 절 CSS).
-- **붙이는 조건.** 아래 CSS의 공용 도형 세 줄(선 두께·번호 글자·체크선)은 슬라이드에 `d0-s-*` 도형을 둔 덱에 붙인다. `d0-sl-*` 차트만 쓰는 덱에는 붙이지 않는다.
+- **선 두께.** 공용 도형을 쓰는 덱은 슬라이드 SVG 도형(`path`·`circle`·`rect`·`line`)에 `vector-effect: non-scaling-stroke`를 걸어 그림 배율과 상관없이 화면 px 두께를 지킨다. 완료 체크선(`.d0-s-tick`)은 2.5px다(진한 면은 2px, `assets/deck-enhance.css` 진한 면 규칙).
+- **붙이는 조건.** 공용 도형 세 줄(선 두께·번호 글자·체크선, `assets/deck-shapes.css`)은 슬라이드에 `d0-s-*` 도형을 둔 덱에 붙인다. `d0-sl-*` 차트만 쓰는 덱에는 붙이지 않는다(`scripts/inline_assets.py`가 클래스를 보고 정한다).
 - **렌더 크기.** 렌더 글자 = `--sl-font` × SVG 렌더 폭 ÷ viewBox 폭이다. 1280에서 28px 이하, 320·375에서 11px 이상이다(덱 게이트).
 
 ## 근거 변형과 주석
@@ -301,7 +302,7 @@ evidence 장의 그림 자리(`figure.d0-slide__fig`)에는 SVG 차트 대신 �
 
 ## 스니펫
 
-아래 HTML·CSS·JS를 그대로 모으면 9장짜리 샘플 덱이 된다(근거 split 1, impact 2장 = 22%).
+아래 HTML에 `assets/`의 CSS·JS(아래 정본 CSS·JS 절)를 붙이면 9장짜리 샘플 덱이 된다(근거 split 1, impact 2장 = 22%).
 
 ```html
 <main class="d0-deck" data-pattern="report" data-variant="status">
@@ -476,619 +477,28 @@ evidence 장의 그림 자리(`figure.d0-slide__fig`)에는 SVG 차트 대신 �
 </main>
 ```
 
-```css
-/* shell.md 기본값(토큰 인라인, color-scheme, box-sizing, body 글꼴·keep-all, .d0-sr-only, :focus-visible, reduced-motion)은 그대로 쓴다.
-   덱 페이지는 .d0-page 대신 .d0-deck을 쓰고, body 배경만 grey-100으로 바꿔 흰 슬라이드 면이 보이게 한다. */
-body { background: var(--d0-grey-100); }
-.d0-deck {
-  container-type: inline-size;              /* 세로 나열에서 슬라이드 폭 = 덱 안쪽 폭 */
-  display: grid; gap: 40px;
-  max-width: 1200px; margin: 0 auto; padding: 40px 32px 96px;
-}
-.d0-deck__nav { display: none; }            /* 한 장 모드에서만 보인다 */
-.d0-slide {
-  container-type: inline-size;              /* 안쪽 글자의 cqi = 슬라이드 안쪽 폭 */
-  aspect-ratio: 16 / 9;
-  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 2.4cqi;
-  padding: 4.5cqi 5cqi 3cqi;
-  overflow: hidden;
-  background: #fff; border-radius: var(--d0-radius-card); box-shadow: var(--d0-shadow-card);
-  scroll-margin-top: 24px;
-}
-.d0-slide:focus { outline: none; }
-.d0-slide:focus-visible { outline: 2px solid var(--d0-blue-dark); outline-offset: 4px; }
+### 정본 CSS·JS (`assets/`)
 
-/* 머리 */
-.d0-slide__head { display: grid; gap: 0.8cqi; align-content: start; }
-.d0-slide__eyebrow { margin: 0; color: var(--d0-grey-600); font-size: 1.4cqi; font-weight: 600; }
-.d0-slide__title {
-  margin: 0; color: var(--d0-grey-900);
-  font-size: 3.6cqi; font-weight: 700;
-  line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title);
-  text-wrap: balance;
-}
-h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-.d0-slide__sub { margin: 0; color: var(--d0-grey-600); font-size: 2cqi; }
-.d0-slide__lead { margin: 0; color: var(--d0-grey-700); font-size: 2.4cqi; line-height: var(--d0-leading-body); }
+- **정본: `assets/deck.css`(기본), `assets/deck-shapes.css`(공용 도형 `d0-s-*`를 슬라이드에 둔 덱만), `assets/deck-enhance.css`(덱 강화), `assets/deck.js`(한 장 모드·네비·키보드).** 일반 생성에서는 읽지 말고 그대로 인라인한다. 수정할 때만 읽는다.
+- **붙이는 순서.** 메인 `<style>`: tokens.css → `assets/page.css`([shell](shell.md) 골격 + [diagram](diagram.md) 도식 공용) → `deck.css` → `deck-shapes.css` → 쓰는 블록 CSS(pins의 `.d0-pin`, [evidence](evidence.md) 변형 등) → `deck-enhance.css`. 스크립트는 `deck.js` 하나(스크롤 리빌 모션 `page.js`는 붙이지 않는다).
+- **인라인.** 아래 자리표시자 주석을 두고 `python3 scripts/inline_assets.py deck out.html`을 실행한다. `deck-shapes.css`는 HTML에 `d0-s-*` 클래스가 있을 때만 채워지고 없으면 빈 자리로 지워진다. 도구를 못 쓰면 같은 순서로 파일 내용을 수정 없이 붙인다.
 
-/* 몸: 그림 하나. 무대는 기본 없음 */
-.d0-slide__fig { margin: 0; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 1.2cqi; }
-.d0-slide__fig svg { display: block; justify-self: center; width: 100%; max-width: 42cqi; height: 100%; max-height: 100%; min-height: 0; overflow: visible; }
-.d0-slide__stage {                          /* 선택: 흰 면 위에서 그림 경계가 흐려질 때만 */
-  min-height: 0; display: grid; place-items: center;
-  padding: 2.4cqi; background: var(--d0-grey-50); border-radius: var(--d0-radius-card);
-}
-.d0-slide__note { margin: 0; color: var(--d0-grey-600); font-size: 2cqi; }
-
-.d0-slide__body[data-layout="split"] { min-height: 0; display: grid; grid-template-columns: 3fr 2fr; gap: 3cqi; align-items: center; }
-.d0-slide__body[data-layout="split"] > .d0-slide__fig { height: 100%; }
-.d0-slide__body[data-layout="split"] > .d0-slide__fig svg { max-width: 100%; } /* split: 그림 열을 채운다 */
-@container (min-width: 731px) {
-  .d0-slide__body[data-layout="split"] > .d0-slide__fig svg[viewBox^="0 0 400 "] { --sl-font: 15px; } /* 넓어진 split 그림: 15 × 637 ÷ 400 ≈ 24px(28px 상한 여유) */
-}
-.d0-slide__points { margin: 0; padding-left: 1.2em; list-style: disc; display: grid; gap: 1.2cqi; align-content: center; color: var(--d0-grey-800); font-size: 2cqi; line-height: var(--d0-leading-body); }
-.d0-slide__points ::marker { color: var(--d0-blue); }
-
-/* 커버: 내용의 모양에 따라 그림 위치와 비율을 달리한다 */
-.d0-slide[data-kind="cover"] { grid-template-rows: minmax(0, 1fr) auto auto; }
-.d0-slide__cover { min-height: 0; display: grid; grid-template-columns: 3fr 2fr; gap: 3cqi; align-items: center; }
-.d0-slide__cover > .d0-slide__fig { height: 100%; align-content: center; }
-.d0-slide__cover .d0-slide__fig svg { height: auto; max-height: 100%; }
-.d0-slide[data-cover="contrast"] .d0-slide__cover,
-.d0-slide[data-cover="bottom"] .d0-slide__cover,
-.d0-slide[data-cover="center"] .d0-slide__cover { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 2cqi; }
-.d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 20px; }
-.d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig svg { max-width: 84cqi; }
-.d0-slide[data-cover="center"] .d0-slide__head { max-width: 76cqi; justify-self: center; text-align: center; }
-.d0-deck[data-pattern="preview"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-pattern="report"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-pattern="report"] .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
-.d0-slide[data-cover="map"] .d0-slide__cover { grid-template-columns: 2fr 1fr; }
-.d0-slide[data-cover="map"] .d0-slide__cover > .d0-slide__fig { height: auto; align-self: end; }
-/* side(생략 포함): 그림과 해석 줄을 한 묶음으로 세로 가운데. 1fr 행이면 해석 줄만 아래로 떨어진다 */
-.d0-slide:is([data-cover="side"], [data-kind="cover"]:not([data-cover])) .d0-slide__cover > .d0-slide__fig { grid-template-rows: auto auto; } /* side는 작은 그림 전용(가로로 긴 도식은 bottom 등으로) */
-@container (min-width: 731px) {
-  .d0-slide[data-cover="map"] .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 30px; } /* 안전망: 좁은 지도 열(약 370px)에서 30 × 370 ÷ 800 ≈ 14px. 기본은 400 폭 표지용 지도 */
-}
-.d0-slide[data-kind="cover"] .d0-slide__summary > div { padding: 0.8cqi 0; }
-.d0-slide[data-kind="cover"] .d0-slide__summary dd { font-size: 1.4cqi; }
-
-/* 표지: 남길 결정 한 행 */
-.d0-slide__summary { margin: 0; align-self: center; display: grid; }
-.d0-slide__summary > div { display: grid; grid-template-columns: 14cqi 1fr; gap: 2cqi; align-items: baseline; padding: 1.4cqi 0; border-top: 1px solid var(--d0-grey-100); }
-.d0-slide__summary > div:last-child { border-bottom: 1px solid var(--d0-grey-100); }
-.d0-slide__summary dt { color: var(--d0-grey-600); font-size: 1.4cqi; font-weight: 600; }
-.d0-slide__summary dd { margin: 0; color: var(--d0-grey-900); font-size: 2cqi; }
-.d0-slide__summary > div:last-child dt { color: var(--d0-blue-dark); }
-
-/* 제목 목차: 작은 점 불렛 + 제목 링크 */
-.d0-slide__toc { margin: 0; padding: 0; list-style: none; align-self: start; display: grid; gap: 0.2cqi; }
-.d0-slide__toc li { display: grid; grid-template-columns: 0.4cqi minmax(0, 1fr); align-items: baseline; column-gap: 1.2cqi; }
-.d0-slide__toc li::before { content: ""; width: 0.4cqi; height: 0.4cqi; align-self: center; border-radius: 50%; background: var(--d0-blue); }
-.d0-slide__toc a {
-  display: block; min-height: 24px; padding: 0.5cqi 0;
-  color: var(--d0-grey-900); font-size: 2cqi; text-decoration: none;
-  border-bottom: 1px solid var(--d0-grey-100);
-}
-.d0-slide__toc a:hover { color: var(--d0-blue-dark); }
-
-/* assertion: 주장 한 문장을 세로 가운데에 */
-.d0-slide[data-kind="assertion"] { grid-template-rows: minmax(0, 1fr) auto; }
-.d0-slide[data-kind="assertion"] .d0-slide__head { align-self: center; gap: 2cqi; }
-.d0-slide[data-kind="assertion"] .d0-slide__title { font-size: 6cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-
-/* evidence·breakdown: 가로형 차트가 몸을 채운다 */
-.d0-slide[data-kind="evidence"] .d0-slide__fig,
-.d0-slide[data-kind="breakdown"] .d0-slide__fig { --sl-font: 20px; }
-.d0-slide[data-kind="evidence"] .d0-slide__fig svg,
-.d0-slide[data-kind="breakdown"] .d0-slide__fig svg { max-width: 84cqi; }
-.d0-slide[data-kind="evidence"] .d0-slide__note,
-.d0-slide[data-kind="breakdown"] .d0-slide__note { justify-self: center; color: var(--d0-grey-800); }
-
-/* screenshot: 슬라이드 안 자리와 크기만. 화면·spot·dim·번호는 mockup-frame.md
-   덱 격자: 화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열. mockup-frame의 560px 상한·900px 2열(page 전용)을 덮는다 */
-.d0-slide[data-kind="screenshot"] .d0-shot {
-  min-height: 0; height: 100%;
-  grid-template-columns: max-content minmax(0, 1fr); grid-template-rows: repeat(3, auto) minmax(0, 1fr); align-content: stretch;
-}
-.d0-slide[data-kind="screenshot"] .d0-shot :is(.d0-shot__note, figcaption) { grid-column: 2; }
-.d0-slide[data-kind="screenshot"] .d0-shot__screen {
-  grid-column: 1; grid-row: 1 / -1;
-  height: 100%; min-height: 0; max-width: 100%; justify-self: start;
-  aspect-ratio: 16 / 10;                    /* 화면 비율이 다르면 style="aspect-ratio: 1280 / 720"처럼 이미지 비율을 적는다 */
-}
-.d0-slide[data-kind="screenshot"] .d0-shot__note,
-.d0-slide[data-kind="screenshot"] .d0-shot figcaption { font-size: 2cqi; }
-
-/* 핵심 수치 */
-.d0-slide__stat {
-  margin: 0; align-self: center; justify-self: start;
-  color: var(--d0-blue-dark); font-size: 10cqi; font-weight: 600;
-  line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display);
-  font-variant-numeric: tabular-nums;
-}
-.d0-slide[data-kind="stat"] .d0-slide__fig:has(> .d0-slide__stat) { grid-template-rows: 1fr auto; align-content: center; } /* 순수 Impact stat: 숫자가 그림 자리 */
-.d0-slide[data-kind="stat"] .d0-slide__note { color: var(--d0-grey-800); }
-/* 기준 줄: 숫자를 읽게 하는 비교 기준·분모·기간. 기본형은 숫자 아래 p, 순수 Impact stat은 숫자 옆 span */
-.d0-slide__base { margin: 0; color: var(--d0-grey-700); font-size: 2cqi; font-weight: 400; line-height: var(--d0-leading-body); letter-spacing: normal; font-variant-numeric: tabular-nums; }
-.d0-slide__stat > .d0-slide__base { display: inline-block; margin-left: 1.6cqi; vertical-align: baseline; }  /* 순수 Impact stat: 숫자 옆 작은 기준 글자 */
-
-/* closing(decision·request·action·criteria·takeaway 공통): 세로 중앙의 큰 문장 하나 + 디바이더 아래 작은 사실 행 */
-.d0-slide[data-kind="closing"] { grid-template-rows: minmax(0, 1fr) auto auto; }
-.d0-slide[data-kind="closing"] .d0-slide__head { align-self: center; max-width: 88cqi; }
-.d0-slide[data-kind="closing"] .d0-slide__title { font-size: 5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); } /* 섹션 제목(4.5cqi)보다 한 단계 크게, 표지 h1(5.6cqi)보다는 작게 */
-.d0-slide__meta { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqi; padding-top: 1.4cqi; border-top: 1px solid var(--d0-grey-200); }
-.d0-slide__meta > div { display: grid; gap: 0.4cqi; align-content: start; }
-.d0-slide__meta dt { color: var(--d0-grey-600); font-size: 1.4cqi; }
-.d0-slide__meta dd { margin: 0; color: var(--d0-grey-700); font-size: 1.4cqi; line-height: var(--d0-leading-body); }
-
-/* summary: 참고용 정리 목록 */
-.d0-slide[data-kind="summary"] .d0-slide__points { align-self: start; }
-
-/* 강조: impact = blue-light 전체 면, 큰 것 하나 */
-.d0-slide[data-emphasis="impact"] { background: var(--d0-blue-light); box-shadow: none; }
-.d0-slide[data-emphasis="impact"] .d0-slide__title { font-size: 6cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-/* 그림·숫자가 있는 Impact(screenshot·evidence·breakdown·근거·stat)는 일반 제목. 순수 Impact(assertion)만 6cqi */
-.d0-slide[data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 3.6cqi; line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
-.d0-slide[data-emphasis="impact"] :is(.d0-slide__sub, .d0-slide__lead, .d0-slide__note, .d0-slide__src, .d0-slide__num, .d0-slide__eyebrow) { color: var(--d0-grey-700); }
-.d0-slide[data-emphasis="quiet"] .d0-slide__title { font-weight: 600; }
-
-/* 발: 출처 + 쪽수 */
-.d0-slide__foot { display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi; }
-.d0-slide__src { margin: 0; color: var(--d0-grey-600); font-size: 1.4cqi; }
-.d0-slide__num { margin: 0 0 0 auto; color: var(--d0-grey-600); font-size: 1.4cqi; font-variant-numeric: tabular-nums; }
-.d0-slide kbd {
-  display: inline-block; min-width: 1.6em; padding: 0 0.4em;
-  border: 1px solid var(--d0-grey-300); border-radius: var(--d0-radius-sm);
-  font: inherit; text-align: center; color: var(--d0-grey-800);
-}
-
-/* SVG 차트: 강조 계열 하나만 blue. 글자 크기는 --sl-font */
-.d0-sl-axis, .d0-sl-link { fill: none; stroke: var(--d0-grey-300); stroke-width: 1.5; stroke-linecap: round; }
-.d0-sl-bar { fill: var(--d0-grey-400); }
-.d0-sl-bar[data-on] { fill: var(--d0-blue); }
-.d0-sl-total { fill: var(--d0-grey-200); }
-.d0-sl-value text, .d0-sl-label text, .d0-sl-head text { font-family: var(--d0-font); font-size: var(--sl-font, 17px); text-anchor: middle; font-variant-numeric: tabular-nums; }
-.d0-sl-value text { fill: var(--d0-grey-700); font-weight: 600; }
-.d0-sl-value text[data-on] { fill: var(--d0-blue-dark); }
-.d0-sl-label text { fill: var(--d0-grey-600); }
-.d0-sl-label text[data-on] { fill: var(--d0-blue-dark); font-weight: 600; }
-.d0-sl-head text { fill: var(--d0-grey-800); font-weight: 600; text-anchor: start; }
-/* 공용 도형(d0-s-*, diagram.md 공용 CSS)을 Impact 장에 둘 때: blue-light 위 grey-500 선은 3:1 미달이라 한 단계 진하게 */
-.d0-slide[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
-/* 공용 도형(d0-s-*)을 슬라이드에 둔 덱만(그림 글자 절): 선은 화면 px 두께, 번호·주의 ! 글자는 --sl-font */
-.d0-slide svg :is(path, circle, rect, line) { vector-effect: non-scaling-stroke; }
-.d0-slide .d0-s-num { font-size: var(--sl-font, 17px); }
-.d0-slide .d0-s-tick { stroke-width: 2.5; }
-
-/* 네비 */
-.d0-deck__nav { align-items: center; gap: 8px; min-height: 44px; }
-.d0-deck__btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 44px; height: 44px; padding: 0 14px;
-  border: 0; border-radius: var(--d0-radius-control);
-  background: #fff; color: var(--d0-grey-800); font-size: 15px; font-weight: 600;
-}
-.d0-deck__btn:hover { color: var(--d0-blue-dark); }
-.d0-deck__btn[aria-disabled="true"] { color: var(--d0-grey-400); cursor: default; }
-.d0-deck__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.d0-deck__count { min-width: 64px; margin: 0; text-align: center; color: var(--d0-grey-800); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.d0-deck__hint { margin: 0 0 0 auto; color: var(--d0-grey-700); font-size: 13px; white-space: nowrap; }
-.d0-deck__hint [data-hint="touch"] { display: none; }
-@media (hover: none) and (pointer: coarse) {
-  .d0-deck__hint [data-hint="key"] { display: none; }
-  .d0-deck__hint [data-hint="touch"] { display: inline; }
-  .d0-slide__src:has(kbd) { display: none; }  /* 표지의 키 안내: 터치에서는 네비 '밀어서 넘겨요'가 대신한다 */
-}
-
-/* 한 장 모드: JS가 data-mode="single"을 붙일 때만. 화면에서만 걸고 인쇄는 세로 나열로 돌아간다 */
-@media screen {
-  html:has(.d0-deck[data-mode="single"]) { overflow: hidden; scrollbar-gutter: auto; }
-  .d0-deck[data-mode="single"] {
-    --deck-gutter: 32px;
-    --deck-chrome: 88px;                 /* 위 16 + 네비 44 + 사이 12 + 아래 16 */
-    /* 높이로는 730px 아래로 줄이지 않는다(그 아래는 16:9가 풀려 장 안에서 스크롤한다) */
-    --slide-w: min(100vw - 2 * var(--deck-gutter), max((100dvh - var(--deck-chrome)) * 16 / 9, 730px));
-    max-width: none; height: 100vh; height: 100dvh; margin: 0;
-    padding: 16px var(--deck-gutter);
-    grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
-    justify-items: center; align-items: center; gap: 12px;
-    overflow: hidden; touch-action: pan-y;
-  }
-  .d0-deck[data-mode="single"] > .d0-slide {
-    grid-area: 1 / 1; width: var(--slide-w);
-    max-height: calc(100dvh - var(--deck-chrome));
-    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y;
-  }
-  .d0-deck[data-mode="single"] > .d0-slide:not([data-active]) { display: none; }
-  .d0-deck[data-mode="single"] > .d0-slide[data-active] { animation: d0-deck-in var(--d0-dur-fast) var(--d0-ease); }
-  .d0-deck[data-mode="single"] .d0-slide__num { display: none; }  /* 네비 쪽수가 대신한다 */
-  /* 키 작은 창(높이로 줄인 폭이 730px 아래): 폭은 730px에서 멈추고 16:9를 풀어 장 안에서 세로로 스크롤한다 */
-  @media (max-height: 498px) {
-    .d0-deck[data-mode="single"] > .d0-slide { aspect-ratio: auto; }
-    .d0-slide, .d0-slide[data-kind="cover"] { grid-template-rows: repeat(3, max-content); }  /* 몸을 내용 높이로 둬 그림을 줄이지 않는다 */
-  }
-  .d0-deck[data-mode="single"] > .d0-deck__nav { grid-row: 2; display: flex; width: var(--slide-w); }
-  /* 넓은 덱: 패딩·간격을 슬라이드 폭 기준으로 다시 잰다(덱 폭 ≠ 슬라이드 폭) */
-  @container (min-width: 731px) {
-    .d0-deck[data-mode="single"] > .d0-slide {
-      padding: calc(var(--slide-w) * 0.045) calc(var(--slide-w) * 0.05) calc(var(--slide-w) * 0.03);
-      gap: calc(var(--slide-w) * 0.024);
-    }
-  }
-  @media (max-width: 640px) {
-    .d0-deck[data-mode="single"] {
-      --deck-gutter: 16px;
-      --deck-chrome: 76px;               /* 위 12 + 네비 44 + 사이 8 + 아래 12 */
-      padding: 12px var(--deck-gutter); gap: 8px; align-items: start;
-    }
-    .d0-deck[data-mode="single"] > .d0-deck__nav { gap: 4px; }   /* 320에서도 안내가 한 줄에 들어가게 */
-    .d0-deck__count { min-width: 48px; }
-  }
-}
-@keyframes d0-deck-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .d0-deck[data-mode="single"] > .d0-slide[data-active] { animation: none; transition: none; }
-}
-
-/* 좁은 슬라이드(730px 미만, 본문이 11px 아래로 내려가는 폭): 16:9를 풀고 px 고정 */
-@container (max-width: 730px) {
-  .d0-slide { aspect-ratio: auto; grid-template-rows: repeat(3, max-content); gap: 16px; padding: 20px 16px 14px; }  /* 몸은 내용 높이: 긴 장은 그림을 줄이지 않고 장 안에서 스크롤 */
-  .d0-slide[data-kind="cover"] { grid-template-rows: repeat(3, max-content); }
-  .d0-slide__cover,
-  .d0-deck[data-pattern] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
-  .d0-slide__cover > .d0-slide__fig { height: auto; }
-  .d0-slide[data-cover="center"] .d0-slide__head { max-width: none; }
-  .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 30px; }
-  .d0-slide[data-kind="cover"] .d0-slide__summary dd { font-size: 12px; }
-  .d0-slide[data-kind="closing"] { min-height: min(560px, calc(100dvh - 116px)); }
-  .d0-slide[data-kind="closing"] .d0-slide__head { max-width: none; }
-  .d0-slide[data-kind="closing"] .d0-slide__title { font-size: 27px; }
-  .d0-slide__meta { grid-template-columns: 1fr; gap: 8px; padding-top: 12px; }
-  .d0-slide__meta > div { grid-template-columns: 48px 1fr; gap: 8px; }
-  .d0-slide__meta dt, .d0-slide__meta dd { font-size: 12px; }
-  .d0-slide__head { gap: 6px; }
-  .d0-slide__eyebrow { font-size: 12px; }
-  .d0-slide__title { font-size: 20px; }
-  h1.d0-slide__title { font-size: 26px; }
-  .d0-slide[data-kind="assertion"] .d0-slide__title,
-  .d0-slide[data-emphasis="impact"] .d0-slide__title { font-size: 28px; }
-  .d0-slide[data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 20px; } /* 위 데스크톱 :has 규칙(특이도 높음)이 28px을 덮지 않게 같은 선택자로 */
-  .d0-slide__lead { font-size: 17px; }
-  .d0-slide__sub { font-size: 15px; }
-  .d0-slide__fig { gap: 8px; }
-  .d0-slide__stage { padding: 12px; }
-  .d0-slide__fig svg,
-  .d0-slide[data-kind] .d0-slide__fig svg { max-width: none; height: auto; }
-  .d0-slide[data-kind="evidence"] .d0-slide__fig,
-  .d0-slide[data-kind="breakdown"] .d0-slide__fig { --sl-font: 30px; }
-  .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 30px; }  /* 가로형(800) 그림은 커버 종류·패턴 규칙과 상관없이 30(svg에 걸어 그림 단위 규칙을 이긴다) */
-  .d0-slide__note { font-size: 13px; }
-  .d0-slide__body[data-layout="split"] { grid-template-columns: 1fr; gap: 16px; }
-  .d0-slide__points, .d0-slide__summary dd, .d0-slide__toc a, .d0-slide[data-kind="stat"] .d0-slide__note,
-  .d0-slide[data-kind="evidence"] .d0-slide__note, .d0-slide[data-kind="breakdown"] .d0-slide__note { font-size: 15px; }
-  .d0-slide__points { gap: 6px; }
-  .d0-slide__summary > div { grid-template-columns: 1fr; gap: 2px; padding: 10px 0; }
-  .d0-slide__summary dt, .d0-slide__src, .d0-slide__num { font-size: 12px; }
-  .d0-slide__toc li { grid-template-columns: 4px minmax(0, 1fr); column-gap: 8px; }
-  .d0-slide__toc li::before { width: 4px; height: 4px; }
-  .d0-slide__toc a { padding: 8px 0; }
-  .d0-slide__stat { font-size: 48px; }
-  .d0-slide__base { font-size: 15px; }
-  .d0-slide[data-kind="screenshot"] .d0-shot,
-  .d0-slide[data-kind="screenshot"] .d0-shot__screen { height: auto; width: 100%; justify-self: stretch; }
-  .d0-slide[data-kind="screenshot"] .d0-shot { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
-  .d0-slide[data-kind="screenshot"] .d0-shot :is(.d0-shot__screen, .d0-shot__note, figcaption) { grid-column: 1; grid-row: auto; }
-  .d0-slide[data-kind="screenshot"] .d0-shot__note { font-size: 15px; }
-  .d0-slide[data-kind="screenshot"] .d0-shot figcaption { font-size: 13px; }
-}
-/* 320 폭(슬라이드 안쪽 256px): 그림 글자를 한 단계 더 키워 렌더 11px 이상을 지킨다 */
-@container (max-width: 270px) {
-  .d0-slide__fig { --sl-font: 20px; }                            /* 기본(400): 20 × 256 ÷ 400 = 12.8px */
-  .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 36px; }   /* 가로형(800): 36 × 256 ÷ 800 = 11.5px */
-}
-@media (max-width: 640px) {
-  .d0-deck { gap: 32px; padding: 24px 16px 64px; }
-}
-
-/* 인쇄: 슬라이드 한 장 = 가로 한 페이지 */
-@media print {
-  @page { size: landscape; margin: 0; }
-  body { background: #fff; }
-  .d0-deck { max-width: none; padding: 0; gap: 0; }
-  .d0-slide { break-after: page; break-inside: avoid; border-radius: 0; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  /* 한 장 모드였어도 모든 슬라이드를 되살리고 네비를 숨긴다 */
-  .d0-deck[data-mode="single"] > .d0-slide { display: grid; width: auto; max-height: none; overflow: hidden; animation: none; }
-  .d0-deck__nav { display: none !important; }
-}
+```html
+<style>
+/* eli5:tokens.css */
+/* eli5:page.css */
+/* eli5:deck.css */
+/* eli5:deck-shapes.css */
+/* 쓰는 블록 CSS(pins·evidence 변형 등)를 여기 붙인다 */
+/* eli5:deck-enhance.css */
+</style>
+…
+<script>
+/* eli5:deck.js */
+</script>
 ```
 
-아래 CSS는 덱 강화 규칙이다. 위 CSS와 [diagram](diagram.md) 공용 CSS·pins의 `.d0-pin` CSS 뒤에, 근거 변형을 쓰면 [evidence](evidence.md) 변형 CSS 뒤에 붙인다.
-
-```css
-/* 제목 문법: 결론어 하나만 굵게(선택) */
-.d0-slide__title:has(.d0-slide__key) { font-weight: 400; color: var(--d0-grey-700); }
-.d0-slide__key { font-weight: 700; color: var(--d0-grey-900); }
-.d0-slide__key[data-tone="blue"] { color: var(--d0-blue-dark); }
-
-/* 크롬: 섹션 태그 pill, 출처가 있을 때만 얇은 푸터 선 */
-.d0-slide__tag {
-  justify-self: start; display: inline-flex; align-items: center;
-  margin: 0; padding: 0.3cqi 1cqi; border-radius: 999px;
-  background: var(--d0-blue-light); color: var(--d0-blue-dark);
-  font-size: 1.3cqi; font-weight: 600; line-height: 1.4;
-}
-.d0-slide__foot:has(.d0-slide__src):not(:has(kbd)) { padding-top: 1cqi; border-top: 1px solid var(--d0-grey-100); }
-
-/* 비대칭 구도: 제목 열 2 : 그림 열 3, data-flip이면 반대 */
-.d0-slide[data-layout="asym"] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-rows: minmax(0, 1fr) auto; column-gap: 4cqi; }
-.d0-slide[data-layout="asym"] > .d0-slide__head { grid-column: 1; grid-row: 1; align-self: center; }
-.d0-slide[data-layout="asym"] > .d0-slide__fig { grid-column: 2; grid-row: 1; height: 100%; }
-.d0-slide[data-layout="asym"] > .d0-slide__foot { grid-column: 1 / -1; }
-.d0-slide[data-layout="asym"][data-flip] { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
-.d0-slide[data-layout="asym"][data-flip] > .d0-slide__head { grid-column: 2; }
-.d0-slide[data-layout="asym"][data-flip] > .d0-slide__fig { grid-column: 1; }
-.d0-slide[data-layout="asym"] .d0-slide__title,
-.d0-slide[data-layout="asym"][data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 3.2cqi; } /* 가용 폭이 제목 크기를 정한다: 그림 있는 Impact 규칙보다 특이도를 높여 덮이지 않게 */
-.d0-slide[data-layout="asym"] .d0-slide__fig svg { max-width: 100%; }
-
-/* 핵심 수치 기본형: 왼쪽 머리 열에 제목 → 큰 숫자 → 기준 줄(.d0-slide__base, 기본 CSS), 오른쪽 근거 그림(asym 격자 그대로) */
-.d0-slide[data-kind="stat"][data-layout="asym"] > .d0-slide__head > .d0-slide__stat { margin-top: 1.6cqi; align-self: start; }
-.d0-sl-link[data-on] { stroke: var(--d0-blue); stroke-width: 3; }  /* slope·line 근거의 강조 선. 점은 circle.d0-sl-bar */
-
-/* 섹션 장: 큰 번호 + 챕터 제목 */
-.d0-slide[data-kind="section"] { grid-template-rows: minmax(0, 1fr) auto; }
-.d0-slide[data-kind="section"] .d0-slide__head { align-self: center; gap: 1.6cqi; max-width: 80cqi; }
-.d0-slide__index {
-  margin: 0; color: var(--d0-blue-dark);
-  font-size: 7cqi; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display);
-  font-variant-numeric: tabular-nums;
-}
-.d0-slide[data-kind="section"] .d0-slide__title { font-size: 4.5cqi; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
-.d0-slide__toc li[data-section] a { font-weight: 600; }
-
-/* 진한 면: cover·section·closing만. blue-dark 위 #fff 5.50, blue-light 4.94 */
-.d0-slide[data-surface="dark"] { background: var(--d0-blue-dark); box-shadow: none; }
-.d0-slide[data-surface="dark"]:focus-visible { outline-color: #fff; outline-offset: -8px; } /* 키보드 포커스만: 슬라이드 안쪽 흰 링 5.50 */
-.d0-slide[data-surface="dark"] :is(.d0-slide__title, .d0-slide__key, .d0-slide__index) { color: #fff; }
-.d0-slide[data-surface="dark"] .d0-slide__title:has(.d0-slide__key) { color: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] :is(.d0-slide__eyebrow, .d0-slide__sub, .d0-slide__lead, .d0-slide__note, .d0-slide__src, .d0-slide__num,
-  .d0-slide__meta dt, .d0-slide__meta dd, .d0-slide__summary dt, .d0-slide__summary dd) { color: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] :is(.d0-slide__meta, .d0-slide__summary > div, .d0-slide__foot) { border-color: color-mix(in srgb, #fff 32%, transparent); }
-.d0-slide[data-surface="dark"] .d0-slide__tag { background: transparent; box-shadow: inset 0 0 0 1px var(--d0-blue-light); color: #fff; }
-.d0-slide[data-surface="dark"] kbd { border-color: var(--d0-blue-light); color: #fff; }
-/* 진한 면 위 대표 도식: 선·빈 노드 blue-light, 강조 흰색. blue·의미색 표식은 두지 않는다 */
-.d0-slide[data-surface="dark"] :is(.d0-s-edge, .d0-s-ring, .d0-s-line, .d0-s-life, .d0-sl-link, .d0-sl-axis) { stroke: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step, .d0-s-frame) { fill: var(--d0-blue-dark); stroke: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-on] { fill: #fff; stroke: #fff; }
-.d0-slide[data-surface="dark"] .d0-s-edge[data-on] { stroke: #fff; }
-/* 값 막대는 색 하나에 기대지 않는다: 기준 막대 = blue-light 테두리만(배경 4.94, 흰색 24% 트랙 위 3.08), 강조 막대 = 흰 채움(5.50, 트랙 위 3.43) + 굵은 값 라벨 */
-.d0-slide[data-surface="dark"] :is(.d0-sl-bar, .d0-s-bar) { fill: none; stroke: var(--d0-blue-light); stroke-width: 2px; vector-effect: non-scaling-stroke; }
-.d0-slide[data-surface="dark"] :is(.d0-sl-label, .d0-sl-value, .d0-sl-head) text,
-.d0-slide[data-surface="dark"] .d0-s-text { fill: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] .d0-sl-value text[data-on] { fill: #fff; font-weight: 700; }
-.d0-slide[data-surface="dark"] :is(.d0-sl-label, .d0-sl-head) text[data-on],
-.d0-slide[data-surface="dark"] .d0-s-text[data-on] { fill: #fff; }
-.d0-slide[data-surface="dark"] .d0-s-muted { fill: var(--d0-blue-light); }
-/* 면·자리: 옅은 자리 흰색 24%, 진한 자리 grey-300(3.48), 강조 면 흰색(5.50), 영역은 면 없는 blue-light 점선 */
-.d0-slide[data-surface="dark"] :is(.d0-s-fill, .d0-s-track, .d0-s-cell, .d0-sl-total) { fill: color-mix(in srgb, #fff 24%, transparent); }
-.d0-slide[data-surface="dark"] .d0-s-key { fill: var(--d0-grey-300); }
-.d0-slide[data-surface="dark"] :is(.d0-s-accent, .d0-s-sum) { fill: #fff; }
-.d0-slide[data-surface="dark"] :is(.d0-s-zone, .d0-s-head) { fill: none; stroke: var(--d0-blue-light); }
-/* 번호: 빈 원 위 blue-light, 흰 원(data-on) 위 blue-dark. 흰 원 위 흰 숫자가 사라지지 않게 */
-.d0-slide[data-surface="dark"] .d0-s-num { fill: var(--d0-blue-light); }
-.d0-slide[data-surface="dark"] .d0-s-num[data-on] { fill: var(--d0-blue-dark); }
-/* 의미색은 기호로: 완료 green = 흰 원 + blue-dark ✓(d0-s-tick), 실패 red = 흰 테두리 원 + 흰 ×(d0-s-stop), orange = blue-light 테두리 원 + !(d0-s-num). 기호는 빼지 않는다(완료 라벨 생략 조건은 본문) */
-.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="green"] { fill: #fff; stroke: #fff; }
-.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="red"] { fill: var(--d0-blue-dark); stroke: #fff; stroke-width: 2.5; }    /* 안에 흰 × (d0-s-stop) */
-.d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-tone="orange"] { fill: var(--d0-blue-dark); stroke: var(--d0-blue-light); } /* 안에 ! (text.d0-s-num, blue-light 4.94) */
-.d0-slide[data-surface="dark"] .d0-s-tick { stroke: var(--d0-blue-dark); stroke-width: 2; }                                         /* 흰 원 위 ✓ 5.50 */
-.d0-slide[data-surface="dark"] :is(.d0-s-edge[data-tone="red"], .d0-s-stop) { stroke: #fff; }                                        /* 원 안 ×·원 밖 막힘 표시 5.50 */
-.d0-slide[data-surface="dark"] :is(.d0-s-bar, .d0-sl-bar)[data-tone] { fill: none; stroke: var(--d0-blue-light); }  /* 의미색 막대도 기준 막대처럼 테두리만 */
-.d0-slide[data-surface="dark"] :is(.d0-s-bar, .d0-sl-bar)[data-on] { fill: #fff; stroke: none; }                      /* 강조 막대: 흰 채움(의미색 규칙보다 뒤) */
-/* 배지: 면을 빼고 blue-light 테두리 + 흰 글자, 의미색 점은 흰색 */
-.d0-slide[data-surface="dark"] .d0-pill { background: transparent; box-shadow: inset 0 0 0 1px var(--d0-blue-light); color: #fff; }
-.d0-slide[data-surface="dark"] .d0-pill::before { background: #fff; }
-/* 덱에서 새로 만든 로컬 도형 클래스는 진한 면 색을 직접 정한다(위 역할대로) */
-
-/* 근거 변형(evidence.md)을 evidence 장 그림 자리에: 근거 요소가 몸 행을 채운다 */
-.d0-slide__fig > :is(.d0-mlist, .d0-barlist, .d0-tiles) { min-height: 0; height: 100%; }
-.d0-slide__fig .d0-mlist { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 4cqi; }
-.d0-slide__fig .d0-mlist__rows { gap: 2.4cqi; align-content: center; }
-.d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dd { font-size: 4.4cqi; }
-.d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dt { font-size: 1.8cqi; }
-.d0-slide[data-kind] .d0-slide__fig svg.d0-mlist__chart { justify-self: stretch; width: 100%; max-width: none; height: 100%; max-height: 100%; }
-.d0-slide__fig .d0-barlist { align-content: center; gap: 2.4cqi; }
-.d0-slide__fig .d0-barlist li { gap: 0.8cqi 2cqi; }
-.d0-slide__fig .d0-barlist :is(.d0-barlist__label, .d0-barlist__value) { font-size: 2.2cqi; }
-.d0-slide__fig .d0-barlist__track { height: 1.4cqi; }
-.d0-slide__fig .d0-tiles { grid-auto-rows: 1fr; gap: 1.6cqi; }
-.d0-slide__fig .d0-tiles > div { padding: 2.4cqi; align-content: center; }
-
-/* 주석(diagram.md annotate)을 덱 그림에: SVG 높이를 내용대로 두어 번호 위치가 맞게 */
-.d0-slide__fig .d0-annot { align-self: center; justify-self: center; max-width: 100%; }
-.d0-slide .d0-slide__fig .d0-annot svg { height: auto; max-height: none; max-width: 100%; }
-.d0-slide__fig .d0-annot > .d0-pin { width: 2.8cqi; height: 2.8cqi; font-size: 1.5cqi; }
-.d0-slide .d0-annot__notes { gap: 1.6cqi; }
-.d0-slide .d0-annot__notes li { grid-template-columns: 2.6cqi minmax(0, 1fr); column-gap: 1.2cqi; font-size: 2cqi; }
-.d0-slide .d0-annot__notes .d0-pin { width: 2.6cqi; height: 2.6cqi; font-size: 1.4cqi; }
-
-@container (max-width: 730px) {
-  .d0-slide__tag { padding: 2px 10px; font-size: 12px; }
-  .d0-slide__foot:has(.d0-slide__src):not(:has(kbd)) { padding-top: 8px; }
-  .d0-slide[data-layout="asym"],
-  .d0-slide[data-layout="asym"][data-flip] { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(3, max-content); }
-  .d0-slide[data-layout="asym"] > :is(.d0-slide__head, .d0-slide__fig, .d0-slide__foot),
-  .d0-slide[data-layout="asym"][data-flip] > :is(.d0-slide__head, .d0-slide__fig) { grid-column: 1; grid-row: auto; height: auto; }
-  .d0-slide[data-layout="asym"] .d0-slide__title,
-  .d0-slide[data-layout="asym"][data-emphasis="impact"]:has(.d0-slide__fig, .d0-shot) .d0-slide__title { font-size: 20px; } /* 위 데스크톱 asym 규칙과 같은 특이도로 */
-  .d0-slide[data-kind="section"] { min-height: min(420px, calc(100dvh - 116px)); }
-  .d0-slide__index { font-size: 40px; }
-  .d0-slide[data-kind="section"] .d0-slide__title { font-size: 24px; }
-  .d0-slide__fig > :is(.d0-mlist, .d0-barlist, .d0-tiles) { height: auto; }
-  .d0-slide__fig .d0-mlist { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .d0-slide[data-kind] .d0-slide__fig svg.d0-mlist__chart { height: auto; max-height: 200px; }
-  .d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dd { font-size: 26px; }
-  .d0-slide__fig :is(.d0-mlist__rows, .d0-tiles) dt { font-size: 13px; }
-  .d0-slide__fig .d0-mlist__rows, .d0-slide__fig .d0-barlist { gap: 12px; }
-  .d0-slide__fig .d0-barlist :is(.d0-barlist__label, .d0-barlist__value) { font-size: 15px; }
-  .d0-slide__fig .d0-barlist__track { height: 8px; }
-  .d0-slide__fig .d0-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; gap: 8px; }
-  .d0-slide__fig .d0-tiles > div { padding: 14px; }
-  .d0-slide__fig .d0-annot > .d0-pin, .d0-slide .d0-annot__notes .d0-pin { width: 24px; height: 24px; font-size: 13px; }
-  .d0-slide .d0-annot__notes { gap: 8px; }
-  .d0-slide .d0-annot__notes li { grid-template-columns: 24px minmax(0, 1fr); column-gap: 8px; font-size: 15px; }
-}
-```
-
-```js
-/* 한 장 모드: 준비가 끝나면 마지막에 data-mode="single"을 붙인다. 중간에 실패하면 세로 나열 그대로다. */
-(function () {
-  var deck = document.querySelector('.d0-deck');
-  if (!deck) return;
-  var slides = Array.prototype.slice.call(deck.querySelectorAll('.d0-slide'));
-  var nav = deck.querySelector('.d0-deck__nav');
-  if (!slides.length || !nav) return;
-  var btnPrev = nav.querySelector('[data-deck="prev"]');
-  var btnNext = nav.querySelector('[data-deck="next"]');
-  var outNow = nav.querySelector('[data-deck-now]');
-  var outTotal = nav.querySelector('[data-deck-total]');
-  var TEXT = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="tablist"], [role="slider"]';
-  var CTRL = 'button, a[href], summary, [role="button"]';
-  var idx = -1;
-
-  function indexOfId(id) {
-    for (var i = 0; i < slides.length; i++) if (slides[i].id === id) return i;
-    return -1;
-  }
-  function fromHash() {
-    var id = '';
-    try { id = decodeURIComponent(location.hash.slice(1)); } catch (err) { id = ''; }
-    return id ? indexOfId(id) : -1;
-  }
-  /* 브라우저는 해시 대상 장(tabindex="-1")에 스스로 포커스를 준다. 해시 진입·이동에서는 그 포커스를 풀어 링이 생기지 않게 한다 */
-  function dropSlideFocus() {
-    var a = document.activeElement;
-    if (a && slides.indexOf(a) >= 0) a.blur();
-  }
-  function show(i, opt) {
-    opt = opt || {};
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    if (i === idx) { if (opt.from === 'hash') dropSlideFocus(); return; }
-    var old = slides[idx];
-    var a = document.activeElement;
-    /* 포커스는 키보드로 넘길 때(opt.from === 'key')와 사라지는 장 안 컨트롤(목차 링크 등)에 포커스가 있을 때만 새 장으로 옮긴다.
-       해시 진입·이동은 장을 보여 주기만 하고 포커스를 주지 않는다 */
-    var inner = !!(old && a && a !== old && old.contains(a));
-    var moveFocus = opt.from !== 'hash' && (opt.from === 'key' || inner);
-    slides.forEach(function (s, k) {
-      if (k === i) s.setAttribute('data-active', ''); else s.removeAttribute('data-active');
-    });
-    idx = i;
-    slides[i].scrollTop = 0;
-    if (outNow) outNow.textContent = String(i + 1);
-    if (btnPrev) btnPrev.setAttribute('aria-disabled', String(i === 0));
-    if (btnNext) btnNext.setAttribute('aria-disabled', String(i === slides.length - 1));
-    if (opt.hash !== false) {
-      try { history.replaceState(null, '', '#' + slides[i].id); } catch (err) { /* srcdoc 등: 주소 동기화 생략 */ }
-    }
-    if (moveFocus) slides[i].focus({ preventScroll: true });
-    else if (opt.from === 'hash') dropSlideFocus();
-  }
-  /* 장 안이 넘치면 Space·PageDown은 먼저 장 안을 스크롤한다. 스크롤했으면 true */
-  function pageWithin(dir) {
-    var s = slides[idx];
-    if (s.scrollHeight - s.clientHeight < 2) return false;
-    if (dir > 0 && s.scrollTop + s.clientHeight >= s.scrollHeight - 1) return false;
-    if (dir < 0 && s.scrollTop <= 0) return false;
-    s.scrollBy(0, dir * s.clientHeight * 0.85);
-    return true;
-  }
-  function toggleFullscreen() {
-    try {
-      var p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
-      if (p && p.catch) p.catch(function () {});
-    } catch (err) { /* 전체 화면을 못 쓰는 환경 */ }
-  }
-
-  document.addEventListener('keydown', function (e) {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
-    var t = e.target && e.target.closest ? e.target : null;
-    if (t && t.closest(TEXT)) return;                     /* 입력 칸: 모든 키를 그대로 둔다 */
-    var k = e.key, d = 0, paging = false;
-    if (k === ' ' || k === 'Spacebar' || k === 'Enter') {
-      if (k === 'Enter' || (t && t.closest(CTRL))) return; /* 버튼·링크의 Space·Enter는 그 컨트롤 몫 */
-      d = e.shiftKey ? -1 : 1; paging = true;
-    }
-    else if (k === 'ArrowRight') d = 1;
-    else if (k === 'ArrowLeft') d = -1;
-    else if (k === 'PageDown') { d = 1; paging = true; }
-    else if (k === 'PageUp') { d = -1; paging = true; }
-    else if (k === 'Home') { e.preventDefault(); show(0, { from: 'key' }); return; }
-    else if (k === 'End') { e.preventDefault(); show(slides.length - 1, { from: 'key' }); return; }
-    else if (k === 'f' || k === 'F') { toggleFullscreen(); return; }
-    else return;
-    e.preventDefault();
-    if (paging && pageWithin(d)) return;
-    show(idx + d, { from: 'key' });
-  });
-
-  deck.addEventListener('click', function (e) {
-    var t = e.target && e.target.closest ? e.target : null;
-    if (!t) return;
-    var b = t.closest('button[data-deck]');
-    if (b) {
-      var act = b.getAttribute('data-deck');
-      if (act === 'prev') show(idx - 1);
-      else if (act === 'next') show(idx + 1);
-      else if (act === 'toc') {
-        var toc = deck.querySelector('.d0-slide[data-kind="toc"]');
-        show(toc ? slides.indexOf(toc) : 0);
-      }
-      return;
-    }
-    var a = t.closest('a[href^="#"]');
-    if (!a) return;
-    var i = indexOfId(a.getAttribute('href').slice(1));
-    if (i < 0) return;
-    e.preventDefault();
-    show(i);
-  });
-  window.addEventListener('hashchange', function () {
-    var i = fromHash();
-    if (i >= 0) show(i, { hash: false, from: 'hash' });
-  });
-
-  /* 스와이프: 터치·펜만. 가로 이동 > 세로 이동이고 48px 넘으면 넘긴다 */
-  var sx = null, sy = 0, pid = null;
-  deck.addEventListener('pointerdown', function (e) {
-    if (e.pointerType === 'mouse') return;
-    sx = e.clientX; sy = e.clientY; pid = e.pointerId;
-  });
-  deck.addEventListener('pointerup', function (e) {
-    if (sx === null || e.pointerId !== pid) return;
-    var dx = e.clientX - sx, dy = e.clientY - sy;
-    sx = null;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48) show(idx + (dx < 0 ? 1 : -1));
-  });
-  deck.addEventListener('pointercancel', function () { sx = null; });
-
-  /* iframe(srcdoc) 안: 누르면 프레임이 키 입력을 받게 한다 */
-  var framed = true;
-  try { framed = window.self !== window.top; } catch (err) { framed = true; }
-  if (framed) {
-    document.addEventListener('pointerdown', function () {
-      try { window.focus(); } catch (err) { /* 무시 */ }  /* 슬라이드에 포커스를 주지 않는다: 넘길 때마다 포커스 링이 생긴다 */
-    });
-  }
-
-  if (outTotal) outTotal.textContent = String(slides.length);
-  var start = fromHash();
-  show(start >= 0 ? start : 0, { hash: false, from: start >= 0 ? 'hash' : '' });
-  if (start >= 0) window.addEventListener('load', dropSlideFocus);  /* 로드 끝에 해시 대상에 생긴 포커스도 푼다 */
-  deck.setAttribute('data-mode', 'single');               /* 여기까지 왔을 때만 한 장 모드 */
-})();
-```
+- 블록 문서의 작은 CSS 스니펫은 그 블록을 쓸 때만 붙인다. 같은 규칙이 assets에도 있으면 assets가 정본이다.
 
 - 쪽수 `n / N`은 목차를 제외한 슬라이드마다 마크업에 직접 쓴다(스크립트가 없을 때와 인쇄에서 보인다). 한 장 모드에서는 네비 쪽수가 대신 보인다. 슬라이드를 빼거나 더하면 쪽수를 함께 고친다.
 - 차트·도식을 바꿀 때도 기본 SVG는 viewBox 폭 400·글자 17·최대 42cqi(split 안은 그림 열 폭), 가로형은 800·글자 20(좁은 화면 30, 320 폭 36)·최대 84cqi를 유지한다. map·side 표지에는 400 폭 표지용 도식을 쓴다. 그대로 둔 800 지도는 안전망으로 731px 이상에서도 글자 30이다.

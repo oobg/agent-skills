@@ -26,7 +26,7 @@
 
 ## 라벨
 
-이 절의 글자 크기(`.d0-s-text`·`.d0-s-num`)와 렌더 게이트는 **page 규칙**이다. deck의 도식 글자는 [slide-deck.md 그림 글자](slide-deck.md#그림-글자) 절(`d0-sl-label`·`d0-sl-value`, 번호 `.d0-s-num`까지 `--sl-font`, SVG 안 `font-size` 속성 금지)을 따른다. 도형 클래스는 page·deck 공용이다(아래 공용 CSS).
+이 절의 글자 크기(`.d0-s-text`·`.d0-s-num`)와 렌더 게이트는 **page 규칙**이다. deck의 도식 글자는 [slide-deck.md 그림 글자](slide-deck.md#그림-글자) 절(`d0-sl-label`·`d0-sl-value`, 번호 `.d0-s-num`까지 `--sl-font`, SVG 안 `font-size` 속성 금지)을 따른다. 도형 클래스는 page·deck 공용이다(아래 공용 CSS 절, 정본 `assets/page.css`).
 
 - 설명 문장은 SVG 밖 `figcaption`·HTML에 둔다. 확대·번역·복사가 되기 때문이다.
 - SVG `<text>`는 짧은 노드·값 라벨(명사 1~3단어, `고친 파일`, `6분`)에만 쓴다.
@@ -34,9 +34,9 @@
 - **측정 기준(정본).** 렌더 글자 크기 = font-size f × (SVG 렌더 폭 ÷ viewBox 폭 W). 렌더 폭은 SVG box 폭(무대가 있으면 무대 안쪽 폭, compact면 그 75%)이다.
   글자 박스 높이(`getBBox`·`getBoundingClientRect`의 height)는 쓰지 않는다. 줄 높이와 글꼴 여백이 섞여 크게 나온다.
 - **글자 있는 SVG는 viewBox 폭 560으로 그린다.** 축 720px은 모바일 폭의 약 2.1배라, 한 viewBox로 데스크톱 13~20px과 모바일 11px 이상을 함께 맞추려면 좁은 화면에서 글자를 키워야 한다.
-  그래서 f는 기본 14, 560px 이하 화면 20, 340px 이하 22다(아래 공용 CSS). 이 모바일 확대는 `.d0-page` 안에만 걸고 덱 슬라이드에는 걸지 않는다. 글자 없는 SVG(와이어프레임·핀 그림·썸네일)는 이 계산을 받지 않으므로 viewBox 폭이 자유롭다.
+  그래서 f는 기본 14, 560px 이하 화면 20, 340px 이하 22다(`assets/page.css`). 이 모바일 확대는 `.d0-page` 안에만 걸고 덱 슬라이드에는 걸지 않는다. 글자 없는 SVG(와이어프레임·핀 그림·썸네일)는 이 계산을 받지 않으므로 viewBox 폭이 자유롭다.
 - **report 축은 viewBox 폭 750.** `data-width="report"`의 축 960px에 560을 그대로 두면 14 × 960 ÷ 560 = 24px로 상한을 넘는다. 축에 놓는 글자 있는 SVG는 viewBox 폭 750으로 그린다. 560으로 그린 그림을 옮길 때는 모든 좌표·반지름을 750 ÷ 560 배로 키운다(가로만 늘리면 좁은 화면에서 커진 글자가 세로로 겹치고 위 끝이 잘린다).
-  글자는 760px 이하 18, 560px 이하 27, 340px 이하 30이다(아래 공용 CSS). 첫 화면 예산 때문에 높이를 줄여야 하면 세로 배율만 조금 낮추고(예: 1.15) 390px에서 겹침·잘림을 눈으로 확인한다.
+  글자는 760px 이하 18, 560px 이하 27, 340px 이하 30이다(`assets/page.css`). 첫 화면 예산 때문에 높이를 줄여야 하면 세로 배율만 조금 낮추고(예: 1.15) 390px에서 겹침·잘림을 눈으로 확인한다.
 - **축 안 2열 칸.** 열 폭이 336px(report 456px)이라 viewBox 560이면 라벨이 8.4px(11.4px)로 하한 아래다. 칸에 두는 글자 있는 SVG는 viewBox 폭 360(report 480)으로 그린다.
 
 | 놓는 곳 | 렌더 폭 | f | 렌더 라벨 |
@@ -190,68 +190,8 @@
 
 ## 공용 CSS
 
-```css
-/* .d0-fig, .d0-fig__stage, figcaption은 shell.md에 있다 */
-/* 그림 폭(.d0-fig svg 100%, compact 75%)은 shell.md 정본 CSS에 있다 */
-.d0-fig__scroll { overflow-x: auto; }
-.d0-s-text { fill: var(--d0-grey-700); font-family: var(--d0-font); font-size: 14px; font-weight: 600; letter-spacing: var(--d0-tracking-body); font-variant-numeric: tabular-nums; }
-.d0-s-text[data-on] { fill: var(--d0-blue-dark); }
-.d0-s-muted { fill: var(--d0-grey-600); font-weight: 500; }
-.d0-s-edge, .d0-s-node, .d0-s-ring, .d0-s-frame, .d0-s-line, .d0-s-zone, .d0-s-step, .d0-s-life {
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.d0-s-edge { fill: none; stroke: var(--d0-grey-500); stroke-width: 1.5; }
-.d0-s-edge[data-on] { stroke: var(--d0-blue); stroke-width: 2.5; }
-.d0-s-edge[data-back] { stroke-dasharray: 4 4; }
-.d0-s-node { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
-.d0-s-node[data-on] { fill: var(--d0-blue); stroke: var(--d0-blue); }
-.d0-s-ring { fill: none; stroke: var(--d0-blue); stroke-width: 1.5; }
-.d0-s-track { fill: var(--d0-grey-100); }
-.d0-s-bar { fill: var(--d0-grey-400); }
-.d0-s-bar[data-on] { fill: var(--d0-blue); }
-.d0-s-cell { fill: var(--d0-grey-200); }
-.d0-s-head { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 0.75; } /* 썸네일 격자만 예외(축소 그림) */
-.d0-s-key { fill: var(--d0-grey-400); }
-.d0-s-sum { fill: var(--d0-blue); }
-.d0-s-frame { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
-.d0-s-fill { fill: var(--d0-grey-100); }
-.d0-s-line { fill: none; stroke: var(--d0-grey-300); stroke-width: 1.5; }
-.d0-s-accent { fill: var(--d0-blue); }
-.d0-s-zone { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 1.5; stroke-dasharray: 4 3; }
-.d0-s-step { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
-.d0-s-step[data-on] { fill: var(--d0-blue-dark); stroke: var(--d0-blue-dark); }
-.d0-s-num { fill: var(--d0-grey-700); font-family: var(--d0-font); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; text-anchor: middle; dominant-baseline: central; }
-.d0-s-num[data-on] { fill: #fff; }
-.d0-s-life { fill: none; stroke: var(--d0-grey-300); stroke-width: 1.5; }
-.d0-s-tick { fill: none; stroke: #fff; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; } /* green·blue-dark 원 위 흰 체크 */
-/* 의미색: 상태가 있는 표식에만. 글자 색으로는 쓰지 않는다 */
-.d0-s-node[data-tone="green"], .d0-s-step[data-tone="green"] { fill: var(--d0-green); stroke: var(--d0-green); }
-.d0-s-node[data-tone="red"], .d0-s-step[data-tone="red"] { fill: var(--d0-red); stroke: var(--d0-red); }
-.d0-s-node[data-tone="orange"], .d0-s-step[data-tone="orange"] { fill: var(--d0-orange-bg); stroke: var(--d0-grey-700); } /* orange는 그래픽 3:1 미달 → 옅은 면 + 진한 테두리 */
-.d0-s-bar[data-tone="green"] { fill: var(--d0-green); }
-.d0-s-bar[data-tone="red"] { fill: var(--d0-red); }
-.d0-s-bar[data-tone="orange"] { fill: var(--d0-orange); } /* 값 라벨이 막대 옆에 있을 때만 */
-.d0-s-zone[data-tone="red"] { fill: var(--d0-red-bg); stroke: var(--d0-red); }
-.d0-s-edge[data-tone="red"] { stroke: var(--d0-red); }                                   /* 되돌림·실패 경로. data-back과 함께 쓰면 빨간 점선 */
-.d0-s-stop { fill: none; stroke: var(--d0-red); stroke-width: 2.5; stroke-linecap: round; } /* 막힘 표시: 경로를 가로지르는 짧은 선·X, 라벨과 함께 */
-/* 핵심 무대 blue-light: 회색 선·흐린 글자를 한 단계 진하게 */
-.d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
-.d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
-/* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
-   데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다.
-   page(.d0-page) 안에만 건다. 덱 슬라이드 SVG(.d0-sl-* 글자, 번호·주의 ! 표식 text.d0-s-num)는 slide-deck.md 그림 글자 절(.d0-slide .d0-s-num { font-size: var(--sl-font, 17px) })을 따른다 */
-@media (max-width: 760px) {
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 18px; } /* report 축 viewBox 750: 561~760 → 축 497~696px, 18 × 497 ÷ 750 = 11.9px ~ 16.7px */
-}
-@media (max-width: 560px) {
-  .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 27px; } /* report 축 viewBox 750: 390 27 × 358 ÷ 750 = 12.9px, 375: 12.3px, 560: 19.0px */
-}
-@media (max-width: 340px) {
-  .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 30px; } /* report: 320 30 × 288 ÷ 750 = 11.5px */
-}
-```
+정본: `assets/page.css` 뒤쪽 "도식 공용 클래스" 부분(`.d0-s-*` 도형·글자, 의미색 표식, blue 무대 보정, 좁은 화면 라벨 크기). 일반 생성에서는 읽지 말고 그대로 인라인한다(`scripts/inline_assets.py`, [shell](shell.md) 스니펫 절). 수정할 때만 읽는다.
+page는 항상, deck은 `page.css`째로 함께 붙는다. 라벨 크기 값(기본 14, 560px 이하 20, 340px 이하 22, report 18·27·30)은 위 라벨 절이 정한다.
 
 대비(무대 grey-50 기준, tokens.css 값으로 계산): blue 3.75, blue-dark 5.18, green 3.26, red 3.36, orange 2.32(미달), grey-500 3.01, grey-400 2.06, grey-300 1.49.
 blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 2.87(미달). 전체 표는 [shell.md](shell.md) 색 절.
@@ -262,7 +202,7 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 
 ### 흔한 표식 → 클래스 (page·deck 공용)
 
-도형은 page와 deck 모두 이 클래스로 칠한다. SVG에 `fill`·`stroke` 값(`var(--d0-*)` 포함)을 직접 쓰지 않는다. deck에서는 이 공용 CSS의 도형 규칙을 함께 붙이고, 글자만 [slide-deck.md](slide-deck.md)의 `d0-sl-label`·`d0-sl-value`로 쓴다.
+도형은 page와 deck 모두 이 클래스로 칠한다. SVG에 `fill`·`stroke` 값(`var(--d0-*)` 포함)을 직접 쓰지 않는다. deck에서도 이 공용 CSS(`assets/page.css`)의 도형 규칙이 함께 붙고, 글자만 [slide-deck.md](slide-deck.md)의 `d0-sl-label`·`d0-sl-value`로 쓴다.
 
 | 표식 | 클래스 |
 | --- | --- |
@@ -277,7 +217,7 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 | 남은 길(narrative) | `.d0-s-edge[data-ahead]` |
 | 범위·영역 | `.d0-s-zone`(`data-tone="red"` 가능) |
 
-새 표식이 필요하면 새 블록을 만들지 않고 이 공용 CSS에 토큰만 쓰는 클래스 하나를 더한다([blocks.md](../blocks.md) 블록 추가 판별).
+새 표식이 필요하면 새 블록을 만들지 않고 이 공용 CSS(`assets/page.css`)에 토큰만 쓰는 클래스 하나를 더한다([blocks.md](../blocks.md) 블록 추가 판별).
 
 ## (a) graph — 연결 그래프
 
