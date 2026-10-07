@@ -78,21 +78,37 @@
 :root { color-scheme: light; }
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: #fff; color: var(--d0-grey-800); font-family: var(--d0-font); font-size: 15px; line-height: var(--d0-leading-body); letter-spacing: var(--d0-tracking-body); font-variant-numeric: tabular-nums; word-break: keep-all; overflow-wrap: break-word; }
-/* 본문 축: 안쪽 폭 720px(narrow 640px). 넓은 구간만 .d0-wide로 축 밖까지 */
-.d0-page { max-width: calc(720px + 64px); margin: 0 auto; padding: 64px 32px 96px; }
-.d0-page[data-width="narrow"] { max-width: calc(640px + 64px); }
-.d0-wide { --d0-wide: min(1136px, calc(100vw - 64px)); width: var(--d0-wide); margin-inline: calc((100% - var(--d0-wide)) / 2); }
+/* 본문 축: 가운데 프레임 안에서 왼쪽에 붙은 읽기 축. 폭 단계(data-width) 기본 축 720/프레임 1136, narrow 640/1136, report 960/1280(글은 720) */
+.d0-page { --d0-frame: 1136px; --d0-axis: 720px; --d0-measure: 720px; max-width: calc(var(--d0-frame) + 64px); margin: 0 auto; padding: 64px 32px 96px; }
+.d0-page[data-width="narrow"] { --d0-axis: 640px; --d0-measure: 640px; }
+.d0-page[data-width="report"] { --d0-frame: 1280px; --d0-axis: 960px; }
+/* 블록은 모두 프레임 왼쪽에서 시작한다. 글은 --d0-measure, 그림·표·지표·축 안 2열은 --d0-axis까지. 넓은 구간과 여백 주석 묶음만 예외 */
+.d0-page :is(.d0-header, .d0-section, .d0-margined) > :not(.d0-wide, .d0-margined, .d0-margin) { max-width: var(--d0-measure); }
+.d0-page :is(.d0-header, .d0-section, .d0-margined) > :is(figure, table, .d0-cols, .d0-kpis, .d0-steps, .d0-timeline, .d0-ba, .d0-sbs, .d0-thumbs, .d0-demos):not(.d0-wide) { max-width: var(--d0-axis); }
+/* 넓은 구간: 왼쪽 시작선은 그대로 두고 오른쪽만 프레임 끝까지 */
+.d0-wide { width: 100%; max-width: none; }
 /* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
 .d0-fig svg { width: 100%; height: auto; }
 .d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
-/* 2열: 페이지 공통 분할선 하나. 6/6 또는 7/5 */
-.d0-cols { display: grid; gap: 24px 48px; align-items: start; }
+/* 2열: 축 안은 6/6(각 열 300px 이상일 때만, 아니면 쌓는다). 넓은 구간 안은 12열 6/6 또는 7/5. 축 안과 넓은 구간이 각각 분할선 하나 */
+.d0-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
+:where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 960px) {
-  .d0-cols { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .d0-cols > * { grid-column: span 6; }
-  .d0-cols[data-split="7-5"] > :first-child { grid-column: span 7; }
-  .d0-cols[data-split="7-5"] > :last-child { grid-column: span 5; }
+  :where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  :where(.d0-wide) .d0-cols > *, .d0-cols:where(.d0-wide) > * { grid-column: span 6; }
+  :where(.d0-wide) .d0-cols[data-split="7-5"] > :first-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :first-child { grid-column: span 7; }
+  :where(.d0-wide) .d0-cols[data-split="7-5"] > :last-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :last-child { grid-column: span 5; }
+}
+/* 여백 주석(선택): 본문 블록 하나 + aside.d0-margin. 1200px 이상(report는 1344px 이상)에서만 축 오른쪽 열, 그 아래는 본문 바로 아래 */
+.d0-margined { display: grid; gap: 12px 48px; align-items: start; }
+.d0-margined > * { min-width: 0; }
+.d0-margin { max-width: var(--d0-measure); color: var(--d0-grey-600); font-size: 14px; line-height: 1.6; }
+@media (min-width: 1200px) {
+  .d0-page:not([data-width="report"]) .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
+}
+@media (min-width: 1344px) {
+  .d0-page[data-width="report"] .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
 }
 /* 접기와 기억할 한 줄 */
 .d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
@@ -189,7 +205,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: tra
 .d0-tabprev { margin: 0; }
 
 /* ③ mockup-frame */
-/* A/B 2열은 .d0-wide 안 .d0-cols(위 정본 CSS)가 만든다 */
+/* A/B 실제 크기 화면 비교 2열은 .d0-wide 안 .d0-cols(위 정본 CSS)가 만든다 */
 .d0-demo { display: grid; gap: 12px; min-width: 0; }
 .d0-demo__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .d0-link { min-height: 24px; padding: 2px 4px; border: 0; background: none; color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
@@ -281,7 +297,6 @@ legend { padding: 0; }
 
 @media (max-width: 640px) {
   .d0-page { padding: 48px 16px 72px; }
-  .d0-wide { --d0-wide: 100%; } /* 모바일: 넓은 구간도 축 폭 그대로 */
   .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
@@ -304,11 +319,16 @@ legend { padding: 0; }
 .d0-s-text[data-on] { fill: var(--d0-blue-dark); font-weight: 600; }
 /* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
    데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다 */
+@media (max-width: 760px) {
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 18px; } /* report 축 viewBox 750: 561~760 → 축 497~696px, 18 × 497 ÷ 750 = 11.9px ~ 16.7px */
+}
 @media (max-width: 560px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 27px; } /* report 축 viewBox 750: 390 27 × 358 ÷ 750 = 12.9px, 375: 12.3px, 560: 19.0px */
 }
 @media (max-width: 340px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 30px; } /* report: 320 30 × 288 ÷ 750 = 11.5px */
 }
 svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 .d0-notes { display: grid; gap: 16px; }
@@ -387,7 +407,7 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
     <div class="d0-acc"><details><summary>고른 뒤 바꿀 수 있는 것</summary><p>기간과 빈칸 표기를 골라요. 팀 묶음은 정렬도 바꿔요. 지난번처럼 받기는 기간만 바꿔 다시 써요.</p></details></div>
   </section>
 
-  <!-- ③ 같은 크기·같은 데이터의 프레임: 동시 비교라 넓은 구간 안 2열(6/6). -->
+  <!-- ③ 같은 크기·같은 데이터의 프레임: 화면을 실제 크기로 견주는 동시 비교라 넓은 구간 안 2열(6/6). 대등한 두 덩어리였다면 축 안 .d0-cols -->
   <section class="d0-section" data-pattern="compare" data-variant="prototype" data-composition="split" aria-labelledby="sec-demo">
     <header class="d0-section-head"><h2 id="sec-demo">두 시안을 직접 눌러 보세요</h2><p>합성 데이터이며, 파일 받기는 데모로만 동작하고 설정은 저장되지 않아요.</p></header>
     <div class="d0-wide"><div class="d0-demos d0-cols">

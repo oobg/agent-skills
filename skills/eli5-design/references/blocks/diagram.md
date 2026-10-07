@@ -9,14 +9,14 @@
   `figure.d0-fig[data-stage]` + 무대 패널 `div.d0-fig__stage`(grey-50, `--d0-radius-card`, 패딩 28px / 모바일 20px)를 쓰고 `figcaption`은 패널 **밖**에 둔다.
   **무대 패딩 때문에 렌더 라벨이 하한 아래로 내려가면 무대를 쓰지 않는다**(아래 라벨 절). 글자 있는 도식은 375px에서 그렇게 되므로 무대 없이 두고, 경계는 그림 안 선·면(세로선의 끝, 프레임, 트랙)으로 만든다.
   기준과 CSS는 [shell.md](shell.md) 그림 무대 절. 아래 스니펫은 모두 무대 없이 SVG를 `figure` 바로 안에 둔다. 글자 없는 그림에 무대를 더하려면 `data-stage`를 달고 SVG를 `div.d0-fig__stage`로 감싼다.
-- **그림은 축 폭을 채운다.** SVG 렌더 폭은 놓인 자리(축 720px, narrow 640px, `.d0-wide` 열) 폭의 100%가 기본이다. 축 폭에서 너무 커 보이는 단순 도식(점·단계 3~4개)은 `data-fit="compact"`(75%, 가운데)로 둔다.
-  옆에 남는 폭을 설명 문단·목록으로 채우지 않는다. 설명은 figcaption과 그림 아래 explanation으로 둔다. 그림 지점과 번호로 대응하는 주석·범례만 `.d0-wide` 안 2열(문서의 분할선, 그림/주석이면 7/5)로 옆에 둘 수 있다([shell.md](shell.md) 2열 절, 아래 (g)·(i)).
+- **그림은 축 폭을 채운다.** SVG 렌더 폭은 놓인 자리(축: 기본 720px·narrow 640px·report 960px, 2열 열, `.d0-wide`) 폭의 100%가 기본이다. 축 폭에서 너무 커 보이는 단순 도식(점·단계 3~4개)은 `data-fit="compact"`(75%, 가운데)로 둔다.
+  옆에 남는 폭을 설명 문단·목록으로 채우지 않는다. 설명은 figcaption과 그림 아래 explanation으로 둔다. 그림 지점과 번호로 대응하는 주석·범례만 `.d0-wide` 안 2열(넓은 구간의 분할선, 그림/주석이면 7/5)로 옆에 둘 수 있다([shell.md](shell.md) 2열 절, 아래 (g)·(i)). 없어도 이해되는 용어 풀이·출처 한 줄은 여백 주석 `.d0-margin`(선택)에 둘 수 있다.
 - SVG는 `role="img"` + `<title>`(그림 이름) + `<desc>`(무엇이 강조됐는지 한두 문장). 장식 SVG만 `aria-hidden="true"`.
 - 색은 SVG 안에 직접 쓰지 않는다. 아래 `d0-s-*` 클래스가 `var(--d0-*)`를 쓴다. 강조 묶음은 블루 하나(같은 의미 계열은 행이 여럿이어도 한 묶음, 정의는 [composition.md](../composition.md) 강조 순서), 상태가 있는 표식은
   의미색 `data-tone="green|orange|red"`(완료·통과 / 주의·준비 / 실패·위험)를 단다. **회색만으로 된 도식은 금지**다. 색 규칙 정본은 [shell.md](shell.md) 색 절.
 - 페이지의 핵심 도식 하나는 무대를 blue-light로 칠할 수 있다(`figure.d0-fig[data-stage="blue"]`). 그 위 회색 선은 grey-600, 흐린 라벨은 grey-700로
   자동으로 한 단계 진해진다(blue-light 위 grey-500 선 2.87, grey-600 글자 4.49라 미달). blue 무대는 면 단위 옅은 표면이라 색 비율에서 빼고 장면 수로 센다(페이지당 1개).
-  blue 무대는 축 안이나 `.d0-wide` 열 안의 무대에만 쓰고 `.d0-wide` 전체 폭에는 칠하지 않는다. 무대 규칙(글자 있는 도식은 무대 없음)을 그대로 따른다. Impact 안에는 그림 무대를 두지 않는다.
+  blue 무대는 축 안이나 2열 열 안의 무대에만 쓰고 `.d0-wide` 전체 폭에는 칠하지 않는다. 무대 규칙(글자 있는 도식은 무대 없음)을 그대로 따른다. Impact 안에는 그림 무대를 두지 않는다.
 - 강조는 색만으로 말하지 않는다. 채움/빈 모양, 굵기, 라벨 중 하나를 함께 바꾼다.
 - **선.** 굵기는 기본 1.5, 강조 2.5 두 가지뿐이다. 모든 선은 `stroke-linecap: round`, `stroke-linejoin: round`. 노드에 그림자·그라디언트 없음.
 - **그리기 모션.** 강조 경로(`data-on` 엣지·화살표)에 `class="… d0-draw"`와 `pathLength="1"`을 붙이면 섹션이 드러날 때 600ms 동안 그려진다.
@@ -35,14 +35,23 @@
   글자 박스 높이(`getBBox`·`getBoundingClientRect`의 height)는 쓰지 않는다. 줄 높이와 글꼴 여백이 섞여 크게 나온다.
 - **글자 있는 SVG는 viewBox 폭 560으로 그린다.** 축 720px은 모바일 폭의 약 2.1배라, 한 viewBox로 데스크톱 13~20px과 모바일 11px 이상을 함께 맞추려면 좁은 화면에서 글자를 키워야 한다.
   그래서 f는 기본 14, 560px 이하 화면 20, 340px 이하 22다(아래 공용 CSS). 이 모바일 확대는 `.d0-page` 안에만 걸고 덱 슬라이드에는 걸지 않는다. 글자 없는 SVG(와이어프레임·핀 그림·썸네일)는 이 계산을 받지 않으므로 viewBox 폭이 자유롭다.
+- **report 축은 viewBox 폭 750.** `data-width="report"`의 축 960px에 560을 그대로 두면 14 × 960 ÷ 560 = 24px로 상한을 넘는다. 축에 놓는 글자 있는 SVG는 viewBox 폭 750으로 그린다. 560으로 그린 그림을 옮길 때는 모든 좌표·반지름을 750 ÷ 560 배로 키운다(가로만 늘리면 좁은 화면에서 커진 글자가 세로로 겹치고 위 끝이 잘린다).
+  글자는 760px 이하 18, 560px 이하 27, 340px 이하 30이다(아래 공용 CSS). 첫 화면 예산 때문에 높이를 줄여야 하면 세로 배율만 조금 낮추고(예: 1.15) 390px에서 겹침·잘림을 눈으로 확인한다.
+- **축 안 2열 칸.** 열 폭이 336px(report 456px)이라 viewBox 560이면 라벨이 8.4px(11.4px)로 하한 아래다. 칸에 두는 글자 있는 SVG는 viewBox 폭 360(report 480)으로 그린다.
 
 | 놓는 곳 | 렌더 폭 | f | 렌더 라벨 |
 | --- | --- | --- | --- |
 | 축(1280) | 720px | 14 | 18.0px |
 | narrow 축(1280) | 640px | 14 | 16.0px |
+| report 축(1280), viewBox 750 | 960px | 14 | 17.9px |
 | `.d0-wide` 7/5 그림 열(1280) | 약 643px | 14 | 16.1px |
 | compact(1280) | 540px | 14 | 13.5px |
 | `.d0-wide` 6/6 열(1280) | 약 544px | 14 | 13.6px |
+| 축 안 6/6 열(1280), viewBox 360 | 336px | 14 | 13.1px |
+| report 768px 화면, viewBox 750 | 689px | 14 | 12.9px |
+| report 600px 화면, viewBox 750 | 553px | 18 | 13.3px |
+| report 390px 화면, viewBox 750 | 358px | 27 | 12.9px |
+| report 320px 화면, viewBox 750 | 288px | 30 | 11.5px |
 | 390px 화면 | 358px | 20 | 12.8px |
 | 375px 화면 | 343px | 20 | 12.3px |
 | 320px 화면 | 288px | 22 | 11.3px |
@@ -231,11 +240,16 @@
 /* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
    데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다.
    page(.d0-page) 안에만 건다. 덱 슬라이드 SVG(.d0-sl-* 글자, 번호·주의 ! 표식 text.d0-s-num)는 slide-deck.md 그림 글자 절(.d0-slide .d0-s-num { font-size: var(--sl-font, 17px) })을 따른다 */
+@media (max-width: 760px) {
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 18px; } /* report 축 viewBox 750: 561~760 → 축 497~696px, 18 × 497 ÷ 750 = 11.9px ~ 16.7px */
+}
 @media (max-width: 560px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 27px; } /* report 축 viewBox 750: 390 27 × 358 ÷ 750 = 12.9px, 375: 12.3px, 560: 19.0px */
 }
 @media (max-width: 340px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
+  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 30px; } /* report: 320 30 × 288 ÷ 750 = 11.5px */
 }
 ```
 
@@ -360,7 +374,7 @@ blue-light 무대 위: blue 3.58, green 3.11, red 3.20, grey-600 4.49, grey-500 
 - 부분 폭 = 부분 ÷ 전체 × 100(위 예: 58 ÷ 234 × 100 = 24.8). viewBox 폭이 100이라 그 값이 곧 퍼센트다.
 - 부분은 blue, 나머지는 grey-400(값이 라벨로 적혀 있다). 모서리는 CSS `border-radius`로 둥글린다(`rx`는 늘어나며 찌그러진다).
 - 라벨은 `aria-hidden`이고 접근 이름은 SVG `<title>`이 전체 문장으로 말한다. 부분이 둘 이상이면 rect를 이어 붙이고 블루는 하나만 쓴다.
-- 비율 막대는 놓인 자리(축 또는 `.d0-wide` 열) 폭을 꽉 채운다. 따로 폭을 줄이지 않는다.
+- 비율 막대는 놓인 자리(축, 2열 열, `.d0-wide`) 폭을 꽉 채운다. 따로 폭을 줄이지 않는다.
 
 ## (c) grid — 미니 격자 (JS 생성)
 

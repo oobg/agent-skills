@@ -20,7 +20,7 @@
 
 | 변형 | 언제 | 핵심 블록 |
 | --- | --- | --- |
-| (생략) 개념 비교 | 고를 것 없이 두세 개념·방식의 차이를 이해시킨다(기본값, 이름표 없음) | 같은 구도의 도식 2개 나란히(`.d0-wide` 안 `.d0-cols` 6/6 또는 side-by-side 와이어 카드) + explanation `interpretation` |
+| (생략) 개념 비교 | 고를 것 없이 두세 개념·방식의 차이를 이해시킨다(기본값, 이름표 없음) | 같은 구도의 도식 2개 나란히(축 안 `.d0-cols` 6/6 또는 side-by-side 와이어 카드) + explanation `interpretation` |
 | 시안 `prototype` | 화면을 눌러 보며 고른다 | [mockup-frame](../blocks/mockup-frame.md) 2개(나란히 눌러 보는 프레임) |
 | 결정 `decision` | 숫자·정책·방식을 고른다 | 선택지 비교 막대([diagram](../blocks/diagram.md) bars 선택지 비교 형태) + side-by-side 결정 변형(추천만 했으면 `data-recommended`) |
 | 전/후 `before-after` | 이미 정한 변경을 보여 준다 | 와이어프레임·막대 + diff-rows |

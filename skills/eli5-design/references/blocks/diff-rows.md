@@ -24,7 +24,7 @@
 행은 `subgrid`로 물려받아 가장 긴 배지 폭이 열 폭이 된다. `subgrid`를 못 쓰는 브라우저는 고정 64px 열로 떨어진다.
 배지는 열 안에서 왼쪽 정렬(`justify-self: start`)이다.
 
-**목록은 1열이다.** 한 목록을 짝수라서 두 열로 나누지 않는다. 성격이 다른 두 목록(주의 | 할 일, 완료 | 남은 것)을 나란히 견줄 때만 `.d0-wide` 안 `.d0-cols`에 `ul.d0-rows`를 하나씩 둔다([shell.md](shell.md) 2열 (c)).
+**목록은 1열이다.** 한 목록을 짝수라서 두 열로 나누지 않는다. 성격이 다른 두 목록(주의 | 할 일, 완료 | 남은 것)을 나란히 견줄 때만 축 안 `.d0-cols`(6/6)에 `ul.d0-rows`를 하나씩 둔다([shell.md](shell.md) 2열 (c)). 열이 300px 아래면(narrow 축 640px) 세로로 쌓인다. 대등한 두 덩어리라 `.d0-wide`로 넓히지 않는다.
 
 ```html
 <ul class="d0-rows">
@@ -32,8 +32,8 @@
   <li><span class="d0-pill">참고</span><div><strong>파일은 30일 뒤 지워져요</strong></div></li>
 </ul>
 
-<!-- 대등한 두 목록: 넓은 구간 안 2열 -->
-<div class="d0-wide"><div class="d0-cols"><ul class="d0-rows">…</ul><ul class="d0-rows">…</ul></div></div>
+<!-- 대등한 두 목록: 축 안 2열(6/6) -->
+<div class="d0-cols"><ul class="d0-rows">…</ul><ul class="d0-rows">…</ul></div>
 ```
 
 ```css

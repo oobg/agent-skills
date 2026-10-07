@@ -8,14 +8,14 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - doctype → `lang="ko"` → meta viewport → 폰트 → 메인 `<style>`.
 - **폰트.** 결과물 HTML을 넘길 때는(파일·artifact 모두, 발행 여부와 무관) `scripts/subset_font.py`가 만든 Pretendard 서브셋 `@font-face`(woff2 data URI)를 별도 `<style>`로
   메인 `<style>` **앞**에 둔다. 외부 요청은 0건이다. 아래 스니펫의 jsDelivr `<link>`는 작업 중 초안용이고, 도구를 못 쓸 때만 남긴다(정본: SKILL.md 출력 형식).
-- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 본문 축·넓은 구간·그림 폭·2열·접기·기억할 한 줄(정본 CSS) → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 공용 배지 → 포커스 → 모션.
+- 메인 `<style>`: tokens.css 전체 인라인 → `color-scheme: light` → 기본 리셋 → `body` 배경 → 프레임과 읽기 축·폭 단계·넓은 구간·그림 폭·2열·여백 주석·접기·기억할 한 줄(정본 CSS) → 타이포 스케일 → 섹션 → 강조(Impact·Quiet) → 무대 → 공용 배지 → 포커스 → 모션.
   폰트 `<style>`은 이 앞의 별도 요소라 "tokens.css는 메인 `<style>` 맨 앞" 규칙과 부딪히지 않는다.
-- **본문 축(content track).** `.d0-page` 안쪽 폭은 720px, `data-width="narrow"`면 640px다. 이 축이 페이지의 읽기 축이고 모든 섹션이 같은 왼쪽 시작선에서 시작한다(아래 본문 축 절).
+- **프레임과 읽기 축.** `.d0-page` 안쪽 폭이 가운데 프레임(기본 1136px)이고, 읽기 축(기본 720px)은 프레임 왼쪽에 붙는다. 폭 단계 `data-width`가 narrow(축 640px)·기본(720px)·report(축 960px·프레임 1280px·글 720px)를 정한다. 모든 섹션이 프레임 왼쪽 같은 시작선에서 시작한다(아래 프레임과 왼쪽 읽기 축 절).
 - 페이지 패딩: 데스크톱 `64px 32px 96px`, 640px 이하 `48px 16px 72px`(좌우 16px 거터).
-- 모든 블록은 축의 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다. 축 밖으로 나가는 것은 `.d0-wide` 구간뿐이다.
+- 모든 블록은 프레임 왼쪽 정렬선 하나를 공유한다. 블록마다 들여쓰기를 따로 두지 않는다. 축 오른쪽으로 나가는 것은 `.d0-wide` 구간과 여백 주석 `.d0-margin`뿐이다.
 - **첫 화면 높이 예산(정본).** 판정은 둘이다: 1280×800에서 **첫 SVG 도식의 아래 끝이 y ≤ 800px**(전부 보인다, SKILL.md 원칙 2번), 높이 약 720px 프레임(갤러리 iframe, 1280×720)에서는 **첫 SVG 도식의 위쪽 절반 이상이 y ≤ 720px 안**에 든다.
   머리(작업 라벨 → h1 → 히어로 → 요약 행 끝) 260px + 첫 그림(무대가 있으면 무대) 렌더 높이 390px이 **합계 650px 기준**이다(상단 패딩 64 + 머리 260 + 섹션 패딩 32 + h2·간격 약 52 + 그림 390 ≈ 798px).
-  그림은 축 폭을 채우므로 렌더 높이 = 렌더 폭 × viewBox 높이 ÷ viewBox 폭이다. 축 720px에서 viewBox 폭 560이면 viewBox 높이 300 이하(렌더 약 386px)가 기준이다.
+  그림은 축 폭을 채우므로 렌더 높이 = 렌더 폭 × viewBox 높이 ÷ viewBox 폭이다. 축 720px에서 viewBox 폭 560이면 viewBox 높이 300 이하(렌더 약 386px)가 기준이다. report 축 960px에서 viewBox 폭 750이면 같은 배율(약 1.28)이라 viewBox 높이 300 이하가 같은 기준이다.
   머리가 짧으면 그림이 그만큼 길어도 된다. 카드 안에 그림이 든 블록(thumb-cards·side-by-side 와이어 카드 등)은 카드 아래 끝이 아니라 첫 SVG의 아래 끝으로 잰다.
   넘으면 요약 행을 줄이거나 히어로 한 줄 뜻을 빼고, 첫 그림의 viewBox 높이를 줄이거나 `data-fit="compact"`로 둔다.
 
@@ -33,48 +33,97 @@ CSS는 `<style>` 끝에, JS는 `</body>` 앞 `<script>` 하나에 붙인다.
 - 블록 안 테두리는 최소로 둔다. 행 목록의 행 구분선(`grey-100`)만 허용한다. 섹션에 카드 상자를 두르지 않는다.
 - 섹션 안 행은 위로 붙는다(`align-content: start`). 섹션이 늘어나도 블록 사이가 벌어지지 않는다.
 
-## 본문 축과 넓은 구간 (`.d0-wide`)
+## 프레임과 왼쪽 읽기 축
 
-page는 넓은 캔버스를 채우지 않고, **하나의 읽기 축을 따라 그림을 크게** 보여 준다.
+page는 넓은 캔버스를 채우지 않는다. **가운데 프레임 안에서 왼쪽에 붙은 읽기 축**을 따라 그림을 크게 보여 준다.
 
-- **축.** `.d0-page` 안쪽 폭 720px(`data-width="narrow"` 640px). 섹션·그림·글 블록은 모두 이 축 안에서 같은 왼쪽 시작선을 쓴다. 1280px에서 모든 섹션의 h2 왼쪽 끝 x가 같다.
-- **빈 공간은 채울 공간이 아니다.** 그림 옆이나 짧은 글 뒤에 남는 폭은 그대로 둔다. 여백이 덩어리를 묶어 준다. 빈자리를 채우려고 그림 옆에 설명 문단·목록을 붙이지 않는다.
-- **넓은 구간.** 넓은 폭은 페이지 전체 옵션이 아니라 구간이다. `.d0-wide` 블록 하나만 축 밖으로 최대 1136px(뷰포트 − 64px 이하)까지 넓어지고, 다음 블록·섹션은 다시 축으로 돌아온다. 넓은 구간은 섹션 안 블록이고 섹션 머리(h2)는 축에 둔다.
-  `.d0-wide`는 두 경우에만 쓴다. 한 열짜리 그림을 크게 보이려고 넓히지 않는다(그림은 축 폭으로 충분하다).
-  - **(a) 2열.** 아래 2열 절의 세 경우(`.d0-cols`).
-  - **(b) 가로로 긴 순서 띠.** 5칸 이상 단계 줄(`ol.d0-steps`, 특히 `data-variant="figure"`)이나 점이 많은 긴 타임라인처럼, 축 폭에서는 칸·라벨이 하한을 못 지키는 가로 띠 하나. 예: 축 720px에 5열이면 칸이 144px라 열 그림과 `dd` 한 문장이 들어가지 않는다. 띠는 `.d0-wide` 바로 안에 한 블록으로 두고 `.d0-cols`로 나누지 않는다.
-    글자 있는 SVG를 넓은 구간에 두면 라벨 게이트를 렌더 폭(1280에서 1136px)으로 다시 계산한다. viewBox 560 그대로면 14 × 1136 ÷ 560 ≈ 28px로 상한(20px)을 넘으므로 viewBox 폭을 렌더 폭에 맞춰 다시 그린다([diagram](diagram.md) 라벨 절). 640px 이하에서는 넓은 구간도 축 폭이므로 띠는 세로로 쌓이거나(step-columns는 자동) 단계를 줄인다.
-  어느 경우든 문서의 2열 분할선은 하나다. 가로 띠는 2열이 아니므로 분할선 수에 들지 않는다.
-- **640px 이하.** 페이지 거터가 16px로 줄어 `.d0-wide`도 축 폭 그대로(`--d0-wide: 100%`)다. 모바일에서 넓은 구간도 축과 같은 x에서 시작한다.
+- **프레임.** `.d0-page` 안쪽 폭이 프레임이다(기본 1136px, 12열 기준). 프레임은 화면 가운데에 놓인다.
+- **읽기 축.** 축은 프레임 **왼쪽**에 붙는다(기본 720px, 8열 상당). 섹션 제목과 모든 블록의 왼쪽 시작선은 항상 프레임 왼쪽이다. 1366·1440·1920px에서 h2·축 안 블록·`.d0-wide`·축 안 2열 첫 열의 왼쪽 x가 하나다.
+  헤더·섹션의 직계 자식이 폭 상한을 받는다(정본 CSS). 블록마다 들여쓰기를 따로 두지 않는다.
+- **오른쪽 여백.** 축 오른쪽(약 4열)은 기본 비어 있다. 빈 공간은 채울 공간이 아니다. 여백이 덩어리를 묶어 준다. 빈자리를 채우려고 그림 옆에 설명 문단·목록을 붙이지 않는다. 이 자리에 둘 수 있는 것은 선택 블록인 여백 주석(`.d0-margin`, 아래)뿐이다.
+
+### 폭 단계 (`data-width`)
+
+| 단계 | 축 | 글 폭 | 프레임 | 쓰는 문서(패턴 기본값) |
+| --- | --- | --- | --- | --- |
+| `narrow` | 640px | 640px | 1136px | 읽고 따라 하는 문서: guide·install-guide·faq |
+| 기본(속성 없음) | 720px | 720px | 1136px | 일반 설명 문서: compare·flow·preview |
+| `report` | 960px | 720px | 1280px | 표·차트·지표가 많은 문서: report·incident(장애 회고)·postmortem·launch-report·timeline |
+
+- **고르는 법.** `<main class="d0-page" data-width="…">`에 주된 패턴의 기본값을 쓴다. 패턴이 섞이면 섹션 수와 첫 화면으로 주된 패턴 하나를 정한다. 한 문서 안에서 폭 단계를 섞지 않는다.
+- **report의 두 폭.** 문단 글(리드 `p`, 요약 행, explanation·evidence·faq `dl`, 행 목록, checklist, 접기, closing)은 줄 길이 때문에 글 폭 720px(`--d0-measure`)에서 끊고,
+  그림·표·차트·지표(`figure`, `table`, kpi-cards, step-columns, timeline, before-after, side-by-side, thumb-cards, 목업 데모)와 축 안 2열은 축 960px(`--d0-axis`)을 채운다. 둘 다 같은 왼쪽 시작선이다.
+  축 960px에 놓는 글자 있는 SVG는 viewBox 폭 750으로 그린다(14 × 960 ÷ 750 = 17.9px, [diagram](diagram.md) 라벨 절).
+- 폭 단계가 바꾸는 것은 프레임·축·글 폭뿐이다. 타이포·간격·첫 화면 예산은 같다.
+
+### 넓은 구간 (`.d0-wide`)
+
+넓은 구간은 축의 **오른쪽 끝만** 프레임 끝까지 늘린 블록이다. 왼쪽 시작선은 그대로이고 대칭으로 넓히지 않는다. 다음 블록은 다시 축으로 돌아온다. 넓은 구간은 섹션 안 블록이고 섹션 머리(h2)는 축에 둔다.
+넓이가 실제로 필요할 때만 쓴다. **두 열이 필요하다고 넓은 구간이 필요한 것은 아니다.**
+
+- **(a) 화면 A/B를 실제 크기로 나란히 비교.** 목업·데모 화면처럼 축 안 6/6 열(기본 336px)에서는 실제보다 작아 비교가 안 되는 화면 두 개.
+- **(b) 그림 + 번호 주석 열.** 그림 지점과 번호로 직접 대응하는 주석·범례 열(pins·annotate·`d0-shot`·linked checklist).
+- **(c) 5칸 이상 가로 순서 띠·긴 타임라인.** 축 폭에서는 칸·라벨이 하한을 못 지키는 가로 띠 하나. 예: 축 720px에 5열이면 칸이 144px라 열 그림과 `dd` 한 문장이 들어가지 않는다. 띠는 `.d0-wide` 바로 안에 한 블록으로 두고 `.d0-cols`로 나누지 않는다.
+  글자 있는 SVG를 넓은 구간에 두면 라벨 게이트를 렌더 폭(기본 1136px, report 1280px)으로 다시 계산하고 viewBox 폭을 렌더 폭에 맞춰 다시 그린다([diagram](diagram.md) 라벨 절). 좁은 화면에서는 띠를 세로로 쌓거나(step-columns는 자동) 단계를 줄인다.
+- **(d) 넓은 비교표·매트릭스.** 열이 많아 축 폭에서는 칸이 좁아지는 표.
+
+한 열짜리 그림을 크게 보이려고 넓히지 않는다(그림은 축 폭으로 충분하다). 대등한 두 덩어리(완료 | 남은 것, 문제 | 해결)와 작은 썸네일·와이어 비교는 축 안 `.d0-cols`다. 가로 띠·표는 2열이 아니므로 분할선 수에 들지 않는다.
+
+### 여백 주석 (`.d0-margin`) — 선택
+
+축 오른쪽 여백에 놓는 짧은 보조 한 줄이다. **없어도 본문을 이해할 수 있는 정보만** 둔다.
+
+- **쓰는 것.** 용어 풀이, 짧은 주의사항, 출처, 그림 번호와 연결된 보조 주석, 조건·예외 한 줄.
+- **쓰지 않는 것.** 핵심 근거, 결론, 긴 설명, 카드 여러 개, "비어 있으니까" 넣은 정보. 섹션마다 만들 필요가 없다. 옆 빈자리를 채우려고 만들지 않는다.
+- **마크업.** 본문 블록 하나와 주석 하나를 `div.d0-margined`로 묶는다. 묶음은 섹션의 직계 자식이다.
+- **자리.** 1200px 이상(report는 1344px 이상)에서만 축 오른쪽 열(기본 368px, report 272px)에 본문 블록과 위 끝을 맞춰 놓이고, 그 아래에서는 본문 블록 바로 아래로 내려간다.
+- 글자 14px grey-600(흰 바탕 대비 4.5:1 이상), 상자·배경·테두리 없음.
+- 이름이 status rail `ol.d0-rail`([timeline](timeline.md))과 겹치지 않게 여백 주석은 `.d0-margin`이다.
+
+```html
+<div class="d0-margined">
+  <figure class="d0-fig">…</figure>
+  <aside class="d0-margin">대기열: 차례를 기다리는 요청이 쌓이는 줄이에요.</aside>
+</div>
+```
+
+### 반응형
+
+| 화면 | 프레임 | 축 | 넓은 구간 | 여백 주석 | 2열 |
+| --- | --- | --- | --- | --- | --- |
+| 1200px 이상 | 1136px(report 1280px), 가운데 | 프레임 왼쪽 | 오른쪽만 프레임 끝까지 | 축 오른쪽 열(report는 1344px부터) | 축 안 6/6, 넓은 구간 안 6/6·7/5 |
+| 768~1199px | 가용 폭 | min(축, 가용 폭), 왼쪽 정렬 | 가용 프레임 전체 폭 | 본문 아래 | 축 안은 열마다 300px 이상일 때만, 넓은 구간 안은 960px 이상에서만 |
+| 767px 이하 | 가용 폭 | 가용 폭 | 100% | 본문 아래 | 쌓기 |
+
+- **2열 최소 폭.** 2열은 각 열이 300px 이상일 때만 유지하고 아니면 세로로 쌓는다. 축 안 2열은 `auto-fit`이 이를 맡는다(기본 720px 각 336px, report 960px 각 456px, narrow 640px은 각 296px이라 쌓인다).
+- 페이지 패딩(640px 이하 `48px 16px 72px`), 모바일 라벨 규칙(`.d0-page` 한정 560px 이하 20 / 340px 이하 22, report는 760px 이하 18 / 560px 이하 27 / 340px 이하 30, [diagram](diagram.md)), 첫 화면 예산, 타이포·간격은 그대로다.
 
 ## 2열 (`.d0-cols`)
 
 2열은 세 경우에만 쓴다. 그 밖은 1열이다.
 
-| 경우 | 예 | 분할 |
-| --- | --- | --- |
-| (a) 동시 비교가 핵심 | A안 \| B안, 전 \| 후 | 6/6 |
-| (b) 그림 지점과 번호로 직접 대응하는 주석·범례 열 | 그림 \| ①②③ 주석, 화면 \| 번호 범례 | 7/5(그림/주석) |
-| (c) 대등한 두 덩어리 | 완료 \| 남은 것, 문제 \| 해결, 주의 \| 할 일 | 6/6 |
+| 경우 | 예 | 자리 | 분할 |
+| --- | --- | --- | --- |
+| (a) 동시 비교가 핵심 | A안 \| B안, 전 \| 후 | 축 안. 화면을 실제 크기로 견줄 때만 넓은 구간 | 6/6 |
+| (b) 그림 지점과 번호로 직접 대응하는 주석·범례 열 | 그림 \| ①②③ 주석, 화면 \| 번호 범례 | 넓은 구간 | 7/5(그림/주석) 또는 6/6 |
+| (c) 대등한 두 덩어리 | 완료 \| 남은 것, 문제 \| 해결, 주의 \| 할 일 | 축 안 | 6/6 |
 
 - **1열로 두는 것.** "그림 | 그냥 설명 문단", "작은 그림 | 빈자리 채우는 목록", 짝수라서 반으로 나눈 한 목록. 설명(explanation)은 그림 아래에 둔다.
-- **자리.** `.d0-cols`는 `.d0-wide` 안에만 둔다: `<div class="d0-wide"><div class="d0-cols">…</div></div>`. 축(720px) 안에서 2열로 나누지 않는다.
-- **분할선은 문서 전체에서 하나.** 12열 중 6/6(기본) 또는 7/5(`data-split="7-5"`, 그림/주석)다. 한 문서에 둘을 섞지 않는다. (a)·(c)가 있는 문서에서 (b)가 필요하면 6/6을 그대로 쓰거나 주석을 그림 아래 1열로 둔다.
-  960px 이상에서만 2열이고 그 아래는 1열로 쌓인다. 열 사이는 48px이다.
-- **글 열은 트랙 끝까지 쓴다.** 열 칸에 따로 폭 상한(em·px)을 두지 않는다. 트랙 자체가 좁다(6/6 열 약 544px, 7/5의 5열 약 445px).
-- 두 열에 그림을 하나씩 둘 때(전 | 후)는 같은 viewBox 크기로 그린다. 그러면 무대 위 끝·아래 끝과 figcaption 줄이 저절로 맞는다.
+- **자리.** 기본은 축 안이다: 섹션의 직계 자식 `div.d0-cols`. 넓은 구간이 필요한 경우만 `<div class="d0-wide"><div class="d0-cols">…</div></div>`(또는 블록 자체에 `d0-wide d0-cols`)로 둔다.
+- **분할선은 종류마다 문서에서 하나.** 축 안 2열은 6/6 하나다(`data-split`을 쓰지 않는다). 넓은 구간 안 2열은 12열 중 6/6(기본) 또는 7/5(`data-split="7-5"`, 그림/주석) 중 하나로 문서 전체를 맞춘다. 축 안 2열과 넓은 구간 2열은 따로 센다.
+  넓은 구간 안 2열은 960px 이상에서만 2열이고 그 아래는 1열로 쌓인다. 축 안 2열은 열마다 300px 이상일 때만 2열이다. 열 사이는 48px이다.
+- **글 열은 트랙 끝까지 쓴다.** 열 칸에 따로 폭 상한(em·px)을 두지 않는다. 트랙 자체가 좁다(축 안 6/6 열 336px, report 456px. 넓은 구간 6/6 열 544px, report 616px. 7/5의 5열 약 445px).
+- 두 열에 그림을 하나씩 둘 때(전 | 후)는 같은 viewBox 크기로 그린다. 그러면 무대 위 끝·아래 끝과 figcaption 줄이 저절로 맞는다. 글자 있는 SVG는 열 폭으로 라벨을 다시 계산한다([diagram](diagram.md) 라벨 절).
 - 블록 안 같은 크기 칸(side-by-side 옵션, kpi-cards 카드, thumb-cards, step-columns)은 블록 부품이다. 축 폭을 같은 몫으로 나누고 이 2열 규칙을 따르지 않는다.
 
 ```html
-<section class="d0-section" data-pattern="compare" aria-labelledby="sec-b">
-  <header class="d0-section-head"><h2 id="sec-b">전에는 한 줄, 지금은 두 줄로 돌아요</h2></header>
-  <div class="d0-wide">
-    <div class="d0-cols">
-      <figure class="d0-fig"><svg viewBox="0 0 560 240" role="img" aria-labelledby="b1-t">…</svg><figcaption>전: 요청이 한 줄로 기다려요.</figcaption></figure>
-      <figure class="d0-fig"><svg viewBox="0 0 560 240" role="img" aria-labelledby="b2-t">…</svg><figcaption>후: 큰 요청은 따로 줄을 서요.</figcaption></figure>
-    </div>
+<section class="d0-section" data-pattern="report" aria-labelledby="sec-b">
+  <header class="d0-section-head"><h2 id="sec-b">된 것과 남은 것</h2></header>
+  <div class="d0-cols"> <!-- 대등한 두 덩어리: 축 안 6/6 -->
+    <ul class="d0-rows">…</ul>
+    <ul class="d0-rows">…</ul>
   </div>
-  <dl class="d0-explain">…</dl> <!-- 다시 축으로 -->
+  <dl class="d0-explain">…</dl>
 </section>
 ```
 
@@ -108,9 +157,9 @@ page는 넓은 캔버스를 채우지 않고, **하나의 읽기 축을 따라 �
 
 ## 줄 길이 (정본)
 
-본문 한 줄의 길이는 **축이 정한다**. 글 블록(리드 `p`, explanation·evidence·faq `dl`, 행 목록)은 축 폭이나 놓인 `.d0-wide` 열 폭을 그대로 쓰고, 그 안에서 따로 폭 상한을 두지 않는다. 글 블록마다 다른 상한을 두면 오른쪽 끝이 섹션마다 들쭉날쭉해진다.
+본문 한 줄의 길이는 **폭 단계의 글 폭(`--d0-measure`)이 정한다**. 기본·narrow는 축 폭, report는 720px이다. 글 블록(리드 `p`, explanation·evidence·faq `dl`, 행 목록)은 글 폭이나 놓인 2열 열 폭을 그대로 쓰고, 그 안에서 따로 폭 상한을 두지 않는다. 글 블록마다 다른 상한을 두면 오른쪽 끝이 섹션마다 들쭉날쭉해진다.
 
-- **폭 기준.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px다. 그래서 축 720px은 한 줄 약 68~75자, narrow 640px은 약 60~66자, `.d0-wide` 6/6 열(약 544px)은 약 51~56자다.
+- **폭 기준.** Pretendard 15px 본문에서 공백 포함 50자 연속 구간의 폭은 실측 482~529px다. 그래서 글 폭 720px(기본·report)은 한 줄 약 68~75자, narrow 640px은 약 60~66자, 넓은 구간 6/6 열(약 544px)은 약 51~56자, 축 안 6/6 열(336px)은 약 32~35자다.
 - **좁히는 곳은 축이다.** `p`·`dd`나 글 블록에 `max-width`를 걸지 않는다(개행 규칙). 글이 주인공이라 줄을 더 짧게 읽혀야 하면 페이지 전체를 `data-width="narrow"`로 둔다.
 - **한 줄짜리 글**(요약 행 값, 행 설명, checklist 결과 한 줄, checkpoint)은 축 한 줄 안에서 끝나게 쓴다. 넘치면 문장을 줄인다.
 - **리드 `p`**(header 리드, 섹션 리드)는 컨테이너를 좁히지 않는다. 2문장 이상이고 데스크톱에서 2줄을 넘으면 문장 단위 개행(`.d0-sentence`)을 쓴다(아래 개행 절).
@@ -170,7 +219,7 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 ## 그림 무대 (`.d0-fig[data-stage]`) — 기본 없음, 필요할 때만
 
 **기본은 무대 없음이다.** 도식 `figure.d0-fig`는 흰 바탕에 바로 SVG를 두고 축의 왼쪽 정렬선을 따른다. `figcaption`은 그림 아래 13px grey-600이다.
-**그림은 축 폭을 채운다.** SVG 렌더 폭은 놓인 자리(축, 무대 안쪽, `.d0-wide` 열) 폭의 100%가 기본이고, 축 폭에서 너무 커 보이는 단순 도식만 `data-fit="compact"`(75%, 가운데)로 둔다. 75% 아래로 줄이지 않는다.
+**그림은 축 폭을 채운다.** SVG 렌더 폭은 놓인 자리(축, 무대 안쪽, 2열 열, `.d0-wide`) 폭의 100%가 기본이고, 축 폭에서 너무 커 보이는 단순 도식만 `data-fit="compact"`(75%, 가운데)로 둔다. 75% 아래로 줄이지 않는다.
 글자 크기 하한은 viewBox 대비 렌더 배율로 검사한다([diagram.md](diagram.md) 라벨 절).
 **무대를 쓰는 때:** 글자 없는 도식이 여백 없이 떠서 그림의 경계가 안 보일 때(흩어진 노드, 테두리 없는 선 그림), 목업·고스트 카드처럼 흰 면 요소에 받침 면이 필요할 때.
 **무대 패딩 때문에 렌더 라벨이 하한(1280px 13px, 375·320px 11px) 아래로 내려가면 무대를 쓰지 않는다.** 글자 있는 도식(viewBox 560)은 375px에서 무대 안쪽 303px이라 라벨이 11px 아래로 줄므로 무대 없이 두고, 경계는 그림 안 선·면으로 만든다.
@@ -292,7 +341,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
 </style>
 </head>
 <body>
-<main class="d0-page">
+<main class="d0-page"> <!-- 폭 단계: data-width="narrow" | 없음(기본) | "report", 주된 패턴의 기본값 -->
   <!-- header(h1 → 히어로 → 요약 행) → section(독자 질문마다 하나, data-pattern) -->
   <section class="d0-section" data-pattern="preview" aria-labelledby="sec-a">
     <header class="d0-section-head"><h2 id="sec-a">파일은 이렇게 생겼어요</h2></header>
@@ -300,7 +349,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율이다. 글자 4.5:1, 큰 �
   </section>
   <section class="d0-section" aria-labelledby="sec-b">
     <header class="d0-section-head"><h2 id="sec-b">전과 후는 이렇게 달라요</h2></header>
-    <div class="d0-wide"><div class="d0-cols"><!-- 전 그림 --><!-- 후 그림 --></div></div> <!-- 2열은 넓은 구간 안에만 -->
+    <div class="d0-cols"><!-- 전 그림 --><!-- 후 그림 --></div> <!-- 2열은 축 안 6/6. 넓이가 필요할 때만 .d0-wide -->
     <!-- 해석 한 줄 → 다시 축 -->
   </section>
 </main>
@@ -346,21 +395,37 @@ svg { display: block; max-width: 100%; height: auto; }
 button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer; }
 .d0-sentence { display: block; }
 
-/* 본문 축: 안쪽 폭 720px(narrow 640px). 넓은 구간만 .d0-wide로 축 밖까지 */
-.d0-page { max-width: calc(720px + 64px); margin: 0 auto; padding: 64px 32px 96px; }
-.d0-page[data-width="narrow"] { max-width: calc(640px + 64px); }
-.d0-wide { --d0-wide: min(1136px, calc(100vw - 64px)); width: var(--d0-wide); margin-inline: calc((100% - var(--d0-wide)) / 2); }
+/* 본문 축: 가운데 프레임 안에서 왼쪽에 붙은 읽기 축. 폭 단계(data-width) 기본 축 720/프레임 1136, narrow 640/1136, report 960/1280(글은 720) */
+.d0-page { --d0-frame: 1136px; --d0-axis: 720px; --d0-measure: 720px; max-width: calc(var(--d0-frame) + 64px); margin: 0 auto; padding: 64px 32px 96px; }
+.d0-page[data-width="narrow"] { --d0-axis: 640px; --d0-measure: 640px; }
+.d0-page[data-width="report"] { --d0-frame: 1280px; --d0-axis: 960px; }
+/* 블록은 모두 프레임 왼쪽에서 시작한다. 글은 --d0-measure, 그림·표·지표·축 안 2열은 --d0-axis까지. 넓은 구간과 여백 주석 묶음만 예외 */
+.d0-page :is(.d0-header, .d0-section, .d0-margined) > :not(.d0-wide, .d0-margined, .d0-margin) { max-width: var(--d0-measure); }
+.d0-page :is(.d0-header, .d0-section, .d0-margined) > :is(figure, table, .d0-cols, .d0-kpis, .d0-steps, .d0-timeline, .d0-ba, .d0-sbs, .d0-thumbs, .d0-demos):not(.d0-wide) { max-width: var(--d0-axis); }
+/* 넓은 구간: 왼쪽 시작선은 그대로 두고 오른쪽만 프레임 끝까지 */
+.d0-wide { width: 100%; max-width: none; }
 /* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
 .d0-fig svg { width: 100%; height: auto; }
 .d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
-/* 2열: 페이지 공통 분할선 하나. 6/6 또는 7/5 */
-.d0-cols { display: grid; gap: 24px 48px; align-items: start; }
+/* 2열: 축 안은 6/6(각 열 300px 이상일 때만, 아니면 쌓는다). 넓은 구간 안은 12열 6/6 또는 7/5. 축 안과 넓은 구간이 각각 분할선 하나 */
+.d0-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
+:where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 960px) {
-  .d0-cols { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .d0-cols > * { grid-column: span 6; }
-  .d0-cols[data-split="7-5"] > :first-child { grid-column: span 7; }
-  .d0-cols[data-split="7-5"] > :last-child { grid-column: span 5; }
+  :where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  :where(.d0-wide) .d0-cols > *, .d0-cols:where(.d0-wide) > * { grid-column: span 6; }
+  :where(.d0-wide) .d0-cols[data-split="7-5"] > :first-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :first-child { grid-column: span 7; }
+  :where(.d0-wide) .d0-cols[data-split="7-5"] > :last-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :last-child { grid-column: span 5; }
+}
+/* 여백 주석(선택): 본문 블록 하나 + aside.d0-margin. 1200px 이상(report는 1344px 이상)에서만 축 오른쪽 열, 그 아래는 본문 바로 아래 */
+.d0-margined { display: grid; gap: 12px 48px; align-items: start; }
+.d0-margined > * { min-width: 0; }
+.d0-margin { max-width: var(--d0-measure); color: var(--d0-grey-600); font-size: 14px; line-height: 1.6; }
+@media (min-width: 1200px) {
+  .d0-page:not([data-width="report"]) .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
+}
+@media (min-width: 1344px) {
+  .d0-page[data-width="report"] .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
 }
 /* 접기와 기억할 한 줄 */
 .d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
@@ -426,7 +491,6 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 
 @media (max-width: 640px) {
   .d0-page { padding: 48px 16px 72px; }
-  .d0-wide { --d0-wide: 100%; } /* 모바일: 넓은 구간도 축 폭 그대로 */
   .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
@@ -476,12 +540,14 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 - Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, 넘긴 결과물 HTML에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
 - 글자에 `--d0-blue`·`--d0-grey-500` 이하·시맨틱 전경색 사용(흰 바탕 대비 4.5:1 미달). 글자는 `--d0-blue-dark`, `--d0-grey-600` 이상.
   예외는 18.66px/700 이상 큰 글자(3:1)뿐이다.
-- tokens.css에 없는 `--d0-*` 변수 만들기(표면 `#fff`만 예외). 반투명 막은 `color-mix(in srgb, var(--d0-grey-900) 32%, transparent)`.
+- tokens.css에 없는 `--d0-*` 변수 만들기(표면 `#fff`와 정본 CSS의 레이아웃 변수 `--d0-frame`·`--d0-axis`·`--d0-measure`만 예외). 반투명 막은 `color-mix(in srgb, var(--d0-grey-900) 32%, transparent)`.
 - 배지 높이를 행 높이에 맡기기(늘어난 배지), 섹션마다 카드 상자, 섹션 안 블록마다 테두리, 섹션·행 사이 `grey-200` 이상 진한 구분선.
   예외는 블록 안 한 줄 표식인 closing 문장 아래 구분선(page `.d0-closing__meta`, deck `.d0-slide__meta`)과 checkpoint 뒤 선이다. 이 둘은 1px grey-200이고 섹션·행 구분선으로 세지 않는다.
 - 회색만 있는 도식·카드, 의미색 글자, 의미색 3가지 이상, 카드·행 하나에 배지 2개 이상, 배지 톤 4종류 이상, 혼자 뜻을 전하는 orange 선·점.
-- 섹션을 나란히 두기(섹션은 축을 따라 위아래로 쌓는다), 축 안의 2열, 세 경우(동시 비교·번호 주석·대등한 두 덩어리) 밖의 2열, 한 문서에 6/6과 7/5 섞기, 섹션마다 다른 분할선, 2열 열 칸에 따로 건 폭 상한.
-- 빈자리를 채우려고 그림 옆에 설명 문단·목록 붙이기, 그림을 축 폭의 75% 아래로 줄이기, 한 열짜리 그림을 `.d0-wide`로 넓히기(축 폭에서 칸·라벨 하한을 못 지키는 가로 순서 띠는 예외, 넓은 구간 절).
+- 섹션을 나란히 두기(섹션은 축을 따라 위아래로 쌓는다), 세 경우(동시 비교·번호 주석·대등한 두 덩어리) 밖의 2열, 대등한 두 덩어리를 `.d0-wide`에 두기, 축 안 2열에 `data-split`, 넓은 구간 2열에 6/6과 7/5 섞기, 섹션마다 다른 분할선, 2열 열 칸에 따로 건 폭 상한, 열이 300px 아래인데 나란히 두기.
+- 블록을 프레임 가운데에 두기, `.d0-wide`를 왼쪽으로(대칭으로) 넓히기, 한 문서에 폭 단계 섞기, report에서 문단 글을 720px 넘게 늘리기.
+- 여백 주석에 핵심 근거·결론·긴 설명·카드 여러 개 두기, 빈자리를 채우려고 여백 주석 만들기, 섹션마다 여백 주석, 묶음 하나에 주석 둘 이상.
+- 빈자리를 채우려고 그림 옆에 설명 문단·목록 붙이기, 그림을 축 폭의 75% 아래로 줄이기, 한 열짜리 그림을 `.d0-wide`로 넓히기(넓은 구간 절의 네 경우만 예외).
 - 그라디언트·글래스·두꺼운 그림자·장식 3D, 무대 패널에 테두리나 그림자.
 - 기본값으로 두른 무대(경계가 이미 보이는 그림에 회색 패널), 섹션마다 회색 무대를 둘러 모든 그림을 같은 모양으로 만들기, 무대 패딩 때문에 라벨이 하한 아래로 내려가는 글자 있는 도식에 무대 두기.
 - Impact를 쓰려고 섹션 더하기.

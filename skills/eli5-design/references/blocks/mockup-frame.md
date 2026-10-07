@@ -20,7 +20,7 @@
 - compare 시안 변형, preview에서 "이 화면에서 어떻게 받나"를 보여 줄 때. 와이어프레임으로 충분하면 [diagram.md](diagram.md) (d).
 - `data-variant="modal"`: 하나씩 묻기(단계마다 fieldset 하나). `data-variant="panel"`: 오른쪽 패널(`.d0-panel`)에 모든 fieldset을 한 번에.
   `.d0-sheet`는 tab-preview의 표 클래스이므로 이 블록에서 쓰지 않는다.
-- A/B는 같은 데이터·같은 높이. 동시 비교라 `.d0-wide` 안 `.d0-cols`(문서 공통 분할선)로 960px 이상 2열, 그 아래 세로다([shell.md](shell.md) 2열 (a)). 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
+- A/B는 같은 데이터·같은 높이. 화면을 실제 크기로 견주는 동시 비교라 `.d0-wide`(오른쪽만 프레임 끝까지) 안 `.d0-cols`(넓은 구간 분할선)로 960px 이상 2열, 그 아래 세로다([shell.md](shell.md) 넓은 구간 (a)). 작은 와이어 두 장을 견주는 정도면 축 안 `.d0-cols`로 충분하다. 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
 - 눌러 볼 필요 없이 화면의 한 곳을 짚어 보이면 아래 [Screenshot spotlight](#screenshot-spotlight-figured0-shot)(`figure.d0-shot`)를 쓴다.
 
 ## 스니펫
@@ -434,14 +434,14 @@ devs.forEach(function (b) {
 ## Screenshot spotlight (`figure.d0-shot`)
 
 실제 화면 한 장에서 **봐야 할 곳 하나**를 밝히고 나머지는 흐리게 한다. 화면 내용이 주인공이라 프레임 크롬(타이틀바·신호등·베젤)은 두지 않는다.
-page에서 화면 상자는 축 폭을 채우고 주석은 그 아래에 둔다. 주석을 화면 옆 열에 두려면 figure를 `.d0-wide` 바로 안에 두고 2열 분할선을 따른다(960px 이상, 화면 7 | 주석 5는 `data-split="7-5"`, [shell.md](shell.md) 2열 (b)).
+page에서 화면 상자는 축 폭을 채우고 주석은 그 아래에 둔다. 주석을 화면 옆 열에 두려면 figure를 `.d0-wide` 바로 안에 두고 2열 분할선을 따른다(960px 이상, 화면 7 | 주석 5는 `data-split="7-5"`, [shell.md](shell.md) 넓은 구간 (b)·2열 (b)). 넓은 구간은 오른쪽만 프레임 끝까지 늘어나고 화면 열의 왼쪽은 축 시작선 그대로다.
 구도는 Spotlight([composition.md](../composition.md)), deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
 **축 폭 화면과 넓은 구간 2열 격자는 page 전용이다.** 덱 슬라이드에서는 [slide-deck.md](slide-deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
 
 **해부 구조.**
 
 - `figure.d0-shot` = 화면 상자 `div.d0-shot__screen` → 주석 `p.d0-shot__note` 1~3개 → `figcaption` 한 줄.
-- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 폭은 놓인 자리(축 또는 `.d0-wide` 열)를 채우고, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
+- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 폭은 놓인 자리(축, 2열 열, `.d0-wide` 안 화면 열)를 채우고, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
 - **spot.** 위치는 화면 상자 기준 백분율 인라인 변수 `style="--x:..%;--y:..%;--w:..%;--h:..%"`(왼쪽·위·폭·높이). 2px blue 테두리, `--d0-radius-sm`.
   왼쪽 위 모서리에 번호 배지(`b.d0-shot__num`, 24px blue-dark 원 + 흰 숫자 5.5:1). 위치 변수는 `--d0-*`가 아니다(토큰을 새로 만들지 않는다).
 - **dim.** 주인공 spot 하나(`data-dim`)의 바깥을 반투명 막으로 덮는다. 기본은 grey 막(grey-900 14%, 12~16% 범위)이다. 대부분의 앱 화면은 바탕이 희어서 흰 막은 거의 보이지 않는다. 어둡거나 진한 화면(사진, 진한 바탕의 화면)만 흰 막(`data-dim="white"`, `#fff` 62%)을 고른다.

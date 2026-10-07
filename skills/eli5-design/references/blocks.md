@@ -59,7 +59,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
   그 아래 섹션은 핵심 구조가 있으면 그림을 권장한다. 그림 없는 섹션은 구조 블록(explanation, evidence, before-after, checkpoint, question-answer, diff-rows, checklist, step-columns, accordion, 표)으로 짓고
   연속된 일반 문단만으로 채우지 않는다(정본: SKILL.md 원칙 4번). 블록 안 `section`(mockup-frame `.d0-app__body` 등)은 페이지 섹션이 아니다.
   글 블록은 그림이 이미 보여 준 모양을 되풀이하지 않고 이유·근거·조건을 더한다.
-- **본문 축.** 섹션은 모두 본문 축(720px, narrow 640px)의 같은 왼쪽 시작선을 쓴다. 그림은 축 폭의 75~100%를 채우고(단순 도식만 `data-fit="compact"`), 옆에 남는 폭은 채우지 않는다. 설명은 그림 아래에 둔다. 정본은 [shell.md](blocks/shell.md) 본문 축 절.
+- **본문 축.** 섹션은 모두 가운데 프레임 안 왼쪽 읽기 축(폭 단계 `data-width`: narrow 640px, 기본 720px, report 960px·글 720px)의 같은 왼쪽 시작선을 쓴다. 그림은 축 폭의 75~100%를 채우고(단순 도식만 `data-fit="compact"`), 옆에 남는 폭은 채우지 않는다. 설명은 그림 아래에 둔다. 정본은 [shell.md](blocks/shell.md) 본문 축 절.
 - **그림 무대.** 회색 무대는 기본 없음이다. 필요할 때만 도식 `figure.d0-fig[data-stage]`의 SVG를 `div.d0-fig__stage` 패널(grey-50 배경, radius card, 패딩 28 / 모바일 20) 위에 놓고,
   figcaption은 패널 밖 아래에 둔다. 쓰는 기준은 [composition.md](composition.md), 값은 SKILL.md 원칙 9번, 스니펫은 [diagram.md](blocks/diagram.md).
 - **구도와 강조.** 섹션·슬라이드의 구도(`data-composition`), 강조 3단계(`data-emphasis="quiet|impact"`), 밀도 리듬, 강조 순서(크기 → 위치 → 여백 → 무게 → 색)는
@@ -69,7 +69,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 - **여백 리듬.** 섹션 사이 64px(모바일 48), 블록 간 24px, 제목↔설명 8px. 디바이더는 섹션 경계 1px grey-100과
   행 목록의 행 구분선만(closing 문장 아래·checkpoint 뒤 grey-200 한 줄은 블록 부품 예외, [shell.md](blocks/shell.md) 금지 절). 블록 안 테두리는 두르지 않는다. 값의 CSS는 [shell.md](blocks/shell.md).
 - **줄 길이.** 본문 한 줄의 길이는 축이 정한다. 글 블록은 축(또는 놓인 열) 폭을 그대로 쓰고 따로 폭 상한을 두지 않는다(`code`·`pre`·명령어 줄·[code-block](blocks/code-block.md)은 규칙 밖). 줄을 줄이려면 페이지 전체를 `data-width="narrow"`로 둔다. 정본은 [shell.md](blocks/shell.md) 줄 길이 절이다.
-- **2열은 세 경우만.** 동시 비교(A안 | B안, 전 | 후), 그림 지점과 번호로 대응하는 주석·범례, 대등한 두 덩어리(완료 | 남은 것)일 때만 `.d0-wide` 구간 안 `.d0-cols`로 쓴다.
+- **2열은 세 경우만.** 동시 비교(A안 | B안, 전 | 후), 그림 지점과 번호로 대응하는 주석·범례, 대등한 두 덩어리(완료 | 남은 것)일 때만 쓰고, 기본 자리는 축 안 `.d0-cols`(6/6)다. `.d0-wide`(오른쪽만 프레임 끝까지)는 화면 A/B 실제 크기 비교·그림 + 번호 주석 열·5칸 이상 가로 띠·넓은 표에만 쓴다.
   분할선은 문서 전체에서 하나(6/6 또는 7/5)다. 섹션은 나란히 두지 않고 축을 따라 쌓는다. 정본은 [shell.md](blocks/shell.md) 2열 절.
 - **섹션 뼈대.** 제목(h2) → 그림 → 해석 한 줄 → 필요할 때만 "왜" 한 줄. 흐름을 끊는 세부는 `.d0-more` 접기로, 페이지 끝 기억할 사실 한 문장은 `.d0-keep`(선택)으로 둔다.
 - 상태는 `data-*` 속성으로 표현한다(`data-status`, `data-current`, `data-open`, `data-variant`, `data-selected`).
@@ -114,7 +114,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 
 | 블록 | 언제 쓰나 | 생김새 | 파일 |
 | --- | --- | --- | --- |
-| shell | 모든 페이지의 골격 | 폰트 + 토큰 + 본문 축(720px, narrow 640px) + 넓은 구간 `.d0-wide` + 2열 `.d0-cols`(6/6·7/5, 문서에 하나) + 섹션 뼈대 + 접기 `details.d0-more` + 기억할 한 줄 `aside.d0-keep` + 타이포·여백 스케일 + 배지 | [shell.md](blocks/shell.md) |
+| shell | 모든 페이지의 골격 | 폰트 + 토큰 + 가운데 프레임 안 왼쪽 읽기 축과 폭 단계(`data-width`: narrow 640·기본 720·report 960/글 720) + 넓은 구간 `.d0-wide` + 여백 주석 `.d0-margin` + 2열 `.d0-cols`(축 안 6/6, 넓은 구간 6/6·7/5, 종류마다 하나) + 섹션 뼈대 + 접기 `details.d0-more` + 기억할 한 줄 `aside.d0-keep` + 타이포·여백 스케일 + 배지 | [shell.md](blocks/shell.md) |
 | header | 모든 페이지 첫 블록(필수) | 작업 라벨 → h1 → (히어로) → 리드(문장형 또는 요약 행) | [header.md](blocks/header.md) |
 | hero | report·compare 전/후·incident의 결론 수치 1개(수치 없으면 생략) | h1 바로 아래: 전 값(작게) → 후 값 44px/600 + 단위 + 한 줄 뜻 | [hero.md](blocks/hero.md) |
 | section-head | 구획마다 | 위 구분선 + h2 20px + 설명 최대 1문장(제목과 같으면 생략), 태그는 기본 없음 | [section-head.md](blocks/section-head.md) |
