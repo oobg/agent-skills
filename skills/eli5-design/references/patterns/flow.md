@@ -20,6 +20,7 @@ flow는 흐름을 이해하고 다음 행동을 아는 페이지다. 독자가 �
 ## 대표 도식
 
 연결 그래프(diagram graph, 부품과 연결) 또는 단계 도식(같은 그림을 단계마다 조금씩 바꿔 그린 작은 SVG 3~5장).
+여러 문제가 실제로 한 원인이나 한 해결에 닿으면 모으기 도식([diagram](../blocks/diagram.md) (h) converge)을 쓴다. 관계가 없는데 모아 그리지 않는다.
 
 ## 흐름의 뼈대
 
@@ -92,6 +93,7 @@ Deck Type **Explainer**: `<main class="d0-deck" data-pattern="flow">`. 규칙은
 | 흐름 | 근거(단계 도식 또는 [step-columns](../blocks/step-columns.md) 그림 변형) |
 | 예시 | `screenshot` 또는 `evidence`(실제 한 건을 따라감) |
 | 예외 | 근거(막히는 갈림을 그린 그래프) |
+| (있으면) 문제들이 한 곳으로 모임 | 근거 또는 비대칭 장(`data-layout="asym"`)의 converge 도식 |
 | 요약 | `closing`(`action`: 기억할 것 + 다음 행동) |
 
 Impact: 한 문장 정의(`assertion`), 큰 그림(그림 하나만 둔 면).

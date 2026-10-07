@@ -123,7 +123,7 @@ Impact·Spotlight 밖의 타이포·간격은 이 파일의 기본값 그대로�
 - 안에는 하나만: 문장 하나(`h2.d0-impact__line`, 32px/700, 모바일 24px) 또는 숫자 하나(`h2` 라벨 + `p.d0-impact__num`, 64px, 모바일 48px). 카드·목록·배지·둥근 박스·editorial 도식·무대 금지.
 - 글자는 grey-900, 강조 숫자는 blue-dark다. 바탕이 흰색이라 보조 글자(섹션 설명·figcaption·`.d0-note`)는 일반 섹션 그대로 grey-600이다.
 - 큰 숫자 blue-dark는 페이지에 하나다. Impact에 숫자를 두면 header 히어로 숫자는 grey-900으로 두고, 같은 숫자를 되풀이하지 않는다([hero.md](hero.md)).
-- page는 페이지당 0~1개다. 어두운 배경으로 바꾸지 않는다(라이트 온리).
+- page는 페이지당 0~1개다. 어두운 배경으로 바꾸지 않는다(라이트 온리). 덱 표지·섹션·마무리 장의 진한 면(`data-surface="dark"`)만 예외이고 Impact와는 다른 축이다([slide-deck.md](slide-deck.md) 진한 면 절).
 
 ```html
 <!-- 문장 하나 -->
@@ -177,6 +177,7 @@ Day0의 6:3:1(배경 · 텍스트 · 포인트)을 따른다. **회색만 남은
     `stroke`·`border`만 해당 색인 요소는 세지 않는다. 진한 포인트는 옅은 면 안에 있어도 센다.
   - 내용 단위 옅은 채움과 **면 단위 옅은 표면**(blue-light 무대, 덱 Impact 슬라이드, 썸네일 판)은 이 진한 포인트 경고 비율에서 뺀다.
     장면 수는 별도로 유지한다: page는 blue 무대 최대 1개(Impact는 면이 없다), deck은 Impact 슬라이드 20~30%([composition.md](../composition.md)).
+  - 덱의 **진한 면 장**(`data-surface="dark"`, 표지·섹션·마무리)도 면 단위 표면이라 진한 포인트 비율에서 빼고 장면 수(덱당 1~3장)로 관리한다. 대비표는 [slide-deck.md](slide-deck.md) 진한 면 절.
   - 회색만으로 된 도식·카드 묶음 금지는 유지한다. 의미 있는 blue 또는 의미색 표식 하나를 두되 경고 비율을 채우려고 뜻 없는 면을 칠하지 않는다.
 - **Hard 유지.** 대비와 WCAG 2.2 AA, 의미색 글자 금지는 색 면적 Warning과 별개로 반드시 통과한다.
 - **블루 단계.** `blue` = 강조 선·채움(후 막대, 닿는 노드, 진행 막대, 썸네일 합계 칸). `blue-dark` = 글자·번호, 흰 글자 바탕(버튼, 고른 탭, 흐름 줄의 현재 단계).
@@ -328,8 +329,8 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-cols { display: grid; gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
 /* 줄 길이(정본: 줄 길이 절): 글 블록 컨테이너 32em = 15px 본문 공백 포함 50자 이하. p·dd에는 걸지 않는다 */
-:is(.d0-explain, .d0-evidence, .d0-faq):not(.d0-cols) { max-width: 32em; }
-:is(.d0-explain, .d0-evidence, .d0-faq).d0-cols > * { max-width: 32em; } /* 2열 글 블록: 열 칸마다, 960px 미만 1열에서도 */
+:is(.d0-explain, dl.d0-evidence, .d0-faq):not(.d0-cols) { max-width: 32em; } /* 근거 변형 figure.d0-evidence[data-variant]는 그림이라 폭을 줄이지 않는다 */
+:is(.d0-explain, dl.d0-evidence, .d0-faq).d0-cols > * { max-width: 32em; } /* 2열 글 블록: 열 칸마다, 960px 미만 1열에서도 */
 @media (min-width: 960px) {
   .d0-split { grid-template-columns: 1fr 1fr; align-items: start; }
   .d0-cols { grid-template-columns: repeat(2, minmax(0, 32em)); }
@@ -443,7 +444,7 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 
 ## 금지
 
-- 다크 팔레트·`prefers-color-scheme: dark` 분기 추가, `body` 배경 생략.
+- 다크 팔레트·`prefers-color-scheme: dark` 분기 추가, `body` 배경 생략. 덱 표지·섹션·마무리의 `data-surface="dark"`는 다크 테마가 아니라 장면 전환 면이라 예외다.
 - `p`나 리드에 컨테이너보다 좁은 `max-width`·`width`·`ch`. 줄이 길면 글 블록 컨테이너 32em(줄 길이 절)이나 `.d0-cols`, 페이지 전체를 좁히려면 `data-width="narrow"`.
 - Pretendard jsDelivr 링크 외 외부 폰트·CSS·JS 링크, 넘긴 결과물 HTML에 남은 외부 폰트 요청(도구가 없을 때만 예외), `outline: none` 단독 사용.
 - 글자에 `--d0-blue`·`--d0-grey-500` 이하·시맨틱 전경색 사용(흰 바탕 대비 4.5:1 미달). 글자는 `--d0-blue-dark`, `--d0-grey-600` 이상.

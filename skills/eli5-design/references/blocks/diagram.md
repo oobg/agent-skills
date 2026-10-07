@@ -69,6 +69,8 @@
 | (e) steps 단계 | 번호 원을 1.5px 선으로 잇고 라벨은 아래 | 몇 단계 중 어디인가, 핵심 단계 하나 |
 | (f) sequence 주고받기 | 참여자 세로선 3~4개 + 가로 화살표와 짧은 라벨 | 누가 누구에게 무엇을 넘기나 |
 | (g) pins 번호 핀 `data-variant="pins"` | 글자 없는 넓은 SVG 위 HTML 번호 핀 + 옆 범례 | 화면 어디가 무엇인가(preview 해부도, faq 용어 핀) |
+| (h) converge 모으기 | 왼쪽 문제 2~4개(작은 pill 라벨)에서 곡선이 오른쪽 해결 하나로 모인다 | 여러 문제가 실제로 한 원인·한 해결에 닿을 때(flow 구조, report 제안) |
+| (i) annotate 주석 `data-variant="annotate"` | 기존 그림(도식·차트·와이어프레임) 위 번호 표식 2~4개 + 짧은 주석 목록 | 그림의 몇 곳을 짚어 한 줄씩 덧붙일 때(page·deck 공용) |
 
 ## 장르 (`data-genre`)
 
@@ -631,8 +633,109 @@ document.querySelectorAll('.d0-fig[data-variant="pins"][data-active-pin]').forEa
 - 핀은 3~6개다. 375px에서도 핀은 24px 그대로다. 핀끼리 겹치면(중심 간격 28px 미만) 핀을 줄이거나 부분을 묶는다. 범례는 900px 아래에서 그림 아래로 내려간다.
 - 핀 옆에 글자를 붙이지 않는다. 이름은 범례에만 쓴다. 범례 `dd`는 한 문장이다.
 
+## (h) converge — 모으기
+
+여러 문제(원인)가 하나의 해결(또는 한 원인)로 모이는 관계를 곡선으로 잇는다. **문제들이 실제로 그 하나에 닿을 때만** 쓴다. 관계가 없는데 "정리돼 보이게" 모으지 않는다.
+
+```html
+<figure class="d0-fig" data-genre="structural">
+  <svg viewBox="0 0 360 200" role="img" aria-labelledby="cv1-t cv1-d">
+    <title id="cv1-t">세 가지 늦음이 대기열 하나로 모인다</title>
+    <desc id="cv1-d">왼쪽 재시도 폭주, 중복 발송, 늦은 도착 세 가지에서 곡선이 오른쪽 대기열 노드 하나로 모여요.</desc>
+    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M112 32 C200 32 220 100 282 100"/>
+    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M112 100 H282"/>
+    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M112 168 C200 168 220 100 282 100"/>
+    <rect class="d0-s-frame" x="8" y="16" width="104" height="32" rx="16"/>
+    <rect class="d0-s-frame" x="8" y="84" width="104" height="32" rx="16"/>
+    <rect class="d0-s-frame" x="8" y="152" width="104" height="32" rx="16"/>
+    <text class="d0-s-text" x="60" y="37" text-anchor="middle">재시도 폭주</text>
+    <text class="d0-s-text" x="60" y="105" text-anchor="middle">중복 발송</text>
+    <text class="d0-s-text" x="60" y="173" text-anchor="middle">늦은 도착</text>
+    <circle class="d0-s-ring" cx="300" cy="100" r="18"/>
+    <circle class="d0-s-node" data-on cx="300" cy="100" r="12"/>
+    <text class="d0-s-text" data-on x="300" y="144" text-anchor="middle">대기열</text>
+  </svg>
+  <figcaption>세 가지 늦음은 모두 같은 대기열을 지나요.</figcaption>
+</figure>
+```
+
+- 왼쪽은 문제 2~4개, 오른쪽은 하나다(노드 7개 상한 안). 문제는 둥근 상자(`rect` + `rx` = 높이 ÷ 2, `.d0-s-frame`) 안에 1~3단어 이름 또는 `문제 1` 같은 번호만 쓴다. 문장을 넣으면 텍스트 상자 도식이다.
+- 강조 묶음은 하나다: 해결 노드(채움 + 바깥 고리)와 그리로 모이는 곡선이 같은 뜻이라 함께 blue다. 문제 상자는 흰 채움 + grey-500 테두리로 둔다.
+  문제 하나만 해결에 닿고 나머지는 남으면 닿는 곡선만 `data-on`, 남는 곡선은 `data-back` 점선으로 그린다.
+- 곡선은 갈래마다 `path` 하나(그리기 모션이 함께 시작). 해결 쪽 끝점을 노드 테두리(중심 − r − 고리 여백)에 맞춘다.
+- 오른쪽이 해결이면 라벨은 해결 이름, 원인이면 원인 이름이다. 해결과 원인을 한 그림에 같이 모으지 않는다.
+- **deck.** 가로형 viewBox 800을 쓰고 글자는 `d0-sl-label`·`d0-sl-value`(`--sl-font`)로 바꾼다. 문제 상자 200×56(rx 28), 해결 노드 r 30 + 고리 r 44가 기준이다.
+  비대칭 장(`data-layout="asym"`)의 그림 열에 두면 viewBox 480×400처럼 세로로 늘려 다시 그린다.
+
+```html
+<svg viewBox="0 0 800 320" role="img" aria-labelledby="cv2-t"><title id="cv2-t">세 가지 늦음이 대기열 하나로 모인다</title>
+  <path class="d0-s-edge" data-on d="M240 60 C420 60 460 160 594 160"/>
+  <path class="d0-s-edge" data-on d="M240 160 H594"/>
+  <path class="d0-s-edge" data-on d="M240 260 C420 260 460 160 594 160"/>
+  <rect class="d0-s-frame" x="40" y="32" width="200" height="56" rx="28"/>
+  <rect class="d0-s-frame" x="40" y="132" width="200" height="56" rx="28"/>
+  <rect class="d0-s-frame" x="40" y="232" width="200" height="56" rx="28"/>
+  <g class="d0-sl-label" aria-hidden="true"><text x="140" y="67">재시도 폭주</text><text x="140" y="167">중복 발송</text><text x="140" y="267">늦은 도착</text></g>
+  <circle class="d0-s-ring" cx="640" cy="160" r="44"/>
+  <circle class="d0-s-node" data-on cx="640" cy="160" r="30"/>
+  <g class="d0-sl-value" aria-hidden="true"><text x="640" y="244" data-on>대기열</text></g>
+</svg>
+```
+
+## (i) annotate — 번호 주석
+
+이미 있는 그림(도식·차트·와이어프레임) 위에 번호 표식 2~4개를 얹고, 번호를 맞춘 짧은 주석을 그림 옆이나 아래 목록으로 붙인다. 새 그림 종류가 아니라 그림 블록의 변형이다.
+
+- **pins와 다른 점.** pins (g)는 글자 없는 넓은 SVG의 부분 이름을 범례로 풀고, 한 번에 한 번호를 켜는 연동이 기본이다. annotate는 글자가 있는 그림에도 얹고, 번호가 모두 같은 무게로 늘 켜져 있으며 JS가 없다.
+  screenshot의 `.d0-shot__note`는 화면 캡처 전용(spotlight·흐림 포함)이고, annotate는 도식·차트용이다.
+- **주석.** `ol.d0-annot__notes`의 `li` 하나가 한 줄(1문장, 약 30자 이내)이다. 이유·조건처럼 긴 설명은 explanation으로 보낸다. 설명문을 전부 작은 주석으로 쪼개지 않는다.
+- 주석은 카드·상자 없이 번호 + 글자 행이다. 번호는 blue-dark 원 + 흰 숫자(5.5:1), 24px이다. 그림 안 번호는 `aria-hidden`이고 뜻은 목록 글자가 전한다(`ol` 순서가 번호다).
+- 번호 위치 = SVG 좌표 ÷ viewBox 크기 × 100%(pins와 같다). 번호가 그림의 강조 도형을 가리지 않게 도형 모서리 바깥에 둔다. 번호끼리 중심 간격 28px 이상.
+- page는 900px 이상에서 그림 | 주석 2열, 그 아래 1열. deck은 근거 split의 요점 열 자리에 주석 목록을 두고 2~3개까지다([slide-deck](slide-deck.md) 근거 변형과 주석).
+- `.d0-pin` 기본 CSS는 (g) pins 절에 있다. annotate를 쓰면 그 `.d0-pin` 규칙과 아래 CSS를 함께 붙인다.
+
+```html
+<figure class="d0-fig" data-variant="annotate">
+  <div class="d0-annot">
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="an1-t">
+      <title id="an1-t">주별 재시도 막대. 1주 120건, 2주 135건, 3주 180건, 4주 260건.</title>
+      <line class="d0-s-line" x1="20" y1="168" x2="340" y2="168"/>
+      <rect class="d0-s-bar" x="40" y="113" width="48" height="55" rx="4"/>
+      <rect class="d0-s-bar" x="120" y="106" width="48" height="62" rx="4"/>
+      <rect class="d0-s-bar" x="200" y="86" width="48" height="82" rx="4"/>
+      <rect class="d0-s-bar" data-on x="280" y="50" width="48" height="118" rx="4"/>
+      <text class="d0-s-text" x="64" y="190" text-anchor="middle">1주</text><text class="d0-s-text" x="144" y="190" text-anchor="middle">2주</text>
+      <text class="d0-s-text" x="224" y="190" text-anchor="middle">3주</text><text class="d0-s-text" data-on x="304" y="190" text-anchor="middle">4주</text>
+    </svg>
+    <span class="d0-pin" style="left: 30%; top: 46%" aria-hidden="true">1</span>
+    <span class="d0-pin" style="left: 70%; top: 18%" aria-hidden="true">2</span>
+  </div>
+  <ol class="d0-annot__notes">
+    <li><span class="d0-pin" aria-hidden="true">1</span>앞 세 주는 조금씩 늘었어요.</li>
+    <li><span class="d0-pin" aria-hidden="true">2</span>마지막 주에 한 번에 크게 늘었어요.</li>
+  </ol>
+  <figcaption>늘어난 몫은 대부분 마지막 주에 몰렸어요.</figcaption>
+</figure>
+```
+
+```css
+.d0-annot, .d0-annot__notes { --pin-bg: var(--d0-blue-dark); --pin-ring: transparent; --pin-fg: #fff; } /* 번호는 모두 켜진 모양(흰 숫자 5.5:1) */
+.d0-annot { position: relative; justify-self: start; width: 100%; max-width: 360px; }
+.d0-fig[data-size="wide"] .d0-annot { max-width: 400px; }
+.d0-annot svg { display: block; max-width: none; }
+.d0-annot > .d0-pin { position: absolute; transform: translate(-50%, -50%); }
+.d0-annot__notes { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; align-content: center; }
+.d0-annot__notes li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; align-items: start; color: var(--d0-grey-800); font-size: 15px; line-height: var(--d0-leading-body); }
+@media (min-width: 900px) {
+  .d0-fig[data-variant="annotate"] { grid-template-columns: minmax(0, 360px) minmax(220px, 300px); column-gap: 28px; align-items: center; justify-content: start; }
+  .d0-fig[data-variant="annotate"][data-size="wide"] { grid-template-columns: minmax(0, 400px) minmax(220px, 300px); }
+  .d0-fig[data-variant="annotate"] figcaption { grid-column: 1 / -1; }
+}
+```
+
 ## 금지
 
+- 관계가 없는 것들을 converge로 모으기, converge 상자 안 문장, 주석 5개 이상·주석마다 두 문장 이상인 annotate, 설명문 전체를 작은 주석으로 쪼개기.
 - 텍스트 상자 + 화살표 줄(문장이 든 상자), 정보 없는 장식 그림, 3D·그라디언트·그림자·아이콘 일러스트, Mermaid 등 자동 배치 도식.
 - 경계가 이미 보이는 도식에 기본값으로 두른 무대, 무대 안에 figcaption, 무대에 테두리·그림자, 무대 없이 폭 절반만 쓰고 옆을 비운 도식.
 - narrative·editorial로 말할 내용(진행 위치, 기억할 숫자 하나)이 있는데도 페이지 전체를 structural로만 채우기, editorial 2개 이상, 문구·대답을 쓴 editorial, 56px을 넘는 editorial 숫자, 장르를 바꾸려고 섹션 더하기, SVG `<text>`로 그린 큰 숫자, 선·축·범례를 단 editorial, 현재가 둘인 narrative, 1.5·2.5 외 굵기로 상태 나누기.

@@ -171,6 +171,7 @@ Pattern은 어떻게 설명할지, Block은 무엇으로 표현할지, Layout은
 | 섹션·슬라이드를 구성할 때(구도, 강조 3단계 `data-emphasis`, 밀도 리듬, 회색 무대를 쓰는 기준) | `references/composition.md` |
 | 출력 형식이 deck일 때(덱 구성, 슬라이드 종류, Impact 비율, Slide Gate) | `references/output/deck.md` |
 | 출력 형식이 deck일 때 마크업·CSS·JS(16:9 한 장 보기, 네비, 키보드, 인쇄, 덱 게이트) | `references/blocks/slide-deck.md` |
+| 문구를 확정하기 전(page·deck 공통, 직역투 점검 목록과 예시 쌍) | `references/writing.md` |
 | 결과물 HTML을 넘기기 직전(폰트 인라인, 발행 여부와 무관) | `scripts/subset_font.py` (Pretendard 서브셋 `@font-face` 생성) |
 
 ## 패턴 판별
@@ -280,6 +281,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
   그 밖의 외부 리소스는 없다. CSS·SVG·JS는 인라인이다.
 - 인라인 `@font-face`는 메인 `<style>` **앞**의 별도 `<style>`이다. "tokens.css는 메인 `<style>` 맨 앞" 규칙과 충돌하지 않는다.
 - **라이트 온리.** `:root { color-scheme: light; }`와 `body` 배경색을 명시해 다크 호스트에서도 깨지지 않게 한다. 다크 팔레트를 추가하지 않는다.
+  예외는 덱의 장면 전환 장뿐이다: 표지·섹션·마무리 장(`data-kind="cover|section|closing"`)에만 `data-surface="dark"`(blue-dark 풀블리드 면 + 흰 글자, 덱당 1~3장)를 쓸 수 있다. 본문 장·Impact·page에는 쓰지 않는다(`references/blocks/slide-deck.md` 진한 면 절).
 - 모바일 폭에서 좌우 16px 거터, 가로 스크롤 없음.
 - **높이 720px 프레임.** 갤러리 iframe처럼 높이 약 720px 프레임에 넣을 페이지는 첫 SVG 도식의 아래 끝이 720px 안에 든다. 머리 260 + 첫 무대 300은 합계 기준이다(정본: `references/blocks/shell.md` 첫 화면 높이 예산).
 - **한 artifact 안 여러 페이지.** 탭으로 고른 페이지를 iframe으로 보여 줄 때 같은 artifact의 다른 파일을 `src`로 부르지 않는다(뷰어 샌드박스에서 연결이 끊긴다).
@@ -306,6 +308,7 @@ Audience × Purpose를 정한 뒤 `references/output/deck.md`의 Story Gate부�
 7. **토큰 인라인.** 탐색 순서(의존 절)로 찾은 tokens.css 전체를 수정 없이 메인 `<style>` 맨 앞에 붙인다. 모두 실패하면 멈춘다.
 8. **작성.** `references/blocks/shell.md` 스니펫에서 시작해 고른 블록 파일의 스니펫을 붙인다. 블록 해부대로 짓고, 섹션마다 `data-pattern`을 단다.
    설명은 한 라벨 아래 3문장 이내, 용어는 비유로 푼다.
+   **문구 확정 전 직역투 점검.** page·deck 모두 제목·리드·라벨·설명·캡션·해석 줄·SVG `<text>`까지 `references/writing.md` 목록(영어식 은유, 무생물 주어 + 의지 동사, 압축 대구, 분열문, 번역 조사, 명사 나열 압축, 모호한 조건절)으로 읽고 누가·무엇을·어떻게를 원인 → 결과 순서의 일상 문장으로 고친다.
 9. **게이트.** 아래 출력 게이트를 통과할 때까지 고친다. page는 Page Depth Gate를, deck은 Slide Gate를 의미 검사로 먼저 본다.
 10. **넘기기 직전 폰트 인라인.** 결과물 HTML을 넘기면(파일·artifact 모두) 글자를 다 고친 뒤 `scripts/subset_font.py`로 서브셋 `@font-face`를 만들어
     jsDelivr `<link>` 자리에 넣는다(글자가 바뀌면 다시 만든다). 도구가 없으면 링크를 두고 외부 요청과 시스템 폰트 대체 가능성을 알린다.
@@ -347,6 +350,7 @@ deck 출력은 위 deck 출력 예외에 적힌 항목 대신 `references/output
 - [ ] 같은 숫자 문자열(숫자+단위, 예 `26분`)이 화면에 보이는 텍스트(`body.innerText` 기준. SVG `<text>`는 이미 포함되므로 따로 더하지 않고, SVG `<title>`·`<desc>`는 제외)에 2회 이하다. closing 메타 `dd`와 덱 제목 목차는 빼고 센다
 - [ ] 무대를 쓴 도식 `figure.d0-fig[data-stage]`는 SVG가 `.d0-fig__stage` 패널 안에 있고 figcaption은 패널 밖에 있다(회색 무대는 기본 없음, 쓰는 기준은 `references/composition.md`)
 - [ ] kpi-cards에 증감 배지가 없다
+- [ ] 화면에 보이는 글(제목·라벨·설명·캡션·SVG `<text>`)에 직역투 표현이 없다(읽어서 확인, `references/writing.md` 점검 목록. 영어식 은유·무생물 주어 + 의지 동사·압축 대구·모호한 조건절이 하나라도 있으면 FAIL)
 - [ ] `data-pattern` 값이 있으면 패턴 8개 중 하나다
 - [ ] SVG·CSS 안 모든 `var(--d0-*)`가 tokens.css에 있다
 - [ ] 구조(`section`·`header`·`figure`·`ol`/`ul`·`dl`·`table`·`time`·`data`·`progress`·`details`·`dialog`·`button`/`a`)를

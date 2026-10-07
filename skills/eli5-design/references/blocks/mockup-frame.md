@@ -435,13 +435,14 @@ devs.forEach(function (b) {
 ## Screenshot spotlight (`figure.d0-shot`)
 
 실제 화면 한 장에서 **봐야 할 곳 하나**를 밝히고 나머지는 흐리게 한다. 화면 내용이 주인공이라 프레임 크롬(타이틀바·신호등·베젤)은 두지 않는다.
-의도적으로 크게 쓰는 장면이지만 **화면 폭은 최대 560px**이고, 900px 이상에서는 바로 옆에 주석 열을 둔다(화면을 키워 섹션 폭을 채우지 않는다).
+의도적으로 크게 쓰는 장면이지만 page에서 **화면 폭은 최대 560px**이고, 900px 이상에서는 바로 옆에 주석 열을 둔다(화면을 키워 섹션 폭을 채우지 않는다).
 구도는 Spotlight([composition.md](../composition.md)), deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
+**560px 상한과 900px 2열 격자는 page 전용이다.** 덱 슬라이드에서는 [slide-deck.md](slide-deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
 
 **해부 구조.**
 
 - `figure.d0-shot` = 화면 상자 `div.d0-shot__screen` → 주석 `p.d0-shot__note` 1~3개 → `figcaption` 한 줄.
-- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 최대 폭 560px, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
+- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 최대 폭 560px(page), 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
 - **spot.** 위치는 화면 상자 기준 백분율 인라인 변수 `style="--x:..%;--y:..%;--w:..%;--h:..%"`(왼쪽·위·폭·높이). 2px blue 테두리, `--d0-radius-sm`.
   왼쪽 위 모서리에 번호 배지(`b.d0-shot__num`, 24px blue-dark 원 + 흰 숫자 5.5:1). 위치 변수는 `--d0-*`가 아니다(토큰을 새로 만들지 않는다).
 - **dim.** 주인공 spot 하나(`data-dim`)의 바깥을 반투명 막으로 덮는다. 기본은 grey 막(grey-900 14%, 12~16% 범위)이다. 대부분의 앱 화면은 바탕이 희어서 흰 막은 거의 보이지 않는다. 어둡거나 진한 화면(사진, 진한 바탕의 화면)만 흰 막(`data-dim="white"`, `#fff` 62%)을 고른다.
@@ -488,7 +489,7 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 .d0-shot__note .d0-shot__num { transform: translateY(-1px); }
 .d0-shot figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 @media (min-width: 900px) {
-  .d0-shot { grid-template-columns: minmax(0, 560px) minmax(220px, 300px); justify-content: start; grid-template-rows: repeat(3, auto) 1fr; align-items: start; } /* 남는 높이는 마지막 행이 받아 주석이 위로 붙는다 */
+  .d0-shot { grid-template-columns: minmax(0, 560px) minmax(220px, 300px); justify-content: start; grid-template-rows: repeat(3, auto) 1fr; align-items: start; } /* page 전용. 남는 높이는 마지막 행이 받아 주석이 위로 붙는다. 덱은 slide-deck.md 덱 격자가 덮는다 */
   .d0-shot__screen { grid-column: 1; grid-row: 1 / span 4; }
   .d0-shot__note { grid-column: 2; }
   .d0-shot figcaption { grid-column: 1 / -1; }
@@ -513,4 +514,4 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
 - `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.
 - 실제 파일 다운로드·외부 전송. 결과는 토스트로만 알린다. 프레임 안 `main` 요소, `div`에 `role="dialog"`(네이티브 `dialog` 우선).
-- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), 560px를 넘는 화면, 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.
+- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), page에서 560px를 넘는 화면, 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.
