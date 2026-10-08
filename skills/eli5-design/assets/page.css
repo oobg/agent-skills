@@ -117,6 +117,7 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-fig__stage > :not(svg) { justify-self: stretch; } /* 카드 목록 등 SVG 아닌 내용은 무대 폭을 채운다 */
 .d0-fig figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 .d0-fig[data-stage="blue"] > .d0-fig__stage { background: var(--d0-blue-light); } /* 핵심 도식 하나만 */
+.d0-fig[data-frame] { padding: 24px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card); } /* 외곽선 카드: 면·그림자 없음 */
 
 .d0-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -152,6 +153,7 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
   h2 { font-size: 18px; }
   .d0-section { padding-block: 24px; }
   .d0-fig__stage { padding: 20px; }
+  .d0-fig[data-frame] { padding: 16px; } /* 390px에서 축 SVG 글자 11px 이상 */
   .d0-impact__line { font-size: 24px; }
   .d0-impact__num, .d0-section > .d0-impact__num { font-size: 48px; }
 }

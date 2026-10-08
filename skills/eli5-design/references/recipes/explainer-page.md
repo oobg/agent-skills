@@ -7,8 +7,8 @@
 1. **할 수 있어야 할 것.** 독자가 다 읽고 할 수 있어야 할 것 한 줄과, 거기에 이르려고 답을 얻어야 할 질문을 한 줄씩 적는다.
 2. **섹션.** 질문 하나에 섹션 하나가 기본이다. 두 질문을 함께 봐야 이해되면 한 섹션에 묶는다. 같은 질문을 두 섹션에 나눠 답하지 않는다.
 3. **그림.** 질문마다 아래 표에서 그림을 고르고, 실제로 고른 것의 상세 문서만 연다. 글로 충분한 질문에는 그림을 붙이지 않는다.
-4. **첫 화면.** 머리 바로 아래 첫 섹션에 주제의 실체를 보여 주는 그림을 둔다. 결과물이 있으면 그 결과를 먼저 보여 준다.
-5. **글.** 그림이 못 보여 주는 이유·조건·영향만 라벨 아래 최대 3문장으로 붙인다.
+4. **첫 화면.** 머리 바로 아래 첫 섹션에 주제의 실체를 보여 주는 그림을 둔다. 결과물이 있으면 그 결과를, 주제가 낯선 용어면 용어마다 같은 틀의 한 칸에 그 정의를 라벨로 단 그림을 먼저 보여 주고 글에는 출처만 남긴다.
+5. **글.** 그림이 못 보여 주는 이유·조건·영향(라벨 아래 최대 3문장)과 복사할 명령만 남긴다. 글에 순서(A→B→C)·비교(이러면 깨짐, 이러면 정상)·이름 붙은 묶음 구성·연결 방식·접근 조건이 남았으면 기존 그림에 얹거나(화살표 위 검문소, 같은 틀의 ✕ 줄, 상자 안 칸, 선 라벨, 자물쇠 라벨) 작은 그림으로 올린다.
 6. **조립과 검토.** 아래 뼈대로 HTML을 쓰고 `python3 scripts/inline_assets.py page out.html`로 토큰과 정본 CSS·JS를 채운 뒤 [final-review.md](../final-review.md)를 거친다.
 
 ## 질문 → 그림
@@ -17,7 +17,7 @@
 | --- | --- | --- |
 | 어떻게 흘러가나, 무엇이 무엇에 닿나, 누가 누구에게 넘기나 | 단계 도식, 연결 그래프, 주고받기, 진행선 | [diagrams/flow.md](../diagrams/flow.md) |
 | 무엇이 어떻게 다른가, 전과 후는 | 같은 틀의 나란한 그림, 전/후 막대, 가로 막대 목록, 비교 표 | [diagrams/comparison.md](../diagrams/comparison.md) |
-| 받으면 어떤 모양인가, 화면 어디가 무엇인가 | 와이어프레임, 번호 핀, 번호 주석 | [diagrams/annotation.md](../diagrams/annotation.md) |
+| 받으면 어떤 모양인가, 화면·파일 어디가 무엇인가, 어디에 두나 | 와이어프레임, 번호 핀, 번호 주석, 파일 트리 | [diagrams/annotation.md](../diagrams/annotation.md) |
 | 눌러 봐야 아는 화면 | 미니 앱 목업, 화면 캡처 스포트라이트 | [blocks/mockup-frame.md](../blocks/mockup-frame.md) |
 | 결과 파일·표가 어떤 모양인가 | 탭 + 표 목업, 썸네일 카드 | [blocks/tab-preview.md](../blocks/tab-preview.md), [blocks/thumb-cards.md](../blocks/thumb-cards.md) |
 | 어떻게 따라 하나 | 체크리스트 단계, 붙여 넣을 명령 | [blocks/checklist.md](../blocks/checklist.md), [blocks/code-block.md](../blocks/code-block.md) |
@@ -83,7 +83,7 @@
 | 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림 아래 이유·조건·영향. 항목 3개까지 |
 | 주장 + 근거 | `dl.d0-evidence > div > dt + dd` | 주장 한 줄과 그 근거(숫자·출처·예시) |
 | 가로 막대 목록 | `ol.d0-barlist > li > .d0-barlist__label + data.d0-barlist__value + .d0-barlist__track > .d0-barlist__fill[style="width:n%"]` | 같은 단위 값 3~6개, 구성비. 강조 행은 `li[data-on]`, 막대 아래 짧은 표기는 `.d0-barlist__note` |
-| 비교 표 | `table.d0-table` (아래) | 대상 여럿을 같은 기준으로 견줄 때 |
+| 비교 표 | `table.d0-table` (아래) | 대상 셋 이상이나 기준 여럿을 견줄 때 |
 | 몫 막대 | `div.d0-share > div.d0-share__bar > span.d0-share__seg[style="width:n%"]` + `ul.d0-share__keys > li` | 전체 중 몫(구성비). 강조 몫은 `[data-on]` |
 | 나란한 두 덩어리 | `div.d0-cols` | 전 \| 후, 완료 \| 남은 것처럼 동시에 봐야 할 때 |
 | 넓은 구간 | `.d0-wide` | 기본 축에서 읽히지 않는 넓은 표·긴 띠·차트만 |
@@ -103,5 +103,5 @@
 </div>
 ```
 
-- 숫자 칸은 `data-num`, 없음은 `data-state="none"`, 미확정은 `data-state="pending"`을 달고 글자를 꼭 쓴다. 표는 같은 기준으로 대상 둘 이상을 견줄 때 쓴다. 항목 → 설명 두 칸 표는 라벨 설명으로 바꾼다.
+- 숫자 칸은 `data-num`, 없음은 `data-state="none"`, 미확정은 `data-state="pending"`을 달고 글자를 꼭 쓴다. 대상이 둘이고 기준이 몇 줄이면 같은 행 라벨·순서의 카드 두 장(`div.d0-sbs[data-layout="card"]`), 셋 이상이거나 기준이 많으면 표로 견준다. 항목 → 설명 두 칸 표는 라벨 설명으로 바꾼다.
 - 넓이·여백·글자 크기 같은 구현 수치는 CSS가 갖는다. 배치 규칙이 더 필요하면 [shell/contract.md](../shell/contract.md)를 연다.
