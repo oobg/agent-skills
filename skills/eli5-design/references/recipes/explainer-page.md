@@ -16,11 +16,11 @@
 | 질문 | 먼저 고를 것 | 상세 |
 | --- | --- | --- |
 | 어떻게 흘러가나, 무엇이 무엇에 닿나, 누가 누구에게 넘기나 | 단계 도식, 연결 그래프, 주고받기, 진행선 | [diagrams/flow.md](../diagrams/flow.md) |
-| 무엇이 어떻게 다른가, 전과 후는 | 같은 틀의 나란한 그림, 전/후 막대, 가로 막대 목록, 비교 표 | [diagrams/comparison.md](../diagrams/comparison.md) |
+| 무엇이 어떻게 다른가, 전과 후는 | 같은 틀의 나란한 그림, 전/후 막대, 가로 막대 목록 | [diagrams/comparison.md](../diagrams/comparison.md) |
 | 받으면 어떤 모양인가, 화면·파일 어디가 무엇인가, 어디에 두나 | 와이어프레임, 번호 핀, 번호 주석, 파일 트리 | [diagrams/annotation.md](../diagrams/annotation.md) |
 | 눌러 봐야 아는 화면 | 미니 앱 목업, 화면 캡처 스포트라이트 | [blocks/mockup-frame.md](../blocks/mockup-frame.md) |
 | 결과 파일·표가 어떤 모양인가 | 탭 + 표 목업, 썸네일 카드 | [blocks/tab-preview.md](../blocks/tab-preview.md), [blocks/thumb-cards.md](../blocks/thumb-cards.md) |
-| 어떻게 따라 하나 | 체크리스트 단계, 붙여 넣을 명령 | [blocks/checklist.md](../blocks/checklist.md), [blocks/code-block.md](../blocks/code-block.md) |
+| 어떻게 따라 하나 | 붙여 넣을 명령, 체크리스트 단계 | [blocks/code-block.md](../blocks/code-block.md), [blocks/checklist.md](../blocks/checklist.md) |
 | 언제 무엇이 되나, 지금 어디인가 | 시간 막대, 타임라인, 진행 레일 | [blocks/timeline.md](../blocks/timeline.md) |
 | 바뀐 항목만 보고 싶다 | 전/후 행 목록, 전과 후 두 쪽 | [blocks/diff-rows.md](../blocks/diff-rows.md), [blocks/before-after.md](../blocks/before-after.md) |
 | 이 용어는 무엇인가, 막히면 왜인가 | 질문-답, 접는 용어 목록 | [blocks/faq.md](../blocks/faq.md), [blocks/accordion.md](../blocks/accordion.md) |
@@ -32,7 +32,7 @@
 
 ## 뼈대
 
-질문과 그림을 고른 뒤 본보기 렌더 이미지([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))를 보고 형식만 맞춘다. 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀의 ✓/✕ 비교, 파일 트리, 번호 핀, 외곽선 그림이다. 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다.
+질문과 그림을 고른 뒤 본보기 렌더 이미지 세 장([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))을 모두 열어 보고 형식만 맞춘다. 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀의 ✓/✕ 비교, 파일 트리, 번호 핀, 외곽선 그림이다. 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다.
 
 ```html
 <!doctype html>
