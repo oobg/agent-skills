@@ -147,13 +147,16 @@ claim에는 시제가 없다. `kind`는 claim의 성격이지 현재 유효성�
      For `blog`, require `tenants/blog/sources/series/<series-slug>/<file>` so series stay separated
      without creating a tenant per installment.
    - Extract → `tenants/<tenant>/extractions/docs/<name>.json`. The JSON's `path` must point at that tenant's `sources/`. **Query `concepts` first and reuse existing names** so it merges into the graph instead of fragmenting.
-   - Load: `python3 bin/docs.py load <json> --tenant <company|personal|shared|novel|blog>`. **`--tenant` is required** — it is the boundary for all five tenants in the shared DB.
-   - After load and lint pass for this ingestion, commit the exact raw source path immediately:
+   - Send: the canonical DB lives on the ontology server, so ingest through server intake —
+     `onto --config ~/.config/onto/<tenant>-documents.json ingest documents send <manifest> --operation-key <key>`
+     (manifest format: `AGENTS.md` routes to it). The tenant-specific credential is the boundary.
+     Local `bin/docs.py load` writes only a stale local copy and is refused.
+   - After the server reports the batch received, commit the exact raw source path immediately:
      `git add -- tenants/<tenant>/sources/<file>` followed by
      `git commit -m "ingest: add <file>" -- tenants/<tenant>/sources/<file>`. The pathspec is
      required on the commit command. Do not stage
-     extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; those remain in
-     the repository's normal daily commit flow.
+     extraction files, `ontology.db`, `index.md`, or unrelated worktree changes; the server
+     publishes distilled artifacts itself.
 4. **Surface connections.** Read path의 스코프 규칙과 `recall.md` 절차를 그대로 적용해 조회한다.
    무엇에 연결되고, 무엇을 강화·모순시키고, 무엇이 갭으로 드러나는가?
 5. **Proceed.** Continue with the user's actual task, grounded in the KB and citing the graph. Ingesting is the setup, not the whole task.
@@ -237,7 +240,7 @@ source에 없는 세부를 기존 claim에서 끌어와 채우지 않는다. sou
 ## Guards
 - **Ask before ingesting** — tenant + consent. Never silent. Tenant confirmation is per document
   and is never inherited from a previous ingestion.
-- **`--tenant` on every `docs.py load`.** Omitting it aborts by design; do not work around it.
+- **Send each document with that tenant's own credential.** Never reuse another tenant's config.
 - **`sources/` is immutable** raw provenance; DB and extractions are generated.
 - **Commit each successfully ingested raw source immediately and separately.** Use exact paths;
   never `git add -A`, `git commit -a`, or a pathspec-free `git commit` in a dirty ontology worktree.
