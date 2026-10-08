@@ -4,7 +4,7 @@
 
 | 변형 | 그리는 것 | 언제 |
 | --- | --- | --- |
-| 화면 골격 | 상단 바·카드·버튼을 글자 없는 상자로, 바뀌는 곳만 blue | 어떤 화면의 어디가 바뀌나 |
+| 화면 골격 | 문서 예제의 실제 글자·값을 담은 상단 바·카드·버튼, 바뀌는 곳만 blue | 어떤 화면의 어디가 바뀌나 |
 | 표 썸네일 | 머리 행·키 열·합계 칸이 있는 미니 격자(JS 생성) | 결과물이 어떤 모양의 표인가 |
 | 번호 핀 | 그림 위 HTML 번호 + 범례, hover·focus한 번호의 영역이 켜짐 | 화면·파일 같은 그림의 영역마다 이름·뜻을 붙일 때(파일 항목의 뜻은 코드 안 주석 대신 종이 그림 + 핀) |
 | 번호 주석 | 기존 그림 위 번호 2~4개 + 한 줄 주석 목록(움직임 없음) | 영역이 없는 점(차트의 막대·값 하나)을 짚을 때 |
@@ -20,18 +20,18 @@
     <desc id="w1-d">위쪽 바 오른쪽 버튼과 그 아래 필터 영역이 강조돼 있어요.</desc>
     <rect class="d0-s-frame" x="1.5" y="1.5" width="557" height="339" rx="19"/>
     <path class="d0-s-line" d="M1.5 65 H558"/>
-    <rect class="d0-s-fill" x="25" y="25" width="131" height="16" rx="8"/>
+    <text class="d0-s-text" x="25" y="38">주문 관리</text>
     <rect class="d0-s-accent" x="420" y="17" width="115" height="31" rx="9.5"/>
     <rect class="d0-s-zone" x="25" y="87" width="510" height="44" rx="9.5"/>
-    <rect class="d0-s-fill" x="25" y="152" width="246" height="68" rx="12"/>
-    <rect class="d0-s-fill" x="289" y="152" width="246" height="68" rx="12"/>
+    <rect class="d0-s-fill" x="25" y="152" width="246" height="68" rx="12"/><text class="d0-s-text" x="41" y="191">오늘 들어온 주문 128건</text>
+    <rect class="d0-s-fill" x="289" y="152" width="246" height="68" rx="12"/><text class="d0-s-text" x="305" y="191">내보내기 대기 3건</text>
   </svg>
   <figcaption>새 필터는 버튼 바로 아래, 표 위에 생겨요.</figcaption>
 </figure>
 ```
 
-- 회색 면은 자리만 잡는다. 바뀌는 곳은 blue 하나(버튼은 채움, 영역은 점선 테두리 `.d0-s-zone`).
-- 부분마다 이름을 붙여야 하면 SVG 안에 글자를 넣지 말고 번호 핀을 얹는다.
+- 글자·값은 문서 예제 그대로 쓰고 빈 회색 막대로 대신하지 않는다. 바뀌는 곳은 blue 하나(버튼은 채움, 영역은 점선 테두리 `.d0-s-zone`).
+- 부분마다 이름·뜻을 붙여야 하면 화면 글자 곁에 설명을 쓰지 말고 번호 핀을 얹는다.
 
 ## 표 썸네일
 
@@ -51,7 +51,7 @@
   <div class="d0-pins">
     <svg viewBox="0 0 560 350" role="img" aria-labelledby="p1-t"><title id="p1-t">설명 페이지 한 장의 구성</title>
       <rect class="d0-s-frame" x="1" y="1" width="558" height="348" rx="14"/>
-      <g data-pin="1"><rect class="d0-s-area" x="16" y="16" width="527" height="63" rx="9.5"/><rect class="d0-s-accent" x="28" y="28" width="210" height="16" rx="8"/></g>
+      <g data-pin="1"><rect class="d0-s-area" x="16" y="16" width="527" height="63" rx="9.5"/><text class="d0-s-text" data-on x="28" y="42">주문 내보내기 파일은 이렇게 생겼어요</text></g>
       <g data-pin="2"><rect class="d0-s-zone" x="28" y="93" width="504" height="149" rx="12"/></g>
     </svg>
     <span class="d0-pin" data-pin="1" style="left: 45%; top: 8%" aria-hidden="true">1</span>
