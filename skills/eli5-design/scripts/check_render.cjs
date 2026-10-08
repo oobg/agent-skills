@@ -241,6 +241,6 @@ async function compare(browser, shot, abs) {
   uniq.forEach(([lv, m]) => console.log(`${lv} ${m}`));
   const fails = uniq.filter((r) => r[0] === 'FAIL').length;
   console.log(fails ? `\n${fails}개 실패` : `\n기계 검사 통과(${widths.join('·')}px). 네 질문은 렌더를 보고 따로 답한다.`);
-  if (results.compare) console.log(`\n${results.compare}\n이 이미지를 열어 본보기(오른쪽)가 그림으로 보인 곳을 내가(왼쪽) 글·격자·아이콘으로 때운 곳을 찾는다.`);
+  if (results.compare) console.log(`\n${results.compare}\n이 이미지를 열어 본보기(오른쪽)가 그림으로 보인 곳을 내가(왼쪽) 글·격자·아이콘으로 때운 곳을 찾는다. 색·배치·그림 종류는 본보기를 따라 하지 않고 주제에 맞게 다채롭게 둔다.`);
   process.exit(fails ? 1 : 0);
 })();

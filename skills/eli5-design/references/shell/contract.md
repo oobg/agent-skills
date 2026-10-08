@@ -38,7 +38,7 @@ page 골격이 무엇을 보장하고 생성자가 무엇을 고르는지 적는
 - 루트는 `main.d0-page` 하나, 그 안에 `header.d0-header` 하나와 `section.d0-section[aria-labelledby]` 여럿이다. 섹션 머리는 `header.d0-section-head > h2`다.
 - 그림은 `figure.d0-fig`, 표는 `table` + `caption` + `th scope`, 수치는 `data value`, 날짜·기간은 `time datetime`이다.
 - 인터랙션은 실제 `button`·`input`·`details`와 짧은 바닐라 JS로 짓는다. 상태는 `data-*` 속성(`data-on`, `data-selected`, `data-active-pin`)으로 나타낸다.
-- 색·radius·모션은 `var(--d0-*)` 토큰만 쓴다. 토큰에 없는 이름을 만들지 않는다(흰 표면 `#fff`만 예외).
+- 색·radius·모션은 `var(--d0-*)` 토큰과 삽화 보조 색 `data-hue`만 쓴다. 토큰에 없는 이름을 만들지 않는다(흰 표면 `#fff`만 예외).
 - 한 artifact 안에서 여러 페이지를 iframe으로 보여 주면 `src`로 같은 artifact를 부르지 않고 `srcdoc` + `sandbox="allow-scripts"`를 쓴다(자세한 내용은 [publishing.md](../publishing.md)).
 
 ## 인쇄

@@ -432,6 +432,24 @@ svg.d0-mlist__chart { display: block; width: 100%; height: auto; }
 .d0-s-edge[data-ahead] { stroke-dasharray: 4 5; }
 .d0-s-area { fill: var(--area-fill, none); stroke: var(--area-line, none); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .d0-s-target { fill: none; stroke: var(--d0-grey-700); stroke-width: 1.5; stroke-dasharray: 6 4; } /* 목표선·기준선: 값 라벨을 함께 적는다 */
+/* 삽화 보조 색: 비유 사물의 면과 사물·범주 구분에만. 초점은 blue, 상태는 의미색. 색상은 상태색(green·orange·red)과 떨어뜨렸다.
+   진한 색(선·글자) 대비 흰 · 자기 옅은 면 · blue-light: sky 5.27·4.65·4.73, mint 5.25·4.65·4.71, lavender 5.32·4.61·4.78, pink 5.42·4.68·4.86, butter 5.27·4.66·4.73 */
+:root {
+  --eli5-sky: #20758c; --eli5-sky-bg: #d7f6ff;
+  --eli5-mint: #1e796b; --eli5-mint-bg: #d8f8f1;
+  --eli5-lavender: #716399; --eli5-lavender-bg: #f1ecff;
+  --eli5-pink: #8e597d; --eli5-pink-bg: #ffe8f8;
+  --eli5-butter: #7b6b2c; --eli5-butter-bg: #fcf1c6;
+}
+[data-hue="sky"] { --hue: var(--eli5-sky); --hue-bg: var(--eli5-sky-bg); }
+[data-hue="mint"] { --hue: var(--eli5-mint); --hue-bg: var(--eli5-mint-bg); }
+[data-hue="lavender"] { --hue: var(--eli5-lavender); --hue-bg: var(--eli5-lavender-bg); }
+[data-hue="pink"] { --hue: var(--eli5-pink); --hue-bg: var(--eli5-pink-bg); }
+[data-hue="butter"] { --hue: var(--eli5-butter); --hue-bg: var(--eli5-butter-bg); }
+[data-hue="blue"] { --hue: var(--d0-blue-dark); --hue-bg: var(--d0-blue-light); }
+.d0-s-obj { fill: var(--hue-bg, var(--d0-grey-100)); stroke: var(--hue, var(--d0-grey-600)); stroke-width: 1.5; stroke-linejoin: round; } /* 삽화 면: 자기나 조상 g의 data-hue */
+.d0-s-ink { fill: var(--hue, var(--d0-grey-600)); }                                   /* 삽화 속 작은 진한 디테일 */
+.d0-s-text[data-hue]:not([data-on]) { fill: var(--hue); }
 .d0-fig[data-genre="editorial"] { grid-template-columns: minmax(64px, 120px) minmax(0, 1fr); grid-template-areas: "obj num" "obj cap"; align-items: end; column-gap: 24px; row-gap: 6px; }
 .d0-fig[data-genre="editorial"] > svg { grid-area: obj; align-self: center; width: 100%; max-width: 120px; }
 .d0-ed__num { grid-area: num; margin: 0; color: var(--d0-grey-900); font-size: 56px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
