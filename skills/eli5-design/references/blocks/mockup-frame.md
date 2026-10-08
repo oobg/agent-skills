@@ -17,10 +17,10 @@
 
 ## 언제 쓰나 / 변형
 
-- compare 시안 변형, preview에서 "이 화면에서 어떻게 받나"를 보여 줄 때. 와이어프레임으로 충분하면 [diagram.md](diagram.md) (d).
+- compare 시안 변형, preview에서 "이 화면에서 어떻게 받나"를 보여 줄 때. 와이어프레임으로 충분하면 [diagrams/annotation.md](../diagrams/annotation.md) 화면 골격.
 - `data-variant="modal"`: 하나씩 묻기(단계마다 fieldset 하나). `data-variant="panel"`: 오른쪽 패널(`.d0-panel`)에 모든 fieldset을 한 번에.
   `.d0-sheet`는 tab-preview의 표 클래스이므로 이 블록에서 쓰지 않는다.
-- A/B는 같은 데이터·같은 높이. 화면을 실제 크기로 견주는 동시 비교라 `.d0-wide`(오른쪽만 프레임 끝까지) 안 `.d0-cols`(넓은 구간 분할선)로 960px 이상 2열, 그 아래 세로다([shell.md](shell.md) 넓은 구간 (a)). 작은 와이어 두 장을 견주는 정도면 축 안 `.d0-cols`로 충분하다. 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
+- A/B는 같은 데이터·같은 높이. 화면을 실제 크기로 견주는 동시 비교라 `.d0-wide`(축 중심 그대로 양쪽으로 프레임까지) 안 `.d0-cols`(넓은 구간 분할선)로 960px 이상 2열, 그 아래 세로다([shell/contract.md](../shell/contract.md) 넓은 구간 (a)). 작은 와이어 두 장을 견주는 정도면 축 안 `.d0-cols`로 충분하다. 완성 예는 [preview-compare.html](../examples/preview-compare.html) ③.
 - 눌러 볼 필요 없이 화면의 한 곳을 짚어 보이면 아래 [Screenshot spotlight](#screenshot-spotlight-figured0-shot)(`figure.d0-shot`)를 쓴다.
 
 ## 스니펫
@@ -270,7 +270,7 @@ html { scrollbar-gutter: stable; } /* 스냅 속성 없음 */
 
 - 타이틀바 높이 36~40px, grey-50 바탕, 아래 1px grey-200. 왼쪽 신호등 점 3개(12px 원, `--d0-red`·`--d0-orange`·`--d0-green`, `aria-hidden`), 가운데 현재 페이지 제목(13px grey-600, 탭을 바꾸면 갱신), 오른쪽 "새 탭에서 열기" 버튼.
 - 창 전체는 `--d0-radius-card`, 1px grey-200 테두리, `--d0-shadow-overlay`. 그림자는 "떠 있는 창"이라는 예외로만 허용한다.
-- **신호등은 장식이다.** 의미색 예산·대비 게이트에서 제외한다(상태를 뜻하지 않고, 누를 수도 없다). 점 3개 말고 다른 곳에 red·orange·green을 쓰지 않는다.
+- **신호등은 장식이다.** 의미색 예산·대비 검사에서 뺀다(상태를 뜻하지 않고, 누를 수도 없다). 점 3개 말고 다른 곳에 red·orange·green을 쓰지 않는다.
 
 **탭.** `role="tablist"` + 탭마다 `role="tab"`(`aria-selected`, `aria-controls`), 패널은 `role="tabpanel"`.
 
@@ -390,14 +390,14 @@ document.querySelectorAll('[data-variant="gallery"]').forEach(function (g) {
 - **mobile** = 폰. 바깥 베젤 8px `--d0-grey-900`, 모서리 44px, `--d0-shadow-overlay`. 화면 폭 **375px 고정**(내장 페이지 `innerWidth`가 375),
   위 상태줄 40px(시각 "9:41" · 다이내믹 아일랜드 알약 하나 · 배터리 SVG), 아래 홈 인디케이터 줄 120×5px. 상태줄·홈 줄은 `aria-hidden`.
   노트북 창 타이틀바는 숨긴다(새 탭 링크도 함께 사라진다. 새 탭은 PC 폭으로 열리므로 폰 모드에서는 두지 않는다).
-- **이 폰 규칙(폭 375px 고정·최소 높이)은 iframe으로 실제 페이지를 넣을 때만 적용한다.** 정적 그림(SVG·미니 마크업) 둘레의 축소 프레임은 `patterns/preview.md` 규칙(폭 140~200px, 베젤 6px, 모서리 28px)을 따른다.
+- **이 폰 규칙(폭 375px 고정·최소 높이)은 iframe으로 실제 페이지를 넣을 때만 적용한다.** 정적 그림(SVG·미니 마크업) 둘레의 축소 프레임은 폭 140~200px, 베젤 6px, 모서리 28px로 그린다.
 - 폰 높이는 창 행(`1fr`)의 남은 높이를 채우되 **최대 812px, 최소 560px**, 가로 가운데. 폰 화면 iframe도 내장 문서 `head` 주입으로 `overscroll-behavior: contain`.
 - 토글은 탭 줄 오른쪽에 버튼 2개(`aria-pressed`)를 `role="group"`으로 묶는다. 타이틀바 안에 두지 않는다(폰 모드에서 사라진다).
   **iframe을 다른 부모로 옮기지 않는다.** 옮기면 `srcdoc`이 다시 로드된다. 같은 iframe에 창 모양(`data-device`)만 바꾼다.
 - **640px 이하 화면에서는 폰 프레임을 겹치지 않는다.** 베젤까지 391px라 343px 본문에 들어가지 않고, 작은 화면은 그 자체가 폰이다.
   폰 스타일은 `min-width: 641px`에서만 적용하고 토글은 숨긴다. 이때 창은 본문 폭 노트북 창이며 내장 페이지는 본문 폭(약 341px)으로 보인다.
   `innerWidth = 375` 검증은 641px 이상 뷰포트의 mobile 모드에서 한다.
-- 베젤·아일랜드·상태줄·홈 줄은 장식이다. 의미색 예산·대비 게이트에서 제외한다(신호등 점과 같은 예외). 상태줄 아이콘은 글리프 대신 SVG로 그린다(서브셋 폰트에 없는 기호를 피한다).
+- 베젤·아일랜드·상태줄·홈 줄은 장식이다. 의미색 예산·대비 검사에서 뺀다(신호등 점과 같은 예외). 상태줄 아이콘은 글리프 대신 SVG로 그린다(서브셋 폰트에 없는 기호를 피한다).
 
 ```css
 .d0-gallery__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
@@ -434,23 +434,23 @@ devs.forEach(function (b) {
 ## Screenshot spotlight (`figure.d0-shot`)
 
 실제 화면 한 장에서 **봐야 할 곳 하나**를 밝히고 나머지는 흐리게 한다. 화면 내용이 주인공이라 프레임 크롬(타이틀바·신호등·베젤)은 두지 않는다.
-page에서 화면 상자는 축 폭을 채우고 주석은 그 아래에 둔다. 주석을 화면 옆 열에 두려면 figure를 `.d0-wide` 바로 안에 두고 2열 분할선을 따른다(960px 이상, 화면 7 | 주석 5는 `data-split="7-5"`, [shell.md](shell.md) 넓은 구간 (b)·2열 (b)). 넓은 구간은 오른쪽만 프레임 끝까지 늘어나고 화면 열의 왼쪽은 축 시작선 그대로다.
-구도는 Spotlight([composition.md](../composition.md)), deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
-**축 폭 화면과 넓은 구간 2열 격자는 page 전용이다.** 덱 슬라이드에서는 [slide-deck.md](slide-deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
+page에서 화면 상자는 축 폭을 채우고 주석은 그 아래에 둔다. 대상 폭 문턱(640px 1136·720px 1216·넓은 구간 960px 1456px) 이상에서는 주석이 화면 오른쪽 바깥 192px 사이드 패널로 붙고, 화면 상자의 위치·폭은 그대로다([shell/contract.md](../shell/contract.md) 사이드 패널 절, `assets/page.css`). 주석이 화면보다 길면 `data-key="below"`로 늘 아래에 둔다. `.d0-wide`와 `data-split`은 쓰지 않는다.
+deck에서는 `data-kind="screenshot"` 슬라이드가 이 블록을 쓴다.
+**축 폭 화면과 사이드 패널 격자는 page 전용이다.** 덱 슬라이드에서는 [recipes/deck.md](../recipes/deck.md) screenshot 덱 격자(화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열)가 이 격자를 덮는다. 화면·spot·dim·번호 규칙은 덱에서도 그대로다.
 
 **해부 구조.**
 
 - `figure.d0-shot` = 화면 상자 `div.d0-shot__screen` → 주석 `p.d0-shot__note` 1~3개 → `figcaption` 한 줄.
-- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 폭은 놓인 자리(축, 2열 열, `.d0-wide` 안 화면 열)를 채우고, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
+- 화면 상자 = 화면 하나(이미지 `img`, 정적 미니 마크업, 또는 화면 SVG) + `span.d0-shot__spot` 1~3개. 폭은 놓인 자리(축, 2열 열)를 채우고, 1px grey-200 테두리, `--d0-radius-card`, 흰 바탕, 그림자 없음.
 - **spot.** 위치는 화면 상자 기준 백분율 인라인 변수 `style="--x:..%;--y:..%;--w:..%;--h:..%"`(왼쪽·위·폭·높이). 2px blue 테두리, `--d0-radius-sm`.
   왼쪽 위 모서리에 번호 배지(`b.d0-shot__num`, 24px blue-dark 원 + 흰 숫자 5.5:1). 위치 변수는 `--d0-*`가 아니다(토큰을 새로 만들지 않는다).
 - **dim.** 주인공 spot 하나(`data-dim`)의 바깥을 반투명 막으로 덮는다. 기본은 grey 막(grey-900 14%, 12~16% 범위)이다. 대부분의 앱 화면은 바탕이 희어서 흰 막은 거의 보이지 않는다. 어둡거나 진한 화면(사진, 진한 바탕의 화면)만 흰 막(`data-dim="white"`, `#fff` 62%)을 고른다.
   막은 spot의 `outline`이 화면 상자 끝까지 번지는 단단한 경계다. 그라디언트·blur·두꺼운 그림자, 16%보다 짙은 막은 쓰지 않는다. 화면 상자의 `overflow: hidden`이 막을 자른다.
   **spot 안은 원래 화면 그대로 보인다.** 막은 spot 바깥(`outline`)에만 있고 spot에는 `background`를 칠하지 않는다(spot 안이 검게·회색으로 렌더되면 결함이다). 테두리와 번호만 화면 위에 얹는다.
 - **spot이 둘 이상이면** dim은 하나만 건다(막이 서로를 덮는다). 나머지 spot은 테두리와 번호만 둔다. spot은 3개까지다.
-- **주석.** `p.d0-shot__note`마다 spot과 같은 번호 배지 + 한 문장. 번호가 짝을 맺는다. 화면 아래에 쌓이고, `.d0-wide` 안 960px 이상에서만 화면 오른쪽 열에 놓인다.
+- **주석.** `p.d0-shot__note`마다 spot과 같은 번호 배지 + 한 문장. 번호가 짝을 맺는다. 화면 아래에 쌓이고, 문턱 이상에서만 화면 오른쪽 바깥 패널에 놓인다(위에서부터 차례로).
 
-**pins와의 관계.** 번호로 그림과 설명을 짝짓는 방식은 [diagram.md](diagram.md) (g) pins를 그대로 확장한다. 다른 점은 셋이다.
+**pins와의 관계.** 번호로 그림과 설명을 짝짓는 방식은 [diagrams/annotation.md](../diagrams/annotation.md) 번호 핀를 그대로 확장한다. 다른 점은 셋이다.
 pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사각 영역**이다. d0-shot은 바깥을 **흐린다**. d0-shot은 정적이다(hover 연동이 필요하면 pins를 쓴다).
 
 ```html
@@ -487,15 +487,7 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 .d0-shot__note { display: flex; align-items: baseline; gap: 10px; margin: 0; color: var(--d0-grey-800); font-size: 15px; }
 .d0-shot__note .d0-shot__num { transform: translateY(-1px); }
 .d0-shot figcaption { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
-@media (min-width: 960px) {
-  /* page 전용: .d0-wide 바로 안에서만 화면 | 주석. 분할선은 .d0-cols와 같다(12열, 열 사이 48px). 남는 높이는 마지막 행이 받아 주석이 위로 붙는다. 덱은 slide-deck.md 덱 격자가 덮는다 */
-  .d0-wide > .d0-shot { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 48px; grid-template-rows: repeat(3, auto) 1fr; align-items: start; }
-  .d0-wide > .d0-shot .d0-shot__screen { grid-column: 1 / span 6; grid-row: 1 / span 4; }
-  .d0-wide > .d0-shot .d0-shot__note { grid-column: 7 / span 6; }
-  .d0-wide > .d0-shot[data-split="7-5"] .d0-shot__screen { grid-column: 1 / span 7; }
-  .d0-wide > .d0-shot[data-split="7-5"] .d0-shot__note { grid-column: 8 / span 5; }
-  .d0-wide > .d0-shot figcaption { grid-column: 1 / -1; }
-}
+/* 화면 | 주석 배치는 page.css 사이드 패널 격자가 맡는다(page 전용, 문턱 이상, data-key="below" 제외). 덱은 deck.css 덱 격자(recipes/deck.md)가 덮는다 */
 ```
 
 - **위치 재기.** spot 변수 = 화면 이미지 픽셀 좌표 ÷ 이미지 크기 × 100%(예: 1280×800 화면의 버튼 (947, 24)~(1229, 112) → `--x:74%;--y:3%;--w:22%;--h:11%`). 상자가 화면과 같은 비율로 줄어 375px에서도 같은 곳을 가리킨다.
@@ -506,7 +498,7 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
   뜻은 주석 `p`가 텍스트로 순서대로 전한다(번호 숫자도 텍스트로 읽힌다). 위치를 색으로만 말하지 않는다: 주석에 "오른쪽 위"처럼 자리를 쓴다.
 - **대비.** spot 테두리 blue는 spot 안쪽(막 없는 화면) 기준 흰 바탕 3.99로 3:1을 넘는다. 번호 배지는 막에 덮이지 않는다(다른 spot은 `z-index`로 막 위에 둔다). 번호는 blue-dark 위 흰 글자 5.5다. 막에 덮인 화면 글자는 맥락일 뿐이라 정보를 싣지 않는다(정보는 주석에 쓴다).
 - **색 비율.** 번호 배지와 spot 테두리만 blue 계열이다. 막은 색 비율에 세지 않는다(옅은 면).
-- 실제 화면이 없으면 [diagram.md](diagram.md) (d) 와이어프레임 SVG를 화면 자리에 넣는다. 화면 크롬(창 타이틀바, 폰 베젤)이 필요하면 갤러리 기기 프레임을 쓰고 spotlight와 섞지 않는다.
+- 실제 화면이 없으면 [diagrams/annotation.md](../diagrams/annotation.md) 화면 골격 와이어프레임 SVG를 화면 자리에 넣는다. 화면 크롬(창 타이틀바, 폰 베젤)이 필요하면 갤러리 기기 프레임을 쓰고 spotlight와 섞지 않는다.
 
 ## 금지
 
@@ -516,4 +508,4 @@ pins는 글자 없는 SVG 위의 점이고 d0-shot은 실제 화면 위의 **사
 - 고스트 카드에 가짜 문장 채우기(자리만 잡는다), 시안마다 다른 높이·데이터.
 - `iframe src`로 다른 파일·URL 불러오기(artifact에서 끊긴다), `sandbox` 없는 iframe.
 - 실제 파일 다운로드·외부 전송. 결과는 토스트로만 알린다. 프레임 안 `main` 요소, `div`에 `role="dialog"`(네이티브 `dialog` 우선).
-- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), 축 안에서 화면 옆에 주석 열 두기(옆 열은 `.d0-wide` 안에서만), 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.
+- d0-shot에 그라디언트·blur·두꺼운 그림자·짙은 막(grey 16%·흰 62% 초과), spot 안에 칠한 배경(화면이 가려진다), 축 안 2열이나 `.d0-wide`로 화면 옆에 주석 열 두기(옆에 붙이는 것은 사이드 패널만), 진한 화면에 grey 막(대비가 사라진다), dim 둘 이상, spot 4개 이상, 번호 없는 spot, 주석 없이 spot만 두기, 화면 크롬(타이틀바·베젤) 두르기, 위치를 px로 고정해 375px에서 어긋나기.

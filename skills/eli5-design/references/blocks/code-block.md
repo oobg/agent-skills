@@ -8,7 +8,7 @@
   스크롤 상자는 키보드로 닿도록 `tabindex="0"` + `role="group"` + `aria-label`을 둔다. 페이지 가로 스크롤은 금지다.
 - 프롬프트 기호(`$`, `>`)는 `span.d0-code__prompt aria-hidden="true"`로 감싸 복사·선택 대상에서 뺀다(`user-select: none`, JS가 복사 전 제거).
 - 색: 코드 면 grey-900 + 흰 글자(16.56), 바 grey-800 + 라벨 grey-300(7.38), 버튼 흰 글자(11.67) + 1px grey-500 테두리(3.65).
-  shell.md 기본 포커스 링(blue-dark)은 grey-800 위 2.12라 버튼은 흰 링(11.67)을 따로 둔다. hover 면은 grey-700(흰 글자 7.65).
+  page.css 기본 포커스 링(blue-dark)은 grey-800 위 2.12라 버튼은 흰 링(11.67)을 따로 둔다. hover 면은 grey-700(흰 글자 7.65).
 - 크기: 코드 13px(`--d0-text-compact`), 행간 `--d0-leading-body`, 패딩 14px 16px, radius `--d0-radius-control`. 라벨 12px(`--d0-meta`). 버튼 높이 32px.
 - **글꼴 예외.** 코드만 시스템 모노 스택(`ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`)을 쓴다. tokens.css에 모노 토큰이 없어서다.
   모노 글자는 `scripts/subset_font.py` 서브셋 대상이 아니다(Pretendard 서브셋은 그대로 만든다).
@@ -20,8 +20,8 @@
 
 ## 언제 쓰나 / 변형
 
-- 독자가 그대로 붙여 넣을 명령·설정·문구가 있을 때. guide 따라하기에서는 checklist 행의 `<details>` 안에 둔다([guide.md](../patterns/guide.md)).
-- 코드 블록은 **그림 블록이 아니다.** 첫 화면 섹션의 그림 게이트에 세지 않는다. 혼자 섹션을 채우지 않고 checklist·accordion 행 안이나 그림 옆 설명 칸에 붙인다.
+- 독자가 그대로 붙여 넣을 명령·설정·문구가 있을 때. 따라하기에서는 [checklist](checklist.md) 행의 `<details>` 안에 둔다.
+- 코드 블록은 **그림 블록이 아니다.** 첫 화면 그림을 대신하지 않는다. 혼자 섹션을 채우지 않고 checklist·accordion 행 안이나 그림 옆 설명 칸에 붙인다.
 - 줄 길이 규칙(축 한 줄 안에 끝나는 글)의 예외다(코드 줄). 대신 한 블록은 10줄 이내로 쓰고, 더 길면 파일로 받게 하고 파일 이름만 보인다.
 - 붙여 넣을 값 중 독자가 바꿔야 하는 부분은 `<자리표시>`로 쓰고 블록 아래 결과 한 줄에서 무엇으로 바꾸는지 말한다.
 

@@ -51,7 +51,7 @@
 .d0-slide[data-surface="dark"] .d0-slide__tag { background: transparent; box-shadow: inset 0 0 0 1px var(--d0-blue-light); color: #fff; }
 .d0-slide[data-surface="dark"] kbd { border-color: var(--d0-blue-light); color: #fff; }
 /* 진한 면 위 대표 도식: 선·빈 노드 blue-light, 강조 흰색. blue·의미색 표식은 두지 않는다 */
-.d0-slide[data-surface="dark"] :is(.d0-s-edge, .d0-s-ring, .d0-s-line, .d0-s-life, .d0-sl-link, .d0-sl-axis) { stroke: var(--d0-blue-light); }
+.d0-slide[data-surface="dark"] :is(.d0-s-edge, .d0-s-ring, .d0-s-line, .d0-s-life, .d0-s-target, .d0-sl-link, .d0-sl-axis) { stroke: var(--d0-blue-light); }
 .d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step, .d0-s-frame) { fill: var(--d0-blue-dark); stroke: var(--d0-blue-light); }
 .d0-slide[data-surface="dark"] :is(.d0-s-node, .d0-s-step)[data-on] { fill: #fff; stroke: #fff; }
 .d0-slide[data-surface="dark"] .d0-s-edge[data-on] { stroke: #fff; }
@@ -84,7 +84,7 @@
 .d0-slide[data-surface="dark"] .d0-pill::before { background: #fff; }
 /* 덱에서 새로 만든 로컬 도형 클래스는 진한 면 색을 직접 정한다(위 역할대로) */
 
-/* 근거 변형(evidence.md)을 evidence 장 그림 자리에: 근거 요소가 몸 행을 채운다 */
+/* 근거 변형(.d0-mlist·.d0-barlist·.d0-tiles)을 evidence 장 그림 자리에: 근거 요소가 몸 행을 채운다 */
 .d0-slide__fig > :is(.d0-mlist, .d0-barlist, .d0-tiles) { min-height: 0; height: 100%; }
 .d0-slide__fig .d0-mlist { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 4cqi; }
 .d0-slide__fig .d0-mlist__rows { gap: 2.4cqi; align-content: center; }
@@ -98,7 +98,7 @@
 .d0-slide__fig .d0-tiles { grid-auto-rows: 1fr; gap: 1.6cqi; }
 .d0-slide__fig .d0-tiles > div { padding: 2.4cqi; align-content: center; }
 
-/* 주석(diagram.md annotate)을 덱 그림에: SVG 높이를 내용대로 두어 번호 위치가 맞게 */
+/* 번호 주석(.d0-annot)을 덱 그림에: SVG 높이를 내용대로 두어 번호 위치가 맞게 */
 .d0-slide__fig .d0-annot { align-self: center; justify-self: center; max-width: 100%; }
 .d0-slide .d0-slide__fig .d0-annot svg { height: auto; max-height: none; max-width: 100%; }
 .d0-slide__fig .d0-annot > .d0-pin { width: 2.8cqi; height: 2.8cqi; font-size: 1.5cqi; }

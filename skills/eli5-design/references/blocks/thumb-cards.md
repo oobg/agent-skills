@@ -5,8 +5,8 @@
 - 3~5장. 각 장 = 그림(미니 격자 또는 와이어프레임 SVG) → 이름(15px/600) → 상태 배지 하나(카드마다 1개까지).
 - 그림이 카드 면적의 대부분이다. 카드 안에 설명 문단을 넣지 않는다(이름과 배지면 충분).
 - 같은 크기·같은 정보량. 카드는 흰 면 + 1px grey-200 테두리(기준 톤의 예외 허용). hover에서 테두리가 블루로 바뀌고 2px 올라온다. reduced-motion이면 올라오지 않는다.
-- 그림은 [diagram.md](diagram.md)의 (c) 미니 격자 `d0Grid()`나 (d) 와이어프레임을 작게 쓴다. 장마다 실제 모양이 달라야 한다.
-- 배지는 [shell.md](shell.md)의 `.d0-pill` 규칙(높이 22px 고정, 톤별 대비)을 그대로 쓴다.
+- 그림은 [diagrams/annotation.md](../diagrams/annotation.md)의 표 썸네일(`data-grid`)이나 화면 골격을 작게 쓴다. 장마다 실제 모양이 달라야 한다.
+- 배지는 [shell/contract.md](../shell/contract.md)의 `.d0-pill` 규칙(높이 22px 고정, 톤별 대비)을 그대로 쓴다.
 - 색: 격자는 머리 행 blue-light, 합계 blue, 키 열 grey-400이 기본이다. 와이어프레임은 바뀌는 곳 하나를 blue로. 회색만 있는 썸네일은 금지다.
 
 ## 언제 쓰나 / 변형
@@ -14,7 +14,7 @@
 - "무엇이 몇 개 있고 각각 어떤 모양인가"를 첫 화면에 보여 줄 때(결과물 묶음, 화면 목록, 시안 목록).
 - 카드가 섹션 이동 링크면 `<li>` 안을 `<a class="d0-thumb">`로 만든다. 아니면 `<li class="d0-thumb">`만 쓴다.
 - 카드끼리 상태가 갈리면 기본 상태에도 배지를 단다(`지금 가능` green / `준비 중` orange / `백엔드 필요` orange 등). 대비가 색의 이유다.
-  모든 카드가 같은 상태면 배지를 빼고 섹션 설명 한 줄로 말한다. 톤 종류는 페이지 전체에서 3가지 이하([shell.md](shell.md) 색 절).
+  모든 카드가 같은 상태면 배지를 빼고 섹션 설명 한 줄로 말한다. 톤 종류는 페이지 전체에서 3가지 이하([shell/contract.md](../shell/contract.md) 색 절).
 - **카드 수와 열.** 기본 격자는 `auto-fit`이라 3·5장은 한 줄을 채운다. 4장이면 `data-count="4"`로 데스크톱 4열·640px 이하 2열에 고정한다
   (`auto-fill`이나 큰 최대 폭에서는 빈 트랙이 남거나 3+1로 접힌다).
 - **카드 수와 그림 폭.** 카드 그림 폭은 약 280px 이하다. 카드가 축 폭(720px)을 나눠 그림이 그보다 커지면(2장 이하) `data-layout="row"`로 바꾼다:
@@ -56,7 +56,7 @@
     <span class="d0-pill" data-tone="blue">새 화면</span>
   </li>
 </ul>
-<!-- data-grid는 diagram.md (c)의 d0Grid() 스크립트가 SVG로 바꾼다. d0-s-* 클래스도 diagram.md 공용 CSS. -->
+<!-- data-grid는 assets/page.js가 SVG로 바꾼다. d0-s-* 클래스는 page.css에 있다. -->
 ```
 
 ```css

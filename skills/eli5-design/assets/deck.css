@@ -1,4 +1,4 @@
-/* shell.md 기본값(토큰 인라인, color-scheme, box-sizing, body 글꼴·keep-all, .d0-sr-only, :focus-visible, reduced-motion)은 그대로 쓴다.
+/* page.css 기본값(토큰 인라인, color-scheme, box-sizing, body 글꼴·keep-all, .d0-sr-only, :focus-visible, reduced-motion)은 그대로 쓴다.
    덱 페이지는 .d0-page 대신 .d0-deck을 쓰고, body 배경만 grey-100으로 바꿔 흰 슬라이드 면이 보이게 한다. */
 body { background: var(--d0-grey-100); }
 .d0-deck {
@@ -61,13 +61,13 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 20px; }
 .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig svg { max-width: 84cqi; }
 .d0-slide[data-cover="center"] .d0-slide__head { max-width: 76cqi; justify-self: center; text-align: center; }
-.d0-deck[data-pattern="preview"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-pattern="report"] .d0-slide__cover { grid-template-columns: 5fr 4fr; }
-.d0-deck[data-pattern="report"] .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
+/* preview·report 덱의 side 표지만 그림 열을 넓힌다. bottom·contrast·center·map 표지의 배치는 바꾸지 않는다 */
+.d0-deck:is([data-pattern="preview"], [data-pattern="report"]) .d0-slide:where([data-cover="side"], [data-kind="cover"]:not([data-cover])) .d0-slide__cover { grid-template-columns: 5fr 4fr; }
+.d0-deck[data-pattern="report"] .d0-slide:where([data-cover="side"], [data-kind="cover"]:not([data-cover])) .d0-slide__cover .d0-slide__fig { --sl-font: 24px; }
 .d0-slide[data-cover="map"] .d0-slide__cover { grid-template-columns: 2fr 1fr; }
 .d0-slide[data-cover="map"] .d0-slide__cover > .d0-slide__fig { height: auto; align-self: end; }
 /* side(생략 포함): 그림과 해석 줄을 한 묶음으로 세로 가운데. 1fr 행이면 해석 줄만 아래로 떨어진다 */
-.d0-slide:is([data-cover="side"], [data-kind="cover"]:not([data-cover])) .d0-slide__cover > .d0-slide__fig { grid-template-rows: auto auto; } /* side는 작은 그림 전용(가로로 긴 도식은 bottom 등으로) */
+.d0-slide:where([data-cover="side"], [data-kind="cover"]:not([data-cover])) .d0-slide__cover > .d0-slide__fig { grid-template-rows: auto auto; } /* side는 작은 그림 전용(가로로 긴 도식은 bottom 등으로) */
 @container (min-width: 731px) {
   .d0-slide[data-cover="map"] .d0-slide__fig svg[viewBox^="0 0 800 "] { --sl-font: 30px; } /* 안전망: 좁은 지도 열(약 370px)에서 30 × 370 ÷ 800 ≈ 14px. 기본은 400 폭 표지용 지도 */
 }
@@ -106,7 +106,7 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-slide[data-kind="evidence"] .d0-slide__note,
 .d0-slide[data-kind="breakdown"] .d0-slide__note { justify-self: center; color: var(--d0-grey-800); }
 
-/* screenshot: 슬라이드 안 자리와 크기만. 화면·spot·dim·번호는 mockup-frame.md
+/* screenshot: 슬라이드 안 자리와 크기만. 화면·spot·dim·번호는 references/blocks/mockup-frame.md
    덱 격자: 화면 열이 몸 높이를 채우고 주석·캡션은 오른쪽 열. mockup-frame의 560px 상한·900px 2열(page 전용)을 덮는다 */
 .d0-slide[data-kind="screenshot"] .d0-shot {
   min-height: 0; height: 100%;
@@ -169,13 +169,16 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
 .d0-sl-bar { fill: var(--d0-grey-400); }
 .d0-sl-bar[data-on] { fill: var(--d0-blue); }
 .d0-sl-total { fill: var(--d0-grey-200); }
-.d0-sl-value text, .d0-sl-label text, .d0-sl-head text { font-family: var(--d0-font); font-size: var(--sl-font, 17px); text-anchor: middle; font-variant-numeric: tabular-nums; }
+.d0-sl-value text, .d0-sl-label text, .d0-sl-head text { font-family: var(--d0-font); font-size: var(--sl-font, 17px); font-variant-numeric: tabular-nums; }
+/* 정렬 기본값은 text-anchor 속성이 없는 글자에만 건다. SVG에 적은 text-anchor="start|end"를 CSS가 덮지 않는다 */
+:where(.d0-sl-value, .d0-sl-label) text:not([text-anchor]) { text-anchor: middle; }
 .d0-sl-value text { fill: var(--d0-grey-700); font-weight: 600; }
 .d0-sl-value text[data-on] { fill: var(--d0-blue-dark); }
 .d0-sl-label text { fill: var(--d0-grey-600); }
 .d0-sl-label text[data-on] { fill: var(--d0-blue-dark); font-weight: 600; }
-.d0-sl-head text { fill: var(--d0-grey-800); font-weight: 600; text-anchor: start; }
-/* 공용 도형(d0-s-*, diagram.md 공용 CSS)을 Impact 장에 둘 때: blue-light 위 grey-500 선은 3:1 미달이라 한 단계 진하게 */
+.d0-sl-head text { fill: var(--d0-grey-800); font-weight: 600; }
+:where(.d0-sl-head) text:not([text-anchor]) { text-anchor: start; }
+/* 공용 도형(d0-s-*, page.css 도식 공용 클래스)을 Impact 장에 둘 때: blue-light 위 grey-500 선은 3:1 미달이라 한 단계 진하게 */
 .d0-slide[data-emphasis="impact"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 
 /* 네비 */
@@ -253,7 +256,8 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-slide { aspect-ratio: auto; grid-template-rows: repeat(3, max-content); gap: 16px; padding: 20px 16px 14px; }  /* 몸은 내용 높이: 긴 장은 그림을 줄이지 않고 장 안에서 스크롤 */
   .d0-slide[data-kind="cover"] { grid-template-rows: repeat(3, max-content); }
   .d0-slide__cover,
-  .d0-deck[data-pattern] .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; }
+  .d0-deck .d0-slide .d0-slide__cover,
+  .d0-deck[data-pattern] .d0-slide .d0-slide__cover { grid-template-columns: 1fr; gap: 16px; } /* map(0,3,0)·side 5:4(0,4,0) 규칙보다 뒤에서 같은 특이도로 1열 */
   .d0-slide__cover > .d0-slide__fig { height: auto; }
   .d0-slide[data-cover="center"] .d0-slide__head { max-width: none; }
   .d0-slide:is([data-cover="contrast"], [data-cover="bottom"], [data-cover="center"]) .d0-slide__fig { --sl-font: 30px; }

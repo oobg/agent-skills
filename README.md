@@ -42,7 +42,7 @@
 | --- | --- |
 | [dark-saas-design](skills/dark-saas-design/SKILL.md) | 다크 히어로와 라이트 본문을 잇는 한국어 B2B SaaS 랜딩, 소개, 요금 페이지를 구현합니다. |
 | [day0-design](skills/day0-design/SKILL.md) | Day0의 타이포그래피, 색, 상태, 모션 규칙으로 제품 UI를 구현합니다. |
-| [eli5-design](skills/eli5-design/SKILL.md) | 처음 보는 사람도 그림만 훑어 이해하는 한 장짜리 HTML 설명 페이지를 Day0 시각 언어로 만듭니다. `day0-design`과 함께 설치하는 것을 권장하며, 없으면 공개 저장소 원본을 읽으므로 네트워크가 필요합니다. |
+| [eli5-design](skills/eli5-design/SKILL.md) | 처음 보는 사람도 그림으로 먼저 이해하는 HTML 설명·결정·보고 페이지나 발표 덱을 Day0 시각 언어로 만듭니다. `day0-design`과 함께 설치하는 것을 권장하며, 없으면 공개 저장소 원본을 읽으므로 네트워크가 필요합니다. |
 
 ### 미디어 제작
 

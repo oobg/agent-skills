@@ -12,7 +12,7 @@
 
 - flow에서 단계마다 "누가 무엇을 하고 무엇이 나오는가"를 나란히 보여 줄 때.
 - 640px 이하에서는 세로로 쌓이고, 디바이더가 위쪽 가로선으로 바뀐다.
-- **자리(page).** 2~4열은 읽기 축(기본 720px, report 960px)에 둔다. 5열은 축 720px에서 칸이 144px라 열 그림과 `dd` 한 문장이 들어가지 않으므로 `<div class="d0-wide">` 바로 안에 `ol.d0-steps` 하나로 두고 오른쪽만 프레임 끝까지 넓힌다(2열 `.d0-cols`로 감싸지 않는다, [shell.md](shell.md) 넓은 구간 (c)). report 축 960px에서는 5열도 칸이 192px라 축에 둘 수 있다.
+- **자리(page).** 2~4열은 읽기 축(기본·report 720px)에 둔다. 5열은 축 720px에서 칸이 144px라 열 그림과 `dd` 한 문장이 들어가지 않으므로 `<div class="d0-wide">` 바로 안에 `ol.d0-steps` 하나로 두고 축 중심 그대로 양쪽으로 960px까지 넓힌다(넓은 구간 칸 약 192px, 2열 `.d0-cols`로 감싸지 않는다, [shell/contract.md](../shell/contract.md) 넓은 구간 (c)).
 - `data-variant="figure"`(그림+설명 단계 열): 열마다 작은 SVG 한 장 + `하는 일`·`나오는 것` dl. 위에 따로 도식이 없을 때 이 블록이 그림 블록이 된다.
 - **사실 단계가 5를 넘으면 의미 단위로 묶어 2~5열로 줄인다.** 열 라벨은 묶은 범위(`1~3단계`)로 쓰고, h3는 묶음 이름이다.
   예: 내보내기 8단계(기간·팀·형식 고르기 / 모으기·계산·파일 만들기 / 알림·받기) → `고르기`(1~3) · `만들기`(4~6) · `받기`(7~8) 3열.
@@ -66,17 +66,13 @@
 </ol>
 ```
 
-```css
-/* diagram.md 공용 CSS(.d0-s-*)를 함께 쓴다 */
-.d0-steps[data-variant="figure"] .d0-step__fig { display: grid; place-items: center; padding: 16px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
-.d0-step__fig svg { display: block; width: 100%; max-width: 200px; height: auto; }
-```
-
-- 열 SVG는 글자 없음(라벨 크기 게이트 밖). 이름은 h3, 접근 이름은 `<title>`이 맡는다. 모든 열이 같은 viewBox(160×96)다.
+- 열 SVG는 글자 없음(그림 글자 규칙 밖). 이름은 h3, 접근 이름은 `<title>`이 맡는다. 모든 열이 같은 viewBox(160×96)다.
 - 열마다 blue나 의미색 표식은 하나다. 끝난 결과는 green 원 + 흰 체크. 회색만인 열 그림은 금지다.
 - dl 짝은 `하는 일`·`나오는 것` 두 개로 고정한다. 각 dd는 한 문장이다.
 
 ## 스니펫
+
+CSS는 `assets/page.css`에 들어 있어 따로 붙이지 않는다.
 
 ```html
 <ol class="d0-steps">
@@ -105,21 +101,6 @@
     </dl>
   </li>
 </ol>
-```
-
-```css
-.d0-steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
-.d0-step { display: grid; gap: 8px; align-content: start; padding: 4px 20px; }
-.d0-step + .d0-step { border-left: 1px solid var(--d0-grey-100); }
-.d0-step:first-child { padding-left: 0; }
-.d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-meta); font-weight: 600; }
-.d0-step dt { margin-top: 4px; font-size: 14px; font-weight: 600; }
-.d0-step dd { color: var(--d0-grey-600); font-size: 14px; }
-@media (max-width: 640px) {
-  .d0-steps { grid-auto-flow: row; }
-  .d0-step { padding: 16px 0; }
-  .d0-step + .d0-step { border-left: 0; border-top: 1px solid var(--d0-grey-100); }
-}
 ```
 
 ## 금지

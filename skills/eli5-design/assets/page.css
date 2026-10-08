@@ -1,5 +1,5 @@
 /* ../day0-design/references/tokens.css 파일 전체를 수정 없이 여기(메인 <style> 맨 앞)에 붙인다.
-   day0-design 위치는 references/day0.md의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
+   day0-design 위치는 scripts/inline_assets.py(또는 references/day0.md)의 탐색 순서를 따른다. 토큰을 외부 <link>로 걸지 않는다. */
 :root { color-scheme: light; }
 /* 스크롤바 자리를 항상 비워 둔다: 긴 페이지와 짧은 페이지를 오가거나 탭·토글로 높이가 바뀌어도 가로 폭이 흔들리지 않는다 */
 html { scrollbar-gutter: stable; }
@@ -32,19 +32,23 @@ svg { display: block; max-width: 100%; height: auto; }
 button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer; }
 .d0-sentence { display: block; }
 
-/* 본문 축: 가운데 프레임 안에서 왼쪽에 붙은 읽기 축. 폭 단계(data-width) 기본 축 720/프레임 1136, narrow 640/1136, report 960/1280(글은 720) */
-.d0-page { --d0-frame: 1136px; --d0-axis: 720px; --d0-measure: 720px; max-width: calc(var(--d0-frame) + 64px); margin: 0 auto; padding: 64px 32px 96px; }
+/* 폭은 640·720·960 세 값만 쓴다. 기본 폭(--d0-axis)은 narrow 640, 기본·report 720이고 글·그림·표가 같은 가장자리를 쓴다.
+   넓은 구간(.d0-wide)만 같은 중심선에서 양쪽으로 min(960, 가용 폭)까지 넓어진다(중간 폭 없음). report는 폭이 아니라 정보 구조 프로필이다.
+   중심 = 레이아웃 폭(스크롤바 거터를 뺀 main 폭) 가운데 */
+.d0-page { --d0-frame: 960px; --d0-axis: 720px; --d0-measure: 720px; container: d0-page / inline-size; padding: 64px 0 96px; } /* 좌우 패딩 0: 컨테이너 폭 = main 폭 */
 .d0-page[data-width="narrow"] { --d0-axis: 640px; --d0-measure: 640px; }
-.d0-page[data-width="report"] { --d0-frame: 1280px; --d0-axis: 960px; }
-/* 블록은 모두 프레임 왼쪽에서 시작한다. 글은 --d0-measure, 그림·표·지표·축 안 2열은 --d0-axis까지. 넓은 구간과 여백 주석 묶음만 예외 */
-.d0-page :is(.d0-header, .d0-section, .d0-margined) > :not(.d0-wide, .d0-margined, .d0-margin) { max-width: var(--d0-measure); }
-.d0-page :is(.d0-header, .d0-section, .d0-margined) > :is(figure, table, .d0-cols, .d0-kpis, .d0-steps, .d0-timeline, .d0-ba, .d0-sbs, .d0-thumbs, .d0-demos):not(.d0-wide) { max-width: var(--d0-axis); }
-/* 넓은 구간: 왼쪽 시작선은 그대로 두고 오른쪽만 프레임 끝까지 */
+/* 틀: 헤더·섹션은 넓은 구간 폭(960), 좌우 최소 32px(640px 이하 16px), 가운데 */
+.d0-page > * { width: min(var(--d0-frame), 100% - 64px); margin-inline: auto; }
+/* 기본 폭: 틀 안에서 가운데. 넓은 구간만 예외 */
+.d0-page > :is(.d0-header, .d0-section) > :not(.d0-wide) { margin-left: max(0px, (100% - var(--d0-axis)) / 2); }
+.d0-page :is(.d0-header, .d0-section, .d0-margined) > :not(.d0-wide, .d0-margin) { max-width: var(--d0-axis); }
+.d0-page .d0-margined.d0-wide > :not(.d0-margin) { max-width: none; }
+/* 넓은 구간: 틀 폭 = min(960, 가용 폭), 중심 그대로 양쪽으로 */
 .d0-wide { width: 100%; max-width: none; }
 /* 그림은 축 폭을 채운다(75~100%). 글자 하한은 렌더 배율로 검사 */
 .d0-fig svg { width: 100%; height: auto; }
 .d0-fig[data-fit="compact"] svg { width: 75%; margin-inline: auto; }
-/* 2열: 축 안은 6/6(각 열 300px 이상일 때만, 아니면 쌓는다). 넓은 구간 안은 12열 6/6 또는 7/5. 축 안과 넓은 구간이 각각 분할선 하나 */
+/* 2열: 축 안은 6/6(각 열 300px 이상일 때만, 아니면 쌓는다). 넓은 구간 안(A/B 실제 크기 비교, checklist linked)은 12열 6/6 또는 7/5. 축 안과 넓은 구간이 각각 분할선 하나 */
 .d0-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 24px 48px; align-items: start; }
 .d0-cols > * { min-width: 0; }
 :where(.d0-wide) .d0-cols, .d0-cols:where(.d0-wide) { grid-template-columns: minmax(0, 1fr); }
@@ -54,15 +58,37 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
   :where(.d0-wide) .d0-cols[data-split="7-5"] > :first-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :first-child { grid-column: span 7; }
   :where(.d0-wide) .d0-cols[data-split="7-5"] > :last-child, .d0-cols:where(.d0-wide)[data-split="7-5"] > :last-child { grid-column: span 5; }
 }
-/* 여백 주석(선택): 본문 블록 하나 + aside.d0-margin. 1200px 이상(report는 1344px 이상)에서만 축 오른쪽 열, 그 아래는 본문 바로 아래 */
-.d0-margined { display: grid; gap: 12px 48px; align-items: start; }
+/* 사이드 패널: 노트(.d0-margined > figure + aside.d0-margin, 그림당 2개까지), pins 범례, annotate 주석, d0-shot 주석.
+   기본(문턱 아래·인쇄)은 대상 바로 아래. 문턱 이상은 대상 열(100% = 축 폭) | 24 | 192이고, 패널 열은 호스트 오른쪽 밖으로 216px 넘친다.
+   호스트의 폭·여백은 그대로라 대상의 위치·폭이 바뀌지 않는다(폭·여백을 바꾸면 화면↔인쇄 전환 때 Chromium이 옛 값을 남긴다).
+   data-key="below"면 늘 아래. 축 폭과 섹션 폭은 패널 유무와 무관하다(빈 레일을 미리 만들지 않는다) */
+.d0-margined { display: grid; gap: 12px; align-items: start; }
 .d0-margined > * { min-width: 0; }
 .d0-margin { max-width: var(--d0-measure); color: var(--d0-grey-600); font-size: 14px; line-height: 1.6; }
-@media (min-width: 1200px) {
-  .d0-page:not([data-width="report"]) .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
-}
-@media (min-width: 1344px) {
-  .d0-page[data-width="report"] .d0-margined { grid-template-columns: minmax(0, var(--d0-axis)) minmax(0, 1fr); }
+@media screen {
+  /* 문턱은 대상의 실제 폭으로 정한다: 대상 폭 + 2 × (24 + 192 + 32). 640 → 1136, 720 → 1216, 960(.d0-wide 호스트) → 1456.
+     컨테이너 조건에는 var()를 못 써서 세 벌이다(선언은 같다) */
+  @container d0-page (min-width: 1136px) { /* 대상 640 */
+    .d0-page[data-width="narrow"] > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) { grid-template-columns: 100% 192px; grid-template-rows: repeat(3, auto) 1fr; column-gap: 24px; row-gap: 12px; align-items: start; }
+    .d0-page[data-width="narrow"] > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > :not(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note, figcaption) { grid-column: 1; grid-row: 1 / span 4; }
+    .d0-page[data-width="narrow"] > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > :is(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note) { grid-column: 2; }
+    .d0-page[data-width="narrow"] > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > figcaption { grid-column: 1; grid-row: 5; }
+    .d0-page[data-width="narrow"] > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > .d0-pins__key dd { margin-left: 0; }
+  }
+  @container d0-page (min-width: 1216px) { /* 대상 720 */
+    .d0-page:not([data-width="narrow"]) > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) { grid-template-columns: 100% 192px; grid-template-rows: repeat(3, auto) 1fr; column-gap: 24px; row-gap: 12px; align-items: start; }
+    .d0-page:not([data-width="narrow"]) > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > :not(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note, figcaption) { grid-column: 1; grid-row: 1 / span 4; }
+    .d0-page:not([data-width="narrow"]) > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > :is(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note) { grid-column: 2; }
+    .d0-page:not([data-width="narrow"]) > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > figcaption { grid-column: 1; grid-row: 5; }
+    .d0-page:not([data-width="narrow"]) > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])):not(.d0-wide) > .d0-pins__key dd { margin-left: 0; }
+  }
+  @container d0-page (min-width: 1456px) { /* 대상 960 */
+    .d0-page > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])).d0-wide { grid-template-columns: 100% 192px; grid-template-rows: repeat(3, auto) 1fr; column-gap: 24px; row-gap: 12px; align-items: start; }
+    .d0-page > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])).d0-wide > :not(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note, figcaption) { grid-column: 1; grid-row: 1 / span 4; }
+    .d0-page > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])).d0-wide > :is(.d0-margin, .d0-pins__key, .d0-annot__notes, .d0-shot__note) { grid-column: 2; }
+    .d0-page > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])).d0-wide > figcaption { grid-column: 1; grid-row: 5; }
+    .d0-page > .d0-section > :is(.d0-margined, .d0-fig:is([data-variant="pins"], [data-variant="annotate"]):not([data-key="below"]), .d0-shot:not([data-key="below"])).d0-wide > .d0-pins__key dd { margin-left: 0; }
+  }
 }
 /* 접기와 기억할 한 줄 */
 .d0-more { border-radius: 12px; background: var(--d0-grey-50); padding: 16px 20px; }
@@ -72,13 +98,13 @@ button { font: inherit; color: inherit; letter-spacing: inherit; cursor: pointer
 .d0-keep > .d0-keep__label { font-size: 13px; font-weight: 600; color: var(--d0-blue-dark); }
 .d0-keep > p { font-size: 18px; font-weight: 700; color: var(--d0-grey-900); }
 
-/* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px */
-.d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid var(--d0-grey-100); }
+/* 섹션: 구분선 위아래 32px씩 → 섹션 사이 64px. 구분선은 축 폭으로 가운데에 긋는다(섹션 상자는 프레임 폭). 투명 1px 테두리가 자리를 지켜 세로 위치는 그대로다 */
+.d0-section { display: grid; gap: 24px; align-content: start; min-width: 0; padding-block: 32px; border-top: 1px solid transparent; background: linear-gradient(var(--d0-grey-100), var(--d0-grey-100)) top center / min(var(--d0-axis), 100%) 1px no-repeat; background-origin: border-box; }
 .d0-section:last-child { padding-bottom: 0; }
 .d0-section > p { color: var(--d0-grey-600); font-size: 14px; }
 .d0-note { color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
 
-/* 강조: page Impact = 배경 없이 큰 글자와 여백(섹션 간격 64 그대로), Quiet = 한 단계 물러남. 덱 Impact는 slide-deck.md */
+/* 강조: page Impact = 배경 없이 큰 글자와 여백(섹션 간격 64 그대로), Quiet = 한 단계 물러남. 덱 Impact는 deck.css */
 .d0-section[data-emphasis="impact"] .d0-fig__stage { padding: 0; background: transparent; } /* Impact 안에는 무대 없음 */
 .d0-impact__line { font-size: 32px; font-weight: 700; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
 .d0-impact__num, .d0-section > .d0-impact__num { color: var(--d0-blue-dark); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); }
@@ -127,7 +153,8 @@ html[data-motion="on"] .d0-draw { stroke-dasharray: 1; stroke-dashoffset: 0; tra
 html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset: 1; }
 
 @media (max-width: 640px) {
-  .d0-page { padding: 48px 16px 72px; }
+  .d0-page { padding: 48px 0 72px; }
+  .d0-page > * { width: calc(100% - 32px); } /* 좌우 16px 거터 */
   .d0-fig[data-fit="compact"] svg { width: 100%; } /* 모바일: compact도 축 폭을 채워 라벨 11px 이상 */
   h1 { font-size: 26px; }
   h2 { font-size: 18px; }
@@ -144,10 +171,221 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
   }
 }
 
-/* ---- 도식 공용 클래스(diagram.md 공용 CSS) ---- */
-/* .d0-fig, .d0-fig__stage, figcaption은 shell.md에 있다 */
-/* 그림 폭(.d0-fig svg 100%, compact 75%)은 shell.md 정본 CSS에 있다 */
-.d0-fig__scroll { overflow-x: auto; }
+/* ---- 공용 블록(머리·히어로·설명·근거·마무리·지표·옵션·단계·비교 표·가로 막대 목록) ----
+   블록 CSS는 이 파일 한 곳에 있다. 결과물에 따로 붙이지 않는다 */
+/* 머리 */
+.d0-header { display: grid; gap: 12px; padding-bottom: 32px; }
+.d0-header__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.d0-header__label { color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
+.d0-header__lead { color: var(--d0-grey-600); }
+.d0-summary { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 8px 0 0; }
+.d0-summary > div { display: grid; grid-column: 1 / -1; grid-template-columns: 76px 1fr; grid-template-columns: subgrid; align-items: baseline; padding-left: 12px; border-left: 2px solid transparent; }
+.d0-summary dt { color: var(--d0-grey-600); font-size: var(--d0-text-compact); font-weight: 600; }
+.d0-summary dd { color: var(--d0-grey-800); }
+.d0-summary > [data-tone="decision"] { border-left-color: var(--d0-blue); }
+.d0-summary > [data-tone="decision"] dt { color: var(--d0-blue-dark); }
+.d0-summary__list { display: grid; gap: 4px; padding-left: 18px; margin: 0; list-style: decimal; }
+.d0-summary abbr[title] { text-decoration: underline dotted var(--d0-grey-500); text-underline-offset: 3px; cursor: help; }
+/* 섹션 머리 */
+.d0-section-head { display: grid; gap: 8px; }
+.d0-section-head__title { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.d0-section-head p { font-size: 14px; color: var(--d0-grey-600); }
+.d0-section > p.d0-section-lead { color: var(--d0-grey-800); font-size: 15px; }
+/* 히어로(결론 수치 하나) */
+.d0-hero { display: grid; gap: 6px; margin: 8px 0 4px; }
+.d0-hero__nums { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-variant-numeric: tabular-nums; }
+.d0-hero__before { color: var(--d0-grey-600); font-size: 20px; font-weight: 600; letter-spacing: var(--d0-tracking-title); }
+.d0-hero__arrow { align-self: center; flex: none; width: 24px; height: 24px; fill: none; stroke: var(--d0-grey-500); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.d0-hero__after { color: var(--d0-grey-900); font-size: 44px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); }
+.d0-hero[data-tone="blue"] .d0-hero__after { color: var(--d0-blue-dark); }
+.d0-hero__note { display: block; color: var(--d0-grey-600); font-size: 15px; }
+/* 라벨 단 설명 */
+.d0-explain { display: grid; gap: 24px; margin: 0; }
+.d0-explain > div { display: grid; gap: 4px; min-width: 0; }
+.d0-explain dt { font-size: 14px; font-weight: 600; color: var(--d0-grey-900); line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); }
+.d0-explain dd { margin: 0; font-size: 15px; color: var(--d0-grey-700); line-height: 1.65; text-wrap: pretty; }
+/* 주장 + 근거 */
+.d0-evidence { display: grid; gap: 24px; margin: 0; }
+dl.d0-evidence > div { display: grid; gap: 6px; min-width: 0; }
+dl.d0-evidence dt { color: var(--d0-grey-900); font-size: 15px; font-weight: 600; line-height: var(--d0-leading-title); }
+dl.d0-evidence dd { display: grid; gap: 2px; margin: 0; color: var(--d0-grey-700); font-size: 14px; }
+dl.d0-evidence data { color: var(--d0-grey-900); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: var(--d0-tracking-title); }
+dl.d0-evidence dd > span, dl.d0-evidence small { color: var(--d0-grey-600); }
+dl.d0-evidence small { font-size: var(--d0-meta); }
+figure.d0-evidence > figcaption:first-child { color: var(--d0-grey-900); font-size: 15px; font-weight: 600; }
+/* 지표 목록: 큰 숫자 + 짧은 라벨 | 작은 차트 */
+.d0-mlist { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.d0-mlist__rows { margin: 0; display: grid; gap: 16px; }
+.d0-mlist__rows > div { display: flex; flex-direction: column-reverse; gap: 2px; padding-left: 12px; border-left: 2px solid transparent; }
+.d0-mlist__rows > div[data-on] { border-left-color: var(--d0-blue); }
+.d0-mlist__rows dt { color: var(--d0-grey-600); font-size: 14px; }
+.d0-mlist__rows dd { margin: 0; color: var(--d0-grey-900); font-size: 28px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
+svg.d0-mlist__chart { display: block; width: 100%; height: auto; }
+/* 가로 막대 목록: 라벨 + 값 한 줄, 그 아래 막대. 폭은 style="width: n%"로 값에서 계산한다 */
+.d0-barlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.d0-barlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: baseline; }
+.d0-barlist .d0-barlist__label { color: var(--d0-grey-800); font-size: 15px; }
+.d0-barlist .d0-barlist__value { color: var(--d0-grey-900); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.d0-barlist__track { grid-column: 1 / -1; display: block; height: 8px; border-radius: 999px; background: var(--d0-grey-100); overflow: hidden; }
+.d0-barlist__fill { display: block; height: 100%; border-radius: 999px; background: var(--d0-grey-400); }
+.d0-barlist li[data-on] .d0-barlist__fill { background: var(--d0-blue); }
+.d0-barlist li[data-on] .d0-barlist__label { color: var(--d0-grey-900); font-weight: 600; }
+.d0-barlist li[data-tone="green"] .d0-barlist__fill { background: var(--d0-green); }
+.d0-barlist li[data-tone="red"] .d0-barlist__fill { background: var(--d0-red); }
+.d0-barlist__mark, .d0-barlist__note { grid-column: 1 / -1; color: var(--d0-grey-600); font-size: var(--d0-meta); } /* 막대 아래 짧은 표기(기준값·조건) */
+/* 몫 막대: 전체 한 줄을 몫으로 나눈 HTML 막대 + 아래 몫 이름표. 폭은 style="width: n%"로 값에서 계산한다 */
+.d0-share { display: grid; gap: 8px; margin: 0; }
+.d0-share__bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--d0-grey-100); gap: 2px; }
+.d0-share__seg { display: block; height: 100%; background: var(--d0-grey-400); }
+.d0-share__seg[data-on] { background: var(--d0-blue); }
+.d0-share__keys { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 20px; color: var(--d0-grey-700); font-size: 14px; font-variant-numeric: tabular-nums; }
+.d0-share__keys li[data-on] { color: var(--d0-blue-dark); font-weight: 600; }
+.d0-share__keys li::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 2px; background: var(--d0-grey-400); vertical-align: 1px; }
+.d0-share__keys li[data-on]::before { background: var(--d0-blue); }
+/* 타일: 같은 단위 현황 4개 또는 6개 */
+.d0-tiles { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.d0-tiles:has(> div:nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.d0-tiles > div { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 20px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
+.d0-tiles dt { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
+.d0-tiles dd { margin: 0; color: var(--d0-grey-900); font-size: 28px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
+.d0-tiles > div[data-on] dt { color: var(--d0-blue-dark); }
+.d0-tiles > div[data-on] dt::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--d0-blue); vertical-align: middle; }
+/* 비교 표: 대상 여럿을 같은 기준으로 견준다. 없음·미확정은 칸을 비우지 않고 글자로 적고 data-state를 단다 */
+.d0-table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: var(--d0-leading-body); font-variant-numeric: tabular-nums; }
+.d0-table caption { caption-side: top; padding-bottom: 8px; text-align: left; color: var(--d0-grey-900); font-size: 15px; font-weight: 600; }
+.d0-table th, .d0-table td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--d0-grey-100); }
+.d0-table thead th { background: var(--d0-blue-light); color: var(--d0-grey-900); font-size: var(--d0-text-compact); font-weight: 600; border-bottom: 0; }
+.d0-table tbody th[scope="row"] { color: var(--d0-grey-900); font-weight: 600; }
+.d0-table td { color: var(--d0-grey-800); }
+.d0-table :is(th, td)[data-num] { white-space: nowrap; } /* 비교 표는 열마다 숫자와 글자가 섞이므로 왼쪽 정렬을 유지하고 고정폭 숫자로 맞춘다 */
+.d0-table thead th[data-on] { color: var(--d0-blue-dark); box-shadow: inset 0 -2px 0 var(--d0-blue); }
+.d0-table td[data-on] { color: var(--d0-grey-900); font-weight: 600; }
+.d0-table [data-state] { color: var(--d0-grey-600); }
+.d0-table [data-state]::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; vertical-align: 1px; }
+.d0-table [data-state="none"]::before { border: 1.5px dashed var(--d0-grey-500); }
+.d0-table [data-state="pending"]::before { background: var(--d0-orange-bg); border: 1.5px solid var(--d0-grey-700); }
+/* 선택지 3개까지 비교 표(data-stack): 좁은 화면에서 기준 한 줄 아래 선택지 칸을 나란히 둔다(표 안 가로 스크롤 없이 세 선택지가 다 보인다).
+   칸마다 data-label에 선택지 이름을 적는다. 선택지가 4개 이상이거나 칸 글이 길면 data-stack 없이 .d0-scroll을 쓴다 */
+@media (max-width: 560px) {
+  .d0-scroll > .d0-table[data-stack] { min-width: 0; }
+  .d0-table[data-stack] thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .d0-table[data-stack], .d0-table[data-stack] tbody, .d0-table[data-stack] caption { display: block; }
+  .d0-table[data-stack] tr { display: flex; flex-wrap: wrap; gap: 0 8px; padding: 10px 0; border-bottom: 1px solid var(--d0-grey-100); }
+  .d0-table[data-stack] tr > th[scope="row"] { flex: 0 0 100%; padding: 0 0 6px; border: 0; }
+  .d0-table[data-stack] tr > td { flex: 1 1 0; display: block; min-width: 0; padding: 0; border: 0; white-space: normal; overflow-wrap: anywhere; }
+  .d0-table[data-stack] tr > td[data-label]::before { content: attr(data-label); display: block; width: auto; height: auto; margin: 0 0 2px; border: 0; border-radius: 0; background: none; color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
+  .d0-table[data-stack] tr > td[data-on][data-label]::before { color: var(--d0-blue-dark); }
+}
+.d0-table tfoot :is(th, td) { border-top: 2px solid var(--d0-blue); border-bottom: 0; background: var(--d0-blue-light); color: var(--d0-grey-900); font-weight: 700; }
+/* 마무리 한 문장 + 메타 */
+.d0-closing { display: grid; gap: 12px; }
+.d0-closing__line { color: var(--d0-grey-900); font-size: 17px; font-weight: 700; line-height: var(--d0-leading-title); letter-spacing: var(--d0-tracking-title); text-wrap: pretty; }
+.d0-closing__meta { display: grid; gap: 8px; margin: 0; padding-top: 12px; border-top: 1px solid var(--d0-grey-200); }
+.d0-closing__meta > div { display: grid; grid-template-columns: 56px 1fr; gap: 8px; min-width: 0; }
+.d0-closing__meta dt { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
+.d0-closing__meta dd { margin: 0; color: var(--d0-grey-800); font-size: 14px; }
+@media (min-width: 960px) {
+  .d0-closing__meta { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+  .d0-closing__meta > div { grid-template-columns: 1fr; gap: 2px; }
+}
+/* 본문 중간 요청 상자(페이지당 하나) */
+.d0-callout { display: grid; gap: 8px; padding: 20px 24px; border-radius: var(--d0-radius-card); background: var(--d0-blue-light); }
+.d0-callout__label { color: var(--d0-blue-dark); font-size: var(--d0-text-compact); font-weight: 600; }
+.d0-callout p { color: var(--d0-grey-900); }
+.d0-callout dl { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 4px; }
+.d0-callout dt { color: var(--d0-grey-700); font-size: var(--d0-meta); }
+.d0-callout dd { font-weight: 600; }
+/* 지표 카드 */
+.d0-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.d0-kpi { display: grid; gap: 8px; align-content: start; padding: 24px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
+.d0-kpi__label { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; }
+.d0-kpi dd { margin: 0; min-width: 0; }
+.d0-kpi__value { color: var(--d0-grey-900); font-size: 28px; font-weight: 600; line-height: var(--d0-leading-display); letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
+.d0-kpi__bars { display: grid; grid-template-columns: max-content 1fr; align-items: center; gap: 6px 10px; margin-top: 8px; }
+.d0-kpi__tag { color: var(--d0-grey-600); font-size: var(--d0-meta); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.d0-kpi__track { display: block; height: 6px; border-radius: 999px; overflow: hidden; }
+.d0-kpi__fill { display: block; height: 100%; border-radius: 999px; background: var(--d0-grey-400); }
+.d0-kpi__fill[data-on] { background: var(--d0-blue); }
+.d0-kpi__track[data-whole] { background: var(--d0-grey-200); }
+.d0-kpi__fill[data-tone="green"] { background: var(--d0-green); }
+.d0-kpi__fill[data-tone="red"] { background: var(--d0-red); }
+@media (max-width: 520px) { .d0-kpis:has(> .d0-kpi:nth-child(3):last-child) { grid-template-columns: 1fr; } }
+.d0-section .d0-cols .d0-kpis:has(> .d0-kpi:nth-child(3):last-child) { grid-template-columns: 1fr; }
+/* 옵션 나란히(split-plain 기본, data-layout="card") */
+.d0-sbs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 24px; }
+.d0-option { position: relative; display: grid; gap: 12px; align-content: start; min-width: 0; padding-top: 16px; border-top: 1px solid var(--d0-grey-200); transition: background var(--d0-dur) var(--d0-ease); }
+.d0-option[data-selected] { border-top: 2px solid var(--d0-blue); padding-top: 15px; }
+.d0-option[data-selected="fill"] { background: var(--d0-blue-light); border-top-color: var(--d0-blue-light); padding: 15px 16px 16px; border-radius: var(--d0-radius-card); }
+.d0-sbs[data-layout="card"] { grid-auto-columns: minmax(0, 410px); justify-content: center; }
+.d0-sbs[data-layout="card"] .d0-option { gap: 16px; padding: 24px; border: 1px solid var(--d0-grey-200); border-radius: var(--d0-radius-card); background: none; }
+.d0-sbs[data-layout="card"] .d0-option:is([data-selected], [data-selected="fill"]) { border-color: var(--d0-blue); padding: 24px; background: none; }
+.d0-option h3 { font-size: 15px; font-weight: 650; }
+.d0-option__wire { display: block; width: 100%; height: auto; }
+.d0-option .d0-section-head__title .d0-pill { margin-block: calc((15px * var(--d0-leading-title) - 22px) / 2); }
+.d0-option[data-selected="fill"] .d0-s-frame { stroke: var(--d0-grey-600); }
+.d0-mock { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--d0-radius-control); background: #fff; }
+.d0-mock__btn { order: -1; }
+.d0-mock[data-layout="bottom"] .d0-mock__btn { order: 2; }
+.d0-mock__btn, .d0-option__pick { border: 0; border-radius: var(--d0-radius-sm); padding: 8px 14px; font-weight: 600; }
+.d0-mock__btn { background: var(--d0-blue-dark); color: #fff; }
+.d0-mock[data-done] .d0-mock__btn { background: var(--d0-grey-200); color: var(--d0-grey-700); }
+.d0-mock__msg { order: 3; color: var(--d0-grey-600); font-size: var(--d0-text-compact); }
+.d0-option__pick { background: #fff; color: var(--d0-grey-800); }
+.d0-option[data-selected] .d0-option__pick { color: var(--d0-blue-dark); }
+.d0-option[data-selected] .d0-option__pick::before { content: "✓ " / ""; }
+.d0-option__rows { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; }
+.d0-option__rows dt { color: var(--d0-grey-700); }
+.d0-option__rows > div { border-top: 1px solid var(--d0-grey-200); }
+.d0-option__why { color: var(--d0-blue-dark); font-weight: 600; }
+/* 단계 열 */
+.d0-steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.d0-step { display: grid; gap: 8px; align-content: start; padding: 4px 20px; }
+.d0-step + .d0-step { border-left: 1px solid var(--d0-grey-100); }
+.d0-step:first-child { padding-left: 0; }
+.d0-step__label { color: var(--d0-blue-dark); font-size: var(--d0-meta); font-weight: 600; }
+.d0-step dt { margin-top: 4px; font-size: 14px; font-weight: 600; }
+.d0-step dd { color: var(--d0-grey-600); font-size: 14px; }
+.d0-steps[data-variant="figure"] .d0-step__fig { display: grid; place-items: center; padding: 16px; border-radius: var(--d0-radius-card); background: var(--d0-grey-50); }
+.d0-step__fig svg { display: block; width: 100%; max-width: 200px; height: auto; }
+@media (max-width: 640px) {
+  .d0-summary > div { grid-template-columns: 1fr; gap: 2px; }
+  .d0-section-head h2 { font-size: 18px; }
+  .d0-hero__after { font-size: 36px; }
+  .d0-mlist { grid-template-columns: minmax(0, 1fr); }
+  .d0-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .d0-tiles > div { padding: 16px; }
+  .d0-table th, .d0-table td { padding: 8px 10px; }
+  .d0-callout { padding: 16px; }
+  .d0-kpi { padding: 20px; }
+  .d0-sbs, .d0-sbs[data-layout="card"] { grid-auto-flow: row; grid-auto-columns: minmax(0, 1fr); gap: 16px; }
+  .d0-sbs:not([data-layout]) .d0-option:first-child:not([data-selected]) { border-top: 0; padding-top: 0; }
+  .d0-sbs[data-layout="card"] .d0-option, .d0-sbs[data-layout="card"] .d0-option[data-selected] { padding: 20px; }
+  .d0-steps { grid-auto-flow: row; }
+  .d0-step { padding: 16px 0; }
+  .d0-step + .d0-step { border-left: 0; border-top: 1px solid var(--d0-grey-100); }
+}
+@media print {
+  .d0-table thead { display: table-header-group; }
+  .d0-table tr { break-inside: avoid; }
+}
+
+/* ---- 도식 공용 클래스 ---- */
+.d0-fig__scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.d0-fig__scroll > svg { min-width: var(--min-w, 560px); } /* 좌표·관계를 지켜야 하는 넓은 도식: 그림 안에서만 가로로 민다 */
+/* 좁은 화면 다시 배치: 같은 내용을 가로형(data-view="wide")과 세로형(data-view="narrow") SVG 두 장으로 그리고 폭에 따라 하나만 보인다 */
+.d0-fig > svg[data-view="narrow"] { display: none; }
+@media (max-width: 560px) {
+  .d0-fig > svg[data-view="wide"] { display: none; }
+  .d0-fig > svg[data-view="narrow"] { display: block; }
+}
+/* 넓은 표: 비핵심 열 정리 → .d0-wide(960) → 그래도 넘치고 열 비교가 핵심이면 표 안 가로 스크롤. 글자를 줄여 맞추지 않는다.
+   표가 읽히는 최소 폭은 인라인 --min-w(예: style="--min-w: 960px")로 준다. 인쇄에서는 스크롤에 기대지 않고 인쇄 영역 안으로 접는다 */
+.d0-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.d0-scroll > table { min-width: max(100%, var(--min-w, 0px)); }
+@media print {
+  .d0-scroll, .d0-fig__scroll { overflow: visible; }
+  .d0-scroll > table { min-width: 0; width: 100%; }
+}
 .d0-s-text { fill: var(--d0-grey-700); font-family: var(--d0-font); font-size: 14px; font-weight: 600; letter-spacing: var(--d0-tracking-body); font-variant-numeric: tabular-nums; }
 .d0-s-text[data-on] { fill: var(--d0-blue-dark); }
 .d0-s-muted { fill: var(--d0-grey-600); font-weight: 500; }
@@ -169,7 +407,11 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 .d0-s-sum { fill: var(--d0-blue); }
 .d0-s-frame { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
 .d0-s-fill { fill: var(--d0-grey-100); }
+.d0-s-iqr { fill: var(--d0-grey-200); stroke: var(--d0-grey-500); stroke-width: 1; } /* 점 차트 가운데 50%: 테두리 grey-500이 흰 바탕 3.19:1 */
+.d0-dot[data-fill] { fill: var(--d0-grey-500); stroke: var(--d0-grey-500); }
 .d0-s-line { fill: none; stroke: var(--d0-grey-300); stroke-width: 1.5; }
+.d0-s-line.d0-dot-median { stroke: var(--d0-grey-900); stroke-width: 2.5; }
+.d0-s-line.d0-dot-median[data-on] { stroke: var(--d0-blue); }
 .d0-s-accent { fill: var(--d0-blue); }
 .d0-s-zone { fill: var(--d0-blue-light); stroke: var(--d0-blue); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .d0-s-step { fill: #fff; stroke: var(--d0-grey-500); stroke-width: 1.5; }
@@ -191,17 +433,64 @@ html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset
 /* 핵심 무대 blue-light: 회색 선·흐린 글자를 한 단계 진하게 */
 .d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 .d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
+/* 도식 변형: 남은 길 점선, 숫자 하나 크게(editorial), 비율 막대, 번호 핀, 번호 주석 */
+.d0-s-edge[data-ahead] { stroke-dasharray: 4 5; }
+.d0-s-area { fill: var(--area-fill, none); stroke: var(--area-line, none); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.d0-s-target { fill: none; stroke: var(--d0-grey-700); stroke-width: 1.5; stroke-dasharray: 6 4; } /* 목표선·기준선: 값 라벨을 함께 적는다 */
+.d0-fig[data-genre="editorial"] { grid-template-columns: minmax(64px, 120px) minmax(0, 1fr); grid-template-areas: "obj num" "obj cap"; align-items: end; column-gap: 24px; row-gap: 6px; }
+.d0-fig[data-genre="editorial"] > svg { grid-area: obj; align-self: center; width: 100%; max-width: 120px; }
+.d0-ed__num { grid-area: num; margin: 0; color: var(--d0-grey-900); font-size: 56px; font-weight: 600; line-height: 1; letter-spacing: var(--d0-tracking-display); font-variant-numeric: tabular-nums; }
+.d0-fig[data-genre="editorial"][data-tone="blue"] .d0-ed__num { color: var(--d0-blue-dark); }
+.d0-fig[data-genre="editorial"] figcaption { grid-area: cap; align-self: start; color: var(--d0-grey-700); font-size: 15px; }
+.d0-fig[data-variant="ratio"] { gap: 8px; }
+.d0-fig[data-variant="ratio"] svg { max-width: none; height: 12px; border-radius: 999px; overflow: hidden; }
+.d0-ratio__labels { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; color: var(--d0-grey-600); font-size: 14px; font-variant-numeric: tabular-nums; }
+.d0-ratio__part { color: var(--d0-blue-dark); font-weight: 600; }
+.d0-fig[data-variant="pins"] .d0-pins { position: relative; width: 100%; }
+.d0-fig[data-variant="pins"] .d0-fig__stage > .d0-pins { justify-self: center; }
+.d0-fig[data-variant="pins"] svg { display: block; max-width: none; }
+.d0-pin { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px; background: var(--pin-bg, #fff); box-shadow: inset 0 0 0 1.5px var(--pin-ring, var(--d0-grey-600)); color: var(--pin-fg, var(--d0-grey-600)); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; }
+.d0-pins .d0-pin { position: absolute; transform: translate(-50%, -50%); }
+.d0-pins__key { display: grid; gap: 12px; margin: 0; }
+.d0-pins__key > div { padding-left: 10px; border-left: 2px solid var(--key-line, transparent); }
+.d0-pins__key dt { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--key-dt, var(--d0-grey-900)); }
+.d0-pins__key dd { margin: 4px 0 0 32px; color: var(--d0-grey-600); font-size: 14px; }
+:is(.d0-fig[data-active-pin="1"] [data-pin="1"], .d0-fig[data-active-pin="2"] [data-pin="2"], .d0-fig[data-active-pin="3"] [data-pin="3"],
+    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) {
+  --pin-bg: var(--d0-blue-dark); --pin-ring: transparent; --pin-fg: #fff;
+  --key-line: var(--d0-blue); --key-dt: var(--d0-blue-dark);
+  --area-fill: var(--d0-blue-light); --area-line: var(--d0-blue);
+}
+.d0-fig[data-active-pin] g[data-pin]:not(.d0-fig[data-active-pin="1"] [data-pin="1"], .d0-fig[data-active-pin="2"] [data-pin="2"], .d0-fig[data-active-pin="3"] [data-pin="3"],
+    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) {
+  --d0-blue: var(--d0-grey-400); --d0-blue-dark: var(--d0-grey-500); --d0-blue-light: var(--d0-grey-100);
+  --d0-green: var(--d0-grey-400); --d0-green-bg: var(--d0-grey-100); --d0-orange: var(--d0-grey-400); --d0-orange-bg: var(--d0-grey-100);
+  --d0-red: var(--d0-grey-400); --d0-red-bg: var(--d0-grey-100);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .d0-pins .d0-pin, .d0-pins__key > div, .d0-pins__key dt { transition: background-color 150ms, box-shadow 150ms, color 150ms, border-color 150ms; }
+}
+.d0-annot, .d0-annot__notes { --pin-bg: var(--d0-blue-dark); --pin-ring: transparent; --pin-fg: #fff; }
+.d0-annot { position: relative; width: 100%; }
+.d0-annot svg { display: block; max-width: none; }
+.d0-annot > .d0-pin { position: absolute; transform: translate(-50%, -50%); }
+.d0-annot__notes { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; align-content: center; }
+.d0-annot__notes li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; align-items: start; color: var(--d0-grey-800); font-size: 15px; line-height: var(--d0-leading-body); }
+@media (max-width: 640px) {
+  .d0-fig[data-genre="editorial"] { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; }
+  .d0-ed__num { font-size: 40px; }
+}
 /* 도식 viewBox 폭은 560으로 맞춘다. 렌더 라벨 = 글자 × 렌더 폭 ÷ 560.
-   데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 기본 정의보다 뒤에 둔다.
-   page(.d0-page) 안에만 건다. 덱 슬라이드 SVG(.d0-sl-* 글자, 번호·주의 ! 표식 text.d0-s-num)는 slide-deck.md 그림 글자 절(.d0-slide .d0-s-num { font-size: var(--sl-font, 17px) })을 따른다 */
+   데스크톱 축 720: 14 × 720 ÷ 560 = 18px(무대 안 664px: 16.6px). 넓은 구간 960은 viewBox 750(14 × 960 ÷ 750 = 17.9px). 넓은 구간 글자 확대는 넓은 구간에 직접 놓인 그림만 받고, 넓은 구간 안 2열 칸은 축 칸과 같은 규칙이다. 기본 정의보다 뒤에 둔다.
+   page(.d0-page) 안에만 건다. 덱 슬라이드 SVG 글자는 d0-sl-* 클래스와 --sl-font(deck.css)를 따른다 */
 @media (max-width: 760px) {
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 18px; } /* report 축 viewBox 750: 561~760 → 축 497~696px, 18 × 497 ÷ 750 = 11.9px ~ 16.7px */
+  .d0-page .d0-wide :is(.d0-s-text, .d0-s-num):not(.d0-cols *) { font-size: 18px; } /* 넓은 구간 viewBox 750: 561~760 → 497~696px, 18 × 497 ÷ 750 = 11.9px ~ 16.7px */
 }
 @media (max-width: 560px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 20px; } /* 390: 20 × 358 ÷ 560 = 12.8px, 375: 12.3px, 560: 18.9px */
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 27px; } /* report 축 viewBox 750: 390 27 × 358 ÷ 750 = 12.9px, 375: 12.3px, 560: 19.0px */
+  .d0-page .d0-wide :is(.d0-s-text, .d0-s-num):not(.d0-cols *) { font-size: 27px; } /* 넓은 구간 viewBox 750: 390 27 × 358 ÷ 750 = 12.9px, 375: 12.3px, 560: 19.0px */
 }
 @media (max-width: 340px) {
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
-  .d0-page[data-width="report"] :is(.d0-s-text, .d0-s-num) { font-size: 30px; } /* report: 320 30 × 288 ÷ 750 = 11.5px */
+  .d0-page .d0-wide :is(.d0-s-text, .d0-s-num):not(.d0-cols *) { font-size: 30px; } /* 넓은 구간: 320 30 × 288 ÷ 750 = 11.5px */
 }

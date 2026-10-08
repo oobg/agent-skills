@@ -1,7 +1,7 @@
 # before-after — 전과 후
 
-공용 정보 블록이다. 같은 대상의 전과 후를 같은 축으로 나란히 놓는다. compare 패턴 전용이 아니라 보고·사건·가이드·일정 어디서나 빌려 쓴다.
-[evidence](evidence.md)의 Proof로 안에 넣을 수도 있다(경쟁이 아니라 근거 모양 하나다).
+공용 정보 블록이다. 같은 대상의 전과 후를 같은 축으로 나란히 놓는다. 설명·보고·회고·가이드 어디서나 쓴다.
+근거 부품([shell/contract.md](../shell/contract.md))의 Proof로 안에 넣을 수도 있다(경쟁이 아니라 근거 모양 하나다).
 
 ## 해부 구조
 
@@ -27,14 +27,14 @@
 | --- | --- |
 | 한두 가지 상태·방식 | 이 블록(`.d0-ba`) |
 | 여러 항목의 값 | [diff-rows](diff-rows.md) 행(항목 \| 전 \| → \| 후) |
-| 숫자 크기 | [diagram](diagram.md) 전/후 막대 또는 [kpi-cards](kpi-cards.md) 막대 변형 |
-| 화면 배치 | 와이어프레임 두 장([diagram](diagram.md) (d)) 또는 [side-by-side](side-by-side.md) 와이어 카드 |
+| 숫자 크기 | [diagrams/comparison.md](../diagrams/comparison.md) 전/후 막대 또는 [kpi-cards](kpi-cards.md) 막대 변형 |
+| 화면 배치 | 와이어프레임 두 장([diagrams/annotation.md](../diagrams/annotation.md) 화면 골격) 또는 [side-by-side](side-by-side.md) 와이어 카드 |
 
-패턴별 예:
-- report: `improve` — `기존 전체 받기` → `개선 묶음 골라 받기`, 아래 explanation `reason`.
-- incident: `fix` — `문제 재시도 1번` → `수정 재시도 3번 + 알림`.
-- guide: `fix` — 자주 막히는 설정의 `문제` 화면 → `수정` 화면.
-- timeline: `forecast` — `예상 3월 둘째 주` → `실제 3월 넷째 주`, 아래 explanation `reason`.
+문서별 예:
+- 보고: `improve` — `기존 전체 받기` → `개선 묶음 골라 받기`, 아래 라벨 설명(왜 바꿨나).
+- 장애 회고: `fix` — `문제 재시도 1번` → `수정 재시도 3번 + 알림`.
+- 가이드: `fix` — 자주 막히는 설정의 `문제` 화면 → `수정` 화면.
+- 일정: `forecast` — `예상 3월 둘째 주` → `실제 3월 넷째 주`, 아래 라벨 설명(왜 늦었나).
 
 ## 스니펫
 
@@ -61,7 +61,7 @@
 }
 ```
 
-화살표 `span.d0-ba__arrow`는 필수다(evidence Proof 안에서도). 960px 이상 3열 grid가 전·화살표·후 세 자식을 전제로 한다.
+화살표 `span.d0-ba__arrow`는 필수다(근거 안에 넣을 때도). 960px 이상 3열 grid가 전·화살표·후 세 자식을 전제로 한다.
 
 ## 금지
 

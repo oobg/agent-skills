@@ -4,7 +4,7 @@
 
 - 맨 위 진행률(완료 수 / 전체 + 막대). 그 아래 행 + 1px `grey-100` 디바이더. 행에 상자·배경을 두지 않는다.
 - 행 = 체크박스(실제 `input type="checkbox"`, 24px 원) → 제목 label(15px/600, 사용자가 하는 동작) → 결과 한 줄(14px grey-600, 끝나면 보이는 것) → 행 끝 칸(기본: 소요 시간, owner: 담당·기한, 없으면 생략).
-- 결과 한 줄은 축 한 줄 안에서 끝나는 한 문장이다([shell.md](shell.md) 줄 길이 절). 넘치면 문장을 줄인다.
+- 결과 한 줄은 축 한 줄 안에서 끝나는 한 문장이다([shell/contract.md](../shell/contract.md) 줄 길이 절). 넘치면 문장을 줄인다.
 - 결정 본문이 header 요약 행에 있으면 할 일 행은 짧게 가리킨다(`PR로 올릴지 답하기` + `위 결정 1`). 결정 문장을 다시 쓰지 않는다.
 - 행 안 요소는 첫 줄 기준으로 맞춘다(`align-items: start`). 체크박스·시간·배지가 행 높이로 늘어나지 않는다.
 - 체크하면 행이 `data-status="done"`이 되고 진행률(네이티브 `<progress>`)이 갱신된다. 소요 시간은 `<time datetime="PT3M">`.
@@ -21,12 +21,12 @@
   - **조건 슬롯(`.d0-check__when`).** 날짜가 아니라 "언제·무엇 뒤에" 시작하는지(`머지 후`, `백엔드 배포 확인 뒤`)를 `<time>` 없이 텍스트로 쓴다.
     약 12자 이내로 쓰고, 더 길거나 날짜와 조건이 모두 있으면 조건을 결과 한 줄 앞에 넣는다(`백엔드 배포를 확인한 뒤 시작해요.`). `<time>`은 실제 날짜·기간에만 쓴다.
   - `추후`·`예정`·`검토 중`만으로 기한·조건 칸을 채우지 않는다. 언제 시작하는지 모르면 그것을 정하는 행동과 주체를 행으로 쓴다.
-  - report 다음 단계에서는 모든 행에 주체가 있어야 하므로 `data-meta="none"`을 쓰지 않는다([report.md](../patterns/report.md)).
+  - report 다음 단계에서는 모든 행에 주체가 있어야 하므로 `data-meta="none"`을 쓰지 않는다.
 - 목록 전체에 행 끝 칸이 없으면 `.d0-check`에 `data-meta="none"`을 둬 모든 행을 `auto 1fr` 2열로 만든다.
 - **시간이 일부 행에만 있으면 시간 열을 만들지 않는다.** 그 행의 결과 한 줄 끝에 넣는다(`… 보여요. 약 20분`). 한 행에만 붙은 오른쪽 끝 숫자는 근거 없이 튀어 보인다.
 - 입력 예시가 필요한 행은 `<details>`로 행 안에 접어 둔다. 붙여 넣을 명령·설정은 그 `<details>` 안에 [code-block.md](code-block.md)로 둔다(기본·owner 변형).
   linked 변형은 행 안에 접지 않고 아래 **활성 단계 코드 영역**에 펼쳐 둔다.
-- `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다. 그림 지점과 번호로 대응하는 2열((b))이라 `.d0-wide`(오른쪽만 프레임 끝까지, [shell.md](shell.md) 넓은 구간 (b)) 안에 두고 넓은 구간 2열 분할선(문서에서 6/6 또는 7/5 하나)을 따른다([shell.md](shell.md) 2열 절).
+- `data-variant="linked"`(guide 따라하기 기본): 왼쪽 sticky 무대에 단계별 화면 와이어프레임 SVG 1장, 오른쪽에 체크리스트를 두는 2열이다. 그림 지점과 번호로 대응하는 목록이 함께 본문인 2열((b))이라 `.d0-wide`(축 중심 그대로 양쪽으로 프레임까지, [shell/contract.md](../shell/contract.md) 넓은 구간 (b)) 안에 두고 넓은 구간 2열 분할선(문서에서 6/6 또는 7/5 하나)을 따른다([shell/contract.md](../shell/contract.md) 2열 절).
   - 행마다 `data-step="n"`과 `data-caption`(그 단계 그림 설명 한 줄)을 둔다. SVG는 단계마다 `g[data-step="n"]` 그룹 하나를 갖고, 그룹마다 누를 곳 하나만 blue다.
   - 행 위에서 마우스를 움직이거나(hover), 키보드 포커스가 들어오거나(focus-within), 행을 누르면 무대가 그 단계 그림으로 바뀐다. 체크하면 다음 미완료 단계의 무대·캡션·코드를 함께 보여 준다.
     hover는 실제 포인터 이동(`pointermove`, 좌표 변화)일 때만 받는다. 구간이 접혀 가만히 있는 포인터 밑으로 다른 행이 올라와도 체크로 옮겨 간 단계가 그대로다.
@@ -43,7 +43,7 @@
   - 명령은 `pre`에 `white-space: pre-wrap; overflow-wrap: anywhere`로 줄을 바꿔 가로 스크롤을 만들지 않는다(code-block의 `pre` 기본값 `white-space: pre`를 이 영역에서만 덮는다).
   - 960px 미만: 코드 영역은 숨기고, JS가 코드 항목 노드를 각 단계 행(`.d0-check__row[data-step] > div`) 아래로 옮겨 펼쳐 붙인다(접지 않는다). 960px 이상으로 돌아오면 영역으로 되돌린다.
     노드를 옮기므로 복사 버튼 리스너는 그대로다. 코드 없는 단계의 안내 한 줄은 옮기지 않는다(행에는 붙일 코드가 없다).
-  - 무대 SVG는 diagram 그림 블록으로 센다. 단계 전환은 바로 바뀌고, 0.2초 페이드는 `prefers-reduced-motion: no-preference`일 때만 둔다.
+  - 단계 전환은 바로 바뀌고, 0.2초 페이드는 `prefers-reduced-motion: no-preference`일 때만 둔다.
 
 ## 구간 (`data-phased`) — 긴 따라하기
 
@@ -186,7 +186,7 @@ JS는 기본 변형과 같다.
 
 ### linked 변형 스니펫
 
-무대 SVG의 클래스(`d0-s-frame`, `d0-s-accent`, `d0-s-tick` 등)와 무대 CSS는 [diagram.md](diagram.md)·[shell.md](shell.md)를 따른다. 아래는 2단계만 줄였다.
+무대 SVG의 클래스(`d0-s-frame`, `d0-s-accent`, `d0-s-tick` 등)와 무대 CSS는 [diagrams/index.md](../diagrams/index.md)·[shell/contract.md](../shell/contract.md)를 따른다. 아래는 2단계만 줄였다.
 
 ```html
 <div class="d0-wide">
