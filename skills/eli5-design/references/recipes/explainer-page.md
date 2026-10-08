@@ -6,7 +6,7 @@
 
 1. **할 수 있어야 할 것.** 독자가 다 읽고 할 수 있어야 할 것 한 줄을 적고, 아래 질문 → 그림 표의 행을 위에서부터 훑어 주제에 해당하는 행마다 거기에 이르려고 답을 얻어야 할 질문을 한 줄씩 적는다.
 2. **섹션.** 질문 하나에 섹션 하나가 기본이다. 두 질문을 함께 봐야 이해되면 한 섹션에 묶는다. 같은 질문을 두 섹션에 나눠 답하지 않는다.
-3. **그림.** 질문마다 답에 드는 그림을 아래 표에서 고르고, 실제로 고른 것의 상세 문서만 연다. 한 질문에 그림이 여럿일 수 있다(본보기 2번 이미지의 섹션은 넷). 글로 충분한 질문에는 그림을 붙이지 않는다.
+3. **그림.** 질문마다 답에 드는 그림을 아래 표에서 고르고, 실제로 고른 것의 상세 문서만 연다. 한 질문에 그림이 여럿일 수 있다(본보기 2번 이미지 속 섹션의 그림은 넷). 글로 충분한 질문에는 그림을 붙이지 않는다.
 4. **첫 화면.** 머리 바로 아래 첫 섹션에 주제의 실체를 보여 주는 그림을 둔다. 결과물이 있으면 그 결과를, 주제가 낯선 용어면 용어마다 같은 틀의 한 칸에 그 정의를 라벨로 단 그림을 먼저 보여 주고 글에는 출처만 남긴다.
 5. **글.** 그림이 못 보여 주는 이유·조건·영향과 복사할 명령(캡션 속 인라인 코드가 아닌 code-block)만 남긴다. 글에 순서(A→B→C, 요청에서 시작했으면 요청한 쪽이 결과를 받기까지)·비교(이러면 깨짐, 이러면 정상)·구성·연결·자리(경로)·항목의 뜻(필드·옵션)·접근 조건이 남았으면 기존 그림에 얹거나(화살표 위 검문소, 같은 틀의 ✓/✕ 줄, 상자 안 칸, 선 라벨, 자물쇠 라벨, 파일 트리, 번호 핀) 작은 그림으로 올린다.
 6. **조립과 검토.** 아래 뼈대로 HTML을 쓰고 `python3 scripts/inline_assets.py page out.html`로 토큰과 정본 CSS·JS를 채운 뒤 [final-review.md](../final-review.md)를 거친다.
@@ -17,10 +17,10 @@
 | --- | --- | --- |
 | 어떻게 흘러가나, 무엇이 무엇에 닿나, 누가 누구에게 넘기나 | 단계 도식, 연결 그래프, 주고받기, 진행선 | [diagrams/flow.md](../diagrams/flow.md) |
 | 무엇이 어떻게 다른가, 전과 후는 | 같은 틀의 나란한 그림, 전/후 막대, 가로 막대 목록 | [diagrams/comparison.md](../diagrams/comparison.md) |
-| 받으면 어떤 모양인가, 화면·파일 어디가 무엇인가, 어디에 두나 | 와이어프레임, 번호 핀, 번호 주석, 파일 트리 | [diagrams/annotation.md](../diagrams/annotation.md) |
+| 받으면 어떤 모양인가, 화면이나 설정·명령 파일의 줄마다 무엇인가, 어디에 두나 | 와이어프레임, 번호 핀(파일은 실제 줄을 쓴 종이 그림 + 핀), 번호 주석, 파일 트리 | [diagrams/annotation.md](../diagrams/annotation.md) |
 | 눌러 봐야 아는 화면 | 미니 앱 목업, 화면 캡처 스포트라이트 | [blocks/mockup-frame.md](../blocks/mockup-frame.md) |
 | 결과 파일·표가 어떤 모양인가 | 탭 + 표 목업, 썸네일 카드 | [blocks/tab-preview.md](../blocks/tab-preview.md), [blocks/thumb-cards.md](../blocks/thumb-cards.md) |
-| 어떻게 따라 하나 | 붙여 넣을 명령, 체크리스트 단계 | [blocks/code-block.md](../blocks/code-block.md), [blocks/checklist.md](../blocks/checklist.md) |
+| 어떻게 따라 하나, 어디서 받고 어떻게 열어 보나 | 붙여 넣을 명령, 체크리스트 단계 | [blocks/code-block.md](../blocks/code-block.md), [blocks/checklist.md](../blocks/checklist.md) |
 | 언제 무엇이 되나, 지금 어디인가 | 시간 막대, 타임라인, 진행 레일 | [blocks/timeline.md](../blocks/timeline.md) |
 | 바뀐 항목만 보고 싶다 | 전/후 행 목록, 전과 후 두 쪽 | [blocks/diff-rows.md](../blocks/diff-rows.md), [blocks/before-after.md](../blocks/before-after.md) |
 | 이 용어는 무엇인가, 막히면 왜인가 | 질문-답, 접는 용어 목록 | [blocks/faq.md](../blocks/faq.md), [blocks/accordion.md](../blocks/accordion.md) |
@@ -57,9 +57,13 @@
   </header>
   <section class="d0-section" aria-labelledby="s1">
     <header class="d0-section-head"><h2 id="s1">파일에는 시트가 세 장 있어요</h2></header>
-    <figure class="d0-fig">
+    <figure class="d0-fig"><!-- 비유는 사물이 일하는 장면: 뚜껑 연 상자에서 시트 세 장이 나와 있다 -->
       <svg viewBox="0 0 560 280" role="img" aria-labelledby="s1-t s1-d"><title id="s1-t">…</title><desc id="s1-d">…</desc>…</svg>
       <figcaption>그림이 못 보여 주는 조건 한 줄(없으면 생략)</figcaption>
+    </figure>
+    <figure class="d0-fig" data-variant="pins"><!-- 같은 섹션 둘째 그림: 시트 한 장을 종이로 그리고 실제 줄에 번호 핀 -->
+      <div class="d0-pins"><svg viewBox="0 0 560 320" role="img" aria-labelledby="s1-p">…</svg><span class="d0-pin" data-pin="1" style="…">1</span>…</div>
+      <dl class="d0-pins__key"><div data-pin="1" tabindex="0"><dt><span class="d0-pin">1</span>…</dt><dd>…</dd></div>…</dl>
     </figure>
   </section>
   <!-- 섹션 반복. 대상 둘을 견주는 주제면 마지막 섹션을 앞에서 안 보인 행(언제 쓰나, 조심할 점)만 같은 라벨·순서로 단 카드 두 장으로 둘 수 있다:

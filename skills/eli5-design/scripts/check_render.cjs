@@ -146,6 +146,7 @@ async function inspect(page, width, slugs) {
   const browser = await chromium.launch();
   const results = [];
   const external = new Set();
+  let isPage = false;
   try {
     for (const w of widths) {
       const page = await browser.newPage({ viewport: { width: w, height: w >= 1024 ? 800 : 844 } });
@@ -154,6 +155,7 @@ async function inspect(page, width, slugs) {
       page.on('request', (r) => { const u = r.url(); if (!/^(file|data|blob|about):/.test(u)) external.add(u.split('?')[0]); });
       await page.goto('file://' + abs, { waitUntil: 'load' });
       await page.waitForTimeout(300);
+      if (!isPage) isPage = await page.evaluate(() => !document.querySelector('.d0-deck') && !!document.querySelector('main.d0-page'));
       results.push(...await inspect(page, w, SLUGS));
       await page.close();
     }
@@ -165,5 +167,9 @@ async function inspect(page, width, slugs) {
   uniq.forEach(([lv, m]) => console.log(`${lv} ${m}`));
   const fails = uniq.filter((r) => r[0] === 'FAIL').length;
   console.log(fails ? `\n${fails}개 실패` : `\n기계 검사 통과(${widths.join('·')}px). 네 질문은 렌더를 보고 따로 답한다.`);
+  if (isPage) {
+    const ex = [1, 2, 3].map((n) => path.join(__dirname, '..', 'references', 'examples', `explainer-skills-mcp-${n}.jpg`));
+    console.log(`\n설명 page면 본보기 세 장을 다시 열어 내 스크린숏과 나란히 보고, 본보기가 그림·장면으로 보인 것을 내가 글·칸 격자·아이콘으로 때운 곳을 찾아 고친다(글을 남긴 섹션은 3번).\n${ex.map((e) => `  ${e}`).join('\n')}`);
+  }
   process.exit(fails ? 1 : 0);
 })();
