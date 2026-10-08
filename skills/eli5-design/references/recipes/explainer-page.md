@@ -32,7 +32,7 @@
 
 ## 뼈대
 
-질문과 그림을 고른 뒤 본보기 렌더 이미지 세 장([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))을 모두 열어 보고 형식만 맞춘다. 형식은 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀 비교, 글보다 그림이 많은 밀도다. 색·배치·그림 종류·섹션 구성은 주제에 맞게 본보기보다 다채롭게 고르고, 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다. 아래 뼈대의 섹션 구성도 한 예다.
+질문과 그림을 고른 뒤 본보기 렌더 이미지 세 장([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))을 모두 열어 보고 형식만 맞춘다. 형식은 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀 비교, 글보다 그림이 많은 밀도다. 배치·그림 종류·섹션 구성은 주제에 맞게 본보기보다 다채롭게 고르고, 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다. 아래 뼈대의 섹션 구성도 한 예다.
 
 ```html
 <!doctype html>

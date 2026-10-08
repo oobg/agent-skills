@@ -1,6 +1,6 @@
 # day0 — day0-design 의존
 
-시각 언어는 형제 스킬 `day0-design`이 정본이다. 이 스킬은 Day0 토큰 값을 갖지 않고, 삽화 보조 색(`--eli5-*`)만 `assets/page.css`에 둔다. 보통은 `scripts/inline_assets.py`가 아래 순서로 토큰을 찾으므로, 스크립트가 찾지 못할 때만 이 파일을 연다.
+시각 언어는 형제 스킬 `day0-design`이 정본이다. 이 스킬은 토큰 값을 갖지 않는다. 보통은 `scripts/inline_assets.py`가 아래 순서로 토큰을 찾으므로, 스크립트가 찾지 못할 때만 이 파일을 연다.
 
 ## 탐색 순서
 
@@ -30,5 +30,5 @@
   파일 머리 주석(출처 경로·메모)도 원문 그대로 둔다. 예시 데이터의 "실제 회사·제품 이름 금지"는 페이지 내용에 대한 규칙이라 이 주석에는 적용하지 않는다.
 - 규칙: day0-design `SKILL.md`의 스택 규칙·컴포넌트 원칙을 따른다.
 - **우선순위.** 설명 페이지의 타이포 스케일([shell/implementation.md](shell/implementation.md) page 타이포)과 페이지 여백은 이 스킬 값이
-  day0-design보다 우선한다. 색(삽화 보조 색 제외)·radius·모션·컴포넌트 규칙은 day0-design을 따른다.
+  day0-design보다 우선한다. 색·radius·모션·컴포넌트 규칙은 day0-design을 따른다.
 - 금지: `day0-design/references/anti-patterns.md`를 함께 적용한다.
