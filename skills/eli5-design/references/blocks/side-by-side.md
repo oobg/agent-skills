@@ -10,7 +10,7 @@
 
 ## 레이아웃 변형 (`data-layout`)
 
-모양 변형은 `data-layout`으로 고른다. 내용 변형 `data-variant`(`mock`·`decision`)와 따로 쓰므로 둘을 함께 달 수 있다(`data-variant="decision" data-layout="card"`). 카드는 후보를 비교하고 표는 기준을 비교한다. 각 선택지가 그림·설명을 가진 하나의 물건이거나 대상 둘을 몇 줄 기준으로 견주면 카드, 대상 셋 이상 × 기준 여럿이면 비교 표(`table.d0-table`)다.
+모양 변형은 `data-layout`으로 고른다. 내용 변형 `data-variant`(`mock`·`decision`)와 따로 쓰므로 둘을 함께 달 수 있다(`data-variant="decision" data-layout="card"`). 카드는 후보를 비교하고 표는 기준을 비교한다. 각 선택지가 그림·설명을 가진 하나의 물건이거나 대상이 둘이면 같은 행 라벨·순서의 카드, 대상이 셋 이상이면 비교 표(`table.d0-table`)다.
 
 - **split-plain(기본, 속성 없음).** 카드 없는 2~3열. 열마다 위쪽 선(1px grey-200)으로 시작 줄을 맞추고, 고른 열은 그 선이 2px blue가 된다. 면·radius·그림자 없음. 짧은 개념·문장 둘을 견줄 때 쓴다.
 - **split-card(`data-layout="card"`).** 선택지 카드. 각 안이 그림·설명을 가진 '하나의 물건'일 때만 쓴다.

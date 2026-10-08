@@ -85,4 +85,4 @@
 | 같은 대상의 실제 두 상태(문제 → 수정, 기존 → 개선) | [blocks/before-after.md](../blocks/before-after.md) |
 | 바뀐 항목만 행으로 | [blocks/diff-rows.md](../blocks/diff-rows.md) |
 | 전/후 지표 카드 여러 장 | [blocks/kpi-cards.md](../blocks/kpi-cards.md) |
-| 대상 여럿 × 기준 여럿 | 비교 표 `table.d0-table`(레시피의 마크업, 없음·미확정은 `data-state`) |
+| 대상 셋 이상 × 같은 기준 | 비교 표 `table.d0-table`(레시피의 마크업, 없음·미확정은 `data-state`) |

@@ -32,6 +32,8 @@
 
 ## 뼈대
 
+그리기 전에 [examples/explainer-skills-mcp.src.html](../examples/explainer-skills-mcp.src.html)을 한 번 읽고 밀도와 그림 문법을 맞춘다. 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀의 비교, 파일 트리, 번호 핀, 두 대상은 카드, 외곽선 그림이다. 내용을 베끼지 않고 형식만 본뜬다.
+
 ```html
 <!doctype html>
 <html lang="ko">
@@ -83,7 +85,7 @@
 | 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림 아래 이유·조건·영향. 항목 3개까지 |
 | 주장 + 근거 | `dl.d0-evidence > div > dt + dd` | 주장 한 줄과 그 근거(숫자·출처·예시) |
 | 가로 막대 목록 | `ol.d0-barlist > li > .d0-barlist__label + data.d0-barlist__value + .d0-barlist__track > .d0-barlist__fill[style="width:n%"]` | 같은 단위 값 3~6개, 구성비. 강조 행은 `li[data-on]`, 막대 아래 짧은 표기는 `.d0-barlist__note` |
-| 비교 표 | `table.d0-table` (아래) | 대상 셋 이상이나 기준 여럿을 견줄 때 |
+| 비교 표 | `table.d0-table` (아래) | 대상 셋 이상을 같은 기준으로 견줄 때 |
 | 몫 막대 | `div.d0-share > div.d0-share__bar > span.d0-share__seg[style="width:n%"]` + `ul.d0-share__keys > li` | 전체 중 몫(구성비). 강조 몫은 `[data-on]` |
 | 나란한 두 덩어리 | `div.d0-cols` | 전 \| 후, 완료 \| 남은 것처럼 동시에 봐야 할 때 |
 | 넓은 구간 | `.d0-wide` | 기본 축에서 읽히지 않는 넓은 표·긴 띠·차트만 |
@@ -103,5 +105,5 @@
 </div>
 ```
 
-- 숫자 칸은 `data-num`, 없음은 `data-state="none"`, 미확정은 `data-state="pending"`을 달고 글자를 꼭 쓴다. 대상이 둘이고 기준이 몇 줄이면 같은 행 라벨·순서의 카드 두 장(`div.d0-sbs[data-layout="card"]`), 셋 이상이거나 기준이 많으면 표로 견준다. 항목 → 설명 두 칸 표는 라벨 설명으로 바꾼다.
+- 숫자 칸은 `data-num`, 없음은 `data-state="none"`, 미확정은 `data-state="pending"`을 달고 글자를 꼭 쓴다. 대상이 둘이면 같은 행 라벨·순서의 카드 두 장(`div.d0-sbs[data-layout="card"]`), 셋 이상이면 표로 견준다. 항목 → 설명 두 칸 표는 라벨 설명으로 바꾼다.
 - 넓이·여백·글자 크기 같은 구현 수치는 CSS가 갖는다. 배치 규칙이 더 필요하면 [shell/contract.md](../shell/contract.md)를 연다.

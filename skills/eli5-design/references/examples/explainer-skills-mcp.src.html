@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에이전트 스킬과 MCP 한눈에 보기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* eli5:tokens.css */
+/* eli5:page.css */
+.d0-code { margin: 0; min-width: 0; max-width: 100%; overflow: hidden; border-radius: var(--d0-radius-control); background: var(--d0-grey-900); }
+.d0-code__bar { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 8px 6px 16px; background: var(--d0-grey-800); }
+.d0-code__label { flex: none; color: var(--d0-grey-300); font-size: var(--d0-meta); font-weight: 600; }
+.d0-code__status { flex: 1; min-width: 0; color: var(--d0-grey-300); font-size: var(--d0-meta); text-align: right; }
+.d0-code__copy {
+  display: inline-flex; align-items: center; flex: none; height: 32px; padding: 0 12px;
+  border: 1px solid var(--d0-grey-500); border-radius: var(--d0-radius-sm);
+  background: transparent; color: #fff; font: inherit; font-size: var(--d0-text-compact); font-weight: 600; cursor: pointer;
+  transition: background-color var(--d0-dur-fast) var(--d0-ease);
+}
+.d0-code__copy[hidden] { display: none; }
+.d0-code__copy:hover { background: var(--d0-grey-700); }
+.d0-code__copy:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.d0-code pre { margin: 0; padding: 14px 16px; overflow-x: auto; white-space: pre; }
+.d0-code pre:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+.d0-code code {
+  color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--d0-text-compact); line-height: var(--d0-leading-body); letter-spacing: 0;
+}
+.d0-code__prompt { color: var(--d0-grey-300); user-select: none; -webkit-user-select: none; }
+@media (prefers-reduced-motion: reduce) { .d0-code__copy { transition: none; } }
+.d0-explain > div { grid-template-columns: minmax(0, 1fr); }
+.d0-explain dd { min-width: 0; }
+.d0-card-head { display: flex; align-items: center; gap: 10px; }
+.d0-card-icon { flex: none; width: 44px; height: 36px; }
+.d0-card-head h3 { color: var(--d0-blue-dark); }
+.d0-source { margin: 8px 0 0; color: var(--d0-grey-600); font-size: var(--d0-meta); }
+.d0-explain dd > code { overflow-wrap: anywhere; }
+.d0-explain dd > .d0-code { margin-top: 12px; }
+.d0-explain dd > .d0-code + p { margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<main class="d0-page">
+  <header class="d0-header">
+    <div class="d0-header__meta"><span class="d0-header__label">에이전트 확장</span></div>
+    <h1>에이전트 스킬과 MCP는 에이전트에 서로 다른 것을 더해요</h1>
+    <p class="d0-header__lead">요청 하나를 끝까지 따라가요. “지난주 주문으로 주간 보고서 만들어 줘”라는 요청에서 스킬과 MCP가 각각 무엇을 맡는지 보여 드려요. 예시 이름은 모두 지어낸 것이에요.</p>
+  </header>
+
+  <section class="d0-section" aria-labelledby="s0">
+    <header class="d0-section-head"><h2 id="s0">스킬과 MCP를 물건에 빗대면 안내서와 단자예요</h2></header>
+    <figure class="d0-fig" data-frame="none">
+      <svg viewBox="0 0 560 300" role="img" aria-labelledby="s0-t s0-d">
+        <title id="s0-t">스킬은 안내서 폴더, MCP는 바깥 시스템을 꽂는 단자</title>
+        <desc id="s0-d">왼쪽 칸은 스킬이에요. 어떻게 일할지 적은 안내서로, SKILL.md가 든 폴더 안에 일하는 순서, 참고 자료, 스크립트가 들어 있어요. 오른쪽 칸은 MCP(Model Context Protocol)예요. 에이전트의 같은 모양 단자 세 개에 주문 DB, 파일, 메신저가 하나씩 꽂혀 있어요.</desc>
+        <rect class="d0-s-line" x="4" y="4" width="264" height="292" rx="12"/>
+        <rect class="d0-s-line" x="292" y="4" width="264" height="292" rx="12"/>
+        <text class="d0-s-text" data-on x="136" y="36" text-anchor="middle">스킬</text>
+        <text class="d0-s-text" x="136" y="62" text-anchor="middle">어떻게 일할지 적은 안내서</text>
+        <text class="d0-s-text d0-s-muted" x="136" y="88" text-anchor="middle">SKILL.md가 든 폴더</text>
+        <text class="d0-s-text" data-on x="424" y="36" text-anchor="middle">MCP</text>
+        <text class="d0-s-text" x="424" y="62" text-anchor="middle">바깥 시스템에 닿는 단자</text>
+        <text class="d0-s-text d0-s-muted" x="424" y="88" text-anchor="middle">Model Context Protocol</text>
+        <path class="d0-s-frame" d="M24 280 V110 A6 6 0 0 1 30 104 H90 L100 114 H242 A6 6 0 0 1 248 120 V280 Z"/>
+        <rect class="d0-s-frame" x="44" y="124" width="26" height="32" rx="3"/><path class="d0-s-line" d="M50 133 H64 M50 140 H64 M50 147 H60"/>
+        <text class="d0-s-text" x="84" y="146">일하는 순서</text>
+        <rect class="d0-s-frame" x="42" y="173" width="30" height="30" rx="3"/><path class="d0-s-line" d="M50 173 V203"/>
+        <text class="d0-s-text" x="84" y="194">참고 자료</text>
+        <rect class="d0-s-frame" x="44" y="220" width="26" height="32" rx="3"/><path class="d0-s-line" d="M49 230 L54 235 L49 240 M57 242 H65"/>
+        <text class="d0-s-text" x="84" y="242">스크립트</text>
+        <rect class="d0-s-frame" x="312" y="112" width="72" height="140" rx="10"/>
+        <text class="d0-s-text" x="348" y="282" text-anchor="middle">에이전트</text>
+        <rect class="d0-s-accent" x="384" y="131" width="10" height="18" rx="4"/>
+        <path class="d0-s-edge" data-on d="M394 140 H440"/>
+        <rect class="d0-s-frame" x="440" y="122" width="104" height="36" rx="6"/>
+        <text class="d0-s-text" x="492" y="146" text-anchor="middle">주문 DB</text>
+        <rect class="d0-s-accent" x="384" y="179" width="10" height="18" rx="4"/>
+        <path class="d0-s-edge" data-on d="M394 188 H440"/>
+        <rect class="d0-s-frame" x="440" y="170" width="104" height="36" rx="6"/>
+        <text class="d0-s-text" x="492" y="194" text-anchor="middle">파일</text>
+        <rect class="d0-s-accent" x="384" y="227" width="10" height="18" rx="4"/>
+        <path class="d0-s-edge" data-on d="M394 236 H440"/>
+        <rect class="d0-s-frame" x="440" y="218" width="104" height="36" rx="6"/>
+        <text class="d0-s-text" x="492" y="242" text-anchor="middle">메신저</text>
+      </svg>
+      <figcaption>안내서와 USB-C 단자는 공식 문서가 쓰는 비유예요.</figcaption>
+    </figure>
+  </section>
+
+  <section class="d0-section" aria-labelledby="s1">
+    <header class="d0-section-head"><h2 id="s1">둘은 에이전트에 붙는 자리가 달라요</h2></header>
+    <figure class="d0-fig" data-frame="none">
+      <svg data-view="wide" viewBox="0 0 560 270" role="img" aria-labelledby="s1-t s1-d">
+        <title id="s1-t">스킬 폴더와 MCP 서버가 에이전트에 붙는 자리</title>
+        <desc id="s1-d">왼쪽 내 컴퓨터 칸에는 스킬 폴더, 에이전트, files 서버가 있어요. 에이전트는 스킬 폴더를 읽고, 단자 두 개 중 하나는 stdio로 files 서버에, 다른 하나는 Streamable HTTP로 칸 밖 원격(인터넷)의 order-db 서버에 이어져요.</desc>
+        <rect class="d0-s-line" x="4" y="4" width="396" height="262" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="30" text-anchor="start">내 컴퓨터</text>
+        <rect class="d0-s-line" x="414" y="4" width="142" height="262" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="430" y="30" text-anchor="start">원격(인터넷)</text>
+        <rect class="d0-s-frame" x="24" y="118" width="100" height="82" rx="4"/>
+        <rect class="d0-s-frame" x="40" y="100" width="50" height="60" rx="3"/>
+        <rect class="d0-s-frame" x="56" y="92" width="50" height="60" rx="3"/>
+        <path class="d0-s-line" d="M66 106 H96 M66 116 H96 M66 126 H88"/>
+        <rect class="d0-s-frame" x="24" y="140" width="100" height="60" rx="4"/>
+        <text class="d0-s-text" data-on x="74" y="228" text-anchor="middle">스킬</text>
+        <text class="d0-s-text d0-s-muted" x="74" y="250" text-anchor="middle">weekly-report</text>
+        <path class="d0-s-edge" data-on d="M128 160 H164 M155 153 L164 160 L155 167"/>
+        <text class="d0-s-text d0-s-muted" x="146" y="148" text-anchor="middle">읽음</text>
+        <rect class="d0-s-frame" x="168" y="72" width="90" height="126" rx="10"/>
+        <text class="d0-s-text d0-s-muted" x="250" y="139" text-anchor="end">MCP 단자</text>
+        <text class="d0-s-text" x="213" y="228" text-anchor="middle">에이전트</text>
+        <text class="d0-s-text d0-s-muted" x="213" y="250" text-anchor="middle">Claude Code 등</text>
+        <rect class="d0-s-accent" x="258" y="89" width="10" height="14" rx="2"/>
+        <rect class="d0-s-accent" x="258" y="163" width="10" height="14" rx="2"/>
+        <path class="d0-s-edge" data-on d="M268 96 H310"/>
+        <text class="d0-s-text" x="289" y="86" text-anchor="middle">stdio</text>
+        <rect class="d0-s-frame" x="310" y="78" width="80" height="36" rx="6"/>
+        <circle class="d0-s-accent" cx="322" cy="96" r="3"/>
+        <text class="d0-s-text" x="356.0" y="101" text-anchor="middle">files</text>
+        <text class="d0-s-text d0-s-muted" x="350" y="136" text-anchor="middle">MCP 서버</text>
+        <path class="d0-s-edge" data-on d="M268 170 H426"/>
+        <text class="d0-s-text" x="340" y="160" text-anchor="middle">Streamable HTTP</text>
+        <rect class="d0-s-frame" x="426" y="152" width="120" height="36" rx="6"/>
+        <circle class="d0-s-accent" cx="438" cy="170" r="3"/>
+        <text class="d0-s-text" x="492.0" y="175" text-anchor="middle">order-db</text>
+        <text class="d0-s-text d0-s-muted" x="486" y="210" text-anchor="middle">MCP 서버</text>
+      </svg>
+      <svg data-view="narrow" viewBox="0 0 560 500" role="img" aria-labelledby="s1n-t s1n-d">
+        <title id="s1n-t">스킬 폴더와 MCP 서버가 에이전트에 붙는 자리(세로)</title>
+        <desc id="s1n-d">왼쪽 내 컴퓨터 칸에는 스킬 폴더, 에이전트, files 서버가 있어요. 에이전트는 스킬 폴더를 읽고, 단자 두 개 중 하나는 stdio로 files 서버에, 다른 하나는 Streamable HTTP로 칸 밖 원격(인터넷)의 order-db 서버에 이어져요.</desc>
+        <rect class="d0-s-line" x="4" y="4" width="552" height="104" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="34" text-anchor="start">원격(인터넷)</text>
+        <rect class="d0-s-frame" x="270" y="36" width="140" height="36" rx="6"/>
+        <circle class="d0-s-accent" cx="282" cy="54" r="3"/>
+        <text class="d0-s-text" x="346.0" y="59" text-anchor="middle">order-db</text>
+        <text class="d0-s-text d0-s-muted" x="256" y="62" text-anchor="end">MCP 서버</text>
+        <rect class="d0-s-line" x="4" y="122" width="552" height="372" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="152" text-anchor="start">내 컴퓨터</text>
+        <path class="d0-s-edge" data-on d="M340 72 V244"/>
+        <text class="d0-s-text" x="354" y="170" text-anchor="start">Streamable HTTP</text>
+        <rect class="d0-s-accent" x="333" y="244" width="14" height="10" rx="2"/>
+        <rect class="d0-s-frame" x="190" y="254" width="180" height="80" rx="10"/>
+        <text class="d0-s-text" x="280" y="288" text-anchor="middle">에이전트</text>
+        <text class="d0-s-text d0-s-muted" x="280" y="316" text-anchor="middle">Claude Code 등</text>
+        <rect class="d0-s-accent" x="333" y="334" width="14" height="10" rx="2"/>
+        <text class="d0-s-text d0-s-muted" x="326" y="370" text-anchor="end">MCP 단자</text>
+        <path class="d0-s-edge" data-on d="M340 344 V420"/>
+        <text class="d0-s-text" x="354" y="388" text-anchor="start">stdio</text>
+        <rect class="d0-s-frame" x="270" y="420" width="140" height="36" rx="6"/>
+        <circle class="d0-s-accent" cx="282" cy="438" r="3"/>
+        <text class="d0-s-text" x="346.0" y="443" text-anchor="middle">files</text>
+        <text class="d0-s-text d0-s-muted" x="256" y="446" text-anchor="end">MCP 서버</text>
+        <rect class="d0-s-frame" x="24" y="262" width="110" height="72" rx="4"/>
+        <rect class="d0-s-frame" x="40" y="244" width="50" height="60" rx="3"/>
+        <rect class="d0-s-frame" x="56" y="236" width="50" height="60" rx="3"/>
+        <path class="d0-s-line" d="M66 250 H96 M66 260 H96 M66 270 H88"/>
+        <rect class="d0-s-frame" x="24" y="284" width="110" height="50" rx="4"/>
+        <text class="d0-s-text" data-on x="79" y="370" text-anchor="middle">스킬</text>
+        <text class="d0-s-text d0-s-muted" x="79" y="396" text-anchor="middle">weekly-report</text>
+        <path class="d0-s-edge" data-on d="M136 294 H186 M177 287 L186 294 L177 301"/>
+        <text class="d0-s-text d0-s-muted" x="161" y="282" text-anchor="middle">읽음</text>
+      </svg>
+    </figure>
+  </section>
+
+  <section class="d0-section" aria-labelledby="s2">
+    <header class="d0-section-head"><h2 id="s2">스킬은 필요한 만큼만 나눠서 읽혀요</h2></header>
+    <figure class="d0-fig">
+      <svg viewBox="0 0 560 440" role="img" aria-labelledby="s2-t s2-d">
+        <title id="s2-t">weekly-report 폴더의 파일이 대화 맥락에 들어오는 때</title>
+        <desc id="s2-d">폴더의 파일 다섯 개 중 이름·설명만 시작할 때부터 늘 대화 맥락에 들어 있어 강조돼 있어요. 본문은 요청이 설명과 맞을 때, format.md는 본문이 가리킬 때 들어오고, 스크립트는 출력만 들어와요. examples.md는 이번 요청에서 읽지 않아 빈칸이에요.</desc>
+        <text class="d0-s-text d0-s-muted" x="8" y="22">weekly-report 폴더</text>
+        <text class="d0-s-text d0-s-muted" x="262" y="22">대화 맥락</text>
+        <rect class="d0-s-line" x="250" y="32" width="306" height="400" rx="12"/>
+
+        <rect class="d0-s-frame" x="8" y="52" width="32" height="40" rx="3"/>
+        <rect class="d0-s-accent" x="8" y="52" width="32" height="9" rx="2"/>
+        <path class="d0-s-line" d="M14 70 H34 M14 78 H34 M14 86 H28"/>
+        <text class="d0-s-text" data-on x="52" y="78">이름·설명</text>
+        <path class="d0-s-edge" data-on d="M196 72 H256 M248 66 L256 72 L248 78"/>
+        <rect class="d0-s-zone" x="262" y="40" width="282" height="64" rx="8"/>
+        <text class="d0-s-text d0-s-muted" x="276" y="67">시작할 때부터 늘</text>
+        <text class="d0-s-text" data-on x="276" y="92">스킬마다 약 100토큰</text>
+
+        <rect class="d0-s-frame" x="8" y="132" width="32" height="40" rx="3"/>
+        <path class="d0-s-line" d="M14 142 H34 M14 150 H34 M14 158 H34 M14 166 H28"/>
+        <text class="d0-s-text" x="52" y="158">SKILL.md 본문</text>
+        <path class="d0-s-edge" d="M196 152 H256 M248 146 L256 152 L248 158"/>
+        <rect class="d0-s-fill" x="262" y="120" width="282" height="64" rx="8"/>
+        <text class="d0-s-text d0-s-muted" x="276" y="147">요청이 설명과 맞을 때</text>
+        <text class="d0-s-text" x="276" y="172">5천 토큰 미만</text>
+
+        <rect class="d0-s-frame" x="8" y="212" width="32" height="40" rx="3"/>
+        <path class="d0-s-line" d="M14 222 H34 M14 230 H34 M14 238 H28"/>
+        <text class="d0-s-text" x="52" y="238">format.md</text>
+        <path class="d0-s-edge" d="M196 232 H256 M248 226 L256 232 L248 238"/>
+        <rect class="d0-s-fill" x="262" y="200" width="282" height="64" rx="8"/>
+        <text class="d0-s-text d0-s-muted" x="276" y="227">본문이 가리킬 때</text>
+        <text class="d0-s-text" x="276" y="252">읽은 파일만</text>
+
+        <rect class="d0-s-frame" x="8" y="292" width="32" height="40" rx="3"/>
+        <path class="d0-s-line" d="M14 304 L19 309 L14 314 M22 316 H34"/>
+        <text class="d0-s-text" x="52" y="318">summarize.py</text>
+        <path class="d0-s-edge" d="M196 312 H256 M248 306 L256 312 L248 318"/>
+        <rect class="d0-s-fill" x="262" y="280" width="282" height="64" rx="8"/>
+        <text class="d0-s-text d0-s-muted" x="276" y="307">실행할 때</text>
+        <text class="d0-s-text" x="276" y="332">코드는 빼고 출력만</text>
+
+        <rect class="d0-s-frame" x="8" y="372" width="32" height="40" rx="3"/>
+        <path class="d0-s-line" d="M14 382 H34 M14 390 H34 M14 398 H28"/>
+        <text class="d0-s-text d0-s-muted" x="52" y="398">examples.md</text>
+        <rect class="d0-s-edge" data-back x="262" y="360" width="282" height="64" rx="8"/>
+        <text class="d0-s-text d0-s-muted" x="276" y="387">이번 요청엔 안 읽음</text>
+        <text class="d0-s-text d0-s-muted" x="276" y="412">들어오지 않음 · 0</text>
+      </svg>
+      <figcaption>토큰 수는 공식 문서가 밝힌 대략값이에요. 토큰은 모델이 글을 세는 단위예요.</figcaption>
+    </figure>
+    <figure class="d0-fig" data-frame="none">
+      <svg viewBox="0 0 560 470" role="img" aria-labelledby="s2b-t s2b-d">
+        <title id="s2b-t">요청과 스킬 description을 견줘 고르는 모습</title>
+        <desc id="s2b-d">같은 요청을 세 스킬의 description과 견줘요. description이 분명하면 weekly-report가 강조된 채 골라지고, '보고서 관련'처럼 모호하면 엉뚱한 스킬을 고르거나 놓쳐요. 아래 줄은 /weekly-report를 직접 입력하면 바로 그 스킬로 가는 길이에요.</desc>
+        <rect class="d0-s-frame" x="40" y="6" width="480" height="44" rx="22"/>
+        <text class="d0-s-text" x="280" y="34" text-anchor="middle">“지난주 주문으로 주간 보고서 만들어 줘”</text>
+        <path class="d0-s-edge" d="M136 50 V80 M129 72 L136 80 L143 72"/>
+        <rect class="d0-s-line" x="4" y="84" width="264" height="290" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="112">description이 분명할 때</text>
+        <rect class="d0-s-zone" x="64" y="128" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" data-on x="78" y="151">weekly-report</text>
+        <text class="d0-s-text d0-s-muted" x="78" y="173">주간 보고서 요청</text>
+        <rect class="d0-s-frame" x="64" y="192" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" x="78" y="215">회의록 정리</text>
+        <text class="d0-s-text d0-s-muted" x="78" y="237">회의록 요약</text>
+        <rect class="d0-s-frame" x="64" y="256" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" x="78" y="279">이미지 변환</text>
+        <text class="d0-s-text d0-s-muted" x="78" y="301">이미지 형식 변환</text>
+        <circle class="d0-s-node" data-on cx="36" cy="155" r="13"/><path class="d0-s-tick" d="M29 155 L34 160 L43 149"/>
+        <text class="d0-s-text" data-on x="160" y="346" text-anchor="middle">맞는 스킬을 고름</text>
+        <path class="d0-s-edge" d="M424 50 V80 M417 72 L424 80 L431 72"/>
+        <rect class="d0-s-line" x="292" y="84" width="264" height="290" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="308" y="112">description이 모호할 때</text>
+        <rect class="d0-s-frame" x="352" y="128" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" x="366" y="151">weekly-report</text>
+        <text class="d0-s-text d0-s-muted" x="366" y="173">보고서 관련</text>
+        <rect class="d0-s-frame" x="352" y="192" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" x="366" y="215">회의록 정리</text>
+        <text class="d0-s-text d0-s-muted" x="366" y="237">회의록 요약</text>
+        <rect class="d0-s-frame" x="352" y="256" width="192" height="54" rx="8"/>
+        <text class="d0-s-text" x="366" y="279">이미지 변환</text>
+        <text class="d0-s-text d0-s-muted" x="366" y="301">이미지 형식 변환</text>
+        <path class="d0-s-stop" d="M317 148 L331 162 M331 148 L317 162"/>
+        <text class="d0-s-text" x="448" y="346" text-anchor="middle">엉뚱한 스킬 · 놓침</text>
+        
+        <rect class="d0-s-line" x="4" y="390" width="552" height="74" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="418">이름을 직접 부를 때</text>
+        <rect class="d0-s-frame" x="20" y="428" width="170" height="30" rx="15"/>
+        <text class="d0-s-text" x="105" y="449" text-anchor="middle">/weekly-report</text>
+        <path class="d0-s-edge" d="M194 443 H360 M348 435 L360 443 L348 451"/>
+        <text class="d0-s-text d0-s-muted" x="277" y="434" text-anchor="middle">견주지 않고 바로</text>
+        <rect class="d0-s-frame" x="364" y="428" width="176" height="30" rx="8"/>
+        <text class="d0-s-text" x="452" y="449" text-anchor="middle">weekly-report</text>
+      </svg>
+    </figure>
+    <figure class="d0-fig" data-frame="none">
+      <svg viewBox="0 0 560 270" role="img" aria-labelledby="s2c-t s2c-d">
+        <title id="s2c-t">Claude Code에서 스킬 폴더를 두는 두 곳</title>
+        <desc id="s2c-d">혼자 쓸 때는 ~/.claude/skills/ 아래, 팀과 함께 저장소에 둘 때는 .claude/skills/ 아래에 weekly-report 폴더를 둬요. 두 폴더의 내용은 같아요. SKILL.md, format.md, examples.md, 그리고 scripts 폴더 안 summarize.py예요.</desc>
+        <rect class="d0-s-line" x="4" y="4" width="264" height="262" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="20" y="32">혼자 쓸 때</text>
+        <text class="d0-s-text" data-on x="20" y="69">~/.claude/skills/</text>
+        <path class="d0-s-frame" d="M42 100 V88 H48 L50 91 H58 V100 Z"/>
+        <text class="d0-s-text" x="66" y="99">weekly-report/</text>
+        <rect class="d0-s-frame" x="66" y="116" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="88" y="129">SKILL.md</text>
+        <rect class="d0-s-frame" x="66" y="146" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="88" y="159">format.md</text>
+        <rect class="d0-s-frame" x="66" y="176" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="88" y="189">examples.md</text>
+        <path class="d0-s-frame" d="M64 220 V208 H70 L72 211 H80 V220 Z"/>
+        <text class="d0-s-text" x="88" y="219">scripts/</text>
+        <rect class="d0-s-frame" x="88" y="236" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="110" y="249">summarize.py</text>
+        <path class="d0-s-line" d="M28 72 V94 M28 94 H40"/>
+        <path class="d0-s-line" d="M50 102 V214 M50 124 H62 M50 154 H62 M50 184 H62 M50 214 H62"/>
+        <path class="d0-s-line" d="M72 222 V244 M72 244 H84"/>
+        <rect class="d0-s-line" x="292" y="4" width="264" height="262" rx="12"/>
+        <text class="d0-s-text d0-s-muted" x="308" y="32">팀과 함께 · 저장소</text>
+        <text class="d0-s-text" data-on x="308" y="69">.claude/skills/</text>
+        <path class="d0-s-frame" d="M330 100 V88 H336 L338 91 H346 V100 Z"/>
+        <text class="d0-s-text" x="354" y="99">weekly-report/</text>
+        <rect class="d0-s-frame" x="354" y="116" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="376" y="129">SKILL.md</text>
+        <rect class="d0-s-frame" x="354" y="146" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="376" y="159">format.md</text>
+        <rect class="d0-s-frame" x="354" y="176" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="376" y="189">examples.md</text>
+        <path class="d0-s-frame" d="M352 220 V208 H358 L360 211 H368 V220 Z"/>
+        <text class="d0-s-text" x="376" y="219">scripts/</text>
+        <rect class="d0-s-frame" x="376" y="236" width="12" height="15" rx="2"/>
+        <text class="d0-s-text" x="398" y="249">summarize.py</text>
+        <path class="d0-s-line" d="M316 72 V94 M316 94 H328"/>
+        <path class="d0-s-line" d="M338 102 V214 M338 124 H350 M338 154 H350 M338 184 H350 M338 214 H350"/>
+        <path class="d0-s-line" d="M360 222 V244 M360 244 H372"/>
+      </svg>
+    </figure>
+    <figure class="d0-fig" data-variant="pins" data-active-pin="2">
+      <div class="d0-pins">
+        <svg viewBox="0 0 560 414" role="img" aria-labelledby="s2d-t s2d-d">
+          <title id="s2d-t">weekly-report의 SKILL.md</title>
+          <desc id="s2d-d">파일 위쪽 머리말에는 name: weekly-report와 강조된 description 세 줄이 있고, 구분선 아래 본문에는 일하는 순서 1부터 4가 있어요. 1번 줄은 order-db 서버의 query_orders로 지난주 주문을 가져온다, 2번은 scripts/summarize.py로 합계를 낸다, 3번은 format.md의 형식대로 쓴다, 4번은 예시가 더 필요하면 examples.md를 본다예요.</desc>
+          <rect class="d0-s-frame" x="4" y="4" width="552" height="406" rx="10"/>
+          <path class="d0-s-fill" d="M4 44 V14 A10 10 0 0 1 14 4 H546 A10 10 0 0 1 556 14 V44 Z"/>
+          <path class="d0-s-line" d="M16 242 H544"/>
+          <text class="d0-s-text" x="20" y="30">SKILL.md</text>
+          <text class="d0-s-text d0-s-muted" x="16" y="74">머리말</text>
+          <text class="d0-s-text d0-s-muted" x="16" y="330">본문</text>
+          <text class="d0-s-text d0-s-muted" x="132" y="74">---</text>
+          <text class="d0-s-text d0-s-muted" x="132" y="224">---</text>
+          <g data-pin="1"><rect class="d0-s-area" x="122" y="84" width="428" height="28" rx="6"/><text class="d0-s-text" x="132" y="104">name: weekly-report</text></g>
+          <g data-pin="2"><rect class="d0-s-area" x="122" y="116" width="428" height="88" rx="6"/><text class="d0-s-text" data-on x="132" y="134">description: 주문 데이터로 주간 보고서를</text><text class="d0-s-text" data-on x="148" y="164">만든다. 주간 보고서나 지난주 주문</text><text class="d0-s-text" data-on x="148" y="194">요약을 요청할 때 쓴다.</text></g>
+          <g data-pin="3"><rect class="d0-s-area" x="122" y="250" width="428" height="154" rx="6"/></g>
+          <g data-pin="4"><rect class="d0-s-area" x="126" y="252" width="420" height="56" rx="6"/></g>
+          <text class="d0-s-text" x="132" y="270">1. order-db 서버의 query_orders로</text>
+          <text class="d0-s-text" x="154" y="300">지난주 주문을 가져온다.</text>
+          <text class="d0-s-text" x="132" y="330">2. scripts/summarize.py로 합계를 낸다.</text>
+          <text class="d0-s-text" x="132" y="360">3. format.md의 형식대로 쓴다.</text>
+          <text class="d0-s-text" x="132" y="390">4. 예시가 더 필요하면 examples.md를 본다.</text>
+        </svg>
+        <span class="d0-pin" data-pin="1" style="left: 15.0%; top: 23.7%" aria-hidden="true">1</span>
+        <span class="d0-pin" data-pin="2" style="left: 15.0%; top: 38.4%" aria-hidden="true">2</span>
+        <span class="d0-pin" data-pin="3" style="left: 15.0%; top: 78.3%" aria-hidden="true">3</span>
+        <span class="d0-pin" data-pin="4" style="left: 15.0%; top: 63.8%" aria-hidden="true">4</span>
+      </div>
+      <dl class="d0-pins__key">
+        <div data-pin="1" tabindex="0"><dt><span class="d0-pin">1</span>name</dt><dd>스킬 이름 · /weekly-report로 부를 때 쓰는 이름</dd></div>
+        <div data-pin="2" tabindex="0"><dt><span class="d0-pin">2</span>description</dt><dd>무엇을 하고 언제 쓰는지 · 에이전트가 고를 때 견주는 글</dd></div>
+        <div data-pin="3" tabindex="0"><dt><span class="d0-pin">3</span>본문</dt><dd>일하는 순서 · 요청이 description과 맞을 때 읽힘</dd></div>
+        <div data-pin="4" tabindex="0"><dt><span class="d0-pin">4</span>1번 줄</dt><dd>MCP 도구를 부르는 법</dd></div>
+      </dl>
+    </figure>
+  </section>
+
+  <section class="d0-section" aria-labelledby="s3">
+    <header class="d0-section-head"><h2 id="s3">MCP 클라이언트는 도구 목록을 먼저 묻고 그다음 불러요</h2></header>
+    <figure class="d0-fig">
+      <svg viewBox="0 0 560 384" role="img" aria-labelledby="s3-t s3-d">
+        <title id="s3-t">에이전트와 order-db 서버가 주고받는 순서</title>
+        <desc id="s3-d">order-db 서버 안에는 도구, 리소스, 프롬프트 세 칸이 있고 도구 칸이 강조돼 있어요. 에이전트가 tools/list로 목록을 요청하면 서버가 도구 목록을 돌려줘요. 강조된 tools/call 호출을 받은 서버는 주문 DB를 조회하고, 결과가 서버를 거쳐 에이전트로 돌아와요.</desc>
+        <text class="d0-s-text" x="93" y="22" text-anchor="middle">에이전트</text>
+        <text class="d0-s-text" x="280" y="22" text-anchor="middle">order-db 서버</text>
+        <text class="d0-s-text" x="467" y="22" text-anchor="middle">주문 DB</text>
+        <rect class="d0-s-frame" x="63" y="58" width="60" height="32" rx="6"/>
+        <rect class="d0-s-accent" x="123" y="67" width="8" height="14" rx="2"/>
+        <rect class="d0-s-frame" x="172" y="34" width="216" height="90" rx="6"/>
+        <rect class="d0-s-zone" x="178" y="40" width="204" height="24" rx="4"/>
+        <path class="d0-s-line" d="M178 94 H382"/>
+        <text class="d0-s-text" data-on x="190" y="58">도구 · 실행</text>
+        <text class="d0-s-text" x="190" y="87">리소스 · 읽을 데이터</text>
+        <text class="d0-s-text" x="190" y="116">프롬프트 · 요청 틀</text>
+        <path class="d0-s-frame" d="M442 64 V86 A25 7 0 0 0 492 86 V64 A25 7 0 0 0 442 64 A25 7 0 0 0 492 64"/>
+        <path class="d0-s-life" d="M93 132 V376 M280 132 V376 M467 132 V376"/>
+        <path class="d0-s-edge" d="M93 166 H280 M268 158 L280 166 L268 174"/>
+        <text class="d0-s-text d0-s-muted" x="186" y="154" text-anchor="middle">목록 요청</text>
+        <text class="d0-s-text d0-s-muted" x="186" y="188" text-anchor="middle">tools/list</text>
+        <path class="d0-s-edge" data-back d="M280 236 H93 M105 228 L93 236 L105 244"/>
+        <text class="d0-s-text d0-s-muted" x="186" y="224" text-anchor="middle">도구 목록</text>
+        <path class="d0-s-edge" data-on d="M93 284 H280 M268 276 L280 284 L268 292"/>
+        <text class="d0-s-text" data-on x="186" y="272" text-anchor="middle">도구 호출</text>
+        <text class="d0-s-text" data-on x="186" y="306" text-anchor="middle">tools/call</text>
+        <path class="d0-s-edge" d="M280 326 H467 M455 318 L467 326 L455 334"/>
+        <text class="d0-s-text d0-s-muted" x="373" y="314" text-anchor="middle">조회</text>
+        <path class="d0-s-edge" data-back d="M467 364 H93 M105 356 L93 364 L105 372"/>
+        <circle class="d0-s-node" cx="280" cy="364" r="5"/>
+        <text class="d0-s-text d0-s-muted" x="186" y="352" text-anchor="middle">결과</text>
+      </svg>
+    </figure>
+    <dl class="d0-explain">
+      <div><dt>그림의 도구</dt><dd>이 서버의 도구는 <code>query_orders</code>예요. 메시지는 모두 JSON-RPC 2.0 형식이에요.</dd></div>
+      <div><dt>목록부터 묻는 이유</dt><dd>서버마다 도구가 다르고, 쓰는 도중에 바뀔 수도 있어서예요. Claude Code는 시작할 때 도구 이름과 서버 안내만 대화 맥락에 올리고, 도구의 전체 입력 형식은 그 도구가 필요할 때 불러와요.</dd></div>
+      <div><dt>Claude Code에서 잇기</dt><dd><code>claude mcp add</code>로 등록하고, 원격 서버는 HTTP로 잇기를 권해요.
+        <figure class="d0-code">
+          <figcaption class="d0-code__bar">
+            <span class="d0-code__label">터미널</span>
+            <output class="d0-code__status" aria-live="polite"></output>
+            <button type="button" class="d0-code__copy" hidden>복사</button>
+          </figcaption>
+          <pre tabindex="0" role="group" aria-label="MCP 서버 등록 명령"><code><span class="d0-code__prompt" aria-hidden="true">$ </span>claude mcp add --transport http order-db https://mcp.example.com/mcp
+<span class="d0-code__prompt" aria-hidden="true">$ </span>claude mcp add --transport stdio files -- npx -y &lt;서버 패키지&gt;</code></pre>
+        </figure>
+        <p>주소와 <code>&lt;서버 패키지&gt;</code>는 연결할 서버의 것으로 바꿔요.</p>
+      </dd></div>
+    </dl>
+  </section>
+
+  <section class="d0-section" aria-labelledby="s4">
+    <header class="d0-section-head"><h2 id="s4">보고서 요청 하나가 스킬과 MCP를 번갈아 거쳐요</h2></header>
+    <figure class="d0-fig">
+      <svg viewBox="0 0 560 440" role="img" aria-labelledby="s4-t s4-d">
+        <title id="s4-t">주간 보고서 요청이 처리되는 순서</title>
+        <desc id="s4-d">사용자가 보고서를 요청하면 에이전트가 weekly-report 스킬의 본문을 읽고 query_orders 쓰는 법을 얻어요. 강조된 query_orders 호출로 order-db 서버에서 주문 데이터를 받고, 스킬의 스크립트를 실행해 합계를 받은 뒤, 보고서를 사용자에게 돌려줘요. 사용자 쪽 끝에 완료 표시가 있어요.</desc>
+        <text class="d0-s-text" x="60" y="22" text-anchor="middle">사용자</text>
+        <text class="d0-s-text" x="190" y="22" text-anchor="middle">에이전트</text>
+        <text class="d0-s-text" x="330" y="22" text-anchor="middle">weekly-report</text>
+        <text class="d0-s-text" x="485" y="22" text-anchor="middle">order-db</text>
+        <text class="d0-s-text d0-s-muted" x="330" y="46" text-anchor="middle">스킬</text>
+        <text class="d0-s-text d0-s-muted" x="485" y="46" text-anchor="middle">MCP 서버</text>
+        <path class="d0-s-life" d="M60 60 V398 M190 60 V430 M330 60 V430 M485 60 V430"/>
+        <path class="d0-s-edge" d="M60 92 H190 M178 84 L190 92 L178 100"/>
+        <text class="d0-s-text d0-s-muted" x="125" y="80" text-anchor="middle">보고서 요청</text>
+        <path class="d0-s-edge" d="M190 136 H330 M318 128 L330 136 L318 144"/>
+        <text class="d0-s-text d0-s-muted" x="260" y="124" text-anchor="middle">본문 읽기</text>
+        <path class="d0-s-edge" data-back d="M330 200 H190 M202 192 L190 200 L202 208"/>
+        <text class="d0-s-text d0-s-muted" x="260" y="166" text-anchor="middle">query_orders</text>
+        <text class="d0-s-text d0-s-muted" x="260" y="188" text-anchor="middle">쓰는 법</text>
+        <path class="d0-s-edge" data-on d="M190 244 H485 M473 236 L485 244 L473 252"/>
+        <text class="d0-s-text" data-on x="408" y="232" text-anchor="middle">query_orders</text>
+        <path class="d0-s-edge" data-back d="M485 286 H190 M202 278 L190 286 L202 294"/>
+        <text class="d0-s-text d0-s-muted" x="408" y="274" text-anchor="middle">주문 데이터</text>
+        <path class="d0-s-edge" d="M190 328 H330 M318 320 L330 328 L318 336"/>
+        <text class="d0-s-text d0-s-muted" x="260" y="316" text-anchor="middle">스크립트 실행</text>
+        <path class="d0-s-edge" data-back d="M330 368 H190 M202 360 L190 368 L202 376"/>
+        <text class="d0-s-text d0-s-muted" x="260" y="356" text-anchor="middle">합계</text>
+        <path class="d0-s-edge" data-back d="M190 410 H74 M86 402 L74 410 L86 418"/>
+        <text class="d0-s-text d0-s-muted" x="125" y="398" text-anchor="middle">보고서</text>
+        <circle class="d0-s-node" data-tone="green" cx="60" cy="410" r="13"/>
+        <path class="d0-s-tick" d="M53 410 L58 415 L67 404"/>
+      </svg>
+      <figcaption>연결은 MCP가, 그 연결을 쓰는 법은 스킬이 맡는 조합은 Claude Code 문서도 예로 들어요.</figcaption>
+    </figure>
+  </section>
+
+  <section class="d0-section" aria-labelledby="s5">
+    <header class="d0-section-head"><h2 id="s5">둘은 더하는 때와 조심할 점이 달라요</h2></header>
+    <div class="d0-sbs" data-layout="card">
+      <article class="d0-option">
+        <div class="d0-card-head"><svg class="d0-card-icon" viewBox="0 0 44 36" aria-hidden="true"><rect class="d0-s-frame" x="11" y="2" width="20" height="24" rx="2"/><path class="d0-s-line" d="M15 9 H27 M15 15 H27"/><rect class="d0-s-frame" x="2" y="14" width="40" height="20" rx="3"/></svg><h3>스킬</h3></div>
+        <dl class="d0-option__rows"><dt>더하는 때</dt><dd>같은 절차를 대화창에 거듭 붙여 넣을 때</dd><dt>조심할 것</dt><dd>직접 만들었거나 믿을 수 있는 곳의 스킬만 쓰고, 설치 전에 든 파일을 모두 확인</dd></dl>
+      </article>
+      <article class="d0-option">
+        <div class="d0-card-head"><svg class="d0-card-icon" viewBox="0 0 44 36" aria-hidden="true"><rect class="d0-s-frame" x="2" y="4" width="16" height="28" rx="4"/><rect class="d0-s-accent" x="18" y="13" width="6" height="10" rx="2"/><path class="d0-s-edge" data-on d="M24 18 H30"/><rect class="d0-s-frame" x="30" y="10" width="12" height="16" rx="3"/></svg><h3>MCP</h3></div>
+        <dl class="d0-option__rows"><dt>더하는 때</dt><dd>에이전트가 못 보는 시스템에서 데이터를 거듭 복사해 올 때</dd><dt>조심할 것</dt><dd>믿는 서버만 연결. 바깥 내용을 가져오는 서버는 프롬프트 주입 위험이 있음</dd></dl>
+      </article>
+    </div>
+    <p class="d0-source">Claude Code·Agent Skills 공식 문서 기준</p>
+  </section>
+</main>
+<script>
+/* eli5:page.js */
+document.querySelectorAll('.d0-code').forEach(function (block) {
+  var btn = block.querySelector('.d0-code__copy');
+  var status = block.querySelector('.d0-code__status');
+  var code = block.querySelector('code');
+  var label = btn.textContent;
+  var timer;
+  var p = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  var mac = /mac|iphone|ipad/i.test(p);
+  var policy = document.permissionsPolicy || document.featurePolicy;
+  var blocked = !!(policy && policy.allowsFeature && policy.allowsFeature('clipboard-write') === false);
+  btn.hidden = false;
+  function text() {
+    var copy = code.cloneNode(true);
+    copy.querySelectorAll('[aria-hidden="true"]').forEach(function (el) { el.remove(); });
+    return copy.textContent;
+  }
+  function done() {
+    clearTimeout(timer);
+    btn.textContent = '복사했어요';
+    status.textContent = '복사했어요';
+    timer = setTimeout(function () { btn.textContent = label; status.textContent = ''; }, 2000);
+  }
+  function fallback() {
+    var range = document.createRange();
+    range.selectNodeContents(code);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    clearTimeout(timer);
+    btn.textContent = label;
+    status.textContent = '선택했어요. ' + (mac ? '⌘C' : 'Ctrl+C') + '로 복사하세요';
+  }
+  btn.addEventListener('click', function () {
+    if (blocked || !navigator.clipboard || !navigator.clipboard.writeText) { fallback(); return; }
+    navigator.clipboard.writeText(text()).then(done, fallback);
+  });
+});
+</script>
+</body>
+</html>

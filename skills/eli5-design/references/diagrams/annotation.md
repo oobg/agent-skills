@@ -14,7 +14,7 @@
 ## 화면 골격
 
 ```html
-<figure class="d0-fig">
+<figure class="d0-fig" data-frame="none"><!-- 화면 틀을 그렸으니 외곽선 끔 -->
   <svg viewBox="0 0 560 342" role="img" aria-labelledby="w1-t w1-d">
     <title id="w1-t">주문 관리 화면 골격</title>
     <desc id="w1-d">위쪽 바 오른쪽 버튼과 그 아래 필터 영역이 강조돼 있어요.</desc>
