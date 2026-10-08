@@ -489,3 +489,19 @@ svg.d0-mlist__chart { display: block; width: 100%; height: auto; }
   .d0-page :is(.d0-s-text, .d0-s-num) { font-size: 22px; } /* 320: 22 × 288 ÷ 560 = 11.3px */
   .d0-page .d0-wide :is(.d0-s-text, .d0-s-num):not(.d0-cols *) { font-size: 30px; } /* 넓은 구간: 320 30 × 288 ÷ 750 = 11.5px */
 }
+/* 2열 칸 그림 글자: 칸이 나란하면 18, 쌓이면 칸 = 축(넓은 구간) 폭이라 축 그림과 같은 렌더 크기가 되게 줄인다.
+   축 2열 viewBox 360: 나란함(칸 컨테이너 648 이상) 18 × 254~336 ÷ 360 = 12.7~16.8px, 쌓임 = 축 글자 × 360 ÷ 560 → 9 / 13 / 14.
+   넓은 구간 2열 viewBox 480: 나란함(960px 이상) 18 × 406~490 ÷ 480 = 15.2~18.4px, 쌓임 = 넓은 구간 글자 × 480 ÷ 750 → 9 / 11.5 / 17 / 19 */
+.d0-page .d0-cols { container: d0-cols / inline-size; }
+.d0-page .d0-cols :is(.d0-s-text, .d0-s-num) { font-size: 18px; }
+@container d0-cols (max-width: 647px) { .d0-page .d0-cols :is(.d0-s-text, .d0-s-num) { font-size: 9px; } }
+@media (max-width: 959px) { .d0-page :is(.d0-wide .d0-cols, .d0-cols.d0-wide) :is(.d0-s-text, .d0-s-num) { font-size: 9px; } }
+@media (max-width: 760px) { .d0-page :is(.d0-wide .d0-cols, .d0-cols.d0-wide) :is(.d0-s-text, .d0-s-num) { font-size: 11.5px; } }
+@media (max-width: 560px) {
+  @container d0-cols (max-width: 647px) { .d0-page .d0-cols :is(.d0-s-text, .d0-s-num) { font-size: 13px; } }
+  .d0-page :is(.d0-wide .d0-cols, .d0-cols.d0-wide) :is(.d0-s-text, .d0-s-num) { font-size: 17px; }
+}
+@media (max-width: 340px) {
+  @container d0-cols (max-width: 647px) { .d0-page .d0-cols :is(.d0-s-text, .d0-s-num) { font-size: 14px; } }
+  .d0-page :is(.d0-wide .d0-cols, .d0-cols.d0-wide) :is(.d0-s-text, .d0-s-num) { font-size: 19px; }
+}

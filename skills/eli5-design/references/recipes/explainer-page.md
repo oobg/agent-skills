@@ -8,7 +8,7 @@
 2. **섹션.** 질문 하나에 섹션 하나가 기본이다. 두 질문을 함께 봐야 이해되면 한 섹션에 묶는다. 같은 질문을 두 섹션에 나눠 답하지 않는다.
 3. **그림.** 질문마다 답에 드는 그림을 아래 표에서 고르고, 실제로 고른 것의 상세 문서만 연다. 한 질문에 그림이 여럿일 수 있다(본보기 2번 이미지 속 섹션의 그림은 넷). 글로 충분한 질문에는 그림을 붙이지 않는다.
 4. **첫 화면.** 머리 바로 아래 첫 섹션에 주제의 실체를 보여 주는 그림을 둔다. 결과물이 있으면 그 결과를, 주제가 낯선 용어면 용어마다 같은 틀의 한 칸에 그 정의를 라벨로 단 그림을 먼저 보여 주고 글에는 출처만 남긴다.
-5. **글.** 그림이 못 보여 주는 이유·조건·영향과 복사할 명령(캡션 속 인라인 코드가 아닌 code-block)만 남긴다. 글에 순서(A→B→C, 요청에서 시작했으면 요청한 쪽이 결과를 받기까지)·비교(이러면 깨짐, 이러면 정상)·구성·연결·자리(경로)·항목의 뜻(필드·옵션)·접근 조건이 남았으면 기존 그림에 얹거나(화살표 위 검문소, 같은 틀의 ✓/✕ 줄, 상자 안 칸, 선 라벨, 자물쇠 라벨, 파일 트리, 번호 핀) 작은 그림으로 올린다.
+5. **글.** 도식화가 최우선이다. 그림으로 안 되는 이유·조건만 한 줄씩, 복사할 명령은 code-block으로 남긴다. 글에 순서(A→B→C, 요청에서 시작했으면 요청한 쪽이 결과를 받기까지)·비교(이러면 깨짐, 이러면 정상)·구성·연결·자리(경로)·항목의 뜻(필드·옵션)·접근 조건이 남았으면 기존 그림에 얹거나(화살표 위 검문소, 같은 틀의 ✓/✕ 줄, 상자 안 칸, 선 라벨, 자물쇠 라벨, 파일 트리, 번호 핀) 작은 그림으로 올린다.
 6. **조립과 검토.** 아래 뼈대로 HTML을 쓰고 `python3 scripts/inline_assets.py page out.html`로 토큰과 정본 CSS·JS를 채운 뒤 [final-review.md](../final-review.md)를 거친다.
 
 ## 질문 → 그림
@@ -66,8 +66,8 @@
       <dl class="d0-pins__key"><div data-pin="1" tabindex="0"><dt><span class="d0-pin">1</span>…</dt><dd>…</dd></div>…</dl>
     </figure>
   </section>
-  <!-- 섹션 반복. 대상 둘을 견주는 주제면 마지막 섹션을 앞에서 안 보인 행(언제 쓰나, 조심할 점)만 같은 라벨·순서로 단 카드 두 장으로 둘 수 있다:
-  <div class="d0-sbs" data-layout="card"><article class="d0-option"><h3>A</h3><dl class="d0-option__rows"><dt>언제 쓰나</dt><dd>…</dd><dt>조심할 점</dt><dd>…</dd></dl></article><article class="d0-option"><h3>B</h3>…같은 행…</article></div>
+  <!-- 섹션 반복. 대상 둘을 견주는 주제면 마지막 섹션을 앞에서 안 보인 행(어디서 구하고 어떻게 여나, 조심할 점)만 같은 라벨·순서로 단 카드 두 장으로 둘 수 있다:
+  <div class="d0-sbs" data-layout="card"><article class="d0-option"><h3>A</h3><dl class="d0-option__rows"><dt>어디서 구하고 어떻게 여나</dt><dd>…</dd><dt>조심할 점</dt><dd>…</dd></dl></article><article class="d0-option"><h3>B</h3>…같은 행…</article></div>
   남길 행동이 있으면 마지막 섹션 끝에 footer.d0-closing. 출처가 있을 때만 그 섹션 끝에 <p class="d0-note">출처: …</p> -->
 </main>
 <script>
@@ -85,7 +85,7 @@
 | --- | --- | --- |
 | 요약 행 | `dl.d0-summary > div > dt + dd` (2~3행) | 리드가 `이전 / 현재 / 요청`처럼 역할로 나뉠 때 |
 | 히어로 | `p.d0-hero > span.d0-hero__nums(.d0-hero__before, svg.d0-hero__arrow, .d0-hero__after) + span.d0-hero__note` | 측정된 결론 숫자가 하나 있을 때만. h1 바로 아래 |
-| 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림이 못 보여 주는 이유·조건·영향이 남을 때만. 기본은 없음. 이러면 X, 저러면 Y로 말할 수 있는 이유는 비교라 순서 5대로 그림에 올린다. 쓰면 섹션 안에 많아야 3개(본보기는 여섯 섹션 중 한 곳) |
+| 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림으로 안 되는 이유·조건만, `dd` 한 줄. 기본은 없음(본보기는 여섯 섹션 중 한 곳). 이러면 X, 저러면 Y는 비교라 그림에 올린다 |
 | 주장 + 근거 | `dl.d0-evidence > div > dt + dd` | 주장 한 줄과 그 근거(숫자·출처·예시) |
 | 가로 막대 목록 | `ol.d0-barlist > li > .d0-barlist__label + data.d0-barlist__value + .d0-barlist__track > .d0-barlist__fill[style="width:n%"]` | 같은 단위 값 3~6개, 구성비. 강조 행은 `li[data-on]`, 막대 아래 짧은 표기는 `.d0-barlist__note` |
 | 비교 표 | `table.d0-table` (아래) | 대상 셋 이상을 같은 기준으로 견줄 때 |

@@ -7,8 +7,9 @@
  *
  * playwright-core(또는 playwright)를 찾는 순서: --playwright 인자 → ELI5_PLAYWRIGHT 환경 변수 → require('playwright-core') → require('playwright').
  * 검사: 콘솔 오류, 남은 자리표시자·토큰 누락·외부 요청, 페이지 가로 넘침, SVG 잘림, page 그림 글자 크기(경고),
- *       내부 식별자 노출, report 표지 회귀(page 축·넓은 구간, deck 표지 배치).
+ *       page 넓은 구간 속 작은 그림, page 그림 간 글자 크기 불일치, 내부 식별자 노출, report 표지 회귀(page 축·넓은 구간, deck 표지 배치).
  * 측정은 뷰포트 숫자가 아니라 실제 컨테이너 폭으로 하고 1px 오차를 허용한다(스크롤바 유무로 판정이 바뀌지 않게).
+ * page면 넓은 화면 전체 스크린숏과 본보기 세 장을 나란히 붙인 <out>.compare.png를 만든다.
  * FAIL이 하나라도 있으면 종료 코드 1.
  */
 'use strict';
@@ -82,6 +83,47 @@ async function inspect(page, width, slugs) {
       });
     });
 
+    // 3-1. page 넓은 구간 속 작은 그림: 축(viewBox 560)·축 2열(360)용으로 그린 글자 있는 그림을 .d0-wide에 넣으면 그 그림만 커진다.
+    //      허용은 diagrams/index.md의 viewBox 폭: 넓은 구간 바로 안 750, 넓은 구간 2열 칸 480. 글자 없는 그림·그림 안 가로 스크롤은 보지 않는다.
+    const vbw = (svg) => (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width) || 0;
+    const texts = (svg) => [...svg.querySelectorAll('text.d0-s-text')].filter((t) => t.textContent.trim() && t.getBBox().width > 0);
+    const label = (svg, i) => ((svg.querySelector('title') || {}).textContent || `svg#${i + 1}`).trim().slice(0, 30);
+    const figs = [...document.querySelectorAll('.d0-page svg[role="img"]')];
+    if (width >= 1024) {
+      figs.forEach((svg, i) => {
+        if (!svg.closest('.d0-wide') || svg.closest('.d0-fig__scroll') || !texts(svg).length) return;
+        const inCols = !!svg.closest('.d0-cols');
+        const min = inCols ? 480 : 750;
+        if (vbw(svg) < min) fail(`작은 그림을 넓은 구간에 넣음 — 축 폭으로 옮기거나 viewBox ${min}로 다시 그린다: "${label(svg, i)}" viewBox ${vbw(svg)}${inCols ? '(2열 칸)' : ''}`);
+      });
+    }
+
+    // 3-2. page 그림 간 글자 크기: 그림마다 .d0-s-text 렌더 크기 중앙값과, 축에 놓은 viewBox 560 기준 그림(잠깐 넣었다 뺀다)을 견준다.
+    //      번호 원(.d0-s-num) 같은 다른 클래스 글자, 일부러 줄인 그림(data-fit="compact")과 그림 안 가로 스크롤은 뺀다.
+    //      임계 1.35: 승인 본보기는 1440 16.8~18.0px(1.07)·390 11.6~12.8px(1.10). 정본 배치(축·틀 끔·축 2열 360·넓은 구간 750·
+    //      넓은 구간 2열 480·7/5)를 한 장에 모으면 1440에서 축 2열 14.3px 대 7/5 칸 18.4px(1.29)가 가장 벌어져 그 위에 둔다.
+    //      preview-compare는 글자 그림이 하나라 판별력이 없다.
+    const sec = document.querySelector('.d0-page > .d0-section');
+    if (sec) {
+      const probe = document.createElement('figure');
+      probe.className = 'd0-fig';
+      probe.innerHTML = '<svg viewBox="0 0 560 60" role="img"><text class="d0-s-text" x="8" y="30">기준</text></svg>';
+      sec.appendChild(probe);
+      const ps = probe.querySelector('svg');
+      const ref = parseFloat(getComputedStyle(ps.querySelector('text')).fontSize) * ps.getBoundingClientRect().width / 560;
+      probe.remove();
+      const meds = [];
+      figs.forEach((svg, i) => {
+        const r = svg.getBoundingClientRect();
+        if (r.width < 2 || svg.closest('.d0-fig__scroll, .d0-fig[data-fit="compact"]') || !vbw(svg)) return;
+        const xs = texts(svg).map((t) => parseFloat(getComputedStyle(t).fontSize) * r.width / vbw(svg)).sort((a, b) => a - b);
+        if (xs.length) meds.push({ name: label(svg, i), px: xs[xs.length >> 1] });
+      });
+      const all = [{ name: '축 그림 기준', px: ref }, ...meds];
+      const lo = all.reduce((a, b) => (b.px < a.px ? b : a)), hi = all.reduce((a, b) => (b.px > a.px ? b : a));
+      if (hi.px / lo.px > 1.35) fail(`${width}px: 그림 글자 크기 불일치 ${(hi.px / lo.px).toFixed(2)} > 1.35 — "${hi.name}" ${hi.px.toFixed(1)}px ↔ "${lo.name}" ${lo.px.toFixed(1)}px. 놓는 곳의 viewBox 폭으로 다시 그린다`);
+    }
+
     // 4. 내부 식별자 노출: 보이는 글에서 정확히 일치하는 slug만
     const skip = 'code, pre, details, script, style, title, desc, q, blockquote, [data-verbatim]';
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -136,6 +178,31 @@ async function inspect(page, width, slugs) {
   }, { width, slugs });
 }
 
+// 내 page 넓은 화면 전체(왼쪽)와 본보기 세 장을 세로로 이은 것(오른쪽)을 같은 높이로 줄여 한 장에 붙인다. 폭 1600·높이 3200 이하.
+async function compare(browser, shot, abs) {
+  const ex = [1, 2, 3].map((n) => path.join(__dirname, '..', 'references', 'examples', `explainer-skills-mcp-${n}.jpg`));
+  const uri = (buf, type) => `data:${type};base64,${buf.toString('base64')}`;
+  const page = await browser.newPage({ viewport: { width: 1600, height: 800 } });
+  await page.setContent(`<body style="margin:0;background:#fff"><div id="row" style="display:flex;gap:16px;align-items:flex-start;padding:16px">
+    <img id="mine" style="flex:none" src="${uri(shot.buf, 'image/png')}"><div id="ex" style="flex:none;display:flex;flex-direction:column">${ex.map((e) => `<img src="${uri(fs.readFileSync(e), 'image/jpeg')}">`).join('')}</div></div></body>`);
+  await page.waitForFunction(() => [...document.images].every((i) => i.complete && i.naturalWidth));
+  const size = await page.evaluate(() => {
+    const mine = document.getElementById('mine'), exs = [...document.querySelectorAll('#ex img')];
+    const exW = exs[0].naturalWidth, exH = exs.reduce((a, i) => a + i.naturalHeight * exW / i.naturalWidth, 0);
+    const aspect = mine.naturalWidth / mine.naturalHeight + exW / exH; // 같은 높이 H일 때 두 칸 폭의 합 = H × aspect
+    const H = Math.min(3200, (1600 - 48) / aspect);
+    mine.style.height = `${H}px`;
+    exs.forEach((i) => { i.style.width = `${H * exW / exH}px`; });
+    const r = document.getElementById('row').getBoundingClientRect();
+    return { w: Math.ceil(r.width), h: Math.ceil(r.height) };
+  });
+  const out = abs.replace(/\.html?$/i, '') + '.compare.png';
+  await page.setViewportSize({ width: Math.min(1600, size.w), height: size.h });
+  await page.screenshot({ path: out, clip: { x: 0, y: 0, width: Math.min(1600, size.w), height: size.h } });
+  await page.close();
+  return out;
+}
+
 (async () => {
   const file = process.argv[2];
   if (!file || file.startsWith('--')) { console.error('사용법: node scripts/check_render.cjs out.html [--widths 1440,390] [--playwright 경로]'); process.exit(2); }
@@ -147,6 +214,8 @@ async function inspect(page, width, slugs) {
   const results = [];
   const external = new Set();
   let isPage = false;
+  let shot = null;
+  const shotW = widths.find((w) => w >= 1024) || Math.max(...widths);
   try {
     for (const w of widths) {
       const page = await browser.newPage({ viewport: { width: w, height: w >= 1024 ? 800 : 844 } });
@@ -157,8 +226,13 @@ async function inspect(page, width, slugs) {
       await page.waitForTimeout(300);
       if (!isPage) isPage = await page.evaluate(() => !document.querySelector('.d0-deck') && !!document.querySelector('main.d0-page'));
       results.push(...await inspect(page, w, SLUGS));
+      if (isPage && w === shotW) {
+        const box = await page.evaluate(() => { const f = document.querySelector('.d0-page > *').getBoundingClientRect(); return { x: Math.max(0, f.left - 136), w: Math.min(innerWidth, f.width + 272), h: document.documentElement.scrollHeight }; /* 사이드 노트(틀 밖 96px)까지 */ });
+        shot = { buf: await page.screenshot({ fullPage: true, clip: { x: box.x, y: 0, width: box.w, height: box.h } }), w: box.w, h: box.h };
+      }
       await page.close();
     }
+    if (shot) results.compare = await compare(browser, shot, abs);
   } finally { await browser.close(); }
   const fonts = [...external].filter((u) => /pretendard/i.test(u));
   if (fonts.length) results.push(['WARN', `폰트 폴백 링크 외부 요청 ${fonts.length}건(넘기기 전 subset_font.py로 없앤다)`]);
@@ -167,9 +241,6 @@ async function inspect(page, width, slugs) {
   uniq.forEach(([lv, m]) => console.log(`${lv} ${m}`));
   const fails = uniq.filter((r) => r[0] === 'FAIL').length;
   console.log(fails ? `\n${fails}개 실패` : `\n기계 검사 통과(${widths.join('·')}px). 네 질문은 렌더를 보고 따로 답한다.`);
-  if (isPage) {
-    const ex = [1, 2, 3].map((n) => path.join(__dirname, '..', 'references', 'examples', `explainer-skills-mcp-${n}.jpg`));
-    console.log(`\n설명 page면 본보기 세 장을 다시 열어 내 스크린숏과 나란히 보고, 본보기가 그림·장면으로 보인 것을 내가 글·칸 격자·아이콘으로 때운 곳을 찾아 고친다(글을 남긴 섹션은 3번).\n${ex.map((e) => `  ${e}`).join('\n')}`);
-  }
+  if (results.compare) console.log(`\n${results.compare}\n이 이미지를 열어 본보기(오른쪽)가 그림으로 보인 곳을 내가(왼쪽) 글·격자·아이콘으로 때운 곳을 찾는다.`);
   process.exit(fails ? 1 : 0);
 })();
