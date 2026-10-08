@@ -466,10 +466,8 @@ svg.d0-mlist__chart { display: block; width: 100%; height: auto; }
   --area-fill: var(--d0-blue-light); --area-line: var(--d0-blue);
 }
 .d0-fig[data-active-pin] g[data-pin]:not(.d0-fig[data-active-pin="1"] [data-pin="1"], .d0-fig[data-active-pin="2"] [data-pin="2"], .d0-fig[data-active-pin="3"] [data-pin="3"],
-    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) {
-  --d0-blue: var(--d0-grey-400); --d0-blue-dark: var(--d0-grey-500); --d0-blue-light: var(--d0-grey-100);
-  --d0-green: var(--d0-grey-400); --d0-green-bg: var(--d0-grey-100); --d0-orange: var(--d0-grey-400); --d0-orange-bg: var(--d0-grey-100);
-  --d0-red: var(--d0-grey-400); --d0-red-bg: var(--d0-grey-100);
+    .d0-fig[data-active-pin="4"] [data-pin="4"], .d0-fig[data-active-pin="5"] [data-pin="5"], .d0-fig[data-active-pin="6"] [data-pin="6"]) :not(.d0-s-accent) {
+  --d0-blue: var(--d0-grey-400); --d0-blue-dark: var(--d0-grey-500); --d0-blue-light: var(--d0-grey-100); /* 꺼진 핀은 파랑 강조만 회색. 강조 면(버튼)과 data-tone 상태 표식은 제 색 */
 }
 @media (prefers-reduced-motion: no-preference) {
   .d0-pins .d0-pin, .d0-pins__key > div, .d0-pins__key dt { transition: background-color 150ms, box-shadow 150ms, color 150ms, border-color 150ms; }

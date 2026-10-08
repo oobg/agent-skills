@@ -17,7 +17,7 @@
 - 색은 SVG에 직접 쓰지 않고 아래 클래스로 칠한다. 삽화 사물은 실물이 그 색일 때만 Day0 포인트 색을 `data-hue`로 칠한다(사과 red, 잎 green): blue는 장면의 초점 하나에만, 구분하거나 다채롭게 보이려고 색을 넣지 않고 나머지는 회색이다. 강조와 상태는 색만으로 말하지 않고 채움/빈 모양·굵기·✓/✕·라벨 중 하나를 함께 바꾼다(초록 사물이 통과를 뜻하지 않게).
 - 선 굵기는 기본 1.5, 강조 2.5 두 가지다. 화살촉은 같은 `path`의 서브패스로 그린다(`marker` 금지). 자동 배치 도구(Mermaid 등)는 쓰지 않는다.
 - **좁은 화면.** 다시 배치할 수 있으면 세로형 SVG를 `data-view="narrow"`로 함께 두고, 좌표·관계를 지켜야 하면 `.d0-fig__scroll` 안 가로 스크롤로 둔다. 예시는 [flow.md](flow.md) 갈래가 있는 흐름.
-- 비유 사물은 원 노드·선·빈 틀·회색 막대로 조립하지 않고 면과 부분으로 그린 삽화로 둔다: 채운 면, 부분 2~4개, 색은 실물이 그 색일 때만, 작은 디테일 하나(아래 예시). 노드·선은 흐름·관계에만 쓴다.
+- 비유 사물은 원 노드·선·빈 틀·회색 막대로 조립하지 않고 면과 부분으로 그린 삽화로 둔다: 채운 면, 부분 2~4개, 색은 실물이 그 색일 때만, 작은 디테일 하나. 면은 `.d0-s-obj`, 디테일은 `.d0-s-ink`로 그린다. 노드·선은 흐름·관계에만 쓴다.
 - 노드는 7개 안팎까지다. 많으면 묶어서 `+12` 같은 노드 하나로 줄인다.
 - 경계는 그림 안 선·면으로 만든다. 영역이 둘 이상이면(내 쪽 \| 바깥) 같은 문법의 틀로 나란히 두어 한 상자만 틀 밖에 떠 있지 않게 한다. SVG만 든 `figure.d0-fig`(compact 제외)는 CSS가 외곽선 카드(1px 테두리, 면·그림자 없음)에 담는다. 그림 안에 이미 바깥 틀을 그렸으면(나란한 칸, 화면 틀) `data-frame="none"`을 단다. 회색 무대(`data-stage`)는 글자 없는 그림이 떠 보일 때만 쓴다.
 
@@ -39,31 +39,6 @@
 | 삽화 면 / 삽화 속 진한 디테일 / 파랑 글자 | `.d0-s-obj` / `.d0-s-ink` / `.d0-s-text[data-hue="blue"]`. 색은 자기나 조상 `g`의 `data-hue="blue|green|red|orange"`, 없으면 회색. 글자는 blue만 색을 받는다 |
 
 새 표식이 꼭 필요하면 `assets/page.css` 도식 공용 클래스에 Day0 토큰만 쓰는 클래스 하나를 더한다.
-
-비유 삽화 예시(쿠키 틀 하나에서 같은 쿠키 셋이 나오고 틀은 남음):
-
-```html
-<svg viewBox="0 0 560 230" role="img" aria-labelledby="ck-t ck-d">
-  <title id="ck-t">쿠키 틀 하나와 같은 쿠키 셋</title>
-  <desc id="ck-d">왼쪽 별 모양 틀 하나로 오른쪽 쟁반에 같은 별 쿠키 셋을 찍어 냈고, 틀은 그대로 남아 있다.</desc>
-  <g data-hue="blue">
-    <rect class="d0-s-obj" x="96" y="22" width="28" height="30" rx="8"/>
-    <path class="d0-s-obj" stroke-width="2.5" transform="translate(110 104)" d="M0 -46 L13.5 -18.6 L43.7 -14.2 L21.9 7.1 L27 37.2 L0 23 L-27 37.2 L-21.9 7.1 L-43.7 -14.2 L-13.5 -18.6Z"/>
-  </g>
-  <text class="d0-s-text" x="110" y="176" text-anchor="middle">틀 하나</text>
-  <text class="d0-s-text d0-s-muted" x="110" y="198" text-anchor="middle">찍고 나도 그대로</text>
-  <path class="d0-s-edge" d="M184 104 H244 M236 98 l8 6 -8 6"/>
-  <text class="d0-s-text d0-s-muted" x="214" y="90" text-anchor="middle">찍어 냄</text>
-  <rect class="d0-s-obj" x="262" y="52" width="282" height="108" rx="18"/>
-  <g>
-    <g transform="translate(318 106)"><path class="d0-s-obj" d="M0 -30 L8.8 -12.1 L28.5 -9.3 L14.3 4.6 L17.6 24.3 L0 15 L-17.6 24.3 L-14.3 4.6 L-28.5 -9.3 L-8.8 -12.1Z"/><circle class="d0-s-ink" cx="-5" cy="0" r="3"/><circle class="d0-s-ink" cx="6" cy="6" r="3"/></g>
-    <g transform="translate(403 106)"><path class="d0-s-obj" d="M0 -30 L8.8 -12.1 L28.5 -9.3 L14.3 4.6 L17.6 24.3 L0 15 L-17.6 24.3 L-14.3 4.6 L-28.5 -9.3 L-8.8 -12.1Z"/><circle class="d0-s-ink" cx="-5" cy="0" r="3"/><circle class="d0-s-ink" cx="6" cy="6" r="3"/></g>
-    <g transform="translate(488 106)"><path class="d0-s-obj" d="M0 -30 L8.8 -12.1 L28.5 -9.3 L14.3 4.6 L17.6 24.3 L0 15 L-17.6 24.3 L-14.3 4.6 L-28.5 -9.3 L-8.8 -12.1Z"/><circle class="d0-s-ink" cx="-5" cy="0" r="3"/><circle class="d0-s-ink" cx="6" cy="6" r="3"/></g>
-  </g>
-  <text class="d0-s-text" x="403" y="186" text-anchor="middle">같은 모양 쿠키 셋</text>
-  <text class="d0-s-text d0-s-muted" x="403" y="208" text-anchor="middle">쟁반</text>
-</svg>
-```
 
 ## 렌더
 

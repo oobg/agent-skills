@@ -102,4 +102,4 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율(글자 4.5:1, 큰 글자·
 
 ## 검사 스크립트
 
-`scripts/check_render.cjs`는 기계로 확실히 아는 것만 잰다: 콘솔 오류, 문서 가로 넘침(`scrollWidth` vs `clientWidth`, 1px 허용), SVG 잘림(도형 합집합 vs SVG 박스, 1px 허용), page 그림 글자 크기(경고, SVG 실제 렌더 폭 기준), 내부 식별자 slug, report 회귀, 자리표시자·토큰·외부 요청. slug 목록은 스크립트 맨 위 `SLUGS` 한 곳에 있다. 블록·레시피 이름을 더하면 함께 더한다.
+`scripts/check_render.cjs`는 기계로 확실히 아는 것만 잰다: 콘솔 오류, 문서 가로 넘침(`scrollWidth` vs `clientWidth`, 1px 허용), SVG 잘림(도형 합집합 vs SVG 박스, 1px 허용), page 그림 글자 크기(경고, SVG 실제 렌더 폭 기준), 그림 하나의 파랑 강조 개수(경고, `[data-on]`·`[data-hue="blue"]` 6개 이상), 내부 식별자 slug, report 회귀, 자리표시자·토큰·외부 요청. slug 목록은 스크립트 맨 위 `SLUGS` 한 곳에 있다. 블록·레시피 이름을 더하면 함께 더한다.

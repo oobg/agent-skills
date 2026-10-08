@@ -7,7 +7,7 @@
  *
  * playwright-core(또는 playwright)를 찾는 순서: --playwright 인자 → ELI5_PLAYWRIGHT 환경 변수 → require('playwright-core') → require('playwright').
  * 검사: 콘솔 오류, 남은 자리표시자·토큰 누락·외부 요청, 페이지 가로 넘침, SVG 잘림, page 그림 글자 크기(경고),
- *       page 넓은 구간 속 작은 그림, page 그림 간 글자 크기 불일치, 내부 식별자 노출, report 표지 회귀(page 축·넓은 구간, deck 표지 배치).
+ *       page 넓은 구간 속 작은 그림, page 그림 간 글자 크기 불일치, 그림 하나의 파랑 강조 개수(경고), 내부 식별자 노출, report 표지 회귀(page 축·넓은 구간, deck 표지 배치).
  * 측정은 뷰포트 숫자가 아니라 실제 컨테이너 폭으로 하고 1px 오차를 허용한다(스크롤바 유무로 판정이 바뀌지 않게).
  * page면 넓은 화면 전체 스크린숏과 본보기 세 장을 나란히 붙인 <out>.compare.png를 만든다.
  * FAIL이 하나라도 있으면 종료 코드 1.
@@ -123,6 +123,25 @@ async function inspect(page, width, slugs) {
       const lo = all.reduce((a, b) => (b.px < a.px ? b : a)), hi = all.reduce((a, b) => (b.px > a.px ? b : a));
       if (hi.px / lo.px > 1.35) fail(`${width}px: 그림 글자 크기 불일치 ${(hi.px / lo.px).toFixed(2)} > 1.35 — "${hi.name}" ${hi.px.toFixed(1)}px ↔ "${lo.name}" ${lo.px.toFixed(1)}px. 놓는 곳의 viewBox 폭으로 다시 그린다`);
     }
+
+    // 3-3. 그림 하나의 파랑 강조 개수(경고): [data-on] + [data-hue="blue"](파랑 그룹 안은 그룹 하나로 센다). 파랑은 장면 초점 하나다.
+    //      세로형 사본(data-view="narrow")과 꺼진 핀 그룹(회색으로 바뀜) 안은 세지 않는다. 핀(.d0-pin)은 SVG 밖이라 들지 않는다.
+    //      임계 5: 승인 본보기에서 가장 많은 그림이 5개(제목 글자 둘 + 나란한 강조 선 셋)다.
+    const BLUE_MAX = 5;
+    document.querySelectorAll('figure.d0-fig svg:not([data-view="narrow"])').forEach((svg) => {
+      const fig = svg.closest('figure.d0-fig');
+      const act = fig.getAttribute('data-active-pin');
+      const n = [...svg.querySelectorAll('[data-on], [data-hue="blue"]')].filter((el) => {
+        const pin = el.closest('g[data-pin]');
+        if (act && pin && pin.getAttribute('data-pin') !== act) return false;
+        const grp = el.parentElement && el.parentElement.closest('[data-hue="blue"]');
+        return !(grp && svg.contains(grp));
+      }).length;
+      if (n > BLUE_MAX) {
+        const h2 = svg.closest('section') && svg.closest('section').querySelector('h2');
+        warn(`그림 하나에 파랑 강조 ${n}개(${BLUE_MAX}개까지) — 초점 하나만 파랗게 두고 나머지는 회색: "${(h2 ? h2.textContent : label(svg, 0)).trim().slice(0, 40)}"`);
+      }
+    });
 
     // 4. 내부 식별자 노출: 보이는 글에서 정확히 일치하는 slug만
     const skip = 'code, pre, details, script, style, title, desc, q, blockquote, [data-verbatim]';
@@ -241,6 +260,6 @@ async function compare(browser, shot, abs) {
   uniq.forEach(([lv, m]) => console.log(`${lv} ${m}`));
   const fails = uniq.filter((r) => r[0] === 'FAIL').length;
   console.log(fails ? `\n${fails}개 실패` : `\n기계 검사 통과(${widths.join('·')}px). 네 질문은 렌더를 보고 따로 답한다.`);
-  if (results.compare) console.log(`\n${results.compare}\n이 이미지를 열어 본보기(오른쪽)가 그림으로 보인 곳을 내가(왼쪽) 글·격자·아이콘으로 때운 곳을 찾는다. 배치·그림 종류는 본보기를 따라 하지 않고 주제에 맞게 다채롭게 둔다.`);
+  if (results.compare) console.log(`\n${results.compare}\n이 이미지를 열어 본보기(오른쪽)가 그림으로 보인 곳을 내가(왼쪽) 글·격자·아이콘으로 때운 곳을 찾는다. 배치·그림 종류·비유 사물은 본보기와 스킬 문서 예시를 따라 하지 않고 주제에 맞게 다채롭게 둔다.`);
   process.exit(fails ? 1 : 0);
 })();
