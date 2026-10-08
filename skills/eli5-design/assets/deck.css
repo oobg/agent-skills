@@ -221,7 +221,6 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
     overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y;
   }
   .d0-deck[data-mode="single"] > .d0-slide:not([data-active]) { display: none; }
-  .d0-deck[data-mode="single"] > .d0-slide[data-active] { animation: d0-deck-in var(--d0-dur-fast) var(--d0-ease); }
   .d0-deck[data-mode="single"] .d0-slide__num { display: none; }  /* 네비 쪽수가 대신한다 */
   /* 키 작은 창(높이로 줄인 폭이 730px 아래): 폭은 730px에서 멈추고 16:9를 풀어 장 안에서 세로로 스크롤한다 */
   @media (max-height: 498px) {
@@ -245,10 +244,6 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
     .d0-deck[data-mode="single"] > .d0-deck__nav { gap: 4px; }   /* 320에서도 안내가 한 줄에 들어가게 */
     .d0-deck__count { min-width: 48px; }
   }
-}
-@keyframes d0-deck-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .d0-deck[data-mode="single"] > .d0-slide[data-active] { animation: none; transition: none; }
 }
 
 /* 좁은 슬라이드(730px 미만, 본문이 11px 아래로 내려가는 폭): 16:9를 풀고 px 고정 */
@@ -320,6 +315,6 @@ h1.d0-slide__title { font-size: 5.6cqi; line-height: var(--d0-leading-display); 
   .d0-deck { max-width: none; padding: 0; gap: 0; }
   .d0-slide { break-after: page; break-inside: avoid; border-radius: 0; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   /* 한 장 모드였어도 모든 슬라이드를 되살리고 네비를 숨긴다 */
-  .d0-deck[data-mode="single"] > .d0-slide { display: grid; width: auto; max-height: none; overflow: hidden; animation: none; }
+  .d0-deck[data-mode="single"] > .d0-slide { display: grid; width: auto; max-height: none; overflow: hidden; }
   .d0-deck__nav { display: none !important; }
 }

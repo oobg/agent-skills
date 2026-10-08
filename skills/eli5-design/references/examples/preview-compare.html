@@ -220,14 +220,6 @@ button.d0-pill, a.d0-pill, .d0-pill[role="tab"] { height: 32px; padding: 0 14px;
 }
 :focus-visible { outline: 2px solid var(--d0-blue-dark); outline-offset: 2px; }
 
-/* 모션: data-motion은 JS가 reduced-motion이 아닐 때만 붙인다. 없으면 전부 그대로 보인다. */
-html[data-motion="on"] [data-reveal] {
-  transition: opacity calc(var(--d0-dur) * 2) var(--d0-ease), transform calc(var(--d0-dur) * 2) var(--d0-ease);
-}
-html[data-motion="on"] [data-reveal]:not([data-in]) { opacity: 0; transform: translateY(8px); }
-html[data-motion="on"] .d0-draw { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 600ms var(--d0-ease) 120ms; }
-html[data-motion="on"] [data-reveal]:not([data-in]) .d0-draw { stroke-dashoffset: 1; }
-
 @media (max-width: 640px) {
   .d0-page { padding: 48px 0 72px; }
   .d0-page > * { width: calc(100% - 32px); } /* 좌우 16px 거터 */
@@ -819,28 +811,6 @@ svg :is(path, circle, rect) { stroke-linecap: round; stroke-linejoin: round; }
 </main>
 
 <script>
-// 모션: 섹션 직계 블록을 한 번 드러내고(60ms 순차), 안의 .d0-draw 경로를 그린다.
-(function () {
-  if (!('IntersectionObserver' in window)) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var groups = document.querySelectorAll('.d0-header, .d0-section');
-  if (!groups.length) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.setAttribute('data-in', '');
-      io.unobserve(e.target);
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  groups.forEach(function (g) {
-    Array.prototype.forEach.call(g.children, function (el, i) {
-      el.setAttribute('data-reveal', '');
-      el.style.transitionDelay = (i * 60) + 'ms';
-      io.observe(el);
-    });
-  });
-  document.documentElement.setAttribute('data-motion', 'on');
-})();
 // 미니 격자: <div data-grid='{"rows":8,"cols":6,"label":"…"}'>를 글자 없는 표 썸네일 SVG로 바꾼다(같은 seed면 같은 모양).
 (function () {
   var NS = 'http://www.w3.org/2000/svg';

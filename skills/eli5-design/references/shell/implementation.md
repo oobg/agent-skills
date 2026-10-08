@@ -6,7 +6,7 @@
 
 | 모드 | 메인 `<style>` 순서 | 스크립트 |
 | --- | --- | --- |
-| page | tokens.css → `page.css` → (특수 블록 CSS) | `page.js`(모션, 표 썸네일, 번호 핀 연동) |
+| page | tokens.css → `page.css` → (특수 블록 CSS) | `page.js`(표 썸네일, 번호 핀 연동) |
 | deck | tokens.css → `page.css` → `deck.css` → `deck-shapes.css`(HTML에 `d0-s-*`가 있을 때만 채움) → `deck-enhance.css` | `deck.js`(한 장 모드, 네비, 키보드, 스와이프, 해시) |
 
 - `scripts/inline_assets.py`가 자리표시자 주석(`/* eli5:page.css */` 등)을 파일 내용으로 바꾼다. 모드에 필요한 자리표시자가 빠지거나 겹치면 멈춘다. 자산 파일을 더하거나 이름을 바꾸면 스크립트의 `MODES`와 세 레시피의 뼈대를 함께 고친다.

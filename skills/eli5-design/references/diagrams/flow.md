@@ -40,7 +40,7 @@
     <text class="d0-s-text d0-s-muted" x="262" y="79">이미 소장이면 종료</text>
     <text class="d0-s-text" data-on x="0" y="188">해외·희귀 자료 · 18%</text>
     <path class="d0-s-edge" d="M86 212 H184 M346 212 H454"/>
-    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M216 212 H314"/>
+    <path class="d0-s-edge" data-on d="M216 212 H314"/>
     <circle class="d0-s-node" cx="70" cy="212" r="16"/><circle class="d0-s-node" cx="200" cy="212" r="16"/>
     <circle class="d0-s-node" data-on cx="330" cy="212" r="16"/><circle class="d0-s-node" data-tone="green" cx="470" cy="212" r="16"/>
     <path class="d0-s-edge" data-back d="M322 227 C300 266 226 266 206 232 M200 242 L205 230 L216 236"/>
@@ -82,9 +82,9 @@
     <desc id="g1-d">고친 파일 하나에서 선이 검사 세 개로 이어져 강조돼 있어요. 다른 파일에 붙은 검사 두 개는 비어 있어요.</desc>
     <text class="d0-s-text d0-s-muted" x="451" y="25" text-anchor="middle">검사</text>
     <path class="d0-s-edge" d="M93 261 C272 261 272 249 451 249 M93 261 C272 261 272 311 451 311"/>
-    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M93 124 C272 124 272 62 451 62"/>
-    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M93 124 C272 124 272 124 451 124"/>
-    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M93 124 C272 124 272 187 451 187"/>
+    <path class="d0-s-edge" data-on d="M93 124 C272 124 272 62 451 62"/>
+    <path class="d0-s-edge" data-on d="M93 124 C272 124 272 124 451 124"/>
+    <path class="d0-s-edge" data-on d="M93 124 C272 124 272 187 451 187"/>
     <circle class="d0-s-ring" cx="93" cy="124" r="26"/>
     <circle class="d0-s-node" data-on cx="93" cy="124" r="17"/>
     <circle class="d0-s-node" cx="93" cy="261" r="17"/>
@@ -109,7 +109,7 @@
     <title id="s1-t">내보내기 네 단계</title>
     <desc id="s1-d">첫 단계는 완료 체크, 두 번째 '묶음 고르기'가 강조돼 있어요.</desc>
     <path class="d0-s-edge" d="M93 56 H193 M243 56 H317 M367 56 H454"/>
-    <path class="d0-s-edge d0-draw" data-on pathLength="1" d="M93 56 H193"/>
+    <path class="d0-s-edge" data-on d="M93 56 H193"/>
     <circle class="d0-s-step" data-tone="green" cx="68" cy="56" r="25"/><path class="d0-s-tick" d="M58 56 L65 64 L79 48"/>
     <circle class="d0-s-step" data-on cx="218" cy="56" r="25"/><text class="d0-s-num" data-on x="218" y="56">2</text>
     <circle class="d0-s-step" cx="342" cy="56" r="25"/><text class="d0-s-num" x="342" y="56">3</text>
@@ -130,10 +130,10 @@
 ## 주고받기
 
 - 참여자 3~4명, 메시지 5개까지. 참여자 이름은 위, 세로선(`.d0-s-life`)은 아래로, 메시지는 가로 화살표 위 1~2단어 라벨이다.
-- 돌아오는 응답은 `data-back` 점선, 핵심 메시지 하나만 `data-on` + `d0-draw`다. 참여자 간격은 viewBox 560에서 187(4명이면 140).
+- 돌아오는 응답은 `data-back` 점선, 핵심 메시지 하나만 `data-on`이다. 참여자 간격은 viewBox 560에서 187(4명이면 140).
 
 ```html
-<path class="d0-s-edge d0-draw" data-on pathLength="1" d="M280 180 H464 M451 171 L464 180 L451 190"/>
+<path class="d0-s-edge" data-on d="M280 180 H464 M451 171 L464 180 L451 190"/>
 <text class="d0-s-text" data-on x="373" y="165" text-anchor="middle">파일 저장</text>
 ```
 
