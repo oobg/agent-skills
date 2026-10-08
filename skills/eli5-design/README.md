@@ -84,7 +84,7 @@ Day0 시각 언어로 만드는 에이전트 스킬입니다. 기능 소개, 절
 | `references/blocks/` | 특수 블록. 고른 블록 하나만 엽니다: `mockup-frame.md`(목업·기기 프레임·화면 캡처), `checklist.md`(체크리스트), `code-block.md`(코드), `tab-preview.md`(탭 미리보기), `timeline.md`(타임라인), `diff-rows.md`(행 목록), `thumb-cards.md`(썸네일 카드), `faq.md`(질문-답), `accordion.md`(접기 목록), `before-after.md`(전과 후), `checkpoint.md`(확인 지점), `flow-line.md`(흐름 줄), `side-by-side.md`(옵션 나란히), `kpi-cards.md`(지표 카드), `step-columns.md`(단계 열), `callout.md`(요청 상자) |
 | `references/examples/preview-compare.html` | 합성 데이터로 만든 완성 예시(현행 정본 CSS로 인라인) |
 | `references/examples/explainer-skills-mcp-1.jpg`, `explainer-skills-mcp-2.jpg`, `explainer-skills-mcp-3.jpg` | 설명 page 레시피의 본보기 렌더(합성 이름). 형식을 맞출 때 보는 화면입니다 |
-| `references/examples/explainer-skills-mcp.src.html` | 본보기의 자리표시자 원본. 마크업이 막힐 때만 엽니다 |
+| `references/examples/explainer-skills-mcp.src.html` | 본보기 렌더의 원본. 마크업 대조용으로 두며 생성 중에는 읽지 않습니다 |
 | `assets/page.css` | 정본 CSS: 골격·읽기 축·2열·노트, 타이포, 섹션, 배지, 공용 블록(머리·히어로·설명·근거·가로 막대 목록·몫 막대·비교 표와 좁은 화면 3선택지 배치·마무리 등), 좁은 화면 그림 전환, 그림 기본 외곽선 틀, 도식 클래스, 번호 핀·주석, 인쇄 |
 | `assets/page.js` | 표 썸네일 생성, 번호 핀 연동 |
 | `assets/deck.css`, `assets/deck-shapes.css`, `assets/deck-enhance.css` | 덱 CSS: 16:9 한 장, 장 종류, 표지 배치, 덱 차트, 진한 면, 좁은 화면, 인쇄 |

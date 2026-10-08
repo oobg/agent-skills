@@ -32,7 +32,7 @@
 
 ## 뼈대
 
-질문과 그림을 고른 뒤 본보기 렌더 이미지([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))를 보고 형식만 맞춘다. 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀의 ✓/✕ 비교, 파일 트리, 번호 핀, 두 대상은 카드, 외곽선 그림이다. 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다. 소스([explainer-skills-mcp.src.html](../examples/explainer-skills-mcp.src.html))는 마크업이 막힐 때만 연다.
+질문과 그림을 고른 뒤 본보기 렌더 이미지([1](../examples/explainer-skills-mcp-1.jpg), [2](../examples/explainer-skills-mcp-2.jpg), [3](../examples/explainer-skills-mcp-3.jpg))를 보고 형식만 맞춘다. 질문마다 섹션, 섹션마다 그림 먼저, 정의는 그림 라벨, 같은 틀의 ✓/✕ 비교, 파일 트리, 번호 핀, 두 대상은 카드, 외곽선 그림이다. 같은 주제여도 제목·눈썹 라벨·문구·예제는 새로 쓴다.
 
 ```html
 <!doctype html>
@@ -82,7 +82,7 @@
 | --- | --- | --- |
 | 요약 행 | `dl.d0-summary > div > dt + dd` (2~3행) | 리드가 `이전 / 현재 / 요청`처럼 역할로 나뉠 때 |
 | 히어로 | `p.d0-hero > span.d0-hero__nums(.d0-hero__before, svg.d0-hero__arrow, .d0-hero__after) + span.d0-hero__note` | 측정된 결론 숫자가 하나 있을 때만. h1 바로 아래 |
-| 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림이 못 보여 주는 이유·조건·영향이 남을 때만. 기본은 없음(본보기는 여섯 섹션 중 한 곳), 많아야 3개 |
+| 라벨 설명 | `dl.d0-explain > div > dt + dd` | 그림이 못 보여 주는 이유·조건·영향이 남을 때만. 기본은 없음. 쓰면 그 이유가 꼭 남는 섹션에만, 섹션 안에 많아야 3개(본보기는 여섯 섹션 중 한 곳) |
 | 주장 + 근거 | `dl.d0-evidence > div > dt + dd` | 주장 한 줄과 그 근거(숫자·출처·예시) |
 | 가로 막대 목록 | `ol.d0-barlist > li > .d0-barlist__label + data.d0-barlist__value + .d0-barlist__track > .d0-barlist__fill[style="width:n%"]` | 같은 단위 값 3~6개, 구성비. 강조 행은 `li[data-on]`, 막대 아래 짧은 표기는 `.d0-barlist__note` |
 | 비교 표 | `table.d0-table` (아래) | 대상 셋 이상을 같은 기준으로 견줄 때 |
