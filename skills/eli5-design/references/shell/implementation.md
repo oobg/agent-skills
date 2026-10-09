@@ -74,7 +74,7 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율(글자 4.5:1, 큰 글자·
 | red / 흰 | 3.57 | 그래픽 통과, 글자 미달 |
 | orange / 흰 | 2.47 | 그래픽 미달 → 옅은 면 + 진한 테두리·라벨 |
 
-- 의미색은 글자 색으로 쓰지 않는다. 삽화 `data-hue`도 위 행을 그대로 쓰고(orange 선은 orange 막대처럼 곁에 라벨이 있을 때만), 색 글자는 blue-dark만이다. 흰 숫자는 blue-dark 원 위에만 둔다. 표 합계 행은 blue-light 바탕 + 위 2px blue 선 + grey-900 굵은 글자다.
+- 의미색은 글자 색으로 쓰지 않는다. 사물 `data-hue`도 위 행을 따르고, 색 글자는 blue-dark만이다. 흰 숫자는 blue-dark 원 위에만 둔다. 표 합계 행은 blue-light 바탕 + 위 2px blue 선 + grey-900 굵은 글자다.
 - 비교 표의 없음 표식은 grey-500 점선 원(3.19), 미확정 표식은 orange-bg 면 + grey-700 테두리다. 뜻은 칸의 글자가 전한다.
 
 ## deck 수치
@@ -102,4 +102,4 @@ tokens.css 실제 값으로 계산한 WCAG 2.x 비율(글자 4.5:1, 큰 글자·
 
 ## 검사 스크립트
 
-`scripts/check_render.cjs`는 기계로 확실히 아는 것만 잰다: 콘솔 오류, 문서 가로 넘침(`scrollWidth` vs `clientWidth`, 1px 허용), SVG 잘림(도형 합집합 vs SVG 박스, 1px 허용), page 그림 글자 크기(경고, SVG 실제 렌더 폭 기준), 그림 하나의 파랑 강조 개수(경고, `[data-on]`·`[data-hue="blue"]` 6개 이상), 내부 식별자 slug, report 회귀, 자리표시자·토큰·외부 요청. slug 목록은 스크립트 맨 위 `SLUGS` 한 곳에 있다. 블록·레시피 이름을 더하면 함께 더한다.
+`scripts/check_render.cjs`는 기계로 확실히 아는 것만 잰다: 콘솔 오류, 문서 가로 넘침(`scrollWidth` vs `clientWidth`, 1px 허용), SVG 잘림(도형 합집합 vs SVG 박스, 1px 허용), page 그림 글자 크기(경고, SVG 실제 렌더 폭 기준), 내부 식별자 slug, report 회귀, 자리표시자·토큰·외부 요청. slug 목록은 스크립트 맨 위 `SLUGS` 한 곳에 있다. 블록·레시피 이름을 더하면 함께 더한다.

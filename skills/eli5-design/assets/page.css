@@ -426,20 +426,19 @@ svg.d0-mlist__chart { display: block; width: 100%; height: auto; }
 .d0-s-edge[data-tone="red"] { stroke: var(--d0-red); }                                   /* 되돌림·실패 경로. data-back과 함께 쓰면 빨간 점선 */
 .d0-s-stop { fill: none; stroke: var(--d0-red); stroke-width: 2.5; stroke-linecap: round; } /* 막힘 표시: 경로를 가로지르는 짧은 선·X, 라벨과 함께 */
 /* 핵심 무대 blue-light: 회색 선·흐린 글자를 한 단계 진하게 */
-.d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
+.d0-fig[data-stage="blue"] :is(.d0-s-edge, .d0-s-node, .d0-s-step, .d0-s-frame, .d0-s-obj):not([data-on]):not([data-tone]) { stroke: var(--d0-grey-600); }
 .d0-fig[data-stage="blue"] .d0-s-muted, .d0-fig[data-stage="blue"] .d0-s-num:not([data-on]) { fill: var(--d0-grey-700); }
 /* 도식 변형: 남은 길 점선, 숫자 하나 크게(editorial), 비율 막대, 번호 핀, 번호 주석 */
 .d0-s-edge[data-ahead] { stroke-dasharray: 4 5; }
 .d0-s-area { fill: var(--area-fill, none); stroke: var(--area-line, none); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .d0-s-target { fill: none; stroke: var(--d0-grey-700); stroke-width: 1.5; stroke-dasharray: 6 4; } /* 목표선·기준선: 값 라벨을 함께 적는다 */
-/* 삽화 색: Day0 포인트 색만, 실물이 그 색인 사물에만(사과 red). blue는 장면의 초점 하나, 나머지는 회색이고 상태는 data-tone·✓/✕·라벨이 말한다.
-   선 / 흰 · 자기 면: blue-dark 5.50·4.94, green 3.47·3.17, red 3.57·3.21(그래픽만), orange 2.47·2.30(3:1 미달이라 orange 막대처럼 사물 곁에 회색 라벨이 있을 때만) */
+/* 비유 사물: .d0-s-frame처럼 흰 면 + 회색 선. data-hue는 실물 색이 꼭 필요할 때만(보통 쓰지 않음) */
 [data-hue="blue"] { --hue: var(--d0-blue-dark); --hue-bg: var(--d0-blue-light); }
 [data-hue="green"] { --hue: var(--d0-green); --hue-bg: var(--d0-green-bg); }
 [data-hue="red"] { --hue: var(--d0-red); --hue-bg: var(--d0-red-bg); }
 [data-hue="orange"] { --hue: var(--d0-orange); --hue-bg: var(--d0-orange-bg); }
-.d0-s-obj { fill: var(--hue-bg, var(--d0-grey-100)); stroke: var(--hue, var(--d0-grey-600)); stroke-width: 1.5; stroke-linejoin: round; } /* 삽화 면: 자기나 조상 g의 data-hue */
-.d0-s-ink { fill: var(--hue, var(--d0-grey-600)); }                                   /* 삽화 속 작은 진한 디테일 */
+.d0-s-obj { fill: var(--hue-bg, #fff); stroke: var(--hue, var(--d0-grey-500)); stroke-width: 1.5; stroke-linejoin: round; }
+.d0-s-ink { fill: var(--hue, var(--d0-grey-600)); } /* 사물 속 작은 디테일 */
 .d0-s-text[data-hue="blue"] { fill: var(--d0-blue-dark); } /* 색 글자는 blue만, 나머지 글자는 회색 */
 .d0-fig[data-genre="editorial"] { grid-template-columns: minmax(64px, 120px) minmax(0, 1fr); grid-template-areas: "obj num" "obj cap"; align-items: end; column-gap: 24px; row-gap: 6px; }
 .d0-fig[data-genre="editorial"] > svg { grid-area: obj; align-self: center; width: 100%; max-width: 120px; }
